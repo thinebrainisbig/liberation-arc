@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html class="light" lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#007aff",
+                    "surface-dim": "#f5f5f5",
+                    "on-tertiary": "#003544",
+                    "surface-variant": "#f0f0f0",
+                    "outline-variant": "#e1e1e1",
+                    "tertiary-fixed": "#b8eaff",
+                    "tertiary-fixed-dim": "#51d5ff",
+                    "on-surface-variant": "#5a5a5a",
+                    "on-primary-container": "#00285c",
+                    "inverse-on-surface": "#f5f5f5",
+                    "on-tertiary-fixed-variant": "#004d61",
+                    "on-surface": "#1a1a1a",
+                    "surface-container-highest": "#e8e8e8",
+                    "secondary": "#007aff",
+                    "on-secondary-fixed-variant": "#005bb7",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface-container-high": "#ebebeb",
+                    "primary-container": "#007aff",
+                    "surface-bright": "#ffffff",
+                    "on-secondary-container": "#ffffff",
+                    "surface": "#ffffff",
+                    "surface-container": "#f8f8f8",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#009dc2",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-background": "#1a1a1a",
+                    "on-secondary-fixed": "#001d3d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "background": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#adc6ff",
+                    "secondary-fixed-dim": "#7fbcff",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#adc6ff",
+                    "secondary-fixed": "#d1e5ff",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#d8e2ff",
+                    "outline": "#757780",
+                    "inverse-surface": "#313030",
+                    "tertiary-container": "#009dc2",
+                    "on-tertiary-container": "#002e3b",
+                    "on-primary-fixed": "#001a41",
+                    "primary": "#007aff",
+                    "surface-container-low": "#f2f2f2",
+                    "surface-tint": "#007aff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "unit": "3.2px",
+                    "margin-desktop": "32px",
+                    "gutter": "12px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Geist"],
+                    "display-lg-mobile": ["Geist"],
+                    "body-md": ["Geist"],
+                    "label-sm": ["JetBrains Mono"],
+                    "body-lg": ["Geist"],
+                    "display-lg": ["Geist"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCVzPhRLtlYmQD1DG8eKCYmXPeJ4qLxCCyPChAi2i_wlhZriDtnGqmnmCbVX0IisEfWzdG7QRkjgbL9URKKPu78WkGUdIYWS4IduwZUwjk51FIrVJVlUxCJxSUV_py3IOw4YCRN-Zh1DbnosNme7fnYESLf5UD0dl39ywDuhMfm1ETLKoeGUE69uJB_JOVCoJ0JmlLQgqYdEirJ5OYI4P7FzI8hqDR_LeqSpKtYB_iwlamPuTYj0GTNsDYvxJ219sPUwbRYxexcj4Iz') no-repeat center center;
+            background-size: cover;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+        }
+        .aspect-16-9-container {
+            width: 100vw;
+            height: 56.25vw;
+            max-height: 100vh;
+            max-width: 177.78vh;
+            display: flex;
+            position: relative;
+            background: transparent;
+            overflow: hidden;
+        }
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+            position: relative;
+        }
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .sidebar-gradient {
+            background: linear-gradient(180deg, rgba(0, 122, 255, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .glass-card-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        html { font-size: 13px; }
+        .text-sm { font-size: 0.75rem; }
+        .text-xs { font-size: 0.65rem; }
+        .text-base { font-size: 0.9rem; }
+        .text-lg { font-size: 1.1rem; }
+        .text-xl { font-size: 1.4rem; }
+        .text-2xl { font-size: 1.6rem; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<div class="aspect-16-9-container shadow-2xl rounded-xl border border-black/5 h-screen max-h-screen">
+<!-- SideNavBar -->
+<aside class="w-52 flex flex-col p-4 sidebar-gradient h-full">
+<div class="mb-4 text-center">
+<h1 class="font-headline-md text-2xl font-bold text-blue-950 tracking-tight leading-tight">Liberation Arc</h1>
+</div>
+<nav class="flex-1 space-y-0.5 overflow-y-auto pr-1">
+<!-- Physical -->
+<a class="flex items-center gap-2 p-2 text-green-900 font-medium hover:bg-white/60 rounded-lg transition-all duration-300 relative group" href="#">
+<span class="material-symbols-outlined text-lg">fitness_center</span>
+<span class="text-sm">Physical</span>
+</a>
+<!-- Academic -->
+<a class="flex items-center gap-2 p-2 text-blue-900 font-medium bg-white/60 rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined text-lg">school</span>
+<span class="text-sm">Academic</span>
+</a>
+<!-- Hobbies -->
+<a class="flex items-center gap-2 p-2 text-cyan-900 font-medium hover:bg-white/60 rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined text-lg">palette</span>
+<span class="text-sm">Hobbies</span>
+</a>
+<!-- Financial -->
+<a class="flex items-center gap-2 p-2 text-purple-900 font-medium hover:bg-white/60 rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined text-lg">payments</span>
+<span class="text-sm">Financial</span>
+</a>
+</nav>
+<div class="pt-3 border-t border-black/5 space-y-2">
+<div class="w-full aspect-video rounded-lg overflow-hidden border border-black/10">
+<img alt="Forest nature" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArtrKS8zX1W3VGGKF3eY133dF7BDxKpNswelj4g1NAgV0bQMSMJ_PL-HhRqijaWokiF3HrYoh9lYBLEQUzZByzvAF4OhcKb3LqR9Mjc_o71H3ZSfJXJMSS3U2TsUba3csDbhjnUHpqHfiHx006NMeoR01ym90MaCUFi6pz8VYFsNmCT4Hy7G23K7NQ7i1EV6CBGcIszbEJUqFVWw1EEXqmf0-CGBzX53KKYRpnnzJd5AWgFeO5LdtkDBYrCF7T3ULOT4a6oh7pLk06"/>
+</div>
+<div class="w-full aspect-video rounded-lg overflow-hidden border border-black/10">
+<img alt="Mountain landscape" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHlqWJKOBMsBGwlEijgw4YW1sFTTmX2XkjItzhTrSiICcpApKjuFSgOMS_FGTYhiBTUZJTamxV2U2CB8_N97J2hR8bXuRLXPaAZqHuO6XTOUidvOa2XmGVsKtrWN5ZXrPAsW48ssN2I2a9WbBmiGKYw13fF_Kvp8iK6jjvEsxO6myoAc-nCtAblp1Ay3zJhSg_kZN9TAg8XXKh4RA_Xwd5euy3P1aFmV0a-YK5fdFcMrjDSiVMAeaoYkVjZh86dySOSzo3dV3WhRH8"/>
+</div>
+<div class="pt-2 text-center">
+<span class="text-[9px] font-label-sm font-bold text-black/40 uppercase tracking-widest">Ver 1.0</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col p-6 overflow-hidden backdrop-blur-sm bg-black/5">
+<!-- Content Grid -->
+<div class="grid grid-cols-12 gap-4 w-full h-full">
+<!-- Vertical Stack (Research Cards) -->
+<div class="col-span-4 flex flex-col gap-4 h-full flex-grow h-0">
+<!-- Research Card 1 -->
+<div class="liquid-glass rounded-2xl p-6 flex flex-col flex-1 border border-secondary/40 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-12 h-12 bg-secondary/10 rounded-bl-full z-10"></div>
+<div class="flex-1 relative z-10">
+<div class="flex items-center gap-2 mb-3 text-secondary">
+<span class="material-symbols-outlined text-lg">science</span>
+<h3 class="font-bold text-[10px] uppercase tracking-widest font-label-sm">Research - MMIR</h3>
+</div>
+<p class="text-xl font-headline-md text-on-surface leading-tight mb-4">Review Literature</p>
+<ul class="text-sm space-y-3 text-on-surface-variant font-body-md pl-1"><li class="grid grid-cols-[1fr_auto] items-center gap-2"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Annotate Sources</span> <span class="text-[10px] font-bold text-on-surface-variant/60">Aug 26</span></li><li class="grid grid-cols-[1fr_auto] items-center gap-2"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Archive Data</span> <span class="text-[10px] font-bold text-on-surface-variant/60">Aug 27</span></li><li class="grid grid-cols-[1fr_auto] items-center gap-2"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Primary Source Review</span> <span class="text-[10px] font-bold text-on-surface-variant/60">Aug 28</span></li></ul>
+</div>
+<div class="mt-6 bg-secondary/5 rounded-xl p-4 border border-secondary/10 flex flex-col items-center relative z-10">
+<p class="text-[10px] font-bold uppercase tracking-widest text-secondary/60 mb-2 font-label-sm">Weekly Work Hours</p>
+<div class="flex items-center gap-6">
+<button class="w-8 h-8 rounded-full border border-secondary/20 flex items-center justify-center text-secondary hover:bg-secondary/10 transition-colors" id="decrement-hrs-1">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="text-3xl font-display-lg font-bold text-secondary tabular-nums drop-shadow-[0_0_8px_rgba(0,122,255,0.3)]" id="hours-display-1">0.0 hrs</span>
+<button class="w-8 h-8 rounded-full border border-secondary/20 flex items-center justify-center text-secondary hover:bg-secondary/10 transition-colors" id="increment-hrs-1">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<button class="mt-4 text-[10px] font-bold uppercase tracking-widest text-secondary hover:text-secondary-fixed-dim transition-colors border-b border-secondary/20 pb-0.5" id="reset-hrs-1">
+        Reset Weekly Hours
+    </button>
+</div><div class="flex items-center justify-between text-[10px] text-on-surface-variant font-label-sm mt-4 pt-4 border-t border-black/5 relative z-10"><div class="flex items-center gap-2 w-full"><span class="font-bold uppercase tracking-widest text-secondary/70">Status:</span><select class="flex-1 bg-white/20 border border-secondary/20 rounded px-2 py-1 text-[10px] font-bold focus:outline-none focus:ring-1 focus:ring-secondary/50 backdrop-blur-md cursor-pointer appearance-none"><option value="ahead">Ahead</option><option selected="" value="on-track">On Track</option><option value="behind">Behind</option></select><span class="material-symbols-outlined text-[12px] -ml-6 pointer-events-none text-secondary">expand_more</span></div></div>
+</div>
+<!-- Research Card 2 -->
+<div class="liquid-glass rounded-2xl p-6 flex flex-col flex-1 border border-secondary/40 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-12 h-12 bg-secondary/10 rounded-bl-full z-10"></div>
+<div class="flex-1 relative z-10">
+<div class="flex items-center gap-2 mb-3 text-secondary">
+<span class="material-symbols-outlined text-lg">science</span>
+<h3 class="font-bold text-[10px] uppercase tracking-widest font-label-sm">Research - EGD</h3>
+</div>
+<p class="text-xl font-headline-md text-on-surface leading-tight mb-4">Draft Methodology</p>
+<ul class="text-sm space-y-3 text-on-surface-variant font-body-md pl-1"><li class="grid grid-cols-[1fr_auto] items-center gap-2"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Team Sync</span> <span class="text-[10px] font-bold text-on-surface-variant/60">Sep 01</span></li><li class="grid grid-cols-[1fr_auto] items-center gap-2"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Outline Scope</span> <span class="text-[10px] font-bold text-on-surface-variant/60">Aug 30</span></li><li class="grid grid-cols-[1fr_auto] items-center gap-2"><span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Ethics Approval</span> <span class="text-[10px] font-bold text-on-surface-variant/60">Aug 28</span></li></ul>
+</div>
+<div class="mt-6 bg-secondary/5 rounded-xl p-4 border border-secondary/10 flex flex-col items-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-secondary/60 mb-2 font-label-sm">Weekly Work Hours</p>
+<div class="flex items-center gap-6">
+<button class="w-8 h-8 rounded-full border border-secondary/20 flex items-center justify-center text-secondary hover:bg-secondary/10 transition-colors" id="decrement-hrs">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<span class="text-3xl font-display-lg font-bold text-secondary tabular-nums drop-shadow-[0_0_8px_rgba(0,122,255,0.3)]" id="hours-display">0.0 hrs</span>
+<button class="w-8 h-8 rounded-full border border-secondary/20 flex items-center justify-center text-secondary hover:bg-secondary/10 transition-colors" id="increment-hrs">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<button class="mt-4 text-[10px] font-bold uppercase tracking-widest text-secondary hover:text-secondary-fixed-dim transition-colors border-b border-secondary/20 pb-0.5" id="reset-hrs">
+        Reset Weekly Hours
+    </button>
+</div><div class="flex items-center justify-between text-[10px] text-on-surface-variant font-label-sm mt-4 pt-4 border-t border-black/5 relative z-10"><div class="flex items-center gap-2 w-full"><span class="font-bold uppercase tracking-widest text-secondary/70">Status:</span><select class="flex-1 bg-white/20 border border-secondary/20 rounded px-2 py-1 text-[10px] font-bold focus:outline-none focus:ring-1 focus:ring-secondary/50 backdrop-blur-md cursor-pointer appearance-none"><option value="ahead">Ahead</option><option selected="" value="on-track">On Track</option><option value="behind">Behind</option></select><span class="material-symbols-outlined text-[12px] -ml-6 pointer-events-none text-secondary">expand_more</span></div>
+</div>
+</div>
+</div>
+<!-- Large Deadlines Card (Table) -->
+<div class="col-span-8 liquid-glass rounded-2xl overflow-hidden flex flex-col border border-primary/40 relative h-full">
+<div class="absolute top-0 right-0 w-16 h-16 bg-primary/10 rounded-bl-full z-10"></div>
+<div class="px-8 py-5 flex justify-between items-center glass-card-header relative z-10 bg-white/20">
+<h3 class="font-headline-md text-xl text-primary font-bold">Deadlines</h3>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 bg-primary/20 text-primary rounded-lg text-xs font-label-sm font-bold">Table</button>
+<button class="px-4 py-1.5 rounded-lg text-xs font-label-sm hover:bg-black/5 transition-colors">Board</button>
+<button class="px-4 py-1.5 rounded-lg text-xs font-label-sm hover:bg-black/5 transition-colors">Calendar</button>
+</div>
+</div>
+<div class="overflow-x-auto flex-1 relative z-10">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-black/5 text-[10px] font-label-sm text-on-surface-variant uppercase tracking-widest bg-black/[0.02]">
+<th class="px-8 py-4 font-bold">Task</th>
+<th class="px-4 py-4 font-bold">Areas</th>
+<th class="px-4 py-4 font-bold">Due</th>
+<th class="px-8 py-4 font-bold">Status</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="border-b border-black/5 hover:bg-black/5 transition-colors group">
+<td class="px-8 py-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<span class="font-bold">Lab Report 1a</span>
+</td>
+<td class="px-4 py-4">
+<span class="px-2 py-1 bg-green-500/20 text-green-800 rounded text-[10px] font-bold">Micro</span>
+</td>
+<td class="px-4 py-4 text-on-surface-variant font-medium">Aug 26</td>
+<td class="px-8 py-4 text-blue-700 font-bold text-xs italic">overdue</td>
+</tr>
+<tr class="border-b border-black/5 hover:bg-black/5 transition-colors group">
+<td class="px-8 py-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<span class="font-bold">Buy Small Notebook...</span>
+</td>
+<td class="px-4 py-4">
+<span class="px-2 py-1 bg-orange-500/20 text-orange-800 rounded text-[10px] font-bold">Eco</span>
+</td>
+<td class="px-4 py-4 text-on-surface-variant font-medium">Aug 27</td>
+<td class="px-8 py-4 text-blue-700 font-bold text-xs italic">overdue</td>
+</tr>
+<tr class="border-b border-black/5 hover:bg-black/5 transition-colors group">
+<td class="px-8 py-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<span class="font-bold">Bio Quiz 1</span>
+</td>
+<td class="px-4 py-4">
+<span class="px-2 py-1 bg-green-500/20 text-green-800 rounded text-[10px] font-bold">Micro</span>
+</td>
+<td class="px-4 py-4 text-on-surface-variant font-medium">Aug 28</td>
+<td class="px-8 py-4 text-blue-700 font-bold text-xs italic">overdue</td>
+</tr>
+<tr class="border-b border-black/5 hover:bg-black/5 transition-colors group">
+<td class="px-8 py-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">description</span>
+<span class="font-bold">Workshop Update</span>
+</td>
+<td class="px-4 py-4">
+<span class="px-2 py-1 bg-blue-500/20 text-blue-800 rounded text-[10px] font-bold">PCS</span>
+</td>
+<td class="px-4 py-4 text-on-surface-variant font-medium">Aug 30</td>
+<td class="px-8 py-4 text-on-surface-variant font-bold">3 days</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-4 bg-black/[0.04] mt-auto flex items-center justify-between relative z-10 border-t border-black/5">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors text-xs font-label-sm uppercase font-bold">
+<span class="material-symbols-outlined text-lg">keyboard_double_arrow_down</span>
+                        More
+                    </button>
+<button class="flex items-center gap-2 text-primary hover:underline text-xs font-bold uppercase">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+                        New Page
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script class="">
+    (function() {
+        let hours = 0.0;
+        const display = document.getElementById('hours-display');
+        const incrementBtn = document.getElementById('increment-hrs');
+        const decrementBtn = document.getElementById('decrement-hrs');
+        const resetBtn = document.getElementById('reset-hrs');
+
+        function updateDisplay() {
+            display.textContent = hours.toFixed(1) + ' hrs';
+        }
+
+        incrementBtn.addEventListener('click', () => {
+            hours += 0.5;
+            updateDisplay();
+        });
+
+        decrementBtn.addEventListener('click', () => {
+            if (hours >= 0.5) {
+                hours -= 0.5;
+                updateDisplay();
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            hours = 0.0;
+            updateDisplay();
+        });
+    })();
+</script><script class="">
+    (function() {
+        let hours1 = 0.0;
+        const display1 = document.getElementById('hours-display-1');
+        const incrementBtn1 = document.getElementById('increment-hrs-1');
+        const decrementBtn1 = document.getElementById('decrement-hrs-1');
+        const resetBtn1 = document.getElementById('reset-hrs-1');
+
+        function updateDisplay1() {
+            display1.textContent = hours1.toFixed(1) + ' hrs';
+        }
+
+        incrementBtn1.addEventListener('click', () => {
+            hours1 += 0.5;
+            updateDisplay1();
+        });
+
+        decrementBtn1.addEventListener('click', () => {
+            if (hours1 >= 0.5) {
+                hours1 -= 0.5;
+                updateDisplay1();
+            }
+        });
+
+        resetBtn1.addEventListener('click', () => {
+            hours1 = 0.0;
+            updateDisplay1();
+        });
+    })();
+</script></body></html>

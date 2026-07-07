@@ -1,0 +1,447 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#7d01b1",
+                    "surface-dim": "#f5f5f5",
+                    "on-tertiary": "#003544",
+                    "surface-variant": "#f0f0f0",
+                    "outline-variant": "#e1e1e1",
+                    "tertiary-fixed": "#b8eaff",
+                    "tertiary-fixed-dim": "#51d5ff",
+                    "on-surface-variant": "#5a5a5a",
+                    "on-primary-container": "#00285c",
+                    "inverse-on-surface": "#f5f5f5",
+                    "on-tertiary-fixed-variant": "#004d61",
+                    "on-surface": "#1a1a1a",
+                    "surface-container-highest": "#e8e8e8",
+                    "secondary": "#7d01b1",
+                    "on-secondary-fixed-variant": "#7200a3",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface-container-high": "#ebebeb",
+                    "primary-container": "#4b8eff",
+                    "surface-bright": "#ffffff",
+                    "on-secondary-container": "#e5a9ff",
+                    "surface": "#ffffff",
+                    "surface-container": "#f8f8f8",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#009dc2",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-background": "#1a1a1a",
+                    "on-secondary-fixed": "#310048",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "background": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#adc6ff",
+                    "secondary-fixed-dim": "#e9b3ff",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#adc6ff",
+                    "secondary-fixed": "#f6d9ff",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#d8e2ff",
+                    "outline": "#757780",
+                    "inverse-surface": "#313030",
+                    "tertiary-container": "#009dc2",
+                    "on-tertiary-container": "#002e3b",
+                    "on-primary-fixed": "#001a41",
+                    "primary": "#005bc1",
+                    "surface-container-low": "#f2f2f2",
+                    "surface-tint": "#005bc1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "unit": "3.2px",
+                    "margin-desktop": "32px",
+                    "gutter": "12px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Geist"],
+                    "display-lg-mobile": ["Geist"],
+                    "body-md": ["Geist"],
+                    "label-sm": ["JetBrains Mono"],
+                    "body-lg": ["Geist"],
+                    "display-lg": ["Geist"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background: url('https://lh3.googleusercontent.com/aida/ADBb0uiRT1E0bymVKU-h_sBI1tCrdSK4PRnQ9HS68t3LQeoeS_n_vD3u-mfxbYybW4kDPNa-5wU5pe4SeLnv8P_WlpCYdywICsrOZzvArHiDObStseFfZfDHA43hwcXAcSueo1QsIHpSNElY3iC7LxVqCHUX_fR41kXcbDM5xukj_2ApdJFE9db3itXtdzBBmDNJvMFhU3FFOcBTwYiq21ZQ9Y5tPPegmAtp3tvIjDkTLdK8SUiwLqW7-TMi0KZv') no-repeat center center;
+            background-size: cover;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+        }
+        .aspect-16-9-container {
+            width: 100vw;
+            height: 56.25vw;
+            max-height: 100vh;
+            max-width: 177.78vh;
+            display: flex;
+            position: relative;
+            background: transparent;
+            overflow: hidden;
+        }
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+            position: relative;
+        }
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .sidebar-gradient {
+            background: linear-gradient(180deg, rgba(153, 27, 27, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .glass-card-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        html { font-size: 13px; }
+        .text-sm { font-size: 0.75rem; }
+        .text-xs { font-size: 0.65rem; }
+        .text-base { font-size: 0.9rem; }
+        .text-lg { font-size: 1.1rem; }
+        .text-xl { font-size: 1.4rem; }
+        .text-2xl { font-size: 1.6rem; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<div class="aspect-16-9-container shadow-2xl rounded-xl border border-black/5">
+<!-- SideNavBar -->
+<aside class="w-52 flex flex-col p-4 sidebar-gradient h-full">
+<div class="mb-4 text-center">
+<h1 class="font-headline-md text-2xl font-bold text-red-950 tracking-tight leading-tight">Liberation Arc</h1>
+</div>
+<nav class="flex-1 space-y-0.5 overflow-y-auto pr-1">
+<!-- Physical -->
+<a class="flex items-center gap-2 p-2 text-green-900 font-medium bg-white/60 rounded-lg transition-all duration-300 relative group" href="#">
+<span class="material-symbols-outlined text-lg">fitness_center</span>
+<span class="text-sm">Physical</span>
+</a>
+<!-- Academic -->
+<a class="flex items-center gap-2 p-2 text-blue-900 font-medium hover:bg-white/60 rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined text-lg">school</span>
+<span class="text-sm">Academic</span>
+</a>
+<!-- Hobbies -->
+<a class="flex items-center gap-2 p-2 text-orange-900 font-medium hover:bg-white/60 rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined text-lg">palette</span>
+<span class="text-sm">Hobbies</span>
+</a>
+<!-- Financial -->
+<a class="flex items-center gap-2 p-2 text-purple-900 font-medium hover:bg-white/60 rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined text-lg">payments</span>
+<span class="text-sm">Financial</span>
+</a>
+<!-- Tracker Buttons (Stretched) -->
+<div class="pt-2 flex flex-col gap-1.5">
+<div class="w-full py-1.5 flex items-center justify-center rounded-lg bg-white/70 hover:bg-white/90 transition-colors cursor-pointer border border-black/5">
+<span class="material-symbols-outlined text-sm text-orange-600">light_mode</span>
+</div>
+<div class="w-full py-1.5 flex items-center justify-center rounded-lg bg-white/70 hover:bg-white/90 transition-colors cursor-pointer border border-black/5">
+<span class="material-symbols-outlined text-sm text-blue-600">dark_mode</span>
+</div>
+</div>
+<!-- Social Targets Mini-Card -->
+<div class="mt-3 p-2.5 bg-white/50 rounded-xl border border-black/5">
+<p class="text-[9px] font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">Social Targets</p>
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-bold text-emerald-700">Alex</span>
+<div class="w-1.5 h-1.5 rounded-full bg-emerald-600"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-bold text-amber-700">Jordan</span>
+<div class="w-1.5 h-1.5 rounded-full bg-amber-600"></div>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-bold text-indigo-700">Taylor</span>
+<div class="w-1.5 h-1.5 rounded-full bg-indigo-600"></div>
+</div>
+</div>
+</div>
+</nav>
+<div class="pt-3 border-t border-black/5 space-y-2">
+<div class="w-full aspect-video rounded-lg overflow-hidden border border-black/10">
+<img alt="Forest nature" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArtrKS8zX1W3VGGKF3eY133dF7BDxKpNswelj4g1NAgV0bQMSMJ_PL-HhRqijaWokiF3HrYoh9lYBLEQUzZByzvAF4OhcKb3LqR9Mjc_o71H3ZSfJXJMSS3U2TsUba3csDbhjnUHpqHfiHx006NMeoR01ym90MaCUFi6pz8VYFsNmCT4Hy7G23K7NQ7i1EV6CBGcIszbEJUqFVWw1EEXqmf0-CGBzX53KKYRpnnzJd5AWgFeO5LdtkDBYrCF7T3ULOT4a6oh7pLk06">
+</div>
+<div class="w-full aspect-video rounded-lg overflow-hidden border border-black/10">
+<img alt="Mountain landscape" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHlqWJKOBMsBGwlEijgw4YW1sFTTmX2XkjItzhTrSiICcpApKjuFSgOMS_FGTYhiBTUZJTamxV2U2CB8_N97J2hR8bXuRLXPaAZqHuO6XTOUidvOa2XmGVsKtrWN5ZXrPAsW48ssN2I2a9WbBmiGKYw13fF_Kvp8iK6jjvEsxO6myoAc-nCtAblp1Ay3zJhSg_kZN9TAg8XXKh4RA_Xwd5euy3P1aFmV0a-YK5fdFcMrjDSiVMAeaoYkVjZh86dySOSzo3dV3WhRH8">
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col p-6 overflow-hidden backdrop-blur-sm bg-black/5">
+<!-- Content Grid -->
+<div class="grid grid-cols-12 gap-4 w-full h-full overflow-hidden">
+<!-- Vertical Stack (Research Cards) -->
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-4">
+<!-- Research Card 1 -->
+<div class="liquid-glass rounded-2xl p-4 flex flex-col flex-1 border border-secondary/40 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-8 h-8 bg-secondary/10 rounded-bl-full z-10"></div>
+<div class="flex-1 relative z-10">
+<div class="flex items-center gap-1.5 mb-1 text-secondary">
+<span class="material-symbols-outlined text-xs">science</span>
+<h3 class="font-bold text-[9px] uppercase tracking-wider font-label-sm">Research - MMIR</h3>
+</div>
+<p class="text-base font-headline-md text-on-surface leading-tight mb-2">Review Literature</p>
+<ul class="text-[10px] space-y-1 text-on-surface-variant font-body-md pl-1">
+<li class="flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-secondary"></span> Annotate Sources</li>
+<li class="flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-secondary"></span> Archive Data</li>
+<li class="flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-secondary"></span> Primary Source Review</li>
+</ul>
+</div>
+<div class="flex items-center justify-between text-[9px] text-on-surface-variant font-label-sm mt-2 pt-2 border-t border-black/5 relative z-10">
+<span class="bg-secondary/10 px-1.5 py-0.5 rounded uppercase font-bold">In Progress</span>
+<span class="">Due Aug 29</span>
+</div>
+</div>
+<!-- Research Card 2 -->
+<div class="liquid-glass rounded-2xl p-4 flex flex-col flex-1 border border-secondary/40 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-8 h-8 bg-secondary/10 rounded-bl-full z-10"></div>
+<div class="flex-1 relative z-10">
+<div class="flex items-center gap-1.5 mb-1 text-secondary">
+<span class="material-symbols-outlined text-xs">science</span>
+<h3 class="font-bold text-[9px] uppercase tracking-wider font-label-sm">Research - EGD&nbsp;</h3>
+</div>
+<p class="text-base font-headline-md text-on-surface leading-tight mb-2">Draft Methodology</p>
+<ul class="text-[10px] space-y-1 text-on-surface-variant font-body-md pl-1">
+<li class="flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-secondary"></span> Team Sync</li>
+<li class="flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-secondary"></span> Outline Scope</li>
+<li class="flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-secondary"></span> Ethics Approval</li>
+</ul>
+</div>
+<div class="flex items-center justify-between text-[9px] text-on-surface-variant font-label-sm mt-2 pt-2 border-t border-black/5 relative z-10">
+<span class="bg-secondary/10 px-1.5 py-0.5 rounded uppercase font-bold">Upcoming</span>
+<span class="">Due Sep 02</span>
+</div>
+</div>
+</div>
+<!-- Large Deadlines Card (Table) -->
+<div class="col-span-12 lg:col-span-9 liquid-glass rounded-2xl overflow-hidden flex flex-col border border-primary/40 relative">
+<div class="absolute top-0 right-0 w-12 h-12 bg-primary/10 rounded-bl-full z-10"></div>
+<div class="px-6 py-3 flex justify-between items-center glass-card-header relative z-10 bg-white/20">
+<h3 class="font-headline-md text-base text-primary font-bold">Deadlines</h3>
+<div class="flex gap-1.5">
+<button class="px-2 py-0.5 bg-primary/20 text-primary rounded text-[9px] font-label-sm font-bold">Table</button>
+<button class="px-2 py-0.5 rounded text-[9px] font-label-sm hover:bg-black/5 transition-colors">Board</button>
+<button class="px-2 py-0.5 rounded text-[9px] font-label-sm hover:bg-black/5 transition-colors">Calendar</button>
+</div>
+</div>
+<div class="overflow-x-auto flex-1 relative z-10">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-black/5 text-[9px] font-label-sm text-on-surface-variant uppercase tracking-widest bg-black/[0.02]">
+<th class="px-6 py-2.5 font-bold">Task</th>
+<th class="px-3 py-2.5 font-bold">Areas</th>
+<th class="px-3 py-2.5 font-bold">Due</th>
+<th class="px-6 py-2.5 font-bold">Status</th>
+</tr>
+</thead>
+<tbody class="text-xs">
+<tr class="border-b border-black/5 hover:bg-black/5 transition-colors group">
+<td class="px-6 py-2.5 flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">description</span>
+<span class="font-bold truncate max-w-[150px]">Lab Report 1a</span>
+</td>
+<td class="px-3 py-2.5">
+<span class="px-1.5 py-0.5 bg-green-500/20 text-green-800 rounded text-[9px] font-bold">Micro</span>
+</td>
+<td class="px-3 py-2.5 text-on-surface-variant text-[10px] font-medium">Aug 26</td>
+<td class="px-6 py-2.5 text-red-700 font-bold text-[9px] italic">overdue</td>
+</tr>
+<tr class="border-b border-black/5 hover:bg-black/5 transition-colors group">
+<td class="px-6 py-2.5 flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">description</span>
+<span class="font-bold truncate max-w-[150px]">Buy Small Notebook...</span>
+</td>
+<td class="px-3 py-2.5">
+<span class="px-1.5 py-0.5 bg-orange-500/20 text-orange-800 rounded text-[9px] font-bold">Eco</span>
+</td>
+<td class="px-3 py-2.5 text-on-surface-variant text-[10px] font-medium">Aug 27</td>
+<td class="px-6 py-2.5 text-red-700 font-bold text-[9px] italic">overdue</td>
+</tr>
+<tr class="border-b border-black/5 hover:bg-black/5 transition-colors group">
+<td class="px-6 py-2.5 flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">description</span>
+<span class="font-bold">Bio Quiz 1</span>
+</td>
+<td class="px-3 py-2.5">
+<span class="px-1.5 py-0.5 bg-green-500/20 text-green-800 rounded text-[9px] font-bold">Micro</span>
+</td>
+<td class="px-3 py-2.5 text-on-surface-variant text-[10px] font-medium">Aug 28</td>
+<td class="px-6 py-2.5 text-red-700 font-bold text-[9px] italic">overdue</td>
+</tr>
+<tr class="border-b border-black/5 hover:bg-black/5 transition-colors group">
+<td class="px-6 py-2.5 flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">description</span>
+<span class="font-bold truncate max-w-[150px]">Workshop Update</span>
+</td>
+<td class="px-3 py-2.5">
+<span class="px-1.5 py-0.5 bg-blue-500/20 text-blue-800 rounded text-[9px] font-bold">PCS</span>
+</td>
+<td class="px-3 py-2.5 text-on-surface-variant text-[10px] font-medium">Aug 30</td>
+<td class="px-6 py-2.5 text-on-surface-variant text-[10px] font-bold">3 days</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-2 bg-black/[0.04] mt-auto flex items-center justify-between relative z-10 border-t border-black/5">
+<button class="flex items-center gap-1.5 text-on-surface-variant hover:text-on-surface transition-colors text-[9px] font-label-sm uppercase font-bold">
+<span class="material-symbols-outlined text-sm">keyboard_double_arrow_down</span>
+                            More
+                        </button>
+<button class="flex items-center gap-1.5 text-primary hover:underline text-[9px] font-bold uppercase">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                            New Page
+                        </button>
+</div>
+</div>
+<!-- Hobby Card -->
+<div class="col-span-12 lg:col-span-4 liquid-glass rounded-2xl p-5 flex flex-col relative overflow-hidden flex-1 border border-orange-400/40">
+<div class="absolute top-0 right-0 w-10 h-10 bg-orange-400/10 rounded-bl-full z-10"></div>
+<div class="flex items-center gap-1.5 mb-4 relative z-10">
+<span class="material-symbols-outlined text-orange-600 text-lg">palette</span>
+<h3 class="font-headline-md text-base text-orange-600 font-bold">Hobby</h3>
+</div>
+<div class="space-y-4 flex-1 relative z-10"><div class="space-y-4">
+<!-- Row 1: Currently Reading -->
+<div class="flex justify-between items-start">
+<div>
+<p class="text-[9px] uppercase tracking-widest text-on-surface-variant font-label-sm mb-0.5 font-bold">Currently Reading</p>
+<h4 class="font-bold text-sm leading-tight">Project Hail Mary</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">Andy Weir</p>
+</div>
+<div class="text-right">
+<p class="text-[8px] uppercase text-primary font-bold tracking-tighter">Up Next</p>
+<p class="text-[9px] font-bold text-on-surface-variant">Artemis</p>
+</div>
+</div>
+<div class="border-t border-black/5"></div>
+<!-- Row 2: Currently Watching -->
+<div class="flex justify-between items-start">
+<div>
+<p class="text-[9px] uppercase tracking-widest text-on-surface-variant font-label-sm mb-0.5 font-bold">Currently Watching</p>
+<h4 class="font-bold text-sm leading-tight">Shogun</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">Disney+</p>
+</div>
+<div class="text-right">
+<p class="text-[8px] uppercase text-primary font-bold tracking-tighter">Up Next</p>
+<p class="text-[9px] font-bold text-on-surface-variant">The Bear</p>
+</div>
+</div>
+<div class="border-t border-black/5"></div>
+<!-- Row 3: Current Certifications -->
+<div class="flex justify-between items-start">
+<div>
+<p class="text-[9px] uppercase tracking-widest text-on-surface-variant font-label-sm mb-0.5 font-bold">Current Certifications</p>
+<h4 class="font-bold text-sm leading-tight">AWS Solutions Architect</h4>
+<p class="text-[10px] text-on-surface-variant font-medium">Exam Prep</p>
+</div>
+<div class="text-right">
+<p class="text-[8px] uppercase text-primary font-bold tracking-tighter">Up Next</p>
+<p class="text-[9px] font-bold text-on-surface-variant">GCP Professional</p>
+</div>
+</div>
+</div></div>
+</div>
+<!-- Right Side Vertical Cards -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-4 flex-1">
+<!-- Physical Health -->
+<div class="liquid-glass rounded-2xl p-5 flex flex-col flex-1 relative overflow-hidden border border-green-500/40">
+<div class="absolute top-0 right-0 w-10 h-10 bg-green-500/10 rounded-bl-full z-10"></div>
+<div class="flex justify-between items-center mb-2 relative z-10">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-green-700 text-lg">fitness_center</span>
+<h3 class="font-headline-md text-base text-green-700 font-bold">Physical Health</h3>
+</div>
+<span class="text-[8px] font-bold font-label-sm bg-green-500/20 text-green-700 px-1.5 py-0.5 rounded-full uppercase tracking-tighter">Live</span>
+</div>
+<div class="grid grid-cols-3 gap-2 h-full content-center relative z-10">
+<div class="flex flex-col items-center">
+<span class="text-xl font-bold">8,432</span>
+<p class="text-[8px] uppercase text-on-surface-variant font-bold">Steps</p>
+</div>
+<div class="w-px h-6 bg-black/10 self-center"></div>
+<div class="flex flex-col items-center">
+<span class="text-xl font-bold text-primary">640</span>
+<p class="text-[8px] uppercase text-on-surface-variant font-bold">Active Cal</p>
+</div>
+<div class="col-span-3 mt-1 pt-1 border-t border-black/5 flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-red-600 animate-pulse text-xs">favorite</span>
+<span class="text-base font-bold">72 <span class="text-[10px] font-normal text-on-surface-variant">BPM</span></span>
+</div>
+</div>
+</div>
+<!-- Financial Tracker -->
+<div class="liquid-glass rounded-2xl p-5 flex flex-col flex-1 relative overflow-hidden border border-purple-500/40">
+<div class="absolute top-0 right-0 w-10 h-10 bg-purple-500/10 rounded-bl-full z-10"></div>
+<div class="flex justify-between items-center mb-2 relative z-10">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-purple-700 text-lg">payments</span>
+<h3 class="font-headline-md text-base text-purple-700 font-bold">Financial</h3>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant text-base hover:text-purple-700 transition-colors">add_circle</button>
+</div>
+<div class="flex gap-4 h-full items-center relative z-10">
+<div class="flex-1">
+<p class="text-[8px] uppercase text-on-surface-variant font-bold mb-0.5">Balance</p>
+<p class="text-xl font-bold">$4,280</p>
+<p class="text-[9px] text-green-700 font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]">trending_up</span> +12%
+                                </p>
+</div>
+<div class="flex-1 space-y-1.5 border-l border-black/10 pl-4">
+<div class="flex justify-between items-center text-[9px]">
+<span class="text-on-surface-variant font-bold truncate">Groceries</span>
+<span class="font-bold text-red-700">-$45</span>
+</div>
+<div class="flex justify-between items-center text-[9px]">
+<span class="text-on-surface-variant font-bold truncate">Netflix</span>
+<span class="font-bold text-red-700">-$12</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

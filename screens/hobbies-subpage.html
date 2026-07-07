@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="light" lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#7d01b1",
+                    "surface-dim": "#f5f5f5",
+                    "on-tertiary": "#003544",
+                    "surface-variant": "#f0f0f0",
+                    "outline-variant": "#e1e1e1",
+                    "tertiary-fixed": "#b8eaff",
+                    "tertiary-fixed-dim": "#51d5ff",
+                    "on-surface-variant": "#5a5a5a",
+                    "on-primary-container": "#00285c",
+                    "inverse-on-surface": "#f5f5f5",
+                    "on-tertiary-fixed-variant": "#004d61",
+                    "on-surface": "#1A1A1A",
+                    "surface-container-highest": "#e8e8e8",
+                    "secondary": "#7d01b1",
+                    "on-secondary-fixed-variant": "#7200a3",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#004493",
+                    "surface-container-high": "#ebebeb",
+                    "primary-container": "#4b8eff",
+                    "surface-bright": "#ffffff",
+                    "on-secondary-container": "#e5a9ff",
+                    "surface": "#ffffff",
+                    "surface-container": "#f8f8f8",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#009dc2",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-background": "#1a1a1a",
+                    "on-secondary-fixed": "#310048",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "background": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#adc6ff",
+                    "secondary-fixed-dim": "#e9b3ff",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#adc6ff",
+                    "secondary-fixed": "#f6d9ff",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed": "#d8e2ff",
+                    "outline": "#757780",
+                    "inverse-surface": "#313030",
+                    "tertiary-container": "#009dc2",
+                    "on-tertiary-container": "#002e3b",
+                    "on-primary-fixed": "#001a41",
+                    "primary": "#005bc1",
+                    "surface-container-low": "#f2f2f2",
+                    "surface-tint": "#005bc1",
+                    "accent-yellow": "#FACC15"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "unit": "3.2px",
+                    "margin-desktop": "32px",
+                    "gutter": "12px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Geist"],
+                    "display-lg-mobile": ["Geist"],
+                    "body-md": ["Geist"],
+                    "label-sm": ["JetBrains Mono"],
+                    "body-lg": ["Geist"],
+                    "display-lg": ["Geist"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDxeGCW3BKn-f6QMRx7Z-J7dK271KPC4jtvjspcAhJSsmRFNjVHV01QIaI9nFSE93yq1H0cXvkgPobSDc06oI0pfrccGWhBaMhfspx9tNdfxiw1uXyzH0FyHvh7N9SMWr9T9f0_e9h93xm3RA1alTpsCHRFA4dtvp3BeMD_MN0JQdRGVSO4uSljTVfHvG9WZCTnCWCUDofi7SRIktiBBDQCx6IS0Y1U3PGcwWJM4eyfbC4MoxhMv2HeOS1CMRfcy8ZAJLz1b3xEWb60') no-repeat center center;
+            background-size: cover;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+        }
+        .aspect-16-9-container {
+            width: 100vw;
+            height: 56.25vw;
+            max-height: 100vh;
+            max-width: 177.78vh;
+            display: flex;
+            position: relative;
+            background: transparent;
+            overflow: hidden;
+        }
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+            position: relative;
+        }
+        .sidebar-gradient {
+            background: linear-gradient(180deg, rgba(161, 98, 7, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        html { font-size: 13px; }
+        .text-sm { font-size: 0.75rem; }
+        .text-xs { font-size: 0.65rem; }
+        .text-base { font-size: 0.9rem; }
+        .text-lg { font-size: 1.1rem; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+
+        /* Input styling overrides */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #1A1A1A;
+            padding: 0 4px;
+            text-align: center;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .glass-input:focus {
+            border-color: rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+        /* Hide number input arrows */
+        .glass-input::-webkit-inner-spin-button,
+        .glass-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<div class="aspect-16-9-container shadow-2xl rounded-xl border border-black/5">
+<!-- SideNavBar -->
+<aside class="w-52 flex flex-col p-4 sidebar-gradient h-full">
+<div class="mb-6 text-center">
+<h1 class="font-headline-md text-2xl font-bold text-amber-950 tracking-tight leading-tight">Liberation Arc</h1>
+</div>
+<nav class="flex-1 space-y-0.5 overflow-y-auto pr-1">
+<a class="flex items-center gap-2 p-2 text-emerald-900 font-medium bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg transition-all" href="#"><span class="material-symbols-outlined text-lg text-emerald-600">fitness_center</span><span class="text-sm">Physical</span></a>
+<a class="flex items-center gap-2 p-2 text-blue-900 font-medium bg-blue-500/10 hover:bg-blue-500/20 rounded-lg transition-all" href="#"><span class="material-symbols-outlined text-lg text-blue-600">school</span><span class="text-sm">Academic</span></a>
+<a class="flex items-center gap-2 p-2 text-amber-950 font-bold bg-white/70 rounded-lg transition-all shadow-sm" href="#">
+<span class="material-symbols-outlined text-lg">palette</span>
+<span class="text-sm">Hobbies</span>
+</a>
+<a class="flex items-center gap-2 p-2 text-purple-900 font-medium bg-purple-500/10 hover:bg-purple-500/20 rounded-lg transition-all" href="#"><span class="material-symbols-outlined text-lg text-purple-600">payments</span><span class="text-sm">Financial</span></a>
+</nav>
+<div class="pt-3 border-t border-black/5 space-y-2">
+<div class="w-full aspect-video rounded-lg overflow-hidden border border-black/10">
+<img alt="Autumn forest" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxeGCW3BKn-f6QMRx7Z-J7dK271KPC4jtvjspcAhJSsmRFNjVHV01QIaI9nFSE93yq1H0cXvkgPobSDc06oI0pfrccGWhBaMhfspx9tNdfxiw1uXyzH0FyHvh7N9SMWr9T9f0_e9h93xm3RA1alTpsCHRFA4dtvp3BeMD_MN0JQdRGVSO4uSljTVfHvG9WZCTnCWCUDofi7SRIktiBBDQCx6IS0Y1U3PGcwWJM4eyfbC4MoxhMv2HeOS1CMRfcy8ZAJLz1b3xEWb60"/>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 p-6 overflow-hidden backdrop-blur-sm bg-black/5">
+<div class="h-full flex flex-col gap-4">
+<div class="flex-1 grid grid-cols-12 gap-6 overflow-hidden">
+<!-- Left Column: Consumption -->
+<section class="col-span-8 flex flex-col gap-4 overflow-hidden">
+<div class="grid grid-cols-3 gap-4 flex-1 overflow-hidden">
+<!-- Books -->
+<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
+<div class="flex items-center justify-between mb-3">
+<span class="text-[10px] font-bold uppercase tracking-widest text-amber-600">Books</span>
+<span class="material-symbols-outlined text-sm text-accent-yellow">book</span>
+</div>
+<div class="space-y-3 flex-1 overflow-y-auto pr-1">
+<div>
+<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Currently Reading</p>
+<div class="p-2 bg-amber-50/50 rounded-lg border border-amber-100">
+<p class="text-xs font-bold">Project Hail Mary</p>
+<p class="text-[9px] text-on-surface-variant italic">Andy Weir</p>
+</div>
+</div>
+<div>
+<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Queue</p>
+<div class="space-y-1">
+<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium">The Dark Forest</div>
+<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium">Dune: Messiah</div>
+</div>
+</div>
+<div>
+<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Completed</p>
+<div class="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">check_circle</span>
+                                        Exhalation
+                                    </div>
+</div>
+</div>
+</div>
+<!-- Movies -->
+<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
+<div class="flex items-center justify-between mb-3">
+<span class="text-[10px] font-bold uppercase tracking-widest text-amber-600">Movies</span>
+<span class="material-symbols-outlined text-sm text-accent-yellow">movie</span>
+</div>
+<div class="space-y-3 flex-1 overflow-y-auto pr-1">
+<div>
+<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Watchlist</p>
+<div class="space-y-1.5">
+<div class="p-2 bg-amber-50/50 rounded-lg border border-amber-100">
+<p class="text-xs font-bold">Oppenheimer</p>
+<div class="w-full h-1 bg-black/10 rounded-full mt-1.5">
+<div class="w-1/3 h-full bg-accent-yellow rounded-full"></div>
+</div>
+</div>
+<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium">The Creator</div>
+</div>
+</div>
+<div>
+<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Recently Watched</p>
+<div class="p-1.5 bg-emerald-50 text-emerald-900 rounded text-[10px] font-bold border border-emerald-100">Across the Spider-Verse</div>
+</div>
+</div>
+</div>
+<!-- Shows -->
+<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
+<div class="flex items-center justify-between mb-3">
+<span class="text-[10px] font-bold uppercase tracking-widest text-amber-600">Shows</span>
+<span class="material-symbols-outlined text-sm text-accent-yellow">tv</span>
+</div>
+<div class="space-y-3 flex-1 overflow-y-auto pr-1">
+<div>
+<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Currently Watching</p>
+<div class="p-2 bg-amber-50/50 rounded-lg border border-amber-100">
+<p class="text-xs font-bold">Shogun</p>
+<p class="text-[9px] text-amber-700 font-bold mt-0.5">S1 E04 • 32m left</p>
+</div>
+</div>
+<div>
+<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Queue</p>
+<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium">The Bear S3</div>
+</div>
+<div>
+<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Completed</p>
+<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium opacity-50 italic">Succession</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Grid Tools -->
+<div class="grid grid-cols-2 gap-4 h-32">
+<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
+<div class="flex items-center gap-1.5 mb-2">
+<span class="material-symbols-outlined text-accent-yellow text-sm">security</span>
+<h4 class="text-[9px] font-bold uppercase tracking-widest text-on-surface">Target Consumption Limits</h4>
+</div>
+<div class="flex items-center gap-4 flex-1">
+<div class="flex-1">
+<div class="flex justify-between items-center text-[10px] font-bold mb-1">
+<span class="">Social Media</span>
+<div class="flex items-center gap-1 text-red-600">
+<input class="w-8 h-4 glass-input rounded-sm text-[10px] font-bold" type="number" value="45"/>
+<span>m / 30m</span>
+</div>
+</div>
+<div class="w-full h-2 bg-black/10 rounded-full overflow-hidden">
+<div class="w-full h-full bg-red-500"></div>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center text-[10px] font-bold mb-1 text-emerald-700">
+<span class="">Reading</span>
+<div class="flex items-center gap-1">
+<input class="w-8 h-4 glass-input rounded-sm text-[10px] font-bold" type="number" value="20"/>
+<span>m / 60m</span>
+</div>
+</div>
+<div class="w-full h-2 bg-black/10 rounded-full overflow-hidden">
+<div class="w-[33%] h-full bg-emerald-500"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
+<div class="flex items-center gap-1.5 mb-1.5">
+<span class="material-symbols-outlined text-accent-yellow text-sm">smart_toy</span>
+<h4 class="text-[9px] font-bold uppercase tracking-widest text-amber-900">What I'd Enjoy Next</h4>
+</div>
+<div class="flex gap-2 flex-1">
+<div class="flex-1 flex flex-col justify-center">
+<p class="text-xs font-bold leading-tight">"Seveneves" by Neal Stephenson</p>
+<p class="text-[9px] text-on-surface-variant">Matches: Hard Sci-Fi, Engineering</p>
+</div>
+<button class="self-center bg-accent-yellow text-amber-950 p-2 rounded-lg material-symbols-outlined text-sm">recommend</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Learning -->
+<section class="col-span-4 flex flex-col gap-4 overflow-hidden">
+<div class="liquid-glass rounded-2xl p-5 flex flex-col flex-1 border border-accent-yellow/20">
+<div class="flex items-center justify-between mb-4">
+<h4 class="font-bold text-sm text-amber-900 uppercase tracking-widest">Certifications &amp; Courses</h4>
+<span class="px-2 py-0.5 bg-accent-yellow/20 text-amber-700 rounded text-[9px] font-bold uppercase">Active</span>
+</div>
+<div class="space-y-5 flex-1 overflow-y-auto">
+<div class="space-y-2">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-xs font-bold leading-none">AWS Solutions Architect</p>
+<p class="text-[9px] text-on-surface-variant font-medium">Professional Level Exam Prep</p>
+</div>
+<span class="text-[10px] font-bold text-amber-700">82%</span>
+</div>
+<div class="w-full h-1.5 bg-black/5 rounded-full overflow-hidden">
+<div class="w-[82%] h-full bg-accent-yellow shadow-[0_0_8px_rgba(250,204,21,0.4)]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-xs font-bold leading-none">GCP Professional</p>
+<p class="text-[9px] text-on-surface-variant font-medium">Cloud Architecture Fundamentals</p>
+</div>
+<span class="text-[10px] font-bold text-amber-700">34%</span>
+</div>
+<div class="w-full h-1.5 bg-black/5 rounded-full overflow-hidden">
+<div class="w-[34%] h-full bg-accent-yellow/60"></div>
+</div>
+</div>
+<div class="pt-4 mt-4 border-t border-black/5">
+<h5 class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant mb-3">Learning Targets</h5>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-medium w-12">Python</span>
+<div class="flex-1 h-1.5 bg-black/5 rounded-full overflow-hidden">
+<div class="w-[60%] h-full bg-accent-yellow"></div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-medium w-12">French</span>
+<div class="flex-1 h-1.5 bg-black/5 rounded-full overflow-hidden">
+<div class="w-[25%] h-full bg-accent-yellow"></div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-[10px] font-medium w-12">Guitar</span>
+<div class="flex-1 h-1.5 bg-black/5 rounded-full overflow-hidden">
+<div class="w-[45%] h-full bg-accent-yellow"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>
