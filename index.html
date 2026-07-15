@@ -20,7 +20,7 @@
     --glass-border: rgba(255,255,255,0.14);
     --glass-sheen: rgba(255,255,255,0.10);
 
-    --sidebar-bg: rgba(14,15,20,0.55);
+    --sidebar-bg: rgba(21,29,40,0.55);
 
     --physical: #4ade80;
     --academic: #60a5fa;
@@ -247,10 +247,12 @@
   .social-card{
     padding:14px;
     border-radius:var(--r-md);
+    background:rgba(167,139,250,0.06);
+    border:1px solid rgba(167,139,250,0.55);
     transition:border-color .3s ease;
   }
   .social-card .heading{
-    font-size:0.62rem;
+    font-size:0.651rem;
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
@@ -290,7 +292,7 @@
     flex-direction:column;
     gap:10px;
     background:rgba(96,165,250,0.06);
-    border:1px solid rgba(96,165,250,0.16);
+    border:1px solid rgba(96,165,250,0.55);
   }
   .streak-mini-flame{
     font-size:0.78rem;
@@ -318,7 +320,7 @@
   }
   .streak-mini-fill.met{ background:#4ade80; }
   .streak-mini-label{
-    font-size:0.58rem;
+    font-size:0.609rem;
     color:var(--ink-faint);
     text-align:center;
   }
@@ -331,10 +333,10 @@
     flex-direction:column;
     gap:8px;
     background:rgba(251,146,60,0.06);
-    border:1px solid rgba(251,146,60,0.16);
+    border:1px solid rgba(251,146,60,0.55);
   }
   .currently-mini-title{
-    font-size:0.62rem;
+    font-size:0.651rem;
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
@@ -370,7 +372,7 @@
     flex-direction:column;
     gap:8px;
     background:rgba(74,222,128,0.06);
-    border:1px solid rgba(74,222,128,0.16);
+    border:1px solid rgba(74,222,128,0.55);
     transition:border-color .3s ease;
   }
   .habit-mini-header{
@@ -863,13 +865,14 @@
   }
   .card-eyebrow .material-symbols-outlined{ font-size:14px; }
 
-  .research-card{ flex:1; }
+  .research-card{ flex:1; border:1px solid rgba(96,165,250,0.3); }
   .research-card .card-title{
-    font-size:1.05rem;
-    font-weight:600;
-    color:var(--ink);
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    color:var(--academic);
     margin:0 0 12px;
-    letter-spacing:-0.01em;
+    letter-spacing:0.14em;
   }
   .subtask-list{
     list-style:none;
@@ -1071,7 +1074,7 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:4px;
+    margin-bottom:12px;
   }
   .lab-due-soonest{ font-size:0.6rem; color:var(--ink-faint); }
   .lab-task-row{ display:flex; align-items:center; gap:8px; }
@@ -1196,7 +1199,7 @@
   .status-select option{ background:#16171c; }
 
   /* Deadlines table card */
-  .deadlines-card{ display:flex; flex-direction:column; }
+  .deadlines-card{ display:flex; flex-direction:column; border:1px solid rgba(96,165,250,0.3); }
   .deadlines-header{
     display:flex;
     align-items:center;
@@ -1206,10 +1209,12 @@
   }
   .deadlines-header h3{
     margin:0;
-    font-size:1.6rem;
+    font-size:0.8rem;
     line-height:1;
     font-weight:700;
-    color:var(--ink);
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    color:var(--academic);
   }
 
   table{
@@ -1255,14 +1260,14 @@
   /* ---------- Bottom section ---------- */
   .bottom-section{
     display:grid;
-    grid-template-columns:0.5fr 0.5fr 1fr 1fr;
+    grid-template-columns:1fr 1fr 1fr 1fr;
     gap:22px;
     flex:1 1 40%;
     min-height:220px;
   }
   .bottom-card{ padding:20px; }
-  .bottom-card .card-eyebrow{ font-size:0.68rem; margin-bottom:14px; }
-  .bottom-card .card-eyebrow .material-symbols-outlined{ font-size:17px; }
+  .bottom-card .card-eyebrow{ font-size:0.8rem; margin-bottom:14px; }
+  .bottom-card .card-eyebrow .material-symbols-outlined{ font-size:19px; }
   .bottom-card-body{
     flex:1;
     display:flex;
@@ -1288,6 +1293,7 @@
   }
 
   /* ---------- Hobbies card (synced from la_books / la_movies / la_shows / la_certifications) ---------- */
+  .hobbies-card{ border:1px solid rgba(251,146,60,0.3); }
   .hobbies-top-row{
     display:flex;
     flex-direction:column;
@@ -1391,16 +1397,16 @@
 
   /* ---------- Tasklist card (index.html) ---------- */
   .tasklist-card{
-    background:rgba(220,38,38,0.08);
     border:1px solid rgba(220,38,38,0.3);
   }
   .tasklist-header{
     margin:0 0 12px;
-    font-size:1.2rem;
-    font-weight:800;
-    text-align:center;
+    font-size:0.8rem;
+    font-weight:700;
+    text-align:left;
+    text-transform:uppercase;
     color:#dc2626;
-    letter-spacing:0.02em;
+    letter-spacing:0.14em;
   }
   .tasklist-items{
     flex:1;
@@ -1418,13 +1424,26 @@
     padding:5px 2px;
   }
   .tasklist-num{
-    font-size:0.66rem;
-    font-weight:700;
-    color:rgba(220,38,38,0.7);
-    width:16px;
+    font-size:0.95rem;
+    font-weight:800;
+    color:rgba(220,38,38,0.85);
+    width:22px;
     flex-shrink:0;
     text-align:right;
   }
+  .tasklist-del{
+    width:16px; height:16px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:var(--ink-faint);
+    font-size:13px !important;
+    opacity:0.6;
+    transition:opacity .15s ease, color .15s ease;
+  }
+  .tasklist-del:hover{ opacity:1; color:#f87171; }
   .tasklist-checkbox{
     appearance:none;
     -webkit-appearance:none;
@@ -1466,6 +1485,8 @@
   .tasklist-text::placeholder{ color:var(--ink-faint); }
 
   /* ---------- Physical Health card (index.html) ---------- */
+  .physical-health-card{ border:1px solid rgba(74,222,128,0.3); }
+  .financial-card{ border:1px solid rgba(248,113,113,0.3); }
   .physical-divider{
     height:1px;
     background:rgba(255,255,255,0.08);
@@ -1881,7 +1902,7 @@
 
     <nav class="nav">
       <div class="nav-row">
-        <a class="nav-link active" data-section="physical" href="screens/physical-subpage.html">
+        <a class="nav-link" data-section="physical" href="screens/physical-subpage.html">
           <span class="material-symbols-outlined">fitness_center</span>
           <span>Physical</span>
         </a>
@@ -1975,7 +1996,7 @@
     <div class="sidebar-spacer"></div>
 
     <div class="sidebar-bottom">
-      <p class="sidebar-version mono">v 1.0</p>
+      <p class="sidebar-version mono">v 1.1</p>
     </div>
   </aside>
 
@@ -1989,13 +2010,9 @@
           <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
           <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
             <div class="lab-header-row">
-              <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
-                <span class="material-symbols-outlined">science</span>
-                Research — Lab
-              </div>
+              <h3 class="card-title" style="margin:0;">Kranker Lab</h3>
               <span class="lab-due-soonest mono" id="kranker-due-soonest">—</span>
             </div>
-            <h3 class="card-title">Kranker Lab</h3>
 
             <ul class="subtask-list" id="kranker-task-list"></ul>
             <button type="button" class="add-task-btn" onclick="addLabTask('kranker')">
@@ -2027,13 +2044,9 @@
           <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
           <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
             <div class="lab-header-row">
-              <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
-                <span class="material-symbols-outlined">science</span>
-                Research — Lab
-              </div>
+              <h3 class="card-title" style="margin:0;">Ballard Lab</h3>
               <span class="lab-due-soonest mono" id="ballard-due-soonest">—</span>
             </div>
-            <h3 class="card-title">Ballard Lab</h3>
 
             <ul class="subtask-list" id="ballard-task-list"></ul>
             <button type="button" class="add-task-btn" onclick="addLabTask('ballard')">
@@ -2063,7 +2076,7 @@
       </div>
 
       <div class="card glass deadlines-card">
-        <div class="accent-blob" style="background:rgba(255,255,255,0.06); width:72px; height:72px;"></div>
+        <div class="accent-blob" style="background:rgba(96,165,250,0.14); width:72px; height:72px;"></div>
         <div class="deadlines-header">
           <h3>Deadlines</h3>
           <button type="button" class="icon-btn" onclick="openDeadlineModal()" title="Add task">
@@ -2127,14 +2140,13 @@
 
       <div class="card glass bottom-card tasklist-card">
         <div class="accent-blob" style="background:rgba(220,38,38,0.14);"></div>
-        <p class="tasklist-header mono">TASKLIST</p>
+        <p class="tasklist-header">Tasklist</p>
         <div class="tasklist-items" id="tasklist-items"></div>
       </div>
 
       <div class="card glass bottom-card hobbies-card">
         <div class="accent-blob" style="background:rgba(251,146,60,0.14);"></div>
         <div class="card-eyebrow" style="color:var(--hobbies);">
-          <span class="material-symbols-outlined">palette</span>
           Hobbies
         </div>
         <div class="hobbies-top-row">
@@ -2161,7 +2173,6 @@
       <div class="card glass bottom-card physical-health-card">
         <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
         <div class="card-eyebrow" style="color:var(--physical);">
-          <span class="material-symbols-outlined">fitness_center</span>
           Physical Health
         </div>
 
@@ -2196,14 +2207,13 @@
         </div>
       </div>
 
-      <div class="card glass bottom-card">
+      <div class="card glass bottom-card financial-card">
         <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
         <div class="card-eyebrow" style="color:var(--financial);">
-          <span class="material-symbols-outlined">payments</span>
           Financial
         </div>
         <div class="physical-split-row">
-          <p class="hobbies-col-label mono">Net This Month</p>
+          <p class="hobbies-col-label mono">Net Spending/Earning</p>
           <p class="hobbies-col-value" id="financial-net-value">$0.00</p>
         </div>
         <div class="physical-divider"></div>
@@ -3267,17 +3277,13 @@
       return da < db ? -1 : 1;
     }).slice(0, 3);
     var ul = document.getElementById(lab + '-task-list');
-    if(!list.length){
-      ul.innerHTML = '<li style="color:var(--ink-faint); font-size:0.72rem;">No tasks yet</li>';
-    } else {
-      ul.innerHTML = list.map(function(task){
-        return '<li class="lab-task-row">' +
-          '<input type="checkbox" class="task-checkbox" onclick="deleteLabTask(\''+lab+'\',\''+task.id+'\')">' +
-          '<input type="text" class="task-text-input" value="'+ escapeAttr(task.text) +'" placeholder="Task description" oninput="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">' +
-          '<input type="date" class="task-date-input" value="'+ (task.due || '') +'" onchange="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'due\',this.value)">' +
-        '</li>';
-      }).join('');
-    }
+    ul.innerHTML = list.map(function(task){
+      return '<li class="lab-task-row">' +
+        '<input type="checkbox" class="task-checkbox" onclick="deleteLabTask(\''+lab+'\',\''+task.id+'\')">' +
+        '<input type="text" class="task-text-input" value="'+ escapeAttr(task.text) +'" placeholder="Task description" oninput="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">' +
+        '<input type="date" class="task-date-input" value="'+ (task.due || '') +'" onchange="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'due\',this.value)">' +
+      '</li>';
+    }).join('');
     renderLabDueSoonest(lab);
   }
 
@@ -3546,6 +3552,7 @@
         '<input type="text" class="tasklist-text' + (t.completed ? ' completed' : '') + '" value="' + escapeAttr(t.text) + '" placeholder="Type a task…" ' +
           'oninput="updateTasklistText(\'' + t.id + '\', this.value)" ' +
           'onkeydown="handleTasklistKeydown(event, \'' + t.id + '\')">' +
+        (isPlaceholder ? '' : '<span class="material-symbols-outlined tasklist-del" onclick="deleteTasklistItem(\'' + t.id + '\')" title="Delete task">close</span>') +
       '</div>';
   }
 
@@ -3597,6 +3604,16 @@
       if(firstCompletedIdx === -1) tasks.push(task);
       else tasks.splice(firstCompletedIdx, 0, task);
     }
+    saveTasklistData(tasks);
+    renderTasklist();
+  }
+
+  function deleteTasklistItem(id){
+    if(id === TASKLIST_PLACEHOLDER_ID) return;
+    var tasks = getTasklist();
+    var idx = tasks.findIndex(function(x){ return x.id === id; });
+    if(idx === -1) return;
+    tasks.splice(idx, 1);
     saveTasklistData(tasks);
     renderTasklist();
   }

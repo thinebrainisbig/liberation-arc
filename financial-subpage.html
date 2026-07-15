@@ -20,7 +20,7 @@
     --glass-border: rgba(255,255,255,0.14);
     --glass-sheen: rgba(255,255,255,0.10);
 
-    --sidebar-bg: rgba(14,15,20,0.55);
+    --sidebar-bg: rgba(21,29,40,0.55);
 
     --physical: #4ade80;
     --academic: #60a5fa;
@@ -246,10 +246,12 @@
   .social-card{
     padding:14px;
     border-radius:var(--r-md);
+    background:rgba(167,139,250,0.06);
+    border:1px solid rgba(167,139,250,0.55);
     transition:border-color .3s ease;
   }
   .social-card .heading{
-    font-size:0.62rem;
+    font-size:0.651rem;
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
@@ -289,7 +291,7 @@
     flex-direction:column;
     gap:10px;
     background:rgba(96,165,250,0.06);
-    border:1px solid rgba(96,165,250,0.16);
+    border:1px solid rgba(96,165,250,0.55);
   }
   .streak-mini-flame{
     font-size:0.78rem;
@@ -317,7 +319,7 @@
   }
   .streak-mini-fill.met{ background:#4ade80; }
   .streak-mini-label{
-    font-size:0.58rem;
+    font-size:0.609rem;
     color:var(--ink-faint);
     text-align:center;
   }
@@ -330,10 +332,10 @@
     flex-direction:column;
     gap:8px;
     background:rgba(251,146,60,0.06);
-    border:1px solid rgba(251,146,60,0.16);
+    border:1px solid rgba(251,146,60,0.55);
   }
   .currently-mini-title{
-    font-size:0.62rem;
+    font-size:0.651rem;
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
@@ -369,7 +371,7 @@
     flex-direction:column;
     gap:8px;
     background:rgba(74,222,128,0.06);
-    border:1px solid rgba(74,222,128,0.16);
+    border:1px solid rgba(74,222,128,0.55);
     transition:border-color .3s ease;
   }
   .habit-mini-header{
@@ -846,10 +848,10 @@
   .panel-header .material-symbols-outlined{ font-size:18px; color:var(--financial); }
   .panel-header h3{
     margin:0;
-    font-size:0.7rem;
+    font-size:0.8rem;
     font-weight:700;
     text-transform:uppercase;
-    letter-spacing:0.08em;
+    letter-spacing:0.14em;
     color:var(--financial);
   }
   .panel-body{ flex:1; min-height:0; padding:16px 18px; overflow-y:auto; }
@@ -891,10 +893,10 @@
   .fin-investing-card{ flex:0 0 50%; min-height:0; }
 
   .fin-subhead{
-    font-size:0.72rem;
+    font-size:0.8rem;
     font-weight:700;
     text-transform:uppercase;
-    letter-spacing:0.1em;
+    letter-spacing:0.14em;
     color:var(--ink-faint);
     margin:0;
   }
@@ -938,7 +940,7 @@
     background:rgba(255,255,255,0.02);
     flex-shrink:0;
   }
-  .fin-spending-total-label{ font-size:0.74rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); }
+  .fin-spending-total-label{ font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-faint); }
   .fin-spending-total-value{ font-size:1.0rem; font-weight:800; }
   .fin-spending-total-value.positive{ color:#4ade80; }
   .fin-spending-total-value.negative{ color:#f87171; }
@@ -1086,7 +1088,7 @@
 
   .fin-planned-expenses-subsection{ flex:1; min-height:0; display:flex; flex-direction:column; }
   .fin-planned-expenses-subsection + .fin-planned-expenses-subsection{ margin-top:8px; }
-  .fin-planned-expenses-subheader{ font-size:0.58rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin:0 0 3px; flex-shrink:0; }
+  .fin-planned-expenses-subheader{ font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-faint); margin:0 0 3px; flex-shrink:0; }
   .fin-planned-expenses-list{ flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:4px; }
   .fin-planned-expenses-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:0.82rem; padding:4px 0; }
   .fin-planned-expenses-row-clickable{ cursor:pointer; border-radius:var(--r-sm); padding:4px 6px; margin:0 -6px; transition:background .15s ease; }
@@ -1757,7 +1759,7 @@
     <div class="sidebar-spacer"></div>
 
     <div class="sidebar-bottom">
-      <p class="sidebar-version mono">v 1.0</p>
+      <p class="sidebar-version mono">v 1.1</p>
     </div>
   </aside>
 
@@ -1799,7 +1801,7 @@
           </div>
         </div>
         <div class="fin-spending-total-row">
-          <span class="fin-spending-total-label mono">Net this month</span>
+          <span class="fin-spending-total-label">Net this month</span>
           <span class="fin-spending-total-value mono" id="spending-total-value">$0.00</span>
         </div>
       </div>

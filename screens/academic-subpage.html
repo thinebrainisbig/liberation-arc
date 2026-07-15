@@ -20,7 +20,7 @@
     --glass-border: rgba(255,255,255,0.14);
     --glass-sheen: rgba(255,255,255,0.10);
 
-    --sidebar-bg: rgba(14,15,20,0.55);
+    --sidebar-bg: rgba(21,29,40,0.55);
 
     --physical: #4ade80;
     --academic: #60a5fa;
@@ -246,10 +246,12 @@
   .social-card{
     padding:14px;
     border-radius:var(--r-md);
+    background:rgba(167,139,250,0.06);
+    border:1px solid rgba(167,139,250,0.55);
     transition:border-color .3s ease;
   }
   .social-card .heading{
-    font-size:0.62rem;
+    font-size:0.651rem;
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
@@ -289,7 +291,7 @@
     flex-direction:column;
     gap:10px;
     background:rgba(96,165,250,0.06);
-    border:1px solid rgba(96,165,250,0.16);
+    border:1px solid rgba(96,165,250,0.55);
   }
   .streak-mini-flame{
     font-size:0.78rem;
@@ -317,7 +319,7 @@
   }
   .streak-mini-fill.met{ background:#4ade80; }
   .streak-mini-label{
-    font-size:0.58rem;
+    font-size:0.609rem;
     color:var(--ink-faint);
     text-align:center;
   }
@@ -330,10 +332,10 @@
     flex-direction:column;
     gap:8px;
     background:rgba(251,146,60,0.06);
-    border:1px solid rgba(251,146,60,0.16);
+    border:1px solid rgba(251,146,60,0.55);
   }
   .currently-mini-title{
-    font-size:0.62rem;
+    font-size:0.651rem;
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
@@ -369,7 +371,7 @@
     flex-direction:column;
     gap:8px;
     background:rgba(74,222,128,0.06);
-    border:1px solid rgba(74,222,128,0.16);
+    border:1px solid rgba(74,222,128,0.55);
     transition:border-color .3s ease;
   }
   .habit-mini-header{
@@ -862,7 +864,7 @@
     display:flex;
     align-items:center;
     gap:6px;
-    font-size:0.62rem;
+    font-size:0.8rem;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:0.14em;
@@ -870,13 +872,14 @@
   }
   .card-eyebrow .material-symbols-outlined{ font-size:14px; }
 
-  .research-card{ flex:1; }
+  .research-card{ flex:1; border:1px solid rgba(96,165,250,0.3); }
   .research-card .card-title{
-    font-size:1.05rem;
-    font-weight:600;
-    color:var(--ink);
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    color:var(--academic);
     margin:0 0 12px;
-    letter-spacing:-0.01em;
+    letter-spacing:0.14em;
   }
   .subtask-list{
     list-style:none;
@@ -1078,7 +1081,7 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:4px;
+    margin-bottom:12px;
   }
   .lab-due-soonest{ font-size:0.6rem; color:var(--ink-faint); }
   .lab-task-row{ display:flex; align-items:center; gap:8px; }
@@ -1209,7 +1212,7 @@
   .status-select option{ background:#16171c; }
 
   /* Deadlines table card */
-  .deadlines-card{ display:flex; flex-direction:column; flex:1; min-height:0; }
+  .deadlines-card{ display:flex; flex-direction:column; flex:1; min-height:0; border:1px solid rgba(96,165,250,0.3); }
   .deadlines-header{
     display:flex;
     align-items:center;
@@ -1219,10 +1222,12 @@
   }
   .deadlines-header h3{
     margin:0;
-    font-size:1.6rem;
+    font-size:0.8rem;
     line-height:1;
     font-weight:700;
-    color:var(--ink);
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    color:var(--academic);
   }
 
   table{
@@ -1948,7 +1953,7 @@
     <div class="sidebar-spacer"></div>
 
     <div class="sidebar-bottom">
-      <p class="sidebar-version mono">v 1.0</p>
+      <p class="sidebar-version mono">v 1.1</p>
     </div>
   </aside>
 
@@ -1961,13 +1966,9 @@
           <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
           <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
             <div class="lab-header-row">
-              <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
-                <span class="material-symbols-outlined">science</span>
-                Research — Lab
-              </div>
+              <h3 class="card-title" style="margin:0;">Kranker Lab</h3>
               <span class="lab-due-soonest mono" id="kranker-due-soonest">—</span>
             </div>
-            <h3 class="card-title">Kranker Lab</h3>
 
             <ul class="subtask-list" id="kranker-task-list"></ul>
             <button type="button" class="add-task-btn" onclick="addLabTask('kranker')">
@@ -1999,13 +2000,9 @@
           <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
           <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
             <div class="lab-header-row">
-              <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
-                <span class="material-symbols-outlined">science</span>
-                Research — Lab
-              </div>
+              <h3 class="card-title" style="margin:0;">Ballard Lab</h3>
               <span class="lab-due-soonest mono" id="ballard-due-soonest">—</span>
             </div>
-            <h3 class="card-title">Ballard Lab</h3>
 
             <ul class="subtask-list" id="ballard-task-list"></ul>
             <button type="button" class="add-task-btn" onclick="addLabTask('ballard')">
