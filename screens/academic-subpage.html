@@ -255,7 +255,7 @@
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
-    color:var(--ink-faint);
+    color:var(--ink);
     margin:0;
   }
   .social-row{
@@ -339,7 +339,7 @@
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
-    color:var(--ink-faint);
+    color:var(--ink);
     margin:0 0 2px;
   }
   .currently-mini-row{
@@ -923,17 +923,17 @@
     -webkit-appearance:none;
     width:16px; height:16px;
     border-radius:4px;
-    border:1.5px solid rgba(100,160,255,0.5);
+    border:1.5px solid rgba(96,165,250,0.5);
     background:transparent;
     cursor:pointer;
     flex-shrink:0;
     position:relative;
     transition:background .15s ease, border-color .15s ease;
   }
-  .task-checkbox:hover{ border-color:rgba(100,160,255,0.85); }
+  .task-checkbox:hover{ border-color:rgba(96,165,250,0.85); }
   .task-checkbox:checked{
-    background:#4f8bff;
-    border-color:#4f8bff;
+    background:#60a5fa;
+    border-color:#60a5fa;
   }
   .task-checkbox:checked::after{
     content:'';
@@ -992,7 +992,7 @@
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:0.08em;
-    color:var(--ink-faint);
+    color:var(--ink);
   }
   .filter-group select{
     background:rgba(255,255,255,0.05);
@@ -1090,8 +1090,8 @@
     background:transparent;
     border:none;
     border-bottom:1px solid transparent;
-    color:var(--ink-dim);
-    font-size:0.74rem;
+    color:var(--ink);
+    font-size:0.8rem;
     font-family:inherit;
     padding:2px 0;
     outline:none;
@@ -1104,7 +1104,7 @@
     border:1px solid transparent;
     border-radius:6px;
     color:var(--ink-dim);
-    font-size:0.58rem;
+    font-size:0.64rem;
     padding:2px 4px;
     font-family:inherit;
     color-scheme:dark;
@@ -1245,7 +1245,7 @@
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:0.12em;
-    color:var(--ink-faint);
+    color:var(--ink);
   }
   th.checkbox-col{ padding-right:0; width:20px; }
   td{
@@ -1280,10 +1280,10 @@
     flex:0 0 auto;
     min-height:260px;
   }
-  .countdown-card{ padding:20px; }
+  .countdown-card{ padding:20px; border:1px solid rgba(96,165,250,0.3); }
 
   /* ---------- Study Streak & Weekly Goal card ---------- */
-  .streak-card{ padding:20px; }
+  .streak-card{ border:1px solid rgba(96,165,250,0.3); }
   .streak-display{
     display:flex;
     flex-direction:column;
@@ -1339,6 +1339,21 @@
     font-weight:700;
     text-transform:uppercase;
   }
+  .goal-target-static{
+    margin:0;
+    padding:4px 6px;
+    border-radius:6px;
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.68rem;
+    font-weight:700;
+    cursor:pointer;
+    display:none;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .goal-target-static:hover{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.14); }
   .goal-progress-track{
     height:10px;
     border-radius:999px;
@@ -1348,13 +1363,13 @@
   .goal-progress-fill{
     height:100%;
     border-radius:999px;
-    background:var(--secondbrain);
+    background:var(--academic);
     width:0%;
     transition:width .3s ease, background .3s ease;
   }
   .goal-progress-fill.met{ background:#4ade80; }
   .goal-progress-label{
-    font-size:0.6rem;
+    font-size:0.76rem;
     color:var(--ink-faint);
     text-align:center;
   }
@@ -1388,11 +1403,9 @@
     flex-direction:column;
     align-items:center;
     overflow:visible;
+    border:1px solid rgba(96,165,250,0.3);
   }
-  .pomo-settings-btn{
-    position:absolute;
-    top:14px; right:14px;
-  }
+  .pomo-settings-anchor{ position:relative; }
   .pomo-tabs{
     display:flex;
     gap:6px;
@@ -1440,6 +1453,8 @@
     align-items:center;
     gap:14px;
     margin-bottom:14px;
+    position:relative;
+    z-index:5;
   }
   .pomo-start-btn{
     padding:9px 30px;
@@ -1479,11 +1494,26 @@
     align-self:flex-start;
     margin-top:14px;
   }
+  .today-focus-static{
+    display:none;
+    width:100%;
+    margin:0;
+    padding:9px 11px;
+    border-radius:var(--r-sm);
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--ink);
+    font-family:'Geist','Segoe UI',sans-serif;
+    font-size:0.8rem;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .today-focus-static:hover{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.14); }
 
   .pomo-settings-popover{
     position:absolute;
-    top:56px;
-    right:16px;
+    top:40px;
+    right:0;
     width:190px;
     background:#16171c;
     border:1px solid rgba(255,255,255,0.14);
@@ -2033,7 +2063,7 @@
 
       <div class="right-column">
       <div class="card glass deadlines-card">
-        <div class="accent-blob" style="background:rgba(255,255,255,0.06); width:72px; height:72px;"></div>
+        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
         <div class="deadlines-header">
           <h3>Deadlines</h3>
           <button type="button" class="icon-btn" onclick="openDeadlineModal()" title="Add task">
@@ -2091,59 +2121,11 @@
         </div>
       </div>
 
-      <!-- Second bottom row: Important Tasks + Study Streak/Weekly Goal + Pomodoro Timer -->
+      <!-- Second bottom row: Pomodoro Timer + Study Streak/Weekly Goal + Important Tasks -->
       <div class="second-row">
-
-      <div class="card glass countdown-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
-        <div class="panel-header-alt">
-          <div class="card-eyebrow" style="color:var(--secondbrain); margin-bottom:0;">
-            <span class="material-symbols-outlined">timer</span>
-            Important Tasks
-          </div>
-        </div>
-        <div class="countdown-list" id="countdown-list"></div>
-      </div>
-
-      <div class="card glass streak-card">
-        <div class="accent-blob" style="background:rgba(34,211,238,0.14);"></div>
-        <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
-          <div class="card-eyebrow" style="color:var(--secondbrain);">
-            <span class="material-symbols-outlined">local_fire_department</span>
-            Study Streak
-          </div>
-
-          <div class="streak-display">
-            <div class="streak-current mono" id="streak-current">🔥 0 day streak</div>
-            <div class="streak-best mono" id="streak-best">Best: 0 days</div>
-          </div>
-
-          <div class="streak-divider"></div>
-
-          <div class="weekly-goal-section">
-            <div class="weekly-goal-header">
-              <div class="card-eyebrow" style="color:var(--secondbrain); margin-bottom:0;">
-                <span class="material-symbols-outlined">flag</span>
-                Weekly Goal
-              </div>
-              <div class="goal-target-input-wrap">
-                <input type="number" class="goal-target-input" id="weekly-goal-input" min="0.5" max="100" step="0.5" onchange="saveWeeklyGoal(this.value)">
-                <span class="goal-target-unit">hrs</span>
-              </div>
-            </div>
-            <div class="goal-progress-track">
-              <div class="goal-progress-fill" id="goal-progress-fill"></div>
-            </div>
-            <div class="goal-progress-label mono" id="goal-progress-label">0.0 hrs / 10 hrs this week</div>
-          </div>
-        </div>
-      </div>
 
       <div class="card glass pomo-card">
         <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
-        <button type="button" class="pomo-icon-btn pomo-settings-btn" onclick="togglePomoSettings()" title="Settings">
-          <span class="material-symbols-outlined">settings</span>
-        </button>
 
         <div class="pomo-tabs">
           <button type="button" class="pomo-tab active" data-mode="pomodoro" onclick="selectPomoTab('pomodoro')">Pomodoro</button>
@@ -2158,19 +2140,70 @@
             <span class="material-symbols-outlined">replay</span>
           </button>
           <button type="button" class="pomo-start-btn" id="pomo-start-btn" onclick="togglePomoStartPause()">Start</button>
+          <div class="pomo-settings-anchor">
+            <button type="button" class="pomo-icon-btn pomo-settings-btn" onclick="togglePomoSettings()" title="Settings">
+              <span class="material-symbols-outlined">settings</span>
+            </button>
+            <div class="pomo-settings-popover" id="pomo-settings-popover">
+              <div class="pomo-settings-row"><span>Pomodoro (min)</span><input type="number" id="setting-pomodoro" min="1" max="180"></div>
+              <div class="pomo-settings-row"><span>Short Break (min)</span><input type="number" id="setting-short" min="1" max="60"></div>
+              <div class="pomo-settings-row"><span>Long Break (min)</span><input type="number" id="setting-long" min="1" max="120"></div>
+              <button type="button" class="pomo-settings-save" onclick="savePomoSettings()">Save</button>
+            </div>
+          </div>
         </div>
 
         <div class="pomo-week-row mono">This week: <span id="pomo-week-total">0.0h</span></div>
 
-        <label class="field-label pomo-focus-label">Today's Focus</label>
-        <input class="field-text" id="today-focus-input" type="text" placeholder="What are you working on today?" oninput="saveTodayFocus(this.value)">
+        <label class="field-label pomo-focus-label">Current Focus</label>
+        <input class="field-text" id="today-focus-input" type="text" placeholder="What are you working on today?" oninput="saveTodayFocus(this.value)" onblur="renderTodayFocusMode()" onkeydown="if(event.key==='Enter'){ this.blur(); }">
+        <p class="today-focus-static" id="today-focus-static" onclick="editTodayFocus()"></p>
+      </div>
 
-        <div class="pomo-settings-popover" id="pomo-settings-popover">
-          <div class="pomo-settings-row"><span>Pomodoro (min)</span><input type="number" id="setting-pomodoro" min="1" max="180"></div>
-          <div class="pomo-settings-row"><span>Short Break (min)</span><input type="number" id="setting-short" min="1" max="60"></div>
-          <div class="pomo-settings-row"><span>Long Break (min)</span><input type="number" id="setting-long" min="1" max="120"></div>
-          <button type="button" class="pomo-settings-save" onclick="savePomoSettings()">Save</button>
+      <div class="card glass streak-card">
+        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
+        <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
+          <div class="card-eyebrow" style="color:var(--academic);">
+            <span class="material-symbols-outlined">local_fire_department</span>
+            Study Streak
+          </div>
+
+          <div class="streak-display">
+            <div class="streak-current mono" id="streak-current">🔥 0 day streak</div>
+            <div class="streak-best mono" id="streak-best">Best: 0 days</div>
+          </div>
+
+          <div class="streak-divider"></div>
+
+          <div class="weekly-goal-section">
+            <div class="weekly-goal-header">
+              <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
+                <span class="material-symbols-outlined">flag</span>
+                Weekly Goal
+              </div>
+              <div class="goal-target-input-wrap" id="goal-target-input-wrap">
+                <input type="number" class="goal-target-input" id="weekly-goal-input" min="0.5" max="100" step="0.5" onchange="saveWeeklyGoal(this.value)" onblur="renderGoalTargetMode()" onkeydown="if(event.key==='Enter'){ this.blur(); }">
+                <span class="goal-target-unit" id="goal-target-unit">hrs</span>
+                <p class="goal-target-static" id="goal-target-static" onclick="editGoalTarget()"></p>
+              </div>
+            </div>
+            <div class="goal-progress-track">
+              <div class="goal-progress-fill" id="goal-progress-fill"></div>
+            </div>
+            <div class="goal-progress-label mono" id="goal-progress-label">0.0 hrs / 10 hrs this week</div>
+          </div>
         </div>
+      </div>
+
+      <div class="card glass countdown-card">
+        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
+        <div class="panel-header-alt">
+          <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
+            <span class="material-symbols-outlined">timer</span>
+            Important Tasks
+          </div>
+        </div>
+        <div class="countdown-list" id="countdown-list"></div>
       </div>
 
       </div>
@@ -3429,6 +3462,29 @@
   function saveTodayFocus(value){ saveJSON('la_today_focus_academic', value); }
   function loadTodayFocus(){
     document.getElementById('today-focus-input').value = loadJSON('la_today_focus_academic', '');
+    renderTodayFocusMode();
+  }
+  function renderTodayFocusMode(){
+    var value = loadJSON('la_today_focus_academic', '');
+    var input = document.getElementById('today-focus-input');
+    var staticEl = document.getElementById('today-focus-static');
+    if(value){
+      input.style.display = 'none';
+      staticEl.style.display = 'block';
+      staticEl.textContent = value;
+    } else {
+      input.style.display = '';
+      staticEl.style.display = 'none';
+    }
+  }
+  function editTodayFocus(){
+    var input = document.getElementById('today-focus-input');
+    var staticEl = document.getElementById('today-focus-static');
+    staticEl.style.display = 'none';
+    input.style.display = '';
+    input.value = loadJSON('la_today_focus_academic', '');
+    input.focus();
+    input.select();
   }
 
   /* ============================================================
@@ -3693,7 +3749,30 @@
     document.getElementById('goal-progress-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs this week';
     var input = document.getElementById('weekly-goal-input');
     if(document.activeElement !== input) input.value = goal;
+    var staticEl = document.getElementById('goal-target-static');
+    if(staticEl) staticEl.textContent = goal + ' hrs';
+    if(document.activeElement !== input) renderGoalTargetMode();
     renderSidebarStreak();
+  }
+
+  function renderGoalTargetMode(){
+    var input = document.getElementById('weekly-goal-input');
+    var unit = document.getElementById('goal-target-unit');
+    var staticEl = document.getElementById('goal-target-static');
+    input.style.display = 'none';
+    unit.style.display = 'none';
+    staticEl.style.display = 'inline-block';
+  }
+  function editGoalTarget(){
+    var input = document.getElementById('weekly-goal-input');
+    var unit = document.getElementById('goal-target-unit');
+    var staticEl = document.getElementById('goal-target-static');
+    staticEl.style.display = 'none';
+    input.style.display = '';
+    unit.style.display = '';
+    input.value = getWeeklyGoal();
+    input.focus();
+    input.select();
   }
 
   /* ============================================================

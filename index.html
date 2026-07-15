@@ -256,7 +256,7 @@
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
-    color:var(--ink-faint);
+    color:var(--ink);
     margin:0;
   }
   .social-row{
@@ -340,7 +340,7 @@
     font-weight:700;
     letter-spacing:0.14em;
     text-transform:uppercase;
-    color:var(--ink-faint);
+    color:var(--ink);
     margin:0 0 2px;
   }
   .currently-mini-row{
@@ -916,17 +916,17 @@
     -webkit-appearance:none;
     width:16px; height:16px;
     border-radius:4px;
-    border:1.5px solid rgba(100,160,255,0.5);
+    border:1.5px solid rgba(96,165,250,0.5);
     background:transparent;
     cursor:pointer;
     flex-shrink:0;
     position:relative;
     transition:background .15s ease, border-color .15s ease;
   }
-  .task-checkbox:hover{ border-color:rgba(100,160,255,0.85); }
+  .task-checkbox:hover{ border-color:rgba(96,165,250,0.85); }
   .task-checkbox:checked{
-    background:#4f8bff;
-    border-color:#4f8bff;
+    background:#60a5fa;
+    border-color:#60a5fa;
   }
   .task-checkbox:checked::after{
     content:'';
@@ -985,7 +985,7 @@
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:0.08em;
-    color:var(--ink-faint);
+    color:var(--ink);
   }
   .filter-group select{
     background:rgba(255,255,255,0.05);
@@ -1232,7 +1232,7 @@
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:0.12em;
-    color:var(--ink-faint);
+    color:var(--ink);
   }
   th.checkbox-col{ padding-right:0; width:20px; }
   td{
@@ -2076,7 +2076,7 @@
       </div>
 
       <div class="card glass deadlines-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14); width:72px; height:72px;"></div>
+        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
         <div class="deadlines-header">
           <h3>Deadlines</h3>
           <button type="button" class="icon-btn" onclick="openDeadlineModal()" title="Add task">
