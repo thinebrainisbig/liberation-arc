@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liberation Arc — Academic</title>
+<title>Liberation Arc — Financial</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-photo: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCVzPhRLtlYmQD1DG8eKCYmXPeJ4qLxCCyPChAi2i_wlhZriDtnGqmnmCbVX0IisEfWzdG7QRkjgbL9URKKPu78WkGUdIYWS4IduwZUwjk51FIrVJVlUxCJxSUV_py3IOw4YCRN-Zh1DbnosNme7fnYESLf5UD0dl39ywDuhMfm1ETLKoeGUE69uJB_JOVCoJ0JmlLQgqYdEirJ5OYI4P7FzI8hqDR_LeqSpKtYB_iwlamPuTYj0GTNsDYvxJ219sPUwbRYxexcj4Iz');
+    --bg-photo: url('bg-financial.jpg'), linear-gradient(135deg, #1a0a0a, #2d0f0f);
 
     --ink: #f2f2f5;
     --ink-dim: rgba(242,242,245,0.62);
@@ -281,7 +281,7 @@
     box-shadow:0 0 8px currentColor;
   }
 
-  /* Study Streak mini card (sidebar, read-only summary of the Study Streak card below) */
+  /* Study Streak mini card (read-only, sourced from academic-subpage.html) */
   .streak-mini-card{
     padding:14px;
     border-radius:var(--r-md);
@@ -322,7 +322,7 @@
     text-align:center;
   }
 
-  /* Currently mini card (read-only, sourced from hobbies-subpage.html) */
+  /* Currently mini card (read-only summary of this page's Books/Movies/Shows cards) */
   .currently-mini-card{
     padding:14px;
     border-radius:var(--r-md);
@@ -827,28 +827,6 @@
     overflow-y:auto;
   }
 
-  .top-section{
-    display:grid;
-    grid-template-columns:minmax(240px, 320px) 1fr;
-    gap:22px;
-    flex:1 1 auto;
-    min-height:620px;
-  }
-
-  .right-column{
-    display:flex;
-    flex-direction:column;
-    gap:22px;
-    min-height:0;
-  }
-
-  .research-stack{
-    min-height:0;
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-  }
-
   .card{
     border-radius:var(--r-lg);
     display:flex;
@@ -856,47 +834,25 @@
     overflow:hidden;
   }
 
-  .card-pad{ padding:20px; }
-
-  .card-eyebrow{
+  .panel-header{
     display:flex;
     align-items:center;
-    gap:6px;
-    font-size:0.62rem;
+    justify-content:space-between;
+    gap:8px;
+    padding:14px 18px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .panel-header .head-left{ display:flex; align-items:center; gap:8px; }
+  .panel-header .material-symbols-outlined{ font-size:18px; color:var(--financial); }
+  .panel-header h3{
+    margin:0;
+    font-size:0.7rem;
     font-weight:700;
     text-transform:uppercase;
-    letter-spacing:0.14em;
-    margin-bottom:8px;
+    letter-spacing:0.08em;
+    color:var(--financial);
   }
-  .card-eyebrow .material-symbols-outlined{ font-size:14px; }
-
-  .research-card{ flex:1; }
-  .research-card .card-title{
-    font-size:1.05rem;
-    font-weight:600;
-    color:var(--ink);
-    margin:0 0 12px;
-    letter-spacing:-0.01em;
-  }
-  .subtask-list{
-    list-style:none;
-    margin:0;
-    padding:0;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    max-height:130px;
-    overflow-y:auto;
-    padding-right:4px;
-  }
-  .subtask-list li{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:0.74rem;
-    color:var(--ink-dim);
-  }
-  .due-placeholder{ color:var(--ink-faint); }
+  .panel-body{ flex:1; min-height:0; padding:16px 18px; overflow-y:auto; }
 
   /* ---------- Icon button (add / etc.) ---------- */
   .icon-btn{
@@ -914,145 +870,251 @@
   .icon-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
   .icon-btn .material-symbols-outlined{ font-size:16px; }
 
-  /* ---------- Task checkbox (check = delete, everywhere) ---------- */
-  .task-checkbox{
-    appearance:none;
-    -webkit-appearance:none;
-    width:16px; height:16px;
-    border-radius:4px;
-    border:1.5px solid rgba(100,160,255,0.5);
-    background:transparent;
-    cursor:pointer;
-    flex-shrink:0;
-    position:relative;
-    transition:background .15s ease, border-color .15s ease;
+  /* ---------- Financial page: 3-column grid ---------- */
+  .financial-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.3fr 1.1fr;
+    gap:22px;
+    flex:1;
+    min-height:0;
   }
-  .task-checkbox:hover{ border-color:rgba(100,160,255,0.85); }
-  .task-checkbox:checked{
-    background:#4f8bff;
-    border-color:#4f8bff;
-  }
-  .task-checkbox:checked::after{
-    content:'';
-    position:absolute;
-    left:6px; top:3px;
-    width:3px; height:6px;
-    border:solid #fff;
-    border-width:0 2px 2px 0;
-    transform:rotate(45deg);
-  }
-
-  /* ---------- Deadlines: dynamic status / badges ---------- */
-  .status-overdue{ color:#f87171; font-weight:700; font-size:0.68rem; }
-  .status-today{ color:#fb923c; font-weight:700; font-size:0.68rem; }
-  .status-normal{ color:var(--ink-dim); font-weight:600; font-size:0.68rem; }
-  .area-chip{
-    display:inline-block;
-    padding:2px 7px;
-    border-radius:999px;
-    font-size:0.58rem;
-    font-weight:700;
-    margin:1px;
-  }
-  .importance-badge{
-    padding:3px 8px;
-    border-radius:6px;
-    font-size:0.6rem;
-    font-weight:700;
-    text-transform:uppercase;
-  }
-  .importance-badge.imp-low{ background:rgba(255,255,255,0.08); color:var(--ink-dim); }
-  .importance-badge.imp-moderate{ background:rgba(250,204,21,0.16); color:#fde047; }
-  .importance-badge.imp-critical{ background:rgba(248,113,113,0.16); color:#fca5a5; }
-  .type-badge{
-    padding:3px 8px;
-    border-radius:6px;
-    font-size:0.6rem;
-    font-weight:700;
-    background:rgba(96,165,250,0.14);
-    color:#93c5fd;
-    font-family:'JetBrains Mono',monospace;
-  }
-
-  /* ---------- Filter bar ---------- */
-  .filter-bar{
+  .fin-spending-card{ min-height:0; }
+  .fin-middle-col, .fin-right-col{
     display:flex;
-    gap:14px;
-    padding:12px 24px;
-    border-bottom:1px solid rgba(255,255,255,0.06);
-    background:rgba(255,255,255,0.02);
-    flex-wrap:wrap;
+    flex-direction:column;
+    gap:22px;
+    min-height:0;
   }
-  .filter-group{ display:flex; align-items:center; gap:6px; }
-  .filter-group label{
-    font-size:0.58rem;
+  .fin-budget-card{ flex:0 0 55%; min-height:0; }
+  .fin-recurring-card{ flex:0 0 45%; min-height:0; }
+  .fin-projected-card{ flex:0 0 50%; min-height:0; }
+  .fin-investing-card{ flex:0 0 50%; min-height:0; }
+
+  .fin-subhead{
+    font-size:0.72rem;
     font-weight:700;
     text-transform:uppercase;
-    letter-spacing:0.08em;
+    letter-spacing:0.1em;
     color:var(--ink-faint);
+    margin:0;
   }
-  .filter-group select{
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.14);
-    color:var(--ink);
-    font-family:inherit;
-    font-size:0.66rem;
-    font-weight:600;
-    padding:4px 8px;
-    border-radius:6px;
-    outline:none;
-  }
-  .filter-group select option{ background:#16171c; }
+  .fin-empty{ font-size:0.78rem; color:var(--ink-faint); font-style:italic; text-align:center; padding:14px 0; }
+  .fin-divider{ height:1px; background:rgba(255,255,255,0.08); margin:14px 0; flex-shrink:0; }
 
-  /* ---------- Deadline / Countdown modal extras ---------- */
-  .chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
-  .chip{
-    display:inline-flex;
+  /* Spending Log */
+  .fin-spending-list{ display:flex; flex-direction:column; gap:2px; }
+  .fin-spending-row{
+    display:flex;
     align-items:center;
-    gap:4px;
-    padding:4px 9px;
-    border-radius:999px;
-    font-size:0.64rem;
-    font-weight:700;
-  }
-  .chip .remove-x{ cursor:pointer; opacity:0.75; font-size:12px; }
-  .chip .remove-x:hover{ opacity:1; }
-  .chip.suggestion{
-    background:rgba(255,255,255,0.06);
-    color:var(--ink-dim);
-    border:1px solid rgba(255,255,255,0.14);
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 4px;
+    border-radius:var(--r-sm);
     cursor:pointer;
+    transition:background .15s ease;
   }
-  .chip.suggestion:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
-  .text-link-btn{
-    background:none;
-    border:none;
-    color:var(--academic);
-    font-size:0.6rem;
+  .fin-spending-row:hover{ background:rgba(255,255,255,0.05); }
+  .fin-spending-row-left{ display:flex; align-items:center; gap:10px; min-width:0; }
+  .fin-spending-icon{ font-size:17px; color:var(--financial); opacity:0.8; flex-shrink:0; }
+  .fin-spending-row-text{ min-width:0; }
+  .fin-spending-note{
+    font-size:0.84rem;
+    font-weight:600;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .fin-spending-date{ font-size:0.7rem; color:var(--ink-faint); margin-top:1px; }
+  .fin-spending-amount{ font-size:0.86rem; font-weight:700; flex-shrink:0; }
+  .fin-spending-amount.expense{ color:#f87171; }
+  .fin-spending-amount.income{ color:#4ade80; }
+  .fin-spending-total-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.02);
+    flex-shrink:0;
+  }
+  .fin-spending-total-label{ font-size:0.74rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); }
+  .fin-spending-total-value{ font-size:1.0rem; font-weight:800; }
+  .fin-spending-total-value.positive{ color:#4ade80; }
+  .fin-spending-total-value.negative{ color:#f87171; }
+
+  /* Monthly Budget */
+  .fin-budget-body{ display:flex; flex-direction:column; }
+  .fin-paycheck-row{ display:flex; gap:14px; }
+  .fin-monthly-income-row{ font-size:0.8rem; color:var(--ink-dim); margin-top:10px; }
+  .fin-recurring-header-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .fin-recurring-list-mini{ display:flex; flex-direction:column; gap:5px; flex:1; min-height:60px; overflow-y:auto; }
+  .fin-recurring-mini-row{ display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; padding:3px 0; }
+  .fin-recurring-mini-name{ color:var(--ink-dim); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fin-recurring-mini-amount{ color:#f87171; font-weight:700; flex-shrink:0; margin-left:8px; }
+  .fin-recurring-total-row{ font-size:0.76rem; color:var(--ink-faint); margin-top:8px; text-align:right; }
+  .fin-breakdown-row{ display:grid; grid-template-columns:20fr 28fr 32fr 20fr; align-items:flex-start; gap:10px; margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
+  .fin-breakdown-col{ min-width:0; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .fin-breakdown-formula{ font-size:0.78rem; color:var(--ink-faint); }
+  .fin-free-money{ font-size:1.4rem; font-weight:800; }
+  /* Bottom row of the Monthly Budget card is narrower per-column than
+     other uses of these classes (e.g. the Projected card's own net
+     section), so shrink text there to avoid overflow/wrap. Projected
+     Net's column is widest (32%) specifically so it never needs to wrap. */
+  .fin-breakdown-row .fin-breakdown-formula{ font-size:0.66rem; }
+  .fin-breakdown-row .fin-free-money{ font-size:1.15rem; }
+  #fin-budget-projected-formula, #fin-budget-projected-value{ white-space:nowrap; }
+  .fin-free-money.positive{ color:#4ade80; }
+  .fin-free-money.negative{ color:#f87171; }
+  .fin-free-money.amber{ color:#fbbf24; }
+  .fin-shortfall-label{ font-size:0.62rem; font-weight:700; color:#f87171; margin-left:4px; white-space:nowrap; }
+
+  .fin-update-balance-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    width:100%;
+    padding:9px 12px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(248,113,113,0.3);
+    background:rgba(248,113,113,0.08);
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.72rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .fin-update-balance-btn:hover{ background:rgba(248,113,113,0.16); border-color:rgba(248,113,113,0.5); color:var(--ink); }
+  .fin-update-balance-btn .material-symbols-outlined{ font-size:15px; color:var(--financial); }
+
+  .fin-modal-save-btn{
+    width:100%;
+    padding:11px 14px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(248,113,113,0.4);
+    background:rgba(248,113,113,0.16);
+    color:#fecaca;
+    font-family:inherit;
+    font-size:0.8rem;
     font-weight:700;
     text-transform:uppercase;
     letter-spacing:0.06em;
     cursor:pointer;
-    padding:0;
-    margin-top:8px;
+    transition:background .15s ease, border-color .15s ease;
   }
-  .manage-areas-panel{
-    margin-top:8px;
-    padding:10px;
+  .fin-modal-save-btn:hover{ background:rgba(248,113,113,0.26); border-color:rgba(248,113,113,0.6); }
+
+  /* Recurring card (bottom) */
+  .fin-recurring-list{ display:flex; flex-direction:column; gap:6px; }
+  .fin-recurring-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:8px 10px;
     border-radius:var(--r-sm);
-    background:rgba(255,255,255,0.04);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .fin-recurring-row:hover{ background:rgba(255,255,255,0.06); }
+  .fin-recurring-row.due-soon{ background:rgba(251,191,36,0.1); border-color:rgba(251,191,36,0.35); }
+  .fin-recurring-name{ font-size:0.84rem; font-weight:600; color:var(--ink); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fin-recurring-day{ font-size:0.7rem; color:var(--ink-faint); flex-shrink:0; }
+  .fin-recurring-amount{ font-size:0.84rem; font-weight:700; color:#f87171; flex-shrink:0; }
+
+  /* Jobs & Payday settings modal (config only — name, rate, after-tax) */
+  .fin-jobs-section{ display:flex; flex-direction:column; gap:8px; }
+  .fin-job-row{
     display:flex;
     flex-direction:column;
     gap:6px;
+    padding:10px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.07);
   }
-  .manage-area-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:0.68rem;
+  .fin-job-name-input{ font-weight:700; }
+  .fin-job-rate-row{ display:flex; align-items:center; gap:8px; }
+  .fin-job-rate-row .field-number{ flex:0 0 120px; }
+  .fin-job-aftertax{ font-size:0.66rem; color:var(--ink-faint); flex:1; min-width:0; }
+
+  /* Projected card (replaces Savings Targets) */
+  .fin-projected-body{ display:flex; flex-direction:column; gap:14px; }
+  .fin-projected-section{ display:flex; flex-direction:column; gap:6px; }
+  .fin-projected-earned-row{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .fin-projected-earned-value{ font-size:1.1rem; font-weight:800; color:var(--ink); }
+  .fin-projected-earned-estimate{ font-size:0.64rem; color:var(--ink-faint); }
+  .fin-projected-hours-section{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+  .fin-projected-hours-row{ display:flex; align-items:center; gap:8px; }
+  .fin-projected-hours-name{ flex:1; min-width:0; font-size:0.76rem; font-weight:600; color:var(--ink-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fin-projected-hours-btn{
+    width:22px; height:22px;
+    flex-shrink:0;
+    border-radius:6px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
     color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-weight:700;
+    font-size:0.8rem;
+    font-family:inherit;
   }
-  .manage-area-row .del-x{ cursor:pointer; color:#f87171; font-size:14px; }
+  .fin-projected-hours-btn:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .fin-projected-hours-value{ min-width:44px; text-align:center; font-weight:700; color:var(--ink); font-size:0.78rem; flex-shrink:0; }
+  .fin-projected-track{ height:6px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .fin-projected-fill{ height:100%; border-radius:999px; background:var(--financial); width:0%; transition:width .3s ease; }
+  .fin-projected-net-section{ display:flex; flex-direction:column; gap:4px; margin-top:auto; }
+  .fin-projected-net-value{ font-size:1.6rem; font-weight:800; margin-top:2px; }
+  .fin-projected-net-value.positive{ color:#4ade80; }
+  .fin-projected-net-value.negative{ color:#f87171; }
+  .fin-next-payday-note{ font-size:0.88rem; color:var(--ink-dim); margin-top:4px; }
+
+  /* Spending Log — top half: actual logged entries (past/present only);
+     bottom half: Planned Expenses, split into Recurring + Planned subsections */
+  .fin-spending-panel-body{ display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+  .fin-spending-log-half{ flex:1 1 50%; min-height:0; overflow-y:auto; }
+  .fin-planned-expenses-half{ flex:1 1 50%; min-height:0; display:flex; flex-direction:column; padding-top:12px; }
+
+  .fin-planned-expenses-subsection{ flex:1; min-height:0; display:flex; flex-direction:column; }
+  .fin-planned-expenses-subsection + .fin-planned-expenses-subsection{ margin-top:8px; }
+  .fin-planned-expenses-subheader{ font-size:0.58rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin:0 0 3px; flex-shrink:0; }
+  .fin-planned-expenses-list{ flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:4px; }
+  .fin-planned-expenses-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:0.82rem; padding:4px 0; }
+  .fin-planned-expenses-row-clickable{ cursor:pointer; border-radius:var(--r-sm); padding:4px 6px; margin:0 -6px; transition:background .15s ease; }
+  .fin-planned-expenses-row-clickable:hover{ background:rgba(255,255,255,0.05); }
+  .fin-planned-expenses-name{ color:var(--ink-dim); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  .fin-planned-expenses-name-date{ display:flex; flex-direction:column; min-width:0; }
+  .fin-planned-expenses-date{ font-size:0.66rem; color:var(--ink-faint); margin-top:1px; }
+  .fin-planned-expenses-amount{ color:#f87171; font-weight:700; flex-shrink:0; }
+  .fin-planned-expenses-total-row{ display:flex; align-items:center; justify-content:space-between; font-size:0.78rem; color:var(--ink-faint); padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
+  .fin-planned-expenses-total-row .fin-planned-expenses-total-value{ color:#f87171; font-weight:700; }
+
+  /* Investing Snapshot */
+  .fin-investing-body{ display:flex; flex-direction:column; gap:10px; }
+  .fin-investing-top{ display:flex; align-items:baseline; gap:10px; }
+  .fin-investing-value{ font-size:1.4rem; font-weight:800; color:var(--ink); }
+  .fin-investing-change{ font-size:0.72rem; font-weight:700; display:flex; align-items:center; gap:2px; }
+  .fin-investing-change.positive{ color:#4ade80; }
+  .fin-investing-change.negative{ color:#f87171; }
+  .fin-investing-input-row{ display:flex; gap:8px; align-items:center; }
+  .fin-investing-input-row .field-number{ flex:1; }
+  .fin-investing-chart-wrap{ position:relative; flex:1; min-height:80px; }
+  .fin-investing-chart{ width:100%; height:100%; }
+  .fin-investing-empty{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.68rem; color:var(--ink-faint); font-style:italic;
+  }
+
   .modal-actions-row{
     display:flex;
     align-items:center;
@@ -1072,457 +1134,20 @@
     cursor:pointer;
   }
   .danger-btn:hover{ background:rgba(248,113,113,0.2); }
-
-  /* ---------- Lab cards: header row + inline task rows ---------- */
-  .lab-header-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:4px;
-  }
-  .lab-due-soonest{ font-size:0.6rem; color:var(--ink-faint); }
-  .lab-task-row{ display:flex; align-items:center; gap:8px; }
-  .task-text-input{
-    flex:1;
-    background:transparent;
-    border:none;
-    border-bottom:1px solid transparent;
-    color:var(--ink-dim);
-    font-size:0.74rem;
-    font-family:inherit;
-    padding:2px 0;
-    outline:none;
-    min-width:0;
-    transition:border-color .15s ease;
-  }
-  .task-text-input:focus{ border-bottom-color:rgba(255,255,255,0.32); color:var(--ink); }
-  .task-date-input{
-    background:transparent;
-    border:1px solid transparent;
-    border-radius:6px;
-    color:var(--ink-dim);
-    font-size:0.58rem;
-    padding:2px 4px;
-    font-family:inherit;
-    color-scheme:dark;
-    outline:none;
-    flex-shrink:0;
-    transition:background .15s ease, border-color .15s ease;
-  }
-  .task-date-input:focus{
-    background:rgba(255,255,255,0.05);
-    border-color:rgba(255,255,255,0.12);
-  }
-  .add-task-btn{
-    display:flex;
-    align-items:center;
-    gap:4px;
-    background:none;
-    border:1px dashed rgba(255,255,255,0.18);
-    color:var(--ink-dim);
-    font-family:inherit;
-    font-size:0.62rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.06em;
-    padding:6px 10px;
-    border-radius:var(--r-sm);
-    cursor:pointer;
-    margin:10px 0;
-    align-self:flex-start;
-  }
-  .add-task-btn:hover{ background:rgba(255,255,255,0.06); color:var(--ink); }
-  .add-task-btn .material-symbols-outlined{ font-size:14px; }
-
-  /* ---------- Status + Weekly Hours (shared row) ---------- */
-  .status-hours-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-top:auto;
-    padding-top:12px;
-    border-top:1px solid rgba(255,255,255,0.08);
-    font-size:0.62rem;
-  }
-  .status-row-inline{ display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
-  .status-row-inline .status-label{
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-    flex-shrink:0;
-  }
-  .hours-counter-inline{ display:flex; align-items:center; gap:4px; flex-shrink:0; }
-  .hours-counter-value{
-    font-size:0.72rem;
-    font-weight:700;
-    color:var(--academic);
-    white-space:nowrap;
-  }
-  .hours-counter-mini-btn{
-    width:19px; height:19px;
-    border-radius:50%;
-    border:1px solid rgba(96,165,250,0.3);
-    background:rgba(96,165,250,0.08);
-    color:var(--academic);
-    font-family:inherit;
-    font-size:0.68rem;
-    font-weight:700;
-    line-height:1;
-    padding:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    flex-shrink:0;
-  }
-  .hours-counter-mini-btn:hover{ background:rgba(96,165,250,0.18); }
-  .hours-reset-btn{
-    width:19px; height:19px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,0.14);
-    background:rgba(255,255,255,0.05);
-    color:var(--ink-faint);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    flex-shrink:0;
-    padding:0;
-    transition:background .15s ease, color .15s ease;
-  }
-  .hours-reset-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
-  .hours-reset-btn .material-symbols-outlined{ font-size:12px; }
-  .status-select{
-    flex:1;
-    min-width:0;
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.14);
-    color:var(--ink);
-    font-family:inherit;
-    font-size:0.68rem;
-    font-weight:700;
-    padding:5px 8px;
-    border-radius:6px;
-    outline:none;
-  }
-  .status-select option{ background:#16171c; }
-
-  /* Deadlines table card */
-  .deadlines-card{ display:flex; flex-direction:column; flex:1; min-height:0; }
-  .deadlines-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:18px 24px;
-    border-bottom:1px solid rgba(255,255,255,0.08);
-  }
-  .deadlines-header h3{
-    margin:0;
-    font-size:1rem;
-    font-weight:700;
-    color:var(--ink);
-  }
-
-  table{
-    width:100%;
-    border-collapse:collapse;
-  }
-  thead tr{
-    border-bottom:1px solid rgba(255,255,255,0.08);
-  }
-  th{
-    text-align:left;
-    padding:12px 24px;
-    font-family:'JetBrains Mono',monospace;
-    font-size:0.6rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.12em;
-    color:var(--ink-faint);
-  }
-  th.checkbox-col{ padding-right:0; width:20px; }
-  td{
-    padding:14px 24px;
-    font-size:0.78rem;
-    color:var(--ink-dim);
-    border-bottom:1px solid rgba(255,255,255,0.05);
-  }
-  td.checkbox-col{ padding-right:0; }
-  .table-scroll{ flex:1; overflow-y:auto; }
-  .empty-row td{
-    text-align:center;
-    padding:36px 24px;
-    color:var(--ink-faint);
-  }
-  .empty-row .material-symbols-outlined{
-    display:block;
-    margin:0 auto 8px;
-    font-size:26px;
-    opacity:0.5;
-  }
-  .task-cell{ display:flex; align-items:center; gap:10px; }
-  .task-cell .material-symbols-outlined{ font-size:17px; color:var(--ink-faint); }
-  .task-cell .name{ font-weight:700; color:var(--ink); }
-  .task-cell .recurring-icon{ font-size:13px; color:var(--academic); flex-shrink:0; }
-
-  /* ---------- Second bottom row: Important Tasks + Streak/Goal + Pomodoro ---------- */
-  .second-row{
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:22px;
-    flex:0 0 auto;
-    min-height:260px;
-  }
-  .countdown-card{ padding:20px; }
-
-  /* ---------- Study Streak & Weekly Goal card ---------- */
-  .streak-card{ padding:20px; }
-  .streak-display{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    flex:1;
-    padding:10px 0 16px;
-  }
-  .streak-current{
-    font-size:1.3rem;
-    font-weight:700;
-    color:var(--ink);
-    text-align:center;
-  }
-  .streak-best{
-    font-size:0.64rem;
-    color:var(--ink-faint);
-    text-align:center;
-  }
-  .streak-divider{
-    height:1px;
-    background:rgba(255,255,255,0.08);
-    margin:0 0 16px;
-  }
-  .weekly-goal-section{ display:flex; flex-direction:column; gap:10px; }
-  .weekly-goal-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-  }
-  .goal-target-input-wrap{
-    display:flex;
-    align-items:center;
-    gap:5px;
-  }
-  .goal-target-input{
-    width:44px;
-    padding:4px 6px;
-    border-radius:6px;
-    border:1px solid rgba(255,255,255,0.14);
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    font-family:inherit;
-    font-size:0.68rem;
-    text-align:center;
-    outline:none;
-  }
-  .goal-target-input:focus{ border-color:rgba(255,255,255,0.32); background:rgba(255,255,255,0.08); }
-  .goal-target-unit{
-    font-size:0.58rem;
-    color:var(--ink-faint);
-    font-weight:700;
-    text-transform:uppercase;
-  }
-  .goal-progress-track{
-    height:10px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.08);
-    overflow:hidden;
-  }
-  .goal-progress-fill{
-    height:100%;
-    border-radius:999px;
-    background:var(--secondbrain);
-    width:0%;
-    transition:width .3s ease, background .3s ease;
-  }
-  .goal-progress-fill.met{ background:#4ade80; }
-  .goal-progress-label{
-    font-size:0.6rem;
-    color:var(--ink-faint);
-    text-align:center;
-  }
-  .panel-header-alt{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:12px;
-  }
-  .countdown-list{ display:flex; flex-direction:column; gap:10px; max-height:220px; overflow-y:auto; }
-  .countdown-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 12px;
-    border-radius:var(--r-sm);
-    background:rgba(255,255,255,0.04);
-  }
-  .countdown-item .name{ font-size:0.74rem; font-weight:700; color:var(--ink); }
-  .countdown-item .target-date{ font-size:0.58rem; color:var(--ink-faint); margin-top:2px; }
-  .countdown-item .time-left{ font-size:0.72rem; font-weight:700; color:var(--ink-dim); }
-  .countdown-item .time-left.warn{ color:#fb923c; }
-  .countdown-item .time-left.urgent{ color:#f87171; }
-  .countdown-empty{ font-size:0.68rem; color:var(--ink-faint); text-align:center; padding:24px 0; }
-
-  /* ---------- Pomodoro Timer Card (colors matched to the other cards) ---------- */
-  .pomo-card{
-    position:relative;
-    padding:22px 20px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    overflow:visible;
-  }
-  .pomo-settings-btn{
-    position:absolute;
-    top:14px; right:14px;
-  }
-  .pomo-tabs{
-    display:flex;
-    gap:6px;
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.1);
-    padding:4px;
-    border-radius:999px;
-    margin-bottom:16px;
-  }
-  .pomo-tab{
-    padding:6px 14px;
-    border-radius:999px;
-    border:none;
-    background:transparent;
-    color:var(--ink-dim);
-    font-family:inherit;
-    font-size:0.62rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.04em;
-    cursor:pointer;
-    transition:background .2s ease, color .2s ease;
-  }
-  .pomo-tab.active{
-    background:rgba(255,255,255,0.16);
-    color:var(--ink);
-  }
-  .pomo-display{
-    font-size:3rem;
-    font-weight:700;
-    letter-spacing:0.01em;
-    margin:2px 0 16px;
-    line-height:1;
-    color:var(--academic);
-  }
-  @keyframes pomoFlash{
-    0%,100%{ opacity:1; }
-    50%{ opacity:0.15; }
-  }
-  .pomo-display.flash{
-    animation:pomoFlash 0.3s ease-in-out 3;
-  }
-  .pomo-controls-row{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:14px;
-  }
-  .pomo-start-btn{
-    padding:9px 30px;
-    border-radius:999px;
-    border:none;
-    background:var(--academic);
-    color:#0b0b10;
-    font-family:inherit;
-    font-size:0.74rem;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:0.06em;
-    cursor:pointer;
-    transition:transform .15s ease;
-  }
-  .pomo-start-btn:hover{ transform:translateY(-1px); }
-  .pomo-icon-btn{
-    width:32px; height:32px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,0.14);
+  .neutral-btn{
     background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.16);
     color:var(--ink-dim);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-  }
-  .pomo-icon-btn .material-symbols-outlined{ font-size:16px; }
-  .pomo-icon-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
-  .pomo-week-row{
-    font-size:0.6rem;
-    color:var(--ink-faint);
-    margin-bottom:14px;
-  }
-  .pomo-week-row span{ color:var(--academic); font-weight:700; }
-  .pomo-card .field-label.pomo-focus-label{
-    align-self:flex-start;
-    margin-top:14px;
-  }
-
-  .pomo-settings-popover{
-    position:absolute;
-    top:56px;
-    right:16px;
-    width:190px;
-    background:#16171c;
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:var(--r-md);
-    padding:14px;
-    box-shadow:0 12px 32px rgba(0,0,0,0.5);
-    display:none;
-    z-index:20;
-  }
-  .pomo-settings-popover.open{ display:block; }
-  .pomo-settings-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:10px;
     font-size:0.64rem;
-    font-weight:600;
-    color:var(--ink-dim);
-    gap:8px;
-  }
-  .pomo-settings-row input{
-    width:48px;
-    padding:4px 6px;
-    border-radius:6px;
-    border:1px solid rgba(255,255,255,0.14);
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    font-family:inherit;
-    font-size:0.68rem;
-    text-align:center;
-  }
-  .pomo-settings-save{
-    width:100%;
-    padding:7px;
-    border-radius:8px;
-    border:none;
-    background:var(--academic);
-    color:#0b0b10;
-    font-weight:800;
-    font-size:0.62rem;
+    font-weight:700;
     text-transform:uppercase;
     letter-spacing:0.05em;
+    padding:9px 14px;
+    border-radius:var(--r-sm);
     cursor:pointer;
-    margin-top:2px;
+    font-family:inherit;
   }
+  .neutral-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
 
   /* ---------- Modals ---------- */
   .modal-overlay{
@@ -1830,12 +1455,197 @@
     font-weight:700;
     color:var(--ink-dim);
   }
+
+  /* ---------- PIN Gate ---------- */
+  body:not(.pin-unlocked) .app-shell{ display:none; }
+
+  .pin-gate-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(6,6,10,0.55);
+    backdrop-filter:blur(14px) saturate(160%);
+    -webkit-backdrop-filter:blur(14px) saturate(160%);
+  }
+  .pin-gate-card{
+    display:none;
+    flex-direction:column;
+    width:360px;
+    max-width:92vw;
+    padding:32px 28px;
+    border-radius:var(--r-lg);
+    border-color:rgba(248,113,113,0.28);
+    box-shadow:0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .pin-gate-card.active{ display:flex; }
+  .pin-gate-card.shake{ animation:pinGateShake .4s ease; }
+  @keyframes pinGateShake{
+    10%,90%{ transform:translateX(-1px); }
+    20%,80%{ transform:translateX(2px); }
+    30%,50%,70%{ transform:translateX(-6px); }
+    40%,60%{ transform:translateX(6px); }
+  }
+  .pin-gate-brand{ text-align:center; margin-bottom:20px; }
+  .pin-gate-brand h1{
+    margin:0;
+    font-size:1.4rem;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    background:linear-gradient(135deg,#ffffff 0%, #fca5a5 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .pin-gate-subtitle{
+    margin:4px 0 0;
+    font-size:0.66rem;
+    font-weight:700;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--financial);
+  }
+  .pin-gate-heading{
+    font-size:0.86rem;
+    font-weight:700;
+    color:var(--ink);
+    margin:0 0 16px;
+    text-align:center;
+  }
+  .pin-gate-card .field-group{ text-align:left; }
+  .pin-input{ text-align:center; letter-spacing:0.3em; font-size:1.1rem; font-weight:700; }
+  .pin-gate-error{
+    font-size:0.7rem;
+    font-weight:600;
+    color:#f87171;
+    min-height:14px;
+    margin:0 0 12px;
+    text-align:center;
+  }
+  .pin-gate-btn{
+    padding:11px 14px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(248,113,113,0.4);
+    background:rgba(248,113,113,0.16);
+    color:#fecaca;
+    font-family:inherit;
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .pin-gate-btn:hover{ background:rgba(248,113,113,0.26); border-color:rgba(248,113,113,0.6); }
+  .pin-gate-forgot-link, .pin-gate-back-link{
+    display:block;
+    margin-top:14px;
+    font-size:0.68rem;
+    color:var(--ink-faint);
+    text-decoration:none;
+    text-align:center;
+  }
+  .pin-gate-forgot-link:hover, .pin-gate-back-link:hover{ color:var(--ink-dim); text-decoration:underline; }
+  .pin-gate-question-display{
+    font-size:0.78rem;
+    color:var(--ink-dim);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:var(--r-sm);
+    padding:10px 12px;
+    margin-bottom:14px;
+  }
 </style>
 </head>
 <body>
 
 <div class="bg-layer" id="bg-layer"></div>
 <div class="bg-scrim"></div>
+
+<!-- ===================== PIN GATE ===================== -->
+<div class="pin-gate-overlay" id="pin-gate-overlay">
+
+  <!-- First-time setup -->
+  <div class="pin-gate-card glass" id="pin-setup-screen">
+    <div class="pin-gate-brand">
+      <h1>Liberation Arc</h1>
+      <p class="pin-gate-subtitle">Financial — Protected</p>
+    </div>
+    <p class="pin-gate-heading">Set a PIN for Financial</p>
+    <div class="field-group">
+      <label class="field-label">PIN (4–6 digits)</label>
+      <input type="password" inputmode="numeric" class="field-text pin-input" id="setup-pin-input" maxlength="6" autocomplete="off" oninput="sanitizePinInput(this)">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Confirm PIN</label>
+      <input type="password" inputmode="numeric" class="field-text pin-input" id="setup-pin-confirm-input" maxlength="6" autocomplete="off" oninput="sanitizePinInput(this)" onkeydown="if(event.key==='Enter') handleSetupPin();">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Recovery Question</label>
+      <input type="text" class="field-text" id="setup-recovery-question" autocomplete="off" placeholder="e.g. What's your favorite color?">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Recovery Answer</label>
+      <input type="text" class="field-text" id="setup-recovery-answer" autocomplete="off" onkeydown="if(event.key==='Enter') handleSetupPin();">
+    </div>
+    <p class="pin-gate-error" id="setup-error"></p>
+    <button type="button" class="pin-gate-btn" onclick="handleSetupPin()">Set PIN</button>
+  </div>
+
+  <!-- PIN entry -->
+  <div class="pin-gate-card glass" id="pin-verify-screen">
+    <div class="pin-gate-brand">
+      <h1>Liberation Arc</h1>
+      <p class="pin-gate-subtitle">Financial — Protected</p>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Enter PIN</label>
+      <input type="password" inputmode="numeric" class="field-text pin-input" id="verify-pin-input" maxlength="6" autocomplete="off" oninput="sanitizePinInput(this)" onkeydown="if(event.key==='Enter') handleVerifyPin();">
+    </div>
+    <p class="pin-gate-error" id="verify-error"></p>
+    <button type="button" class="pin-gate-btn" onclick="handleVerifyPin()">Enter</button>
+    <a href="#" class="pin-gate-forgot-link" onclick="event.preventDefault(); openForgotPin();">Forgot PIN?</a>
+  </div>
+
+  <!-- Forgot PIN: recovery question -->
+  <div class="pin-gate-card glass" id="pin-forgot-question-screen">
+    <div class="pin-gate-brand">
+      <h1>Liberation Arc</h1>
+      <p class="pin-gate-subtitle">Financial — Protected</p>
+    </div>
+    <p class="pin-gate-heading">Answer Your Recovery Question</p>
+    <p class="pin-gate-question-display" id="forgot-question-display"></p>
+    <div class="field-group">
+      <label class="field-label">Recovery Answer</label>
+      <input type="text" class="field-text" id="forgot-answer-input" autocomplete="off" onkeydown="if(event.key==='Enter') handleForgotAnswer();">
+    </div>
+    <p class="pin-gate-error" id="forgot-error"></p>
+    <button type="button" class="pin-gate-btn" onclick="handleForgotAnswer()">Submit</button>
+    <a href="#" class="pin-gate-back-link" onclick="event.preventDefault(); cancelForgotPin();">Back to PIN entry</a>
+  </div>
+
+  <!-- Reset PIN -->
+  <div class="pin-gate-card glass" id="pin-reset-screen">
+    <div class="pin-gate-brand">
+      <h1>Liberation Arc</h1>
+      <p class="pin-gate-subtitle">Financial — Protected</p>
+    </div>
+    <p class="pin-gate-heading">Reset PIN</p>
+    <div class="field-group">
+      <label class="field-label">New PIN (4–6 digits)</label>
+      <input type="password" inputmode="numeric" class="field-text pin-input" id="reset-pin-input" maxlength="6" autocomplete="off" oninput="sanitizePinInput(this)">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Confirm New PIN</label>
+      <input type="password" inputmode="numeric" class="field-text pin-input" id="reset-pin-confirm-input" maxlength="6" autocomplete="off" oninput="sanitizePinInput(this)" onkeydown="if(event.key==='Enter') handleResetPin();">
+    </div>
+    <p class="pin-gate-error" id="reset-error"></p>
+    <button type="button" class="pin-gate-btn" onclick="handleResetPin()">Reset PIN</button>
+  </div>
+
+</div>
 
 <div class="app-shell">
 
@@ -1847,13 +1657,13 @@
     </div>
 
     <nav class="nav">
-      <a class="nav-link" data-section="dashboard" href="../index.html">
+      <a class="nav-link" data-section="dashboard" href="index.html">
         <span class="material-symbols-outlined">arrow_back</span>
         <span>Dashboard</span>
       </a>
       <div class="sidebar-divider"></div>
       <div class="nav-row">
-        <a class="nav-link" data-section="physical" href="physical-subpage.html">
+        <a class="nav-link" data-section="physical" href="screens/physical-subpage.html">
           <span class="material-symbols-outlined">fitness_center</span>
           <span>Physical</span>
         </a>
@@ -1862,15 +1672,15 @@
           <span class="import-btn-tooltip">Import Health Data</span>
         </button>
       </div>
-      <a class="nav-link active" data-section="academic" href="academic-subpage.html">
+      <a class="nav-link" data-section="academic" href="screens/academic-subpage.html">
         <span class="material-symbols-outlined">school</span>
         <span>Academic</span>
       </a>
-      <a class="nav-link" data-section="hobbies" href="hobbies-subpage.html">
+      <a class="nav-link" data-section="hobbies" href="screens/hobbies-subpage.html">
         <span class="material-symbols-outlined">palette</span>
         <span>Hobbies</span>
       </a>
-      <a class="nav-link" data-section="financial" href="../financial-subpage.html">
+      <a class="nav-link active" data-section="financial" href="financial-subpage.html">
         <span class="material-symbols-outlined">payments</span>
         <span>Financial</span>
       </a>
@@ -1953,230 +1763,193 @@
 
   <!-- ===================== MAIN ===================== -->
   <main class="main">
+    <div class="financial-grid">
 
-    <div class="top-section">
-      <div class="research-stack">
-        <div class="card glass research-card">
-          <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
-          <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
-            <div class="lab-header-row">
-              <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
-                <span class="material-symbols-outlined">science</span>
-                Research — Lab
-              </div>
-              <span class="lab-due-soonest mono" id="kranker-due-soonest">—</span>
-            </div>
-            <h3 class="card-title">Kranker Lab</h3>
-
-            <ul class="subtask-list" id="kranker-task-list"></ul>
-            <button type="button" class="add-task-btn" onclick="addLabTask('kranker')">
-              <span class="material-symbols-outlined">add</span> Add Task
-            </button>
-
-            <div class="status-hours-row">
-              <div class="status-row-inline">
-                <span class="status-label" style="color:var(--academic);">Status</span>
-                <select class="status-select" id="kranker-status" onchange="saveLabStatus('kranker', this.value)">
-                  <option value="ahead">Ahead</option>
-                  <option value="on-track">On Track</option>
-                  <option value="behind">Behind</option>
-                </select>
-              </div>
-              <div class="hours-counter-inline">
-                <span class="hours-counter-value mono" id="kranker-hours-value">0.0 hrs</span>
-                <button type="button" class="hours-counter-mini-btn" onclick="adjustLabHours('kranker', -0.5)" title="-0.5 hr">−</button>
-                <button type="button" class="hours-counter-mini-btn" onclick="adjustLabHours('kranker', 0.5)" title="+0.5 hr">+</button>
-                <button type="button" class="hours-reset-btn" onclick="resetLabHours('kranker')" title="Reset hours">
-                  <span class="material-symbols-outlined">restart_alt</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card glass research-card">
-          <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
-          <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
-            <div class="lab-header-row">
-              <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
-                <span class="material-symbols-outlined">science</span>
-                Research — Lab
-              </div>
-              <span class="lab-due-soonest mono" id="ballard-due-soonest">—</span>
-            </div>
-            <h3 class="card-title">Ballard Lab</h3>
-
-            <ul class="subtask-list" id="ballard-task-list"></ul>
-            <button type="button" class="add-task-btn" onclick="addLabTask('ballard')">
-              <span class="material-symbols-outlined">add</span> Add Task
-            </button>
-
-            <div class="status-hours-row">
-              <div class="status-row-inline">
-                <span class="status-label" style="color:var(--academic);">Status</span>
-                <select class="status-select" id="ballard-status" onchange="saveLabStatus('ballard', this.value)">
-                  <option value="ahead">Ahead</option>
-                  <option value="on-track">On Track</option>
-                  <option value="behind">Behind</option>
-                </select>
-              </div>
-              <div class="hours-counter-inline">
-                <span class="hours-counter-value mono" id="ballard-hours-value">0.0 hrs</span>
-                <button type="button" class="hours-counter-mini-btn" onclick="adjustLabHours('ballard', -0.5)" title="-0.5 hr">−</button>
-                <button type="button" class="hours-counter-mini-btn" onclick="adjustLabHours('ballard', 0.5)" title="+0.5 hr">+</button>
-                <button type="button" class="hours-reset-btn" onclick="resetLabHours('ballard')" title="Reset hours">
-                  <span class="material-symbols-outlined">restart_alt</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="right-column">
-      <div class="card glass deadlines-card">
-        <div class="accent-blob" style="background:rgba(255,255,255,0.06); width:72px; height:72px;"></div>
-        <div class="deadlines-header">
-          <h3>Deadlines</h3>
-          <button type="button" class="icon-btn" onclick="openDeadlineModal()" title="Add task">
+      <!-- LEFT COLUMN: Spending Log -->
+      <div class="card glass fin-spending-card">
+        <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
+        <div class="panel-header">
+          <div class="head-left"><h3>Spending Log</h3></div>
+          <button type="button" class="icon-btn" onclick="openSpendingModal()" title="Add entry">
             <span class="material-symbols-outlined">add</span>
           </button>
         </div>
-        <div class="filter-bar">
-          <div class="filter-group">
-            <label>Due Date</label>
-            <select id="filter-due-sort" onchange="applyDeadlineFilters()">
-              <option value="asc">Soonest First</option>
-              <option value="desc">Latest First</option>
-            </select>
+        <div class="panel-body fin-spending-panel-body">
+          <div class="fin-spending-log-half">
+            <div class="fin-spending-list" id="spending-list"></div>
           </div>
-          <div class="filter-group">
-            <label>Importance</label>
-            <select id="filter-importance" onchange="applyDeadlineFilters()">
-              <option value="All">All</option>
-              <option value="Low">Low</option>
-              <option value="Moderate">Moderate</option>
-              <option value="Critical">Critical</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Type</label>
-            <select id="filter-type" onchange="applyDeadlineFilters()">
-              <option value="All">All</option>
-              <option value="Asynch">Asynch</option>
-              <option value="Synch">Synch</option>
-            </select>
+
+          <div class="fin-divider"></div>
+
+          <div class="fin-planned-expenses-half">
+            <div class="fin-planned-expenses-subsection">
+              <p class="fin-planned-expenses-subheader">Recurring</p>
+              <div class="fin-planned-expenses-list" id="spending-planned-recurring-list"></div>
+            </div>
+
+            <div class="fin-planned-expenses-subsection">
+              <p class="fin-planned-expenses-subheader">Planned</p>
+              <div class="fin-planned-expenses-list" id="spending-planned-future-list"></div>
+            </div>
+
+            <div class="fin-planned-expenses-total-row mono">
+              <span>Total planned</span>
+              <span class="fin-planned-expenses-total-value" id="spending-planned-expenses-total">$0.00</span>
+            </div>
           </div>
         </div>
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th class="checkbox-col"></th>
-                <th>Task</th>
-                <th>Areas</th>
-                <th>Due</th>
-                <th>Status</th>
-                <th>Importance</th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody id="deadlines-tbody">
-              <tr class="empty-row">
-                <td colspan="7">
-                  <span class="material-symbols-outlined">event_available</span>
-                  No deadlines yet
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="fin-spending-total-row">
+          <span class="fin-spending-total-label mono">Net this month</span>
+          <span class="fin-spending-total-value mono" id="spending-total-value">$0.00</span>
         </div>
       </div>
 
-      <!-- Second bottom row: Important Tasks + Study Streak/Weekly Goal + Pomodoro Timer -->
-      <div class="second-row">
-
-      <div class="card glass countdown-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
-        <div class="panel-header-alt">
-          <div class="card-eyebrow" style="color:var(--secondbrain); margin-bottom:0;">
-            <span class="material-symbols-outlined">timer</span>
-            Important Tasks
+      <!-- MIDDLE COLUMN -->
+      <div class="fin-middle-col">
+        <div class="card glass fin-budget-card">
+          <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
+          <div class="panel-header">
+            <div class="head-left"><h3>Monthly Budget</h3></div>
           </div>
-        </div>
-        <div class="countdown-list" id="countdown-list"></div>
-      </div>
-
-      <div class="card glass streak-card">
-        <div class="accent-blob" style="background:rgba(34,211,238,0.14);"></div>
-        <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
-          <div class="card-eyebrow" style="color:var(--secondbrain);">
-            <span class="material-symbols-outlined">local_fire_department</span>
-            Study Streak
-          </div>
-
-          <div class="streak-display">
-            <div class="streak-current mono" id="streak-current">🔥 0 day streak</div>
-            <div class="streak-best mono" id="streak-best">Best: 0 days</div>
-          </div>
-
-          <div class="streak-divider"></div>
-
-          <div class="weekly-goal-section">
-            <div class="weekly-goal-header">
-              <div class="card-eyebrow" style="color:var(--secondbrain); margin-bottom:0;">
-                <span class="material-symbols-outlined">flag</span>
-                Weekly Goal
+          <div class="panel-body fin-budget-body">
+            <div class="fin-paycheck-row">
+              <div class="field-group" style="margin-bottom:0; flex:1; min-width:110px;">
+                <label class="field-label">Last Paycheck</label>
+                <input class="field-number" id="paycheck-amount-input" type="number" min="0" step="0.01" placeholder="e.g. 2400" oninput="updatePaycheckAmount(this.value)">
               </div>
-              <div class="goal-target-input-wrap">
-                <input type="number" class="goal-target-input" id="weekly-goal-input" min="0.5" max="100" step="0.5" onchange="saveWeeklyGoal(this.value)">
-                <span class="goal-target-unit">hrs</span>
+              <div class="field-group" style="margin-bottom:0; flex:1; min-width:110px;">
+                <label class="field-label">Pay Frequency</label>
+                <select class="field-select" id="paycheck-frequency-select" onchange="updatePaycheckFrequency(this.value)">
+                  <option value="weekly">Weekly</option>
+                  <option value="biweekly">Biweekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
               </div>
             </div>
-            <div class="goal-progress-track">
-              <div class="goal-progress-fill" id="goal-progress-fill"></div>
+            <div class="fin-monthly-income-row mono" id="monthly-income-row">Monthly income: $0.00</div>
+
+            <div class="fin-divider"></div>
+
+            <div class="fin-recurring-header-row">
+              <p class="fin-subhead">Recurring Payments</p>
+              <button type="button" class="icon-btn" onclick="openRecurringModal()" title="Add recurring payment">
+                <span class="material-symbols-outlined">add</span>
+              </button>
             </div>
-            <div class="goal-progress-label mono" id="goal-progress-label">0.0 hrs / 10 hrs this week</div>
+            <div class="fin-recurring-list-mini" id="budget-recurring-list"></div>
+            <div class="fin-recurring-total-row mono" id="budget-recurring-total">Total: $0.00</div>
+
+            <div class="fin-divider"></div>
+
+            <button type="button" class="fin-update-balance-btn" onclick="openCashBalanceModal()" style="margin-bottom:10px;">
+              <span class="material-symbols-outlined">account_balance_wallet</span>
+              Update Balance
+            </button>
+
+            <div class="fin-breakdown-row">
+              <div class="fin-breakdown-col">
+                <p class="fin-subhead">Monthly Est. Profit</p>
+                <div class="fin-breakdown-formula mono" id="fin-breakdown-formula">$0.00 × 2 =</div>
+                <div class="fin-free-money mono" id="fin-free-money">$0.00</div>
+              </div>
+              <div class="fin-breakdown-col">
+                <p class="fin-subhead">Current Net</p>
+                <div class="fin-breakdown-formula mono" id="fin-current-net-formula">$0.00 − $0.00 =</div>
+                <div class="fin-free-money mono" id="fin-current-net-value">$0.00</div>
+              </div>
+              <div class="fin-breakdown-col">
+                <p class="fin-subhead">Projected Net</p>
+                <div class="fin-breakdown-formula mono" id="fin-budget-projected-formula">$0.00 + $0.00 − $0.00 =</div>
+                <div class="fin-free-money mono" id="fin-budget-projected-value">$0.00</div>
+              </div>
+              <div class="fin-breakdown-col">
+                <p class="fin-subhead">Hours Needed</p>
+                <div class="fin-breakdown-formula mono" id="fin-hours-needed-formula"></div>
+                <div class="fin-free-money mono" id="fin-hours-needed-value">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card glass fin-recurring-card">
+          <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
+          <div class="panel-header">
+            <div class="head-left"><h3>Recurring</h3></div>
+          </div>
+          <div class="panel-body">
+            <div class="fin-recurring-list" id="recurring-list"></div>
           </div>
         </div>
       </div>
 
-      <div class="card glass pomo-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
-        <button type="button" class="pomo-icon-btn pomo-settings-btn" onclick="togglePomoSettings()" title="Settings">
-          <span class="material-symbols-outlined">settings</span>
-        </button>
+      <!-- RIGHT COLUMN -->
+      <div class="fin-right-col">
+        <div class="card glass fin-projected-card">
+          <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
+          <div class="panel-header">
+            <div class="head-left"><h3>Projected</h3></div>
+            <button type="button" class="icon-btn" onclick="openJobsSettingsModal()" title="Jobs &amp; Payday settings">
+              <span class="material-symbols-outlined">settings</span>
+            </button>
+          </div>
+          <div class="panel-body fin-projected-body">
+            <div class="fin-projected-section">
+              <p class="fin-subhead">Earnings So Far</p>
+              <div class="fin-projected-earned-row">
+                <span class="fin-projected-earned-value mono" id="projected-earned-value">$0.00</span>
+                <span class="fin-projected-earned-estimate mono" id="projected-earned-estimate">of est. $0.00 paycheck</span>
+              </div>
+              <div class="fin-projected-track"><div class="fin-projected-fill" id="projected-earned-fill"></div></div>
 
-        <div class="pomo-tabs">
-          <button type="button" class="pomo-tab active" data-mode="pomodoro" onclick="selectPomoTab('pomodoro')">Pomodoro</button>
-          <button type="button" class="pomo-tab" data-mode="short" onclick="selectPomoTab('short')">Short Break</button>
-          <button type="button" class="pomo-tab" data-mode="long" onclick="selectPomoTab('long')">Long Break</button>
+              <div class="fin-projected-hours-section">
+                <div class="fin-projected-hours-row">
+                  <span class="fin-projected-hours-name" id="projected-hours-name-0">Kranker Lab</span>
+                  <button type="button" class="fin-projected-hours-btn" onclick="adjustProjectedHours(0,-0.5)" title="-0.5 hr">−</button>
+                  <span class="fin-projected-hours-value mono" id="projected-hours-value-0">0.0 hrs</span>
+                  <button type="button" class="fin-projected-hours-btn" onclick="adjustProjectedHours(0,0.5)" title="+0.5 hr">+</button>
+                </div>
+                <div class="fin-projected-hours-row">
+                  <span class="fin-projected-hours-name" id="projected-hours-name-1">Ballard Lab</span>
+                  <button type="button" class="fin-projected-hours-btn" onclick="adjustProjectedHours(1,-0.5)" title="-0.5 hr">−</button>
+                  <span class="fin-projected-hours-value mono" id="projected-hours-value-1">0.0 hrs</span>
+                  <button type="button" class="fin-projected-hours-btn" onclick="adjustProjectedHours(1,0.5)" title="+0.5 hr">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="fin-divider"></div>
+
+            <div class="fin-projected-net-section">
+              <div class="fin-breakdown-formula mono" id="projected-net-formula">$0.00 + $0.00 =</div>
+              <p class="fin-subhead">Projected Cash After Earnings</p>
+              <div class="fin-projected-net-value mono" id="projected-net-value">$0.00</div>
+              <div class="fin-next-payday-note mono" id="fin-next-payday-note">Next payday: —</div>
+            </div>
+          </div>
         </div>
 
-        <div class="pomo-display mono" id="pomo-display">25:00</div>
-
-        <div class="pomo-controls-row">
-          <button type="button" class="pomo-icon-btn" onclick="resetPomo()" title="Reset">
-            <span class="material-symbols-outlined">replay</span>
-          </button>
-          <button type="button" class="pomo-start-btn" id="pomo-start-btn" onclick="togglePomoStartPause()">Start</button>
-        </div>
-
-        <div class="pomo-week-row mono">This week: <span id="pomo-week-total">0.0h</span></div>
-
-        <label class="field-label pomo-focus-label">Today's Focus</label>
-        <input class="field-text" id="today-focus-input" type="text" placeholder="What are you working on today?" oninput="saveTodayFocus(this.value)">
-
-        <div class="pomo-settings-popover" id="pomo-settings-popover">
-          <div class="pomo-settings-row"><span>Pomodoro (min)</span><input type="number" id="setting-pomodoro" min="1" max="180"></div>
-          <div class="pomo-settings-row"><span>Short Break (min)</span><input type="number" id="setting-short" min="1" max="60"></div>
-          <div class="pomo-settings-row"><span>Long Break (min)</span><input type="number" id="setting-long" min="1" max="120"></div>
-          <button type="button" class="pomo-settings-save" onclick="savePomoSettings()">Save</button>
+        <div class="card glass fin-investing-card">
+          <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
+          <div class="panel-header">
+            <div class="head-left"><h3>Investing</h3></div>
+          </div>
+          <div class="panel-body fin-investing-body">
+            <div class="fin-investing-top">
+              <span class="fin-investing-value mono" id="investing-latest-value">$0.00</span>
+              <span class="fin-investing-change mono" id="investing-change"></span>
+            </div>
+            <div class="fin-investing-input-row">
+              <input class="field-number" id="investing-value-input" type="number" min="0" step="0.01" placeholder="Portfolio value">
+              <button type="button" class="neutral-btn" onclick="addInvestingEntry()">Add Entry</button>
+            </div>
+            <div class="fin-investing-chart-wrap">
+              <svg class="fin-investing-chart" id="investing-chart" viewBox="0 0 280 100" preserveAspectRatio="none"></svg>
+              <div class="fin-investing-empty" id="investing-empty">No entries yet</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      </div>
-      </div>
     </div>
   </main>
 </div>
@@ -2304,85 +2077,160 @@
   </div>
 </div>
 
-<!-- ===================== DEADLINE TASK MODAL ===================== -->
-<div class="modal-overlay" id="deadline-modal">
-  <div class="modal-card glass" style="width:400px;">
-    <div class="modal-header" style="color:var(--academic);">
-      <span class="material-symbols-outlined">event_note</span>
-      <h2 id="deadline-modal-title">New Task</h2>
+<!-- ===================== SPENDING ENTRY MODAL ===================== -->
+<div class="modal-overlay" id="spending-modal">
+  <div class="modal-card glass" style="width:360px;">
+    <div class="modal-header" style="color:var(--financial);">
+      <span class="material-symbols-outlined">payments</span>
+      <h2 id="spending-modal-title">Add Entry</h2>
     </div>
 
     <div class="field-group">
-      <label class="field-label">Task Name</label>
-      <input class="field-text" id="deadline-name" type="text" placeholder="e.g. Lab Report 1a">
+      <label class="field-label">Amount (negative = expense)</label>
+      <input class="field-number" id="spending-amount-input" type="number" step="0.01" placeholder="e.g. -42.50">
     </div>
 
     <div class="field-group">
-      <label class="field-label">Areas</label>
-      <div class="chip-row" id="deadline-selected-areas" style="margin-bottom:8px;"></div>
-      <input class="field-text" id="deadline-area-input" type="text" placeholder="Type an area and press Enter" onkeydown="handleAreaInputKey(event)">
-      <div class="chip-row suggestions" id="deadline-area-suggestions" style="margin-top:8px;"></div>
-      <button type="button" class="text-link-btn" onclick="toggleManageAreas()">Manage areas</button>
-      <div class="manage-areas-panel" id="manage-areas-panel" style="display:none;"></div>
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Due Date</label>
-      <input class="field-text" id="deadline-due" type="date">
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Frequency</label>
-      <select class="field-select" id="deadline-frequency" onchange="toggleRecurrenceFields()">
-        <option value="none">None</option>
-        <option value="daily">Daily</option>
-        <option value="weekly">Weekly</option>
-        <option value="biweekly">Biweekly</option>
-        <option value="monthly">Monthly</option>
-        <option value="custom">Custom</option>
-      </select>
-    </div>
-
-    <div class="field-group hidden-field" id="recurrence-dates-group">
-      <div class="habit-add-form-grid">
-        <div class="field-group">
-          <label class="field-label">Start Date</label>
-          <input class="field-text" id="deadline-start-date" type="date">
-        </div>
-        <div class="field-group">
-          <label class="field-label">End Date</label>
-          <input class="field-text" id="deadline-end-date" type="date">
-        </div>
-      </div>
-      <div class="field-group hidden-field" id="deadline-custom-days-group" style="margin-bottom:0;">
-        <label class="field-label">Repeat On</label>
-        <div class="habit-days-row" id="deadline-custom-days-row"></div>
-      </div>
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Importance</label>
-      <select class="field-select" id="deadline-importance">
-        <option>Low</option>
-        <option>Moderate</option>
-        <option>Critical</option>
+      <label class="field-label">Category</label>
+      <select class="field-select" id="spending-category-input">
+        <option>Food</option>
+        <option>Transport</option>
+        <option>Shopping</option>
+        <option>Subscriptions</option>
+        <option>Entertainment</option>
+        <option>Health</option>
+        <option>Other</option>
       </select>
     </div>
 
     <div class="field-group">
-      <label class="field-label">Type</label>
-      <select class="field-select" id="deadline-type">
-        <option>Asynch</option>
-        <option>Synch</option>
-      </select>
+      <label class="field-label">Note</label>
+      <input class="field-text" id="spending-note-input" type="text" placeholder="e.g. Groceries">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Date</label>
+      <input class="field-text" id="spending-date-input" type="date">
     </div>
 
     <div class="modal-actions-row">
-      <button type="button" class="danger-btn" id="deadline-delete-btn" onclick="deleteDeadlineCurrent()" style="display:none;">Delete</button>
-      <button type="button" class="checkmark-btn" onclick="saveDeadlineForm()" title="Save">
+      <button type="button" class="danger-btn" id="spending-delete-btn" onclick="deleteSpendingEntry()" style="display:none;">Delete</button>
+      <button type="button" class="checkmark-btn" onclick="saveSpendingForm()" title="Save">
         <span class="material-symbols-outlined">check</span>
       </button>
     </div>
+  </div>
+</div>
+
+<!-- ===================== RECURRING PAYMENT MODAL ===================== -->
+<div class="modal-overlay" id="recurring-modal">
+  <div class="modal-card glass" style="width:340px;">
+    <div class="modal-header" style="color:var(--financial);">
+      <span class="material-symbols-outlined">event_repeat</span>
+      <h2 id="recurring-modal-title">Add Recurring Payment</h2>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Name</label>
+      <input class="field-text" id="recurring-name-input" type="text" placeholder="e.g. Netflix">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Amount</label>
+      <input class="field-number" id="recurring-amount-input" type="number" min="0" step="0.01" placeholder="e.g. 15.99">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Billed Every</label>
+      <select class="field-select" id="recurring-frequency-input">
+        <option value="weekly">Weekly</option>
+        <option value="biweekly">Biweekly</option>
+        <option value="monthly" selected>Monthly</option>
+        <option value="quarterly">Quarterly</option>
+        <option value="yearly">Yearly</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Next Billing Date</label>
+      <input class="field-text" id="recurring-date-input" type="date">
+    </div>
+
+    <div class="modal-actions-row">
+      <button type="button" class="danger-btn" id="recurring-delete-btn" onclick="deleteRecurringItem()" style="display:none;">Delete</button>
+      <button type="button" class="checkmark-btn" onclick="saveRecurringForm()" title="Save">
+        <span class="material-symbols-outlined">check</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CASH BALANCE MODAL ===================== -->
+<div class="modal-overlay" id="cash-balance-modal">
+  <div class="modal-card glass" style="width:300px;">
+    <div class="modal-header" style="color:var(--financial);">
+      <span class="material-symbols-outlined">account_balance_wallet</span>
+      <h2>Current Balance</h2>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Cash on Hand</label>
+      <input class="field-number" id="cash-balance-input" type="number" step="0.01" placeholder="e.g. 500" onkeydown="if(event.key==='Enter') saveCashBalance();">
+    </div>
+
+    <button type="button" class="fin-modal-save-btn" onclick="saveCashBalance()">Save</button>
+  </div>
+</div>
+
+<!-- ===================== PAYDAY MODAL ===================== -->
+<div class="modal-overlay" id="payday-modal">
+  <div class="modal-card glass" style="width:340px;">
+    <div class="modal-header" style="color:var(--financial);">
+      <span class="material-symbols-outlined">celebration</span>
+      <h2>Payday! Enter actual amount received</h2>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" id="payday-job1-label">Job 1 Actual Payout</label>
+      <input class="field-number" id="payday-job1-input" type="number" min="0" step="0.01" placeholder="e.g. 320.00">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" id="payday-job2-label">Job 2 Actual Payout</label>
+      <input class="field-number" id="payday-job2-input" type="number" min="0" step="0.01" placeholder="e.g. 280.00">
+    </div>
+
+    <button type="button" class="fin-modal-save-btn" onclick="savePaydayEntry()">Save</button>
+  </div>
+</div>
+
+<!-- ===================== JOBS & PAYDAY SETTINGS MODAL ===================== -->
+<div class="modal-overlay" id="jobs-settings-modal">
+  <div class="modal-card glass" style="width:380px;">
+    <div class="modal-header" style="color:var(--financial);">
+      <span class="material-symbols-outlined">work</span>
+      <h2>Jobs &amp; Payday</h2>
+    </div>
+
+    <div class="fin-jobs-section">
+      <div class="fin-job-row">
+        <input class="field-text fin-job-name-input" type="text" id="job-name-input-0" placeholder="Job name" oninput="updateJobField(0,'name',this.value)">
+        <div class="fin-job-rate-row">
+          <input class="field-number" type="number" min="0" step="0.01" id="job-rate-input-0" placeholder="Hourly rate" oninput="updateJobField(0,'hourlyRate',this.value)">
+          <span class="fin-job-aftertax mono" id="job-aftertax-0"></span>
+        </div>
+      </div>
+
+      <div class="fin-job-row">
+        <input class="field-text fin-job-name-input" type="text" id="job-name-input-1" placeholder="Job name" oninput="updateJobField(1,'name',this.value)">
+        <div class="fin-job-rate-row">
+          <input class="field-number" type="number" min="0" step="0.01" id="job-rate-input-1" placeholder="Hourly rate" oninput="updateJobField(1,'hourlyRate',this.value)">
+          <span class="fin-job-aftertax mono" id="job-aftertax-1"></span>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="fin-modal-save-btn" style="margin-top:16px;" onclick="closeModal('jobs-settings-modal')">Save &amp; Close</button>
   </div>
 </div>
 
@@ -2991,7 +2839,7 @@
   updateCheckinBadges();
 
   /* ============================================================
-     Storage / date helpers
+     Storage helpers
   ============================================================ */
   function loadJSON(key, fallback){
     try{
@@ -3015,24 +2863,6 @@
     var d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
-  function daysBetween(dueISO){
-    var due = new Date(dueISO + 'T00:00:00');
-    var today = new Date(todayISO() + 'T00:00:00');
-    return Math.round((due - today) / 86400000);
-  }
-  function formatDateHuman(iso){
-    if(!iso) return '—';
-    var d = new Date(iso + 'T00:00:00');
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[d.getMonth()] + ' ' + d.getDate();
-  }
-  function computeStatus(dueISO){
-    if(!dueISO) return { text:'No date', cls:'status-normal' };
-    var diff = daysBetween(dueISO);
-    if(diff < 0) return { text:'Overdue', cls:'status-overdue' };
-    if(diff === 0) return { text:'Due Today', cls:'status-today' };
-    return { text: diff + (diff === 1 ? ' day' : ' days'), cls:'status-normal' };
-  }
   function getMondayKey(){
     var d = new Date(getAdjustedDate() + 'T00:00:00');
     var day = d.getDay();
@@ -3040,635 +2870,28 @@
     var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
     return monday.getFullYear() + '-' + String(monday.getMonth()+1).padStart(2,'0') + '-' + String(monday.getDate()).padStart(2,'0');
   }
-
-  /* ============================================================
-     Areas (shared tag list — synced with index.html)
-  ============================================================ */
-  var AREA_PALETTE = [
-    {bg:'rgba(74,222,128,0.16)', fg:'#86efac'},
-    {bg:'rgba(96,165,250,0.16)', fg:'#93c5fd'},
-    {bg:'rgba(251,146,60,0.16)', fg:'#fdba74'},
-    {bg:'rgba(192,132,252,0.16)', fg:'#d8b4fe'},
-    {bg:'rgba(34,211,238,0.16)', fg:'#67e8f9'},
-    {bg:'rgba(248,113,113,0.16)', fg:'#fca5a5'},
-    {bg:'rgba(250,204,21,0.16)', fg:'#fde047'}
-  ];
-  function areaColor(name){
-    var hash = 0;
-    for(var i=0;i<name.length;i++){ hash = (hash*31 + name.charCodeAt(i)) >>> 0; }
-    return AREA_PALETTE[hash % AREA_PALETTE.length];
-  }
-  function getAreas(){ return loadJSON('la_areas', ['Micro','Eco','PCS']); }
-  function saveAreas(list){ saveJSON('la_areas', list); }
-  function addArea(name){
-    name = name.trim();
-    if(!name) return;
-    var areas = getAreas();
-    if(areas.indexOf(name) === -1){ areas.push(name); saveAreas(areas); }
-  }
-  function removeArea(name){
-    saveAreas(getAreas().filter(function(a){ return a !== name; }));
-  }
-
-  /* ============================================================
-     Deadlines task manager — la_deadlines (shared with index.html)
-  ============================================================ */
-  var currentDeadlineId = null;
-  var currentDeadlineAreas = [];
-  var selectedDeadlineDays = [];
-  var deadlineFilters = { dueSort:'asc', importance:'All', type:'All' };
-
-  function getDeadlines(){ return loadJSON('la_deadlines', []); }
-  function saveDeadlines(list){ saveJSON('la_deadlines', list); }
-
-  function applyDeadlineFilters(){
-    deadlineFilters.dueSort = document.getElementById('filter-due-sort').value;
-    deadlineFilters.importance = document.getElementById('filter-importance').value;
-    deadlineFilters.type = document.getElementById('filter-type').value;
-    renderDeadlinesTable();
-  }
-
-  function renderDeadlinesTable(){
-    var all = getDeadlines();
-    var tasks = all.slice();
-    if(deadlineFilters.importance !== 'All'){
-      tasks = tasks.filter(function(t){ return (t.importance || 'Low') === deadlineFilters.importance; });
-    }
-    if(deadlineFilters.type !== 'All'){
-      tasks = tasks.filter(function(t){ return (t.type || 'Asynch') === deadlineFilters.type; });
-    }
-    tasks.sort(function(a,b){
-      var da = a.due || '9999-99-99', db = b.due || '9999-99-99';
-      if(deadlineFilters.dueSort === 'desc') return da < db ? 1 : -1;
-      return da < db ? -1 : 1;
-    });
-    var tbody = document.getElementById('deadlines-tbody');
-    if(tasks.length === 0){
-      var msg = all.length === 0 ? 'No deadlines yet' : 'No matching tasks';
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="7"><span class="material-symbols-outlined">event_available</span>'+msg+'</td></tr>';
-      return;
-    }
-    tbody.innerHTML = tasks.map(function(t){
-      var status = computeStatus(t.due);
-      var areaChips = (t.areas || []).map(function(a){
-        var c = areaColor(a);
-        return '<span class="area-chip" style="background:'+c.bg+'; color:'+c.fg+';">'+escapeHtml(a)+'</span>';
-      }).join('');
-      var repeatIcon = t.recurring ? '<span class="material-symbols-outlined recurring-icon" title="Recurring task">repeat</span>' : '';
-      return '<tr onclick="openDeadlineModal(\''+t.id+'\')" style="cursor:pointer;">' +
-        '<td class="checkbox-col" onclick="event.stopPropagation();"><input type="checkbox" class="task-checkbox" onclick="deleteDeadlineImmediate(\''+t.id+'\')"></td>' +
-        '<td><span class="task-cell"><span class="material-symbols-outlined">description</span><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span>'+repeatIcon+'</span></td>' +
-        '<td><div class="chip-row">'+ (areaChips || '<span class="due-placeholder">—</span>') +'</div></td>' +
-        '<td>'+ formatDateHuman(t.due) +'</td>' +
-        '<td><span class="'+status.cls+'">'+status.text+'</span></td>' +
-        '<td><span class="importance-badge imp-'+ (t.importance || 'Low').toLowerCase() +'">'+ (t.importance || 'Low') +'</span></td>' +
-        '<td><span class="type-badge">'+ (t.type || 'Asynch') +'</span></td>' +
-      '</tr>';
-    }).join('');
-  }
-
-  function deleteDeadlineImmediate(id){
-    saveDeadlines(getDeadlines().filter(function(t){ return t.id !== id; }));
-    renderDeadlinesTable();
-    renderCountdownList();
-  }
-
-  function toggleRecurrenceFields(){
-    var freq = document.getElementById('deadline-frequency').value;
-    document.getElementById('recurrence-dates-group').classList.toggle('show', freq !== 'none');
-    document.getElementById('deadline-custom-days-group').classList.toggle('show', freq === 'custom');
-  }
-
-  function renderDeadlineDaysRow(){
-    var labels = ['M','T','W','T','F','S','S'];
-    var dows =   [1,2,3,4,5,6,0];
-    var row = document.getElementById('deadline-custom-days-row');
-    row.innerHTML = dows.map(function(dow, i){
-      var active = selectedDeadlineDays.indexOf(dow) !== -1;
-      return '<button type="button" class="habit-day-btn'+(active ? ' active' : '')+'" onclick="toggleDeadlineDay('+dow+')">'+labels[i]+'</button>';
-    }).join('');
-  }
-  function toggleDeadlineDay(dow){
-    var idx = selectedDeadlineDays.indexOf(dow);
-    if(idx === -1){ selectedDeadlineDays.push(dow); } else { selectedDeadlineDays.splice(idx, 1); }
-    renderDeadlineDaysRow();
-  }
-
-  function openDeadlineModal(id){
-    currentDeadlineId = id || null;
-    var deleteBtn = document.getElementById('deadline-delete-btn');
-    if(id){
-      var task = getDeadlines().find(function(t){ return t.id === id; });
-      document.getElementById('deadline-modal-title').textContent = 'Edit Task';
-      deleteBtn.style.display = 'inline-block';
-      document.getElementById('deadline-name').value = task.name || '';
-      document.getElementById('deadline-due').value = task.due || '';
-      document.getElementById('deadline-importance').value = task.importance || 'Low';
-      document.getElementById('deadline-type').value = task.type || 'Asynch';
-      document.getElementById('deadline-frequency').value = task.frequency || 'none';
-      document.getElementById('deadline-start-date').value = task.startDate || '';
-      document.getElementById('deadline-end-date').value = task.endDate || '';
-      currentDeadlineAreas = (task.areas || []).slice();
-      selectedDeadlineDays = (task.customDays || []).slice();
-    } else {
-      document.getElementById('deadline-modal-title').textContent = 'New Task';
-      deleteBtn.style.display = 'none';
-      document.getElementById('deadline-name').value = '';
-      document.getElementById('deadline-due').value = '';
-      document.getElementById('deadline-importance').value = 'Low';
-      document.getElementById('deadline-type').value = 'Asynch';
-      document.getElementById('deadline-frequency').value = 'none';
-      document.getElementById('deadline-start-date').value = '';
-      document.getElementById('deadline-end-date').value = '';
-      currentDeadlineAreas = [];
-      selectedDeadlineDays = [];
-    }
-    toggleRecurrenceFields();
-    renderDeadlineDaysRow();
-    document.getElementById('deadline-area-input').value = '';
-    document.getElementById('manage-areas-panel').style.display = 'none';
-    renderDeadlineAreaChips();
-    openModal('deadline-modal');
-  }
-
-  function renderDeadlineAreaChips(){
-    var selectedWrap = document.getElementById('deadline-selected-areas');
-    selectedWrap.innerHTML = currentDeadlineAreas.map(function(a){
-      var c = areaColor(a);
-      return '<span class="chip" style="background:'+c.bg+'; color:'+c.fg+';">'+escapeHtml(a)+' <span class="remove-x" onclick="removeSelectedArea(\''+encodeURIComponent(a)+'\')">&times;</span></span>';
-    }).join('') || '<span class="due-placeholder" style="font-size:0.62rem;">No areas selected</span>';
-
-    var suggWrap = document.getElementById('deadline-area-suggestions');
-    var allAreas = getAreas().filter(function(a){ return currentDeadlineAreas.indexOf(a) === -1; });
-    suggWrap.innerHTML = allAreas.map(function(a){
-      return '<span class="chip suggestion" onclick="addSelectedArea(\''+encodeURIComponent(a)+'\')">'+escapeHtml(a)+'</span>';
-    }).join('');
-
-    renderManageAreasList();
-  }
-
-  function addSelectedArea(encoded){
-    var name = decodeURIComponent(encoded);
-    if(currentDeadlineAreas.indexOf(name) === -1) currentDeadlineAreas.push(name);
-    renderDeadlineAreaChips();
-  }
-  function removeSelectedArea(encoded){
-    var name = decodeURIComponent(encoded);
-    currentDeadlineAreas = currentDeadlineAreas.filter(function(a){ return a !== name; });
-    renderDeadlineAreaChips();
-  }
-
-  function handleAreaInputKey(e){
-    if(e.key === 'Enter' || e.key === ','){
-      e.preventDefault();
-      var input = document.getElementById('deadline-area-input');
-      var name = input.value.trim().replace(/,$/,'');
-      if(name){
-        addArea(name);
-        if(currentDeadlineAreas.indexOf(name) === -1) currentDeadlineAreas.push(name);
-        input.value = '';
-        renderDeadlineAreaChips();
-      }
-    }
-  }
-
-  function toggleManageAreas(){
-    var panel = document.getElementById('manage-areas-panel');
-    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
-    renderManageAreasList();
-  }
-
-  function renderManageAreasList(){
-    var panel = document.getElementById('manage-areas-panel');
-    if(panel.style.display === 'none') return;
-    var areas = getAreas();
-    panel.innerHTML = areas.length ? areas.map(function(a){
-      return '<div class="manage-area-row"><span>'+escapeHtml(a)+'</span><span class="del-x" onclick="deleteAreaTag(\''+encodeURIComponent(a)+'\')">&times;</span></div>';
-    }).join('') : '<div class="manage-area-row"><span style="color:var(--ink-faint);">No saved areas</span></div>';
-  }
-
-  function deleteAreaTag(encoded){
-    var name = decodeURIComponent(encoded);
-    removeArea(name);
-    currentDeadlineAreas = currentDeadlineAreas.filter(function(a){ return a !== name; });
-    renderDeadlineAreaChips();
-  }
-
-  function nextOccurrenceDate(dueISO, frequency){
-    if(frequency === 'daily') return addDaysISO(dueISO, 1);
-    if(frequency === 'weekly') return addDaysISO(dueISO, 7);
-    if(frequency === 'biweekly') return addDaysISO(dueISO, 14);
-    if(frequency === 'monthly'){
-      var d = new Date(dueISO + 'T00:00:00');
-      d.setMonth(d.getMonth() + 1);
-      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    }
-    return dueISO;
-  }
-
-  function generateRecurringInstances(base, frequency, startDate, endDate, customDays){
-    var recurrenceId = uid();
-    var instances = [];
-    var maxInstances = endDate ? 60 : 24;
-
-    if(frequency === 'custom' && customDays && customDays.length){
-      var cursor = startDate;
-      var scanGuard = 0;
-      while(instances.length < maxInstances && scanGuard < 400){
-        if(endDate && cursor > endDate) break;
-        var dow = new Date(cursor + 'T00:00:00').getDay();
-        if(customDays.indexOf(dow) !== -1){
-          instances.push(Object.assign({}, base, {
-            id: uid(),
-            due: cursor,
-            frequency: frequency,
-            startDate: startDate,
-            endDate: endDate || null,
-            customDays: customDays.slice(),
-            recurring: true,
-            recurrenceId: recurrenceId
-          }));
-        }
-        cursor = addDaysISO(cursor, 1);
-        scanGuard++;
-      }
-      return instances;
-    }
-
-    var due = startDate;
-    for(var i = 0; i < maxInstances; i++){
-      if(endDate && due > endDate) break;
-      instances.push(Object.assign({}, base, {
-        id: uid(),
-        due: due,
-        frequency: frequency,
-        startDate: startDate,
-        endDate: endDate || null,
-        recurring: true,
-        recurrenceId: recurrenceId
-      }));
-      due = nextOccurrenceDate(due, frequency);
-    }
-    return instances;
-  }
-
-  function saveDeadlineForm(){
-    var name = document.getElementById('deadline-name').value.trim();
-    if(!name){ document.getElementById('deadline-name').focus(); return; }
-    var due = document.getElementById('deadline-due').value;
-    var importance = document.getElementById('deadline-importance').value;
-    var type = document.getElementById('deadline-type').value;
-    var frequency = document.getElementById('deadline-frequency').value;
-    var startDate = document.getElementById('deadline-start-date').value;
-    var endDate = document.getElementById('deadline-end-date').value;
-    var customDays = selectedDeadlineDays.slice();
-    var canRecur = frequency !== 'none' && !!startDate && (frequency !== 'custom' || customDays.length > 0);
-    var tasks = getDeadlines();
-    if(currentDeadlineId){
-      var idx = tasks.findIndex(function(t){ return t.id === currentDeadlineId; });
-      if(idx > -1){
-        tasks[idx] = {
-          id: currentDeadlineId, name: name, areas: currentDeadlineAreas.slice(), due: due,
-          importance: importance, type: type, frequency: frequency,
-          startDate: startDate || null, endDate: endDate || null,
-          customDays: frequency === 'custom' ? customDays : [],
-          recurring: canRecur,
-          recurrenceId: tasks[idx].recurrenceId || null
-        };
-      }
-    } else if(canRecur){
-      var base = { name: name, areas: currentDeadlineAreas.slice(), importance: importance, type: type };
-      tasks = tasks.concat(generateRecurringInstances(base, frequency, startDate, endDate || null, customDays));
-    } else {
-      tasks.push({ id: uid(), name: name, areas: currentDeadlineAreas.slice(), due: due, importance: importance, type: type, frequency:'none', recurring:false });
-    }
-    saveDeadlines(tasks);
-    renderDeadlinesTable();
-    renderCountdownList();
-    closeModal('deadline-modal');
-  }
-
-  function deleteDeadlineCurrent(){
-    if(!currentDeadlineId) return;
-    saveDeadlines(getDeadlines().filter(function(t){ return t.id !== currentDeadlineId; }));
-    renderDeadlinesTable();
-    renderCountdownList();
-    closeModal('deadline-modal');
-  }
-
-  /* ============================================================
-     Lab task lists (Kranker / Ballard) — la_kranker_tasks / la_ballard_tasks
-  ============================================================ */
-  function getLabTasks(lab){ return loadJSON('la_' + lab + '_tasks', []); }
-  function saveLabTasks(lab, list){ saveJSON('la_' + lab + '_tasks', list); }
-
-  function renderLabTasks(lab){
-    var list = getLabTasks(lab);
-    var ul = document.getElementById(lab + '-task-list');
-    ul.innerHTML = list.map(function(task){
-      return '<li class="lab-task-row">' +
-        '<input type="checkbox" class="task-checkbox" onclick="deleteLabTask(\''+lab+'\',\''+task.id+'\')">' +
-        '<input type="text" class="task-text-input" value="'+ escapeAttr(task.text) +'" placeholder="Task description" oninput="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">' +
-        '<input type="date" class="task-date-input" value="'+ (task.due || '') +'" onchange="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'due\',this.value)">' +
-      '</li>';
-    }).join('');
-    renderLabDueSoonest(lab);
-  }
-
-  function addLabTask(lab){
-    var list = getLabTasks(lab);
-    list.push({ id: uid(), text:'', due:'' });
-    saveLabTasks(lab, list);
-    renderLabTasks(lab);
-    var inputs = document.querySelectorAll('#'+lab+'-task-list .task-text-input');
-    if(inputs.length) inputs[inputs.length-1].focus();
-  }
-
-  function updateLabTaskField(lab, id, field, value){
-    var list = getLabTasks(lab);
-    var task = list.find(function(t){ return t.id === id; });
-    if(task){ task[field] = value; saveLabTasks(lab, list); renderLabDueSoonest(lab); }
-  }
-
-  function deleteLabTask(lab, id){
-    saveLabTasks(lab, getLabTasks(lab).filter(function(t){ return t.id !== id; }));
-    renderLabTasks(lab);
-  }
-
-  function renderLabDueSoonest(lab){
-    var list = getLabTasks(lab).filter(function(t){ return t.due; });
-    var el = document.getElementById(lab + '-due-soonest');
-    if(!list.length){ el.textContent = '—'; return; }
-    list.sort(function(a,b){ return a.due < b.due ? -1 : 1; });
-    el.textContent = 'Due ' + formatDateHuman(list[0].due);
-  }
-
-  function saveLabStatus(lab, value){ saveJSON('la_' + lab + '_status', value); }
-  function loadLabStatus(lab){
-    document.getElementById(lab + '-status').value = loadJSON('la_' + lab + '_status', 'on-track');
-  }
-
-  /* ============================================================
-     Manual weekly hours counters — la_kranker_hours / la_ballard_hours
-  ============================================================ */
-  function getLabHours(lab){ return parseFloat(loadJSON('la_' + lab + '_hours', 0)) || 0; }
-  function saveLabHoursValue(lab, val){ saveJSON('la_' + lab + '_hours', val); }
-  function adjustLabHours(lab, delta){
-    var val = getLabHours(lab) + delta;
-    if(val < 0) val = 0;
-    val = Math.round(val * 10) / 10;
-    saveLabHoursValue(lab, val);
-    renderLabHours(lab);
-  }
-  function resetLabHours(lab){
-    saveLabHoursValue(lab, 0);
-    renderLabHours(lab);
-  }
-  function renderLabHours(lab){
-    document.getElementById(lab + '-hours-value').textContent = getLabHours(lab).toFixed(1) + ' hrs';
-  }
-
-  function saveTodayFocus(value){ saveJSON('la_today_focus_academic', value); }
-  function loadTodayFocus(){
-    document.getElementById('today-focus-input').value = loadJSON('la_today_focus_academic', '');
-  }
-
-  /* ============================================================
-     Pomodoro Timer Card (standalone, tabs + settings popover)
-  ============================================================ */
-  var pomoInterval = null;
-  var pomoAudioCtx = null;
-
-  function getPomoAudioCtx(){
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if(!AC) return null;
-    if(!pomoAudioCtx) pomoAudioCtx = new AC();
-    if(pomoAudioCtx.state === 'suspended') pomoAudioCtx.resume();
-    return pomoAudioCtx;
-  }
-
-  function playPomoChime(){
-    var ctx = getPomoAudioCtx();
-    if(!ctx) return;
-    var now = ctx.currentTime;
-    var notes = [
-      { freq:880.00, start:0,    dur:0.4 },
-      { freq:1174.66, start:0.16, dur:0.45 },
-      { freq:1567.98, start:0.32, dur:0.6 }
-    ];
-    notes.forEach(function(n){
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = n.freq;
-      var t0 = now + n.start;
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.22, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + n.dur);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + n.dur + 0.05);
-    });
-  }
-
-  function flashPomoDisplay(){
-    var el = document.getElementById('pomo-display');
-    el.classList.remove('flash');
-    void el.offsetWidth;
-    el.classList.add('flash');
-    setTimeout(function(){ el.classList.remove('flash'); }, 900);
-  }
-
-  function getPomoSettings(){ return loadJSON('la_pomo_settings', {pomodoro:25, short:5, long:15}); }
-  function savePomoSettingsToStorage(s){ saveJSON('la_pomo_settings', s); }
-
-  function getPomoState(){
-    var settings = getPomoSettings();
-    return loadJSON('la_pomo_state', null) || { mode:'pomodoro', remaining: settings.pomodoro*60, running:false };
-  }
-  function savePomoState(state){ saveJSON('la_pomo_state', state); }
-
-  function getPomoWeek(){
-    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
-    if(w.weekStart !== getMondayKey()){ w.weekStart = getMondayKey(); w.weekSeconds = 0; }
-    return w;
-  }
-  function savePomoWeek(w){ saveJSON('la_pomo_week', w); }
-
-  function formatMMSSGeneric(sec){
-    sec = Math.max(0, Math.round(sec));
-    var m = Math.floor(sec/60), s = sec%60;
-    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  }
-
-  function renderPomo(){
-    var state = getPomoState();
-    document.getElementById('pomo-display').textContent = formatMMSSGeneric(state.remaining);
-    document.querySelectorAll('.pomo-tab').forEach(function(btn){
-      btn.classList.toggle('active', btn.dataset.mode === state.mode);
-    });
-    document.getElementById('pomo-start-btn').textContent = state.running ? 'Pause' : 'Start';
-    var week = getPomoWeek();
-    document.getElementById('pomo-week-total').textContent = (week.weekSeconds/3600).toFixed(1) + 'h';
-  }
-
-  function selectPomoTab(mode){
-    stopPomoInterval();
-    var settings = getPomoSettings();
-    savePomoState({ mode: mode, remaining: settings[mode]*60, running:false });
-    renderPomo();
-  }
-
-  function togglePomoStartPause(){
-    var state = getPomoState();
-    if(state.running){ pausePomoInternal(); } else { startPomoInternal(); }
-  }
-
-  function startPomoInternal(){
-    getPomoAudioCtx();
-    var state = getPomoState();
-    state.running = true;
-    savePomoState(state);
-    stopPomoInterval();
-    pomoInterval = setInterval(tickPomo, 1000);
-    renderPomo();
-  }
-
-  function pausePomoInternal(){
-    var state = getPomoState();
-    state.running = false;
-    savePomoState(state);
-    stopPomoInterval();
-    renderPomo();
-  }
-
-  function stopPomoInterval(){
-    if(pomoInterval){ clearInterval(pomoInterval); pomoInterval = null; }
-  }
-
-  function resetPomo(){
-    var settings = getPomoSettings();
-    var state = getPomoState();
-    state.remaining = settings[state.mode]*60;
-    state.running = false;
-    savePomoState(state);
-    stopPomoInterval();
-    renderPomo();
-  }
-
-  function tickPomo(){
-    var state = getPomoState();
-    if(!state.running) return;
-    state.remaining -= 1;
-    if(state.mode === 'pomodoro'){
-      var week = getPomoWeek();
-      week.weekSeconds += 1;
-      savePomoWeek(week);
-    }
-    if(state.remaining <= 0){
-      var settings = getPomoSettings();
-      state.remaining = settings[state.mode]*60;
-      state.running = false;
-      stopPomoInterval();
-      playPomoChime();
-      flashPomoDisplay();
-      if(state.mode === 'pomodoro'){
-        recordPomodoroCompletion();
-      }
-    }
-    savePomoState(state);
-    renderPomo();
-    renderWeeklyGoal();
-  }
-
-  function togglePomoSettings(){
-    var pop = document.getElementById('pomo-settings-popover');
-    pop.classList.toggle('open');
-    if(pop.classList.contains('open')){
-      var s = getPomoSettings();
-      document.getElementById('setting-pomodoro').value = s.pomodoro;
-      document.getElementById('setting-short').value = s.short;
-      document.getElementById('setting-long').value = s.long;
-    }
-  }
-
-  function savePomoSettings(){
-    var s = {
-      pomodoro: parseInt(document.getElementById('setting-pomodoro').value, 10) || 25,
-      short: parseInt(document.getElementById('setting-short').value, 10) || 5,
-      long: parseInt(document.getElementById('setting-long').value, 10) || 15
-    };
-    savePomoSettingsToStorage(s);
-    var state = getPomoState();
-    if(!state.running){
-      state.remaining = s[state.mode]*60;
-      savePomoState(state);
-    }
-    document.getElementById('pomo-settings-popover').classList.remove('open');
-    renderPomo();
-  }
-
-  function initPomoOnLoad(){
-    var state = getPomoState();
-    savePomoState(state);
-    renderPomo();
-    if(state.running){
-      pomoInterval = setInterval(tickPomo, 1000);
-    }
-  }
-
-  /* ============================================================
-     Study Streak & Weekly Goal (page-local, driven by Pomodoro data)
-  ============================================================ */
   function diffDaysISO(aISO, bISO){
     var a = new Date(aISO + 'T00:00:00');
     var b = new Date(bISO + 'T00:00:00');
     return Math.round((b - a) / 86400000);
   }
 
-  function getStreakData(){ return loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null }); }
-  function saveStreakData(s){ saveJSON('la_study_streak_academic', s); }
-
-  /* Non-destructive read: a streak with no completion yesterday/today
-     displays as broken (0) without needing a background job to reset it. */
-  function getEffectiveStreak(){
-    var s = getStreakData();
-    if(!s.lastCompletedDate) return { current:0, best:s.best };
+  /* ---- Sidebar mini Study Streak card (read-only, sourced from academic-subpage.html) ---- */
+  function getEffectiveSidebarStreak(){
+    var s = loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null });
+    if(!s.lastCompletedDate) return 0;
     var gap = diffDaysISO(s.lastCompletedDate, getAdjustedDate());
-    if(gap > 1) return { current:0, best:s.best };
-    return { current:s.current, best:s.best };
+    return gap > 1 ? 0 : s.current;
   }
-
-  function recordPomodoroCompletion(){
-    var today = getAdjustedDate();
-    var s = getStreakData();
-    var gap = s.lastCompletedDate ? diffDaysISO(s.lastCompletedDate, today) : null;
-    if(gap === 0){
-      /* already logged a completion today */
-    } else if(gap === 1){
-      s.current += 1;
-    } else {
-      s.current = 1;
-    }
-    s.lastCompletedDate = today;
-    if(s.current > s.best) s.best = s.current;
-    saveStreakData(s);
-    renderStreak();
+  function getSidebarWeeklyHours(){
+    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
+    if(w.weekStart !== getMondayKey()) return 0;
+    return w.weekSeconds / 3600;
   }
-
-  function renderStreak(){
-    var eff = getEffectiveStreak();
-    document.getElementById('streak-current').textContent = '🔥 ' + eff.current + ' day streak';
-    document.getElementById('streak-best').textContent = 'Best: ' + eff.best + ' day' + (eff.best === 1 ? '' : 's');
-    renderSidebarStreak();
-  }
-
-  /* ---- Sidebar mini Study Streak card (read-only summary of the card above) ---- */
   function renderSidebarStreak(){
-    var current = getEffectiveStreak().current;
-    var goal = getWeeklyGoal();
-    var hours = getPomoWeek().weekSeconds / 3600;
+    var current = getEffectiveSidebarStreak();
+    var goal = loadJSON('la_weekly_goal_academic', 10);
+    var hours = getSidebarWeeklyHours();
     var pct = goal > 0 ? Math.min(100, (hours / goal) * 100) : 0;
     document.getElementById('sidebar-streak-flame').textContent = '🔥 ' + current + ' day streak';
     var fill = document.getElementById('sidebar-goal-fill');
@@ -3677,93 +2900,794 @@
     document.getElementById('sidebar-goal-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs';
   }
 
-  function getWeeklyGoal(){ return loadJSON('la_weekly_goal_academic', 10); }
-  function saveWeeklyGoal(value){
-    var v = parseFloat(value);
-    if(isNaN(v) || v <= 0) v = 10;
-    saveJSON('la_weekly_goal_academic', v);
-    renderWeeklyGoal();
+  /* ---- Sidebar "Currently" mini card — reads this page's own la_books/la_movies/la_shows ---- */
+  function setSidebarCurrentlyRow(rowId, textId, title){
+    var row = document.getElementById(rowId);
+    var el = document.getElementById(textId);
+    if(title){
+      el.textContent = title;
+      row.classList.remove('empty');
+    } else {
+      el.textContent = 'Nothing yet';
+      row.classList.add('empty');
+    }
   }
+  function renderSidebarCurrently(){
+    var books = loadJSON('la_books', []);
+    var movies = loadJSON('la_movies', []);
+    var shows = loadJSON('la_shows', []);
 
-  function renderWeeklyGoal(){
-    var goal = getWeeklyGoal();
-    var hours = getPomoWeek().weekSeconds / 3600;
-    var pct = goal > 0 ? Math.min(100, (hours / goal) * 100) : 0;
-    var fill = document.getElementById('goal-progress-fill');
-    fill.style.width = pct + '%';
-    fill.classList.toggle('met', goal > 0 && hours >= goal);
-    document.getElementById('goal-progress-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs this week';
-    var input = document.getElementById('weekly-goal-input');
-    if(document.activeElement !== input) input.value = goal;
-    renderSidebarStreak();
+    var book = books.find(function(i){ return i.status === 'currently'; });
+    var movie = movies.filter(function(i){ return i.status === 'queue'; })
+      .sort(function(a,b){ return (a.order||0)-(b.order||0); })[0];
+    var show = shows.find(function(i){ return i.status === 'currently'; });
+
+    setSidebarCurrentlyRow('sidebar-currently-book-row', 'sidebar-currently-book', book ? book.title : null);
+    setSidebarCurrentlyRow('sidebar-currently-movie-row', 'sidebar-currently-movie', movie ? movie.title : null);
+    setSidebarCurrentlyRow('sidebar-currently-show-row', 'sidebar-currently-show', show ? show.title : null);
   }
 
   /* ============================================================
-     Important Tasks (auto-synced, read-only — sourced entirely from
-     Critical-importance deadlines; add/edit those from the Deadlines card)
+     Financial helpers — formatting
   ============================================================ */
-  function getCombinedCountdownItems(){
-    return getDeadlines().filter(function(t){
-      return (t.importance || 'Low') === 'Critical' && t.due;
-    }).map(function(t){
-      return { id:'crit-'+t.id, name:t.name || 'Untitled', date:t.due, time:'23:59' };
-    }).sort(function(a,b){
-      var ta = new Date(a.date + 'T' + (a.time || '23:59') + ':00').getTime();
-      var tb = new Date(b.date + 'T' + (b.time || '23:59') + ':00').getTime();
-      return ta - tb;
+  function formatCurrency(n){
+    n = n || 0;
+    var sign = n < 0 ? '-' : '';
+    return sign + '$' + Math.abs(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  /* ============================================================
+     Spending Log — la_spending_log
+  ============================================================ */
+  var SPENDING_CATEGORY_ICONS = {
+    Food:'restaurant', Transport:'directions_car', Shopping:'shopping_bag',
+    Subscriptions:'subscriptions', Entertainment:'theaters', Health:'favorite', Other:'category'
+  };
+  var editingSpendingId = null;
+
+  function getSpendingLog(){ return loadJSON('la_spending_log', []); }
+  function saveSpendingLog(list){ saveJSON('la_spending_log', list); }
+
+  function openSpendingModal(id){
+    editingSpendingId = id || null;
+    var entry = id ? getSpendingLog().find(function(x){ return x.id === id; }) : null;
+    document.getElementById('spending-modal-title').textContent = id ? 'Edit Entry' : 'Add Entry';
+    document.getElementById('spending-amount-input').value = entry ? entry.amount : '';
+    document.getElementById('spending-category-input').value = entry ? entry.category : 'Food';
+    document.getElementById('spending-note-input').value = entry ? entry.note : '';
+    document.getElementById('spending-date-input').value = entry ? entry.date : getAdjustedDate();
+    document.getElementById('spending-delete-btn').style.display = id ? 'inline-flex' : 'none';
+    openModal('spending-modal');
+  }
+  function closeSpendingModal(){ closeModal('spending-modal'); editingSpendingId = null; }
+
+  function saveSpendingForm(){
+    var amount = parseFloat(document.getElementById('spending-amount-input').value);
+    if(isNaN(amount)) return;
+    var category = document.getElementById('spending-category-input').value;
+    var note = document.getElementById('spending-note-input').value.trim();
+    var date = document.getElementById('spending-date-input').value || getAdjustedDate();
+    var list = getSpendingLog();
+    var isNewEntry = !editingSpendingId;
+    if(editingSpendingId){
+      var e = list.find(function(x){ return x.id === editingSpendingId; });
+      if(e){ e.amount = amount; e.category = category; e.note = note; e.date = date; }
+    } else {
+      list.push({ id: uid(), amount: amount, category: category, note: note, date: date });
+    }
+    saveSpendingLog(list);
+    closeSpendingModal();
+    renderSpendingLog();
+
+    if(isNewEntry){
+      saveJSON('la_cash_on_hand', getCashOnHand() + amount);
+      renderCurrentNet();
+    }
+  }
+
+  function deleteSpendingEntry(){
+    if(!editingSpendingId) return;
+    saveSpendingLog(getSpendingLog().filter(function(x){ return x.id !== editingSpendingId; }));
+    closeSpendingModal();
+    renderSpendingLog();
+  }
+
+  function spendingRowHtml(e){
+    var isExpense = e.amount < 0;
+    var icon = SPENDING_CATEGORY_ICONS[e.category] || 'category';
+    return '<div class="fin-spending-row" onclick="openSpendingModal(\''+e.id+'\')">' +
+        '<div class="fin-spending-row-left">' +
+          '<span class="material-symbols-outlined fin-spending-icon">'+icon+'</span>' +
+          '<div class="fin-spending-row-text">' +
+            '<div class="fin-spending-note">'+escapeHtml(e.note || e.category)+'</div>' +
+            '<div class="fin-spending-date mono">'+formatDateHuman(e.date)+'</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="fin-spending-amount mono '+(isExpense ? 'expense' : 'income')+'">'+formatCurrency(e.amount)+'</div>' +
+      '</div>';
+  }
+
+  function renderSpendingLog(){
+    var all = getSpendingLog();
+    var today = getAdjustedDate();
+    var list = all.filter(function(e){ return e.date <= today; }).sort(function(a,b){ return b.date.localeCompare(a.date); });
+
+    var wrap = document.getElementById('spending-list');
+    if(!list.length){
+      wrap.innerHTML = '<div class="fin-empty">No spending logged yet</div>';
+    } else {
+      wrap.innerHTML = list.map(function(e){ return spendingRowHtml(e); }).join('');
+    }
+    var monthPrefix = today.slice(0,7);
+    var monthTotal = all.filter(function(e){ return e.date <= today && e.date.slice(0,7) === monthPrefix; })
+      .reduce(function(sum, e){ return sum + e.amount; }, 0);
+    var totalEl = document.getElementById('spending-total-value');
+    totalEl.textContent = formatCurrency(monthTotal);
+    totalEl.classList.toggle('negative', monthTotal < 0);
+    totalEl.classList.toggle('positive', monthTotal >= 0);
+
+    renderProjectedCard();
+  }
+
+  /* ============================================================
+     Monthly Budget — la_paycheck (single object)
+  ============================================================ */
+  function getPaycheck(){ return loadJSON('la_paycheck', { amount:0, frequency:'biweekly' }); }
+
+  function updatePaycheckAmount(value){
+    var p = getPaycheck();
+    p.amount = parseFloat(value) || 0;
+    saveJSON('la_paycheck', p);
+    renderBudgetCard();
+  }
+  function updatePaycheckFrequency(value){
+    var p = getPaycheck();
+    p.frequency = value;
+    saveJSON('la_paycheck', p);
+    renderBudgetCard();
+  }
+  function renderPaycheckInputs(){
+    var p = getPaycheck();
+    var amtInput = document.getElementById('paycheck-amount-input');
+    var freqSelect = document.getElementById('paycheck-frequency-select');
+    if(document.activeElement !== amtInput) amtInput.value = p.amount || '';
+    freqSelect.value = p.frequency || 'monthly';
+  }
+  function getMonthlyIncome(){
+    var p = getPaycheck();
+    var amt = parseFloat(p.amount) || 0;
+    if(p.frequency === 'weekly') return amt * 52 / 12;
+    if(p.frequency === 'biweekly') return amt * 26 / 12;
+    return amt;
+  }
+
+  /* ============================================================
+     Jobs / Hourly Wages — la_jobs (fixed 2-slot array: name + rate only)
+     Hours are NOT stored here — they read/write directly from
+     la_kranker_hours / la_ballard_hours, the same keys the academic
+     page's research-hour counters use, so both pages stay in sync
+     (this page picks up cross-tab edits via the storage listener below).
+  ============================================================ */
+  var JOB_TAX_RATE = 0.0495; // effective rate from last paycheck: $907 gross, $44.85 taxes -> multiplier 0.9505
+  var PROJECTED_JOB_LABS = ['kranker', 'ballard'];
+  var PROJECTED_JOB_DEFAULT_NAMES = ['Kranker Lab', 'Ballard Lab'];
+
+  function getJobs(){
+    var jobs = loadJSON('la_jobs', null);
+    if(!jobs || !jobs.length) jobs = [];
+    jobs = jobs.slice(0, 2);
+    while(jobs.length < 2){
+      jobs.push({ name: PROJECTED_JOB_DEFAULT_NAMES[jobs.length], hourlyRate: 0 });
+    }
+    return jobs;
+  }
+  function saveJobs(jobs){ saveJSON('la_jobs', jobs); }
+
+  function jobAfterTaxRate(hourly){ return hourly * (1 - JOB_TAX_RATE); }
+
+  function updateJobField(index, field, value){
+    var jobs = getJobs();
+    if(field === 'name') jobs[index].name = value;
+    else if(field === 'hourlyRate') jobs[index].hourlyRate = parseFloat(value) || 0;
+    saveJobs(jobs);
+    renderJobsCard();
+    renderProjectedCard();
+  }
+
+  function getLabHours(lab){ return parseFloat(loadJSON('la_' + lab + '_hours', 0)) || 0; }
+  function saveLabHoursValue(lab, val){ saveJSON('la_' + lab + '_hours', val); }
+
+  function adjustProjectedHours(index, delta){
+    var lab = PROJECTED_JOB_LABS[index];
+    var val = getLabHours(lab) + delta;
+    if(val < 0) val = 0;
+    val = Math.round(val * 10) / 10;
+    saveLabHoursValue(lab, val);
+    renderProjectedCard();
+  }
+
+  function jobEarnedThisPeriod(index){
+    var job = getJobs()[index];
+    var hours = getLabHours(PROJECTED_JOB_LABS[index]);
+    return hours * jobAfterTaxRate(parseFloat(job.hourlyRate) || 0);
+  }
+
+  function getTotalEarnedThisPeriod(){
+    return [0, 1].reduce(function(sum, i){ return sum + jobEarnedThisPeriod(i); }, 0);
+  }
+
+  function renderJobsCard(){
+    var jobs = getJobs();
+    jobs.forEach(function(job, i){
+      var nameInput = document.getElementById('job-name-input-' + i);
+      var rateInput = document.getElementById('job-rate-input-' + i);
+      var afterTaxEl = document.getElementById('job-aftertax-' + i);
+      if(document.activeElement !== nameInput) nameInput.value = job.name || '';
+      if(document.activeElement !== rateInput) rateInput.value = job.hourlyRate || '';
+      var hourly = parseFloat(job.hourlyRate) || 0;
+      afterTaxEl.textContent = hourly > 0 ? (formatCurrency(hourly) + '/hr → ' + formatCurrency(jobAfterTaxRate(hourly)) + '/hr after tax') : '';
     });
   }
 
-  function renderCountdownList(){
-    var list = getCombinedCountdownItems();
-    var wrap = document.getElementById('countdown-list');
+  function openJobsSettingsModal(){
+    renderJobsCard();
+    openModal('jobs-settings-modal');
+  }
+
+  /* ============================================================
+     Payday — fully computed, no stored/user-editable date. Paydays
+     land every 14 days starting from PAYDAY_BASE_DATE, forever.
+     Checked once per adjusted day via performDailyReset(). When
+     today lands on a scheduled payday that hasn't been processed
+     yet: la_kranker_hours/la_ballard_hours reset to 0, and the
+     payout modal opens so the user can log actual amounts received.
+  ============================================================ */
+  var PAYDAY_BASE_DATE = '2026-07-10';
+  var PAYDAY_INTERVAL_DAYS = 14;
+
+  /* Next scheduled payday >= today (today included, if it's a payday). */
+  function getNextPaydayDate(){
+    var today = getAdjustedDate();
+    var iso = PAYDAY_BASE_DATE;
+    var guard = 0;
+    while(iso < today && guard++ < 2000){
+      iso = addDaysISO(iso, PAYDAY_INTERVAL_DAYS);
+    }
+    return iso;
+  }
+
+  function getSecondPaydayDate(){
+    return addDaysISO(getNextPaydayDate(), PAYDAY_INTERVAL_DAYS);
+  }
+
+  /* Most recent scheduled payday <= dateISO, or null if dateISO predates
+     the base payday entirely (used for catch-up detection in checkPayday). */
+  function getMostRecentPaydayOnOrBefore(dateISO){
+    if(dateISO < PAYDAY_BASE_DATE) return null;
+    var iso = PAYDAY_BASE_DATE;
+    var guard = 0;
+    while(addDaysISO(iso, PAYDAY_INTERVAL_DAYS) <= dateISO && guard++ < 2000){
+      iso = addDaysISO(iso, PAYDAY_INTERVAL_DAYS);
+    }
+    return iso;
+  }
+
+  function renderNextPaydayNote(){
+    var el = document.getElementById('fin-next-payday-note');
+    if(el) el.textContent = 'Next payday: ' + formatDateHuman(getNextPaydayDate());
+  }
+
+  function openPaydayModal(){
+    var jobs = getJobs();
+    document.getElementById('payday-job1-label').textContent = (jobs[0].name || 'Job 1') + ' Actual Payout';
+    document.getElementById('payday-job2-label').textContent = (jobs[1].name || 'Job 2') + ' Actual Payout';
+    document.getElementById('payday-job1-input').value = '';
+    document.getElementById('payday-job2-input').value = '';
+    openModal('payday-modal');
+  }
+
+  function savePaydayEntry(){
+    var amt1 = parseFloat(document.getElementById('payday-job1-input').value) || 0;
+    var amt2 = parseFloat(document.getElementById('payday-job2-input').value) || 0;
+    var total = amt1 + amt2;
+    if(total > 0){
+      var jobs = getJobs();
+      var names = jobs.map(function(j){ return j.name; }).filter(Boolean);
+      var list = getSpendingLog();
+      list.push({ id: uid(), amount: total, category: 'Other', note: 'Paycheck' + (names.length ? ': ' + names.join(' + ') : ''), date: getAdjustedDate() });
+      saveSpendingLog(list);
+      saveJSON('la_cash_on_hand', getCashOnHand() + total);
+      renderSpendingLog();
+      renderCurrentNet();
+
+      var history = loadJSON('la_payday_history', []);
+      history.push({ date: getAdjustedDate(), total: total });
+      saveJSON('la_payday_history', history.slice(-12));
+    }
+    closeModal('payday-modal');
+  }
+
+  function checkPayday(){
+    var today = getAdjustedDate();
+    var recentPayday = getMostRecentPaydayOnOrBefore(today);
+    if(!recentPayday) return;
+    var lastProcessed = localStorage.getItem('la_last_processed_payday') || '';
+    if(lastProcessed >= recentPayday) return;
+    localStorage.setItem('la_last_processed_payday', recentPayday);
+    PROJECTED_JOB_LABS.forEach(function(lab){ saveLabHoursValue(lab, 0); });
+    renderProjectedCard();
+    openPaydayModal();
+  }
+
+  function getCashOnHand(){ return loadJSON('la_cash_on_hand', 0) || 0; }
+
+  function openCashBalanceModal(){
+    document.getElementById('cash-balance-input').value = getCashOnHand() || '';
+    openModal('cash-balance-modal');
+  }
+  function saveCashBalance(){
+    var value = document.getElementById('cash-balance-input').value;
+    saveJSON('la_cash_on_hand', parseFloat(value) || 0);
+    closeModal('cash-balance-modal');
+    renderCurrentNet();
+  }
+
+  function addOneCalendarMonth(d){
+    var next = new Date(d);
+    next.setMonth(next.getMonth() + 1);
+    return next;
+  }
+
+  /* Current Net: cash on hand minus planned expenses (recurring bills in
+     the payday-based window + future-dated spending log entries) — the
+     exact same total getPlannedExpenses() feeds into Projected Net, so
+     the two figures never disagree on what's "planned". */
+  function getCurrentNetValue(){
+    var cash = getCashOnHand();
+    var dueBefore = getPlannedExpenses().reduce(function(sum, i){ return sum + i.amount; }, 0);
+    return { cash: cash, dueBefore: dueBefore, currentNet: cash - dueBefore };
+  }
+
+  function renderCurrentNet(){
+    var parts = getCurrentNetValue();
+
+    document.getElementById('fin-current-net-formula').textContent = formatCurrency(parts.cash) + ' − ' + formatCurrency(parts.dueBefore) + ' =';
+    var el = document.getElementById('fin-current-net-value');
+    el.innerHTML = formatCurrency(parts.currentNet) + (parts.currentNet < 0 ? ' <span class="fin-shortfall-label">⚠ Shortfall</span>' : '');
+    el.classList.toggle('positive', parts.currentNet >= 0);
+    el.classList.toggle('negative', parts.currentNet < 0);
+
+    renderProjectedCard();
+  }
+
+  /* ---- Silently deduct recurring payments from cash on hand once their
+     due date has passed (tracked per-item via lastDeductedDate so each
+     occurrence is only ever subtracted once) ---- */
+  function processRecurringDeductions(){
+    var list = getRecurring();
+    var today = new Date(getAdjustedDate() + 'T00:00:00');
+    var cash = getCashOnHand();
+    var listChanged = false;
+    var cashChanged = false;
+
+    list.forEach(function(r){
+      if(!r.lastDeductedDate){ r.lastDeductedDate = r.billingDate; listChanged = true; }
+      var occ = new Date(r.lastDeductedDate + 'T00:00:00');
+      var guard = 0;
+      while(guard++ < 500){
+        var next = advanceBillingDate(occ, r.frequency);
+        if(next > today) break;
+        cash -= Math.abs(r.amount);
+        cashChanged = true;
+        occ = next;
+        r.lastDeductedDate = dateToISO(occ);
+        listChanged = true;
+      }
+    });
+
+    if(listChanged) saveRecurring(list);
+    if(cashChanged){
+      saveJSON('la_cash_on_hand', cash);
+      renderCurrentNet();
+    }
+  }
+
+  function renderBudgetCard(){
+    renderPaycheckInputs();
+    var income = getMonthlyIncome();
+    document.getElementById('monthly-income-row').textContent = 'Monthly income: ' + formatCurrency(income);
+
+    var recurring = getRecurring();
+    var total = recurring.reduce(function(sum, r){ return sum + monthlyEquivalent(r); }, 0);
+
+    var wrap = document.getElementById('budget-recurring-list');
+    if(!recurring.length){
+      wrap.innerHTML = '<div class="fin-empty">No recurring payments yet</div>';
+    } else {
+      wrap.innerHTML = recurring.slice().sort(function(a,b){ return nextBillingDate(a) - nextBillingDate(b); }).map(function(r){
+        return '<div class="fin-recurring-mini-row">' +
+            '<span class="fin-recurring-mini-name">'+escapeHtml(r.name)+'</span>' +
+            '<span class="fin-recurring-mini-amount mono">'+formatCurrency(-Math.abs(r.amount))+'</span>' +
+          '</div>';
+      }).join('');
+    }
+    document.getElementById('budget-recurring-total').textContent = 'Total: ' + formatCurrency(-total);
+
+    var lastPaycheckAmt = parseFloat(getPaycheck().amount) || 0;
+    var estProfit = lastPaycheckAmt * 2;
+    document.getElementById('fin-breakdown-formula').textContent = formatCurrency(lastPaycheckAmt) + ' × 2 =';
+    var freeEl = document.getElementById('fin-free-money');
+    freeEl.textContent = formatCurrency(estProfit);
+    freeEl.classList.toggle('positive', estProfit >= 0);
+    freeEl.classList.toggle('negative', estProfit < 0);
+
+    renderCurrentNet();
+  }
+
+  /* ============================================================
+     Recurring Payments — la_recurring (shared by Budget + Recurring cards)
+     Each item has a frequency (weekly/biweekly/monthly/quarterly/yearly)
+     and a billingDate anchor; next occurrence is derived by advancing
+     the anchor by one interval at a time until it reaches today.
+  ============================================================ */
+  var editingRecurringId = null;
+  var RECURRING_FREQUENCY_LABELS = { weekly:'Weekly', biweekly:'Biweekly', monthly:'Monthly', quarterly:'Quarterly', yearly:'Yearly' };
+  var RECURRING_MONTHLY_DIVISOR = { weekly: 12/52, biweekly: 12/26, monthly: 1, quarterly: 3, yearly: 12 };
+
+  function getRecurring(){ return loadJSON('la_recurring', []); }
+  function saveRecurring(list){ saveJSON('la_recurring', list); }
+
+  function monthlyEquivalent(r){
+    var amt = Math.abs(r.amount);
+    var divisor = RECURRING_MONTHLY_DIVISOR[r.frequency];
+    return divisor ? amt / divisor : amt;
+  }
+
+  function openRecurringModal(id){
+    editingRecurringId = id || null;
+    var item = id ? getRecurring().find(function(x){ return x.id === id; }) : null;
+    document.getElementById('recurring-modal-title').textContent = id ? 'Edit Payment' : 'Add Recurring Payment';
+    document.getElementById('recurring-name-input').value = item ? item.name : '';
+    document.getElementById('recurring-amount-input').value = item ? item.amount : '';
+    document.getElementById('recurring-frequency-input').value = item ? item.frequency : 'monthly';
+    document.getElementById('recurring-date-input').value = item ? item.billingDate : dateToISO(addOneCalendarMonth(new Date(getAdjustedDate() + 'T00:00:00')));
+    document.getElementById('recurring-delete-btn').style.display = id ? 'inline-flex' : 'none';
+    openModal('recurring-modal');
+  }
+  function closeRecurringModal(){ closeModal('recurring-modal'); editingRecurringId = null; }
+
+  function saveRecurringForm(){
+    var name = document.getElementById('recurring-name-input').value.trim();
+    var amount = parseFloat(document.getElementById('recurring-amount-input').value);
+    var frequency = document.getElementById('recurring-frequency-input').value;
+    var billingDate = document.getElementById('recurring-date-input').value;
+    if(!name || isNaN(amount) || !billingDate) return;
+    var list = getRecurring();
+    if(editingRecurringId){
+      var item = list.find(function(x){ return x.id === editingRecurringId; });
+      if(item){ item.name = name; item.amount = amount; item.frequency = frequency; item.billingDate = billingDate; item.lastDeductedDate = billingDate; }
+    } else {
+      list.push({ id: uid(), name: name, amount: amount, frequency: frequency, billingDate: billingDate, lastDeductedDate: billingDate });
+    }
+    saveRecurring(list);
+    closeRecurringModal();
+    renderRecurringEverywhere();
+  }
+
+  function deleteRecurringItem(){
+    if(!editingRecurringId) return;
+    saveRecurring(getRecurring().filter(function(x){ return x.id !== editingRecurringId; }));
+    closeRecurringModal();
+    renderRecurringEverywhere();
+  }
+
+  function renderRecurringEverywhere(){
+    renderBudgetCard();
+    renderRecurringCard();
+    renderProjectedCard();
+  }
+
+  function advanceBillingDate(d, frequency){
+    var next = new Date(d);
+    if(frequency === 'weekly') next.setDate(next.getDate() + 7);
+    else if(frequency === 'biweekly') next.setDate(next.getDate() + 14);
+    else if(frequency === 'quarterly') next.setMonth(next.getMonth() + 3);
+    else if(frequency === 'yearly') next.setFullYear(next.getFullYear() + 1);
+    else next.setMonth(next.getMonth() + 1);
+    return next;
+  }
+  function nextBillingDate(r){
+    var today = new Date(getAdjustedDate() + 'T00:00:00');
+    var d = new Date(r.billingDate + 'T00:00:00');
+    var guard = 0;
+    while(d < today && guard++ < 500){
+      d = advanceBillingDate(d, r.frequency);
+    }
+    return d;
+  }
+  function isDueSoon(r){
+    var today = new Date(getAdjustedDate() + 'T00:00:00');
+    var next = nextBillingDate(r);
+    var diffDays = Math.round((next - today) / 86400000);
+    return diffDays >= 0 && diffDays <= 7;
+  }
+  function dateToISO(d){
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  function renderRecurringCard(){
+    var list = getRecurring().slice().sort(function(a,b){ return nextBillingDate(a) - nextBillingDate(b); });
+    var wrap = document.getElementById('recurring-list');
     if(!list.length){
-      wrap.innerHTML = '<div class="countdown-empty">No important tasks yet</div>';
+      wrap.innerHTML = '<div class="fin-empty">No recurring payments yet</div>';
       return;
     }
-    wrap.innerHTML = list.map(function(item){
-      return '<div class="countdown-item">' +
-        '<div><div class="name">'+ escapeHtml(item.name) +'</div><div class="target-date">'+ formatDateHuman(item.date) + ' ' + item.time +'</div></div>' +
-        '<div style="display:flex; align-items:center; gap:8px;">' +
-          '<span class="time-left mono" id="countdown-left-'+item.id+'">—</span>' +
-          '<span class="material-symbols-outlined" id="countdown-warn-'+item.id+'" style="font-size:14px; color:#fca5a5; display:none;" title="Due soon">priority_high</span>' +
-        '</div>' +
-      '</div>';
+    wrap.innerHTML = list.map(function(r){
+      var next = nextBillingDate(r);
+      var dueSoon = isDueSoon(r);
+      var freqLabel = RECURRING_FREQUENCY_LABELS[r.frequency] || 'Monthly';
+      return '<div class="fin-recurring-row'+(dueSoon ? ' due-soon' : '')+'" onclick="openRecurringModal(\''+r.id+'\')">' +
+          '<span class="fin-recurring-name">'+escapeHtml(r.name)+'</span>' +
+          '<span class="fin-recurring-day mono">'+freqLabel+' · '+formatDateHuman(dateToISO(next))+'</span>' +
+          '<span class="fin-recurring-amount mono">'+formatCurrency(-Math.abs(r.amount))+'</span>' +
+        '</div>';
     }).join('');
-    updateCountdownTimers();
   }
 
-  function updateCountdownTimers(){
-    var list = getCombinedCountdownItems();
-    var now = new Date();
-    list.forEach(function(item){
-      var el = document.getElementById('countdown-left-' + item.id);
-      var warnIcon = document.getElementById('countdown-warn-' + item.id);
-      if(!el) return;
-      var target = new Date(item.date + 'T' + (item.time || '23:59') + ':00');
-      var diffMs = target - now;
-      el.classList.remove('warn','urgent');
-      if(warnIcon) warnIcon.style.display = (diffMs < 3*24*60*60*1000) ? '' : 'none';
-      if(diffMs <= 0){
-        el.textContent = 'Overdue';
-        el.classList.add('urgent');
-        return;
-      }
-      if(diffMs < 24*60*60*1000){
-        el.textContent = 'Due Today';
-        el.classList.add('warn');
-        return;
-      }
-      var days = Math.floor(diffMs / 86400000);
-      el.textContent = days + 'd';
-    });
+  /* ============================================================
+     Projected — isolated projection card. NEVER reads or writes
+     la_cash_on_hand except read-only for display; hours/earnings
+     tracking here never mutates the actual balance.
+  ============================================================ */
+  /* Planned expenses window runs from today through the day before the
+     SECOND upcoming payday (next payday + 14 days, minus a day). Boundary
+     here is exclusive, so a bill due exactly on the second payday itself
+     is not included — e.g. next payday Jul 24 -> second payday Aug 7 ->
+     bills due Jul 12 (today) through Aug 6 are in the window. */
+  function getPlannedExpensesBoundaryDate(){
+    return new Date(getSecondPaydayDate() + 'T00:00:00');
   }
-  setInterval(updateCountdownTimers, 1000);
+
+  function getEstimatedFullPaycheck(){
+    var history = loadJSON('la_payday_history', []);
+    if(history.length){
+      var last3 = history.slice(-3);
+      return last3.reduce(function(sum, h){ return sum + h.total; }, 0) / last3.length;
+    }
+    var EXPECTED_HOURS_PER_JOB = 20; // assumed full pay-period hours per job until real payout history exists
+    return getJobs().reduce(function(sum, j){ return sum + jobAfterTaxRate(parseFloat(j.hourlyRate) || 0) * EXPECTED_HOURS_PER_JOB; }, 0);
+  }
+
+  function getRecurringItemsWithinBoundary(boundary){
+    var items = [];
+    getRecurring().forEach(function(r){
+      var occ = nextBillingDate(r);
+      var guard = 0;
+      while(occ < boundary && guard++ < 500){
+        items.push({ name: r.name, amount: Math.abs(r.amount) });
+        occ = advanceBillingDate(occ, r.frequency);
+      }
+    });
+    return items;
+  }
+
+  /* Payday-based window (see getPlannedExpensesBoundaryDate) — feeds
+     getPlannedExpenses(), which drives the Monthly Budget card's
+     Current Net / Projected Net / Hours Needed. */
+  function getPlannedRecurringItems(){
+    return getRecurringItemsWithinBoundary(getPlannedExpensesBoundaryDate());
+  }
+
+  /* Today through next payday, inclusive — feeds only the Spending Log
+     card's Planned Expenses Recurring section (a shorter, single-pay-cycle
+     view distinct from the Budget card's window above). Boundary is
+     exclusive, so +1 day makes next payday itself inclusive. */
+  function getSpendingLogRecurringItems(){
+    return getRecurringItemsWithinBoundary(new Date(addDaysISO(getNextPaydayDate(), 1) + 'T00:00:00'));
+  }
+
+  function getPlannedFutureSpendingItems(){
+    var today = getAdjustedDate();
+    return getSpendingLog().filter(function(e){ return e.date > today && e.amount < 0; })
+      .sort(function(a,b){ return a.date.localeCompare(b.date); })
+      .map(function(e){ return { id: e.id, name: e.note || e.category, amount: Math.abs(e.amount), date: e.date }; });
+  }
+
+  function getPlannedExpenses(){
+    return getPlannedRecurringItems().concat(getPlannedFutureSpendingItems());
+  }
+
+  function renderProjectedCard(){
+    var earned = getTotalEarnedThisPeriod();
+    var estimate = getEstimatedFullPaycheck();
+    var pct = estimate > 0 ? Math.min(100, (earned / estimate) * 100) : 0;
+
+    document.getElementById('projected-earned-value').textContent = formatCurrency(earned);
+    document.getElementById('projected-earned-estimate').textContent = 'of est. ' + formatCurrency(estimate) + ' paycheck';
+    document.getElementById('projected-earned-fill').style.width = pct + '%';
+
+    var jobs = getJobs();
+    PROJECTED_JOB_LABS.forEach(function(lab, i){
+      document.getElementById('projected-hours-name-' + i).textContent = jobs[i].name || PROJECTED_JOB_DEFAULT_NAMES[i];
+      document.getElementById('projected-hours-value-' + i).textContent = getLabHours(lab).toFixed(1) + ' hrs';
+    });
+
+    var planned = getPlannedExpenses();
+    var plannedTotal = planned.reduce(function(sum, i){ return sum + i.amount; }, 0);
+
+    var cash = getCashOnHand();
+    var projectedCashAfterEarnings = cash + earned;
+    document.getElementById('projected-net-formula').textContent = formatCurrency(cash) + ' + ' + formatCurrency(earned) + ' =';
+    var el = document.getElementById('projected-net-value');
+    el.innerHTML = formatCurrency(projectedCashAfterEarnings) + (projectedCashAfterEarnings < 0 ? ' <span class="fin-shortfall-label">⚠ Shortfall</span>' : '');
+    el.classList.toggle('positive', projectedCashAfterEarnings >= 0);
+    el.classList.toggle('negative', projectedCashAfterEarnings < 0);
+
+    renderPlannedExpensesCard();
+    renderBudgetProjectedNet(earned, plannedTotal);
+    renderNextPaydayNote();
+  }
+
+  /* ---- Planned Expenses — Spending Log card's bottom half, split into
+     Recurring (due today through next payday, inclusive — see
+     getSpendingLogRecurringItems) and Planned (future-dated spending
+     log entries) subsections. Read-only, no writes. ---- */
+  function renderPlannedExpensesCard(){
+    var recurringItems = getSpendingLogRecurringItems();
+    var recurringWrap = document.getElementById('spending-planned-recurring-list');
+    recurringWrap.innerHTML = recurringItems.length
+      ? recurringItems.map(function(i){
+          return '<div class="fin-planned-expenses-row">' +
+              '<span class="fin-planned-expenses-name">'+escapeHtml(i.name)+'</span>' +
+              '<span class="fin-planned-expenses-amount mono">'+formatCurrency(-i.amount)+'</span>' +
+            '</div>';
+        }).join('')
+      : '<div class="fin-empty">No recurring payments due</div>';
+
+    var futureItems = getPlannedFutureSpendingItems();
+    var futureWrap = document.getElementById('spending-planned-future-list');
+    futureWrap.innerHTML = futureItems.length
+      ? futureItems.map(function(i){
+          return '<div class="fin-planned-expenses-row fin-planned-expenses-row-clickable" onclick="openSpendingModal(\''+i.id+'\')">' +
+              '<div class="fin-planned-expenses-name-date">' +
+                '<span class="fin-planned-expenses-name">'+escapeHtml(i.name)+'</span>' +
+                '<span class="fin-planned-expenses-date mono">'+formatDateHuman(i.date)+'</span>' +
+              '</div>' +
+              '<span class="fin-planned-expenses-amount mono">'+formatCurrency(-i.amount)+'</span>' +
+            '</div>';
+        }).join('')
+      : '<div class="fin-empty">No planned entries</div>';
+
+    var recurringTotal = recurringItems.reduce(function(sum, i){ return sum + i.amount; }, 0);
+    var futureTotal = futureItems.reduce(function(sum, i){ return sum + i.amount; }, 0);
+    document.getElementById('spending-planned-expenses-total').textContent = formatCurrency(-(recurringTotal + futureTotal));
+  }
+
+  /* ---- Monthly Budget card's Projected Net column: current cash minus
+     planned expenses (payday-window recurring + future spending) plus
+     earned so far. Uses raw cash rather than Current Net so the planned
+     expenses window isn't subtracted twice. ---- */
+  function renderBudgetProjectedNet(earned, plannedTotal){
+    var cash = getCashOnHand();
+    var projectedNet = cash - plannedTotal + earned;
+    document.getElementById('fin-budget-projected-formula').textContent = formatCurrency(cash) + ' − ' + formatCurrency(plannedTotal) + ' + ' + formatCurrency(earned) + ' =';
+    var el = document.getElementById('fin-budget-projected-value');
+    el.innerHTML = formatCurrency(projectedNet) + (projectedNet < 0 ? ' <span class="fin-shortfall-label">⚠ Shortfall</span>' : '');
+    el.classList.toggle('positive', projectedNet >= 0);
+    el.classList.toggle('negative', projectedNet < 0);
+
+    renderHoursNeeded(plannedTotal, cash);
+  }
+
+  /* ---- Monthly Budget card's Hours Needed column: how many hours each
+     lab must work (in parallel, both labs contributing simultaneously) to
+     bring Projected Net to exactly $0. Uses the exact same plannedTotal
+     (and raw cash) as Projected Net, not Current Net, so working the
+     displayed hours actually zeroes out Projected Net. ---- */
+  function renderHoursNeeded(plannedTotal, cash){
+    var formulaEl = document.getElementById('fin-hours-needed-formula');
+    var el = document.getElementById('fin-hours-needed-value');
+    el.classList.remove('positive', 'negative', 'amber');
+
+    var shortfall = plannedTotal - cash;
+    if(shortfall <= 0){
+      formulaEl.textContent = '';
+      el.textContent = 'On track ✓';
+      el.classList.add('positive');
+      return;
+    }
+
+    var jobs = getJobs();
+    var combinedRate = jobAfterTaxRate(parseFloat(jobs[0].hourlyRate) || 0) + jobAfterTaxRate(parseFloat(jobs[1].hourlyRate) || 0);
+    if(combinedRate <= 0){
+      formulaEl.textContent = '';
+      el.textContent = 'Set hourly rates';
+      return;
+    }
+
+    var hoursEach = shortfall / combinedRate;
+    formulaEl.textContent = formatCurrency(shortfall) + ' ÷ ' + formatCurrency(combinedRate) + ' =';
+    el.textContent = hoursEach.toFixed(1) + ' hrs each';
+    el.classList.add('amber');
+  }
+
+  /* ============================================================
+     Investing Snapshot — la_investing
+  ============================================================ */
+  function getInvesting(){ return loadJSON('la_investing', []); }
+  function saveInvestingData(list){ saveJSON('la_investing', list); }
+
+  function addInvestingEntry(){
+    var input = document.getElementById('investing-value-input');
+    var value = parseFloat(input.value);
+    if(isNaN(value)) return;
+    var list = getInvesting();
+    var today = getAdjustedDate();
+    var existing = list.find(function(x){ return x.date === today; });
+    if(existing) existing.value = value;
+    else list.push({ date: today, value: value });
+    list.sort(function(a,b){ return a.date.localeCompare(b.date); });
+    saveInvestingData(list);
+    input.value = '';
+    renderInvestingCard();
+  }
+
+  function buildInvestingChartSVG(list){
+    var w = 280, h = 100, padX = 6, padY = 8;
+    var values = list.map(function(x){ return x.value; });
+    var min = Math.min.apply(null, values);
+    var max = Math.max.apply(null, values);
+    var range = (max - min) || 1;
+    var n = values.length;
+    var stepX = n > 1 ? (w - padX * 2) / (n - 1) : 0;
+    function valToY(v){ return h - padY - ((v - min) / range) * (h - padY * 2); }
+    var points = values.map(function(v, i){ return (padX + i * stepX) + ',' + valToY(v); });
+    var linePoints = points.join(' ');
+    var areaPath = 'M' + points[0] + ' L' + points.slice(1).join(' L') + ' L' + (padX + (n - 1) * stepX) + ',' + h + ' L' + padX + ',' + h + ' Z';
+    return '<path d="'+areaPath+'" fill="rgba(248,113,113,0.18)" stroke="none"></path>' +
+      '<polyline points="'+linePoints+'" fill="none" stroke="#f87171" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></polyline>';
+  }
+
+  function renderInvestingCard(){
+    var list = getInvesting();
+    var latestEl = document.getElementById('investing-latest-value');
+    var changeEl = document.getElementById('investing-change');
+    var chart = document.getElementById('investing-chart');
+    var emptyEl = document.getElementById('investing-empty');
+    if(!list.length){
+      latestEl.textContent = '$0.00';
+      changeEl.textContent = '';
+      chart.innerHTML = '';
+      emptyEl.style.display = 'flex';
+      return;
+    }
+    emptyEl.style.display = 'none';
+    var latest = list[list.length - 1];
+    latestEl.textContent = formatCurrency(latest.value);
+    if(list.length > 1){
+      var prev = list[list.length - 2];
+      var pctChange = prev.value !== 0 ? ((latest.value - prev.value) / Math.abs(prev.value)) * 100 : 0;
+      var up = pctChange >= 0;
+      changeEl.innerHTML = '<span class="material-symbols-outlined" style="font-size:13px;">'+(up ? 'trending_up' : 'trending_down')+'</span> ' + (up ? '+' : '') + pctChange.toFixed(1) + '%';
+      changeEl.className = 'fin-investing-change mono ' + (up ? 'positive' : 'negative');
+    } else {
+      changeEl.textContent = '';
+      changeEl.className = 'fin-investing-change mono';
+    }
+    chart.innerHTML = buildInvestingChartSVG(list);
+  }
 
   /* ============================================================
      Habit Tracker — la_habits
      Day resets at 5:00 AM (not midnight). Frequency-aware streaks.
   ============================================================ */
+  function formatDateHuman(iso){
+    if(!iso) return '—';
+    var d = new Date(iso + 'T00:00:00');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate();
+  }
+
   var HABIT_COLORS = ['#4ade80','#60a5fa','#fb923c','#c084fc','#f87171','#facc15','#22d3ee','#f472b6'];
   var selectedHabitColor = HABIT_COLORS[0];
   var selectedHabitDays = [];
@@ -4066,22 +3990,20 @@
 
   /* ============================================================
      Cross-page live sync (fires when the OTHER tab/page changes
-     localStorage — index.html and this page share these keys)
+     localStorage — index.html shares these keys)
   ============================================================ */
   window.addEventListener('storage', function(e){
-    if(e.key === 'la_deadlines'){ renderDeadlinesTable(); renderCountdownList(); }
-    else if(e.key === 'la_kranker_tasks'){ renderLabTasks('kranker'); }
-    else if(e.key === 'la_ballard_tasks'){ renderLabTasks('ballard'); }
-    else if(e.key === 'la_kranker_hours'){ renderLabHours('kranker'); }
-    else if(e.key === 'la_ballard_hours'){ renderLabHours('ballard'); }
-    else if(e.key === 'la_kranker_status'){ loadLabStatus('kranker'); }
-    else if(e.key === 'la_ballard_status'){ loadLabStatus('ballard'); }
-    else if(e.key === 'la_areas'){
-      if(document.getElementById('deadline-modal').classList.contains('open')){ renderDeadlineAreaChips(); }
+    if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){ renderSidebarCurrently(); }
+    else if(e.key === 'la_spending_log'){ renderSpendingLog(); }
+    else if(e.key === 'la_recurring'){ renderRecurringEverywhere(); }
+    else if(e.key === 'la_paycheck'){ renderBudgetCard(); }
+    else if(e.key === 'la_cash_on_hand'){ renderCurrentNet(); }
+    else if(e.key === 'la_jobs'){ renderJobsCard(); renderProjectedCard(); }
+    else if(e.key === 'la_kranker_hours' || e.key === 'la_ballard_hours'){ renderProjectedCard(); }
+    else if(e.key === 'la_investing'){ renderInvestingCard(); }
+    else if(e.key === 'la_study_streak_academic' || e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){
+      renderSidebarStreak();
     }
-    else if(e.key === 'la_study_streak_academic'){ renderStreak(); }
-    else if(e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){ renderWeeklyGoal(); }
-    else if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){ renderSidebarCurrently(); }
     else if(e.key === 'la_habits'){
       renderSidebarHabits();
       if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
@@ -4094,37 +4016,6 @@
       }
     }
   });
-
-  /* ============================================================
-     Sidebar "Currently" mini card — la_books / la_movies / la_shows
-     Read-only, updates live via storage event. No editing here.
-  ============================================================ */
-  function setSidebarCurrentlyRow(rowId, textId, title){
-    var row = document.getElementById(rowId);
-    var el = document.getElementById(textId);
-    if(title){
-      el.textContent = title;
-      row.classList.remove('empty');
-    } else {
-      el.textContent = 'Nothing yet';
-      row.classList.add('empty');
-    }
-  }
-
-  function renderSidebarCurrently(){
-    var books = loadJSON('la_books', []);
-    var movies = loadJSON('la_movies', []);
-    var shows = loadJSON('la_shows', []);
-
-    var book = books.find(function(i){ return i.status === 'currently'; });
-    var movie = movies.filter(function(i){ return i.status === 'queue'; })
-      .sort(function(a,b){ return (a.order||0)-(b.order||0); })[0];
-    var show = shows.find(function(i){ return i.status === 'currently'; });
-
-    setSidebarCurrentlyRow('sidebar-currently-book-row', 'sidebar-currently-book', book ? book.title : null);
-    setSidebarCurrentlyRow('sidebar-currently-movie-row', 'sidebar-currently-movie', movie ? movie.title : null);
-    setSidebarCurrentlyRow('sidebar-currently-show-row', 'sidebar-currently-show', show ? show.title : null);
-  }
 
   /* ============================================================
      Late night mode — 12AM-5AM amber tint on "yesterday" elements
@@ -4155,6 +4046,9 @@
     updateCheckinBadges();
     renderSidebarSocial();
     clearTodayNutritionEntry();
+    processRecurringDeductions();
+    renderSpendingLog();
+    checkPayday();
     if(typeof renderMoodCard === 'function'){ renderMoodCard(); }
     if(typeof renderSplitPlanner === 'function'){ renderSplitPlanner(); }
     if(typeof renderSplitCalendar === 'function'){ renderSplitCalendar(); }
@@ -4441,17 +4335,13 @@
   /* ============================================================
      Init
   ============================================================ */
-  renderDeadlinesTable();
-  ['kranker','ballard'].forEach(function(lab){
-    renderLabTasks(lab);
-    loadLabStatus(lab);
-    renderLabHours(lab);
-  });
-  initPomoOnLoad();
-  renderCountdownList();
-  loadTodayFocus();
-  renderStreak();
-  renderWeeklyGoal();
+  renderSpendingLog();
+  renderBudgetCard();
+  renderRecurringCard();
+  renderJobsCard();
+  renderProjectedCard();
+  renderInvestingCard();
+  renderSidebarStreak();
   renderSidebarCurrently();
   renderSidebarHabits();
   renderSidebarSocial();
@@ -4459,6 +4349,156 @@
   setInterval(updateSidebarDateTime, 1000);
   runClockTick();
   setInterval(runClockTick, 60000);
+</script>
+
+<script>
+  /* ============================================================
+     PIN Gate — Financial page
+     Never caches auth: every load re-shows the gate. PIN and
+     recovery answer are stored only as SHA-256 hashes.
+  ============================================================ */
+  var PIN_STORAGE_KEY = 'la_financial_pin';
+  var PIN_RECOVERY_Q_KEY = 'la_financial_recovery_q';
+  var PIN_RECOVERY_A_KEY = 'la_financial_recovery_a';
+
+  async function sha256Hex(str){
+    var enc = new TextEncoder().encode(str);
+    var buf = await crypto.subtle.digest('SHA-256', enc);
+    return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+  }
+
+  function sanitizePinInput(el){
+    el.value = el.value.replace(/[^0-9]/g,'').slice(0,6);
+  }
+
+  function isValidPin(pin){
+    return /^[0-9]{4,6}$/.test(pin);
+  }
+
+  function showPinScreen(id){
+    ['pin-setup-screen','pin-verify-screen','pin-forgot-question-screen','pin-reset-screen'].forEach(function(sid){
+      document.getElementById(sid).classList.toggle('active', sid === id);
+    });
+  }
+
+  function shakePinCard(cardId){
+    var card = document.getElementById(cardId);
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+  }
+
+  function unlockFinancialPage(){
+    document.body.classList.add('pin-unlocked');
+    document.getElementById('pin-gate-overlay').style.display = 'none';
+  }
+
+  function initPinGate(){
+    var stored = localStorage.getItem(PIN_STORAGE_KEY);
+    showPinScreen(stored ? 'pin-verify-screen' : 'pin-setup-screen');
+  }
+
+  async function handleSetupPin(){
+    var pin = document.getElementById('setup-pin-input').value.trim();
+    var confirmPin = document.getElementById('setup-pin-confirm-input').value.trim();
+    var question = document.getElementById('setup-recovery-question').value.trim();
+    var answer = document.getElementById('setup-recovery-answer').value.trim();
+    var errorEl = document.getElementById('setup-error');
+
+    if(!isValidPin(pin)){
+      errorEl.textContent = 'PIN must be 4-6 digits.';
+      shakePinCard('pin-setup-screen');
+      return;
+    }
+    if(pin !== confirmPin){
+      errorEl.textContent = 'PINs do not match.';
+      shakePinCard('pin-setup-screen');
+      return;
+    }
+    if(!question || !answer){
+      errorEl.textContent = 'Recovery question and answer are required.';
+      shakePinCard('pin-setup-screen');
+      return;
+    }
+    errorEl.textContent = '';
+    var pinHash = await sha256Hex(pin);
+    var answerHash = await sha256Hex(answer.toLowerCase());
+    localStorage.setItem(PIN_STORAGE_KEY, pinHash);
+    localStorage.setItem(PIN_RECOVERY_Q_KEY, question);
+    localStorage.setItem(PIN_RECOVERY_A_KEY, answerHash);
+    unlockFinancialPage();
+  }
+
+  async function handleVerifyPin(){
+    var input = document.getElementById('verify-pin-input');
+    var errorEl = document.getElementById('verify-error');
+    var stored = localStorage.getItem(PIN_STORAGE_KEY);
+    var hash = await sha256Hex(input.value.trim());
+    if(hash === stored){
+      errorEl.textContent = '';
+      unlockFinancialPage();
+    } else {
+      errorEl.textContent = 'Incorrect PIN';
+      shakePinCard('pin-verify-screen');
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  function openForgotPin(){
+    document.getElementById('forgot-question-display').textContent = localStorage.getItem(PIN_RECOVERY_Q_KEY) || '';
+    document.getElementById('forgot-answer-input').value = '';
+    document.getElementById('forgot-error').textContent = '';
+    showPinScreen('pin-forgot-question-screen');
+  }
+
+  function cancelForgotPin(){
+    document.getElementById('verify-error').textContent = '';
+    document.getElementById('verify-pin-input').value = '';
+    showPinScreen('pin-verify-screen');
+  }
+
+  async function handleForgotAnswer(){
+    var input = document.getElementById('forgot-answer-input');
+    var errorEl = document.getElementById('forgot-error');
+    var storedHash = localStorage.getItem(PIN_RECOVERY_A_KEY);
+    var hash = await sha256Hex(input.value.trim().toLowerCase());
+    if(hash === storedHash){
+      errorEl.textContent = '';
+      document.getElementById('reset-error').textContent = '';
+      document.getElementById('reset-pin-input').value = '';
+      document.getElementById('reset-pin-confirm-input').value = '';
+      showPinScreen('pin-reset-screen');
+    } else {
+      errorEl.textContent = 'Incorrect answer';
+      shakePinCard('pin-forgot-question-screen');
+      input.value = '';
+      input.focus();
+    }
+  }
+
+  async function handleResetPin(){
+    var pin = document.getElementById('reset-pin-input').value.trim();
+    var confirmPin = document.getElementById('reset-pin-confirm-input').value.trim();
+    var errorEl = document.getElementById('reset-error');
+
+    if(!isValidPin(pin)){
+      errorEl.textContent = 'PIN must be 4-6 digits.';
+      shakePinCard('pin-reset-screen');
+      return;
+    }
+    if(pin !== confirmPin){
+      errorEl.textContent = 'PINs do not match.';
+      shakePinCard('pin-reset-screen');
+      return;
+    }
+    errorEl.textContent = '';
+    var pinHash = await sha256Hex(pin);
+    localStorage.setItem(PIN_STORAGE_KEY, pinHash);
+    unlockFinancialPage();
+  }
+
+  initPinGate();
 </script>
 
 </body>

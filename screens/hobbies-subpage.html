@@ -1,374 +1,3909 @@
 <!DOCTYPE html>
-<html class="light" lang="en" style=""><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "secondary-container": "#7d01b1",
-                    "surface-dim": "#f5f5f5",
-                    "on-tertiary": "#003544",
-                    "surface-variant": "#f0f0f0",
-                    "outline-variant": "#e1e1e1",
-                    "tertiary-fixed": "#b8eaff",
-                    "tertiary-fixed-dim": "#51d5ff",
-                    "on-surface-variant": "#5a5a5a",
-                    "on-primary-container": "#00285c",
-                    "inverse-on-surface": "#f5f5f5",
-                    "on-tertiary-fixed-variant": "#004d61",
-                    "on-surface": "#1A1A1A",
-                    "surface-container-highest": "#e8e8e8",
-                    "secondary": "#7d01b1",
-                    "on-secondary-fixed-variant": "#7200a3",
-                    "on-error": "#ffffff",
-                    "on-primary-fixed-variant": "#004493",
-                    "surface-container-high": "#ebebeb",
-                    "primary-container": "#4b8eff",
-                    "surface-bright": "#ffffff",
-                    "on-secondary-container": "#e5a9ff",
-                    "surface": "#ffffff",
-                    "surface-container": "#f8f8f8",
-                    "on-primary": "#ffffff",
-                    "tertiary": "#009dc2",
-                    "on-tertiary-fixed": "#001f28",
-                    "on-background": "#1a1a1a",
-                    "on-secondary-fixed": "#310048",
-                    "surface-container-lowest": "#ffffff",
-                    "on-error-container": "#93000a",
-                    "background": "#ffffff",
-                    "error-container": "#ffdad6",
-                    "inverse-primary": "#adc6ff",
-                    "secondary-fixed-dim": "#e9b3ff",
-                    "error": "#ba1a1a",
-                    "primary-fixed-dim": "#adc6ff",
-                    "secondary-fixed": "#f6d9ff",
-                    "on-secondary": "#ffffff",
-                    "primary-fixed": "#d8e2ff",
-                    "outline": "#757780",
-                    "inverse-surface": "#313030",
-                    "tertiary-container": "#009dc2",
-                    "on-tertiary-container": "#002e3b",
-                    "on-primary-fixed": "#001a41",
-                    "primary": "#005bc1",
-                    "surface-container-low": "#f2f2f2",
-                    "surface-tint": "#005bc1",
-                    "accent-yellow": "#FACC15"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "margin-mobile": "16px",
-                    "unit": "3.2px",
-                    "margin-desktop": "32px",
-                    "gutter": "12px",
-                    "container-max": "1280px"
-            },
-            "fontFamily": {
-                    "headline-md": ["Geist"],
-                    "display-lg-mobile": ["Geist"],
-                    "body-md": ["Geist"],
-                    "label-sm": ["JetBrains Mono"],
-                    "body-lg": ["Geist"],
-                    "display-lg": ["Geist"]
-            }
-          },
-        },
-      }
-    </script>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liberation Arc — Hobbies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 <style>
-        body {
-            background: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDxeGCW3BKn-f6QMRx7Z-J7dK271KPC4jtvjspcAhJSsmRFNjVHV01QIaI9nFSE93yq1H0cXvkgPobSDc06oI0pfrccGWhBaMhfspx9tNdfxiw1uXyzH0FyHvh7N9SMWr9T9f0_e9h93xm3RA1alTpsCHRFA4dtvp3BeMD_MN0JQdRGVSO4uSljTVfHvG9WZCTnCWCUDofi7SRIktiBBDQCx6IS0Y1U3PGcwWJM4eyfbC4MoxhMv2HeOS1CMRfcy8ZAJLz1b3xEWb60') no-repeat center center;
-            background-size: cover;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
-        }
-        .aspect-16-9-container {
-            width: 100vw;
-            height: 56.25vw;
-            max-height: 100vh;
-            max-width: 177.78vh;
-            display: flex;
-            position: relative;
-            background: transparent;
-            overflow: hidden;
-        }
-        .liquid-glass {
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
-            position: relative;
-        }
-        .sidebar-gradient {
-            background: linear-gradient(180deg, rgba(161, 98, 7, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%);
-            backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        html { font-size: 13px; }
-        .text-sm { font-size: 0.75rem; }
-        .text-xs { font-size: 0.65rem; }
-        .text-base { font-size: 0.9rem; }
-        .text-lg { font-size: 1.1rem; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+  :root{
+    --bg-photo: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDxeGCW3BKn-f6QMRx7Z-J7dK271KPC4jtvjspcAhJSsmRFNjVHV01QIaI9nFSE93yq1H0cXvkgPobSDc06oI0pfrccGWhBaMhfspx9tNdfxiw1uXyzH0FyHvh7N9SMWr9T9f0_e9h93xm3RA1alTpsCHRFA4dtvp3BeMD_MN0JQdRGVSO4uSljTVfHvG9WZCTnCWCUDofi7SRIktiBBDQCx6IS0Y1U3PGcwWJM4eyfbC4MoxhMv2HeOS1CMRfcy8ZAJLz1b3xEWb60');
 
-        /* Input styling overrides */
-        .glass-input {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            color: #1A1A1A;
-            padding: 0 4px;
-            text-align: center;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        .glass-input:focus {
-            border-color: rgba(0, 0, 0, 0.3);
-            background: rgba(255, 255, 255, 0.6);
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
-        }
-        /* Hide number input arrows */
-        .glass-input::-webkit-inner-spin-button,
-        .glass-input::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-    </style>
+    --ink: #f2f2f5;
+    --ink-dim: rgba(242,242,245,0.62);
+    --ink-faint: rgba(242,242,245,0.36);
+
+    --glass: rgba(255,255,255,0.06);
+    --glass-strong: rgba(255,255,255,0.09);
+    --glass-border: rgba(255,255,255,0.14);
+    --glass-sheen: rgba(255,255,255,0.10);
+
+    --sidebar-bg: rgba(14,15,20,0.55);
+
+    --physical: #4ade80;
+    --academic: #60a5fa;
+    --hobbies: #fb923c;
+    --financial: #f87171;
+    --secondbrain: #22d3ee;
+
+    --r-lg: 22px;
+    --r-md: 16px;
+    --r-sm: 10px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;padding:0;}
+  body{
+    font-family:'Geist','Segoe UI',system-ui,sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+  }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  .material-symbols-outlined{
+    font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+    line-height:1;
+  }
+
+  .bg-layer{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background-image:var(--bg-photo);
+    background-size:cover;
+    background-position:center;
+    filter:none;
+    transition:filter .3s ease;
+  }
+  .bg-scrim{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(60,50,90,0.35), transparent 55%),
+      radial-gradient(circle at 90% 85%, rgba(20,60,70,0.35), transparent 55%),
+      linear-gradient(180deg, rgba(6,6,10,0.78) 0%, rgba(6,6,10,0.88) 100%);
+  }
+
+  ::-webkit-scrollbar{ width:4px; height:4px; }
+  ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.14); border-radius:10px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+
+  /* ---------- Shell ---------- */
+  .app-shell{
+    display:flex;
+    height:100vh;
+    width:100vw;
+  }
+
+  /* ---------- Liquid glass base ---------- */
+  .glass{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    box-shadow:0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    position:relative;
+    isolation:isolate;
+  }
+  .glass::before{
+    content:'';
+    position:absolute; inset:0;
+    border-radius:inherit;
+    background:linear-gradient(135deg, var(--glass-sheen) 0%, rgba(255,255,255,0) 45%);
+    pointer-events:none;
+    z-index:1;
+  }
+  .glass > *{ position:relative; z-index:2; }
+
+  .accent-blob{
+    position:absolute; top:0; right:0;
+    width:56px; height:56px;
+    border-radius:0 0 0 100%;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:268px;
+    flex-shrink:0;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    padding:24px 18px;
+    background:var(--sidebar-bg);
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    border-right:1px solid rgba(255,255,255,0.08);
+    gap:18px;
+  }
+
+  .brand{
+    text-align:center;
+    padding:4px 0 6px;
+  }
+  .brand h1{
+    margin:0;
+    font-size:1.5rem;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    background:linear-gradient(135deg,#ffffff 0%, #b9c2ff 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .brand-datetime{
+    margin:3px 0 0;
+    font-size:0.64rem;
+    font-weight:600;
+    letter-spacing:0.03em;
+    color:#fff;
+  }
+
+  .nav{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .nav-link{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:var(--r-sm);
+    text-decoration:none;
+    color:var(--ink-dim);
+    font-size:0.85rem;
+    font-weight:500;
+    transition:background 0.2s ease, color 0.2s ease;
+    border:1px solid transparent;
+  }
+  .nav-link .material-symbols-outlined{ font-size:19px; }
+  .nav-link:hover{
+    background:rgba(255,255,255,0.06);
+    color:var(--ink);
+  }
+  .nav-link.active{
+    background:rgba(255,255,255,0.09);
+    border-color:rgba(255,255,255,0.14);
+    color:var(--ink);
+    font-weight:600;
+  }
+  .nav-link.active .material-symbols-outlined{ color:var(--nav-color); }
+  .nav-link[data-section="physical"]{ --nav-color:var(--physical); }
+  .nav-link[data-section="academic"]{ --nav-color:var(--academic); }
+  .nav-link[data-section="hobbies"]{ --nav-color:var(--hobbies); }
+  .nav-link[data-section="financial"]{ --nav-color:var(--financial); }
+  .nav-link[data-section="secondbrain"]{ --nav-color:var(--secondbrain); }
+  .nav-link:not(.active) .material-symbols-outlined{ color: var(--nav-color); opacity:0.75; }
+
+  .sidebar-divider{
+    height:1px;
+    background:rgba(255,255,255,0.08);
+    margin:2px 0;
+  }
+
+  /* Morning / Night buttons */
+  .daycycle-buttons{
+    display:flex;
+    gap:8px;
+  }
+  .daycycle-btn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:9px 8px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink-dim);
+    font-size:0.72rem;
+    font-weight:600;
+    font-family:inherit;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .daycycle-btn{ position:relative; }
+  .daycycle-btn .material-symbols-outlined{ font-size:16px; }
+  .daycycle-btn.morning{ border-color:rgba(96,165,250,0.32); color:#bcd4fb; }
+  .daycycle-btn.morning .material-symbols-outlined{ color:#60a5fa; }
+  .daycycle-btn.morning:hover{ background:rgba(96,165,250,0.16); border-color:rgba(96,165,250,0.5); color:#eaf2ff; }
+  .daycycle-btn.night{ border-color:rgba(250,204,21,0.32); color:#f5e3a8; }
+  .daycycle-btn.night .material-symbols-outlined{ color:#facc15; }
+  .daycycle-btn.night:hover{ background:rgba(250,204,21,0.16); border-color:rgba(250,204,21,0.5); color:#fff8dc; }
+  .done-badge{
+    position:absolute;
+    top:-6px; right:-6px;
+    width:16px; height:16px;
+    border-radius:50%;
+    background:#0b0b10;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    color:#4ade80;
+    border:1px solid rgba(255,255,255,0.25);
+  }
+
+  /* Late night mode (12AM-5AM): amber tint = still "yesterday" */
+  body.late-night .daycycle-btn.morning,
+  body.late-night .daycycle-btn.night{
+    border-color:rgba(251,191,36,0.4);
+    background:rgba(251,191,36,0.08);
+  }
+  body.late-night .social-card{
+    border-color:rgba(251,191,36,0.4);
+  }
+  body.late-night .habit-mini-card{
+    border-color:rgba(251,191,36,0.4);
+  }
+
+  /* Social targets */
+  .social-card{
+    padding:14px;
+    border-radius:var(--r-md);
+    transition:border-color .3s ease;
+  }
+  .social-card .heading{
+    font-size:0.62rem;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:0;
+  }
+  .social-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:6px 2px;
+  }
+  .social-row + .social-row{
+    border-top:1px solid rgba(255,255,255,0.06);
+  }
+  .social-row .name{
+    font-size:0.72rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  #social-widget-rows{
+    max-height:140px;
+    overflow-y:auto;
+    padding-right:4px;
+  }
+  .dot{
+    width:8px; height:8px;
+    border-radius:50%;
+    box-shadow:0 0 8px currentColor;
+  }
+
+  /* Study Streak mini card (read-only, sourced from academic-subpage.html) */
+  .streak-mini-card{
+    padding:14px;
+    border-radius:var(--r-md);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    background:rgba(96,165,250,0.06);
+    border:1px solid rgba(96,165,250,0.16);
+  }
+  .streak-mini-flame{
+    font-size:0.78rem;
+    font-weight:700;
+    color:var(--ink);
+    text-align:center;
+  }
+  .streak-mini-goal{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .streak-mini-track{
+    height:6px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+  }
+  .streak-mini-fill{
+    height:100%;
+    border-radius:999px;
+    background:var(--secondbrain);
+    width:0%;
+    transition:width .3s ease, background .3s ease;
+  }
+  .streak-mini-fill.met{ background:#4ade80; }
+  .streak-mini-label{
+    font-size:0.58rem;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+
+  /* Currently mini card (read-only summary of this page's Books/Movies/Shows cards) */
+  .currently-mini-card{
+    padding:14px;
+    border-radius:var(--r-md);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    background:rgba(251,146,60,0.06);
+    border:1px solid rgba(251,146,60,0.16);
+  }
+  .currently-mini-title{
+    font-size:0.62rem;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:0 0 2px;
+  }
+  .currently-mini-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.72rem;
+  }
+  .currently-mini-row .currently-mini-icon{ font-size:14px; flex-shrink:0; }
+  .currently-mini-text{
+    color:var(--ink);
+    font-weight:600;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    min-width:0;
+  }
+  .currently-mini-row.empty .currently-mini-text{
+    color:var(--ink-faint);
+    font-weight:500;
+    font-style:italic;
+  }
+
+  /* ---------- Habit Tracker mini card (green tint) ---------- */
+  .habit-mini-card{
+    padding:14px;
+    border-radius:var(--r-md);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    background:rgba(74,222,128,0.06);
+    border:1px solid rgba(74,222,128,0.16);
+    transition:border-color .3s ease;
+  }
+  .habit-mini-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    cursor:pointer;
+  }
+  .habit-mini-header .currently-mini-title{ margin:0; }
+  .habit-mini-header-left{ display:flex; align-items:baseline; gap:7px; min-width:0; }
+  .habit-mini-counter{ font-size:0.74rem; font-weight:700; color:#fff; flex-shrink:0; }
+  .habit-mini-add-btn{
+    width:20px; height:20px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background .15s ease, color .15s ease;
+  }
+  .habit-mini-add-btn:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .habit-mini-add-btn .material-symbols-outlined{ font-size:13px; }
+  .habit-mini-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    max-height:214px;
+    overflow-y:auto;
+  }
+  .habit-mini-row{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:0.7rem;
+    padding:4px 6px;
+    border-radius:7px;
+    flex-shrink:0;
+  }
+  .habit-mini-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; box-shadow:0 0 6px currentColor; }
+  .habit-mini-name{ flex:1; min-width:0; color:var(--ink); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .habit-mini-streak{ font-size:0.6rem; color:var(--ink-faint); flex-shrink:0; }
+  .habit-mini-empty{ font-size:0.66rem; color:var(--ink-faint); font-style:italic; }
+
+  .habit-checkbox{
+    appearance:none;
+    -webkit-appearance:none;
+    width:15px; height:15px;
+    border-radius:4px;
+    border:1.5px solid rgba(74,222,128,0.5);
+    background:transparent;
+    cursor:pointer;
+    flex-shrink:0;
+    position:relative;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .habit-checkbox:hover{ border-color:rgba(74,222,128,0.85); }
+  .habit-checkbox:checked{ background:#4ade80; border-color:#4ade80; }
+  .habit-checkbox:checked::after{
+    content:'';
+    position:absolute;
+    left:5px; top:2px;
+    width:3px; height:7px;
+    border:solid #06280f;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+
+  /* ---------- Habit Tracker modal ---------- */
+  .modal-card.habit-modal-card{
+    width:70vw;
+    max-width:70vw;
+    height:80vh;
+    max-height:80vh;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .habit-modal-header-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin-bottom:16px;
+    flex-shrink:0;
+  }
+  .habit-modal-date{ font-size:0.66rem; color:var(--ink-faint); margin:4px 0 0; }
+  .habit-modal-close{
+    width:28px; height:28px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .habit-modal-close:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
+
+  .habit-view-toggle{ display:flex; gap:6px; margin-bottom:14px; flex-shrink:0; }
+  .habit-view-btn{
+    padding:7px 14px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.04);
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.66rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .habit-view-btn:hover{ background:rgba(255,255,255,0.09); color:var(--ink); }
+  .habit-view-btn.active{
+    background:rgba(74,222,128,0.18);
+    border-color:rgba(74,222,128,0.4);
+    color:#86efac;
+  }
+  .habit-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:14px;
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:2px 4px 16px 2px;
+    align-content:start;
+  }
+  .habit-empty-msg{ font-size:0.72rem; color:var(--ink-faint); font-style:italic; text-align:center; padding:20px 0; }
+  .habit-card{
+    padding:14px;
+    border-radius:var(--r-md);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.1);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    cursor:grab;
+    transition:opacity .15s ease;
+  }
+  .habit-card:active{ cursor:grabbing; }
+  .habit-card.dragging{ opacity:0.45; }
+  .habit-card.completed{ opacity:0.55; }
+  .habit-card.completed .habit-card-name{ text-decoration:line-through; }
+  .habit-card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .habit-card-name{ font-size:0.88rem; font-weight:700; margin:0 0 6px; }
+  .habit-card-actions{ display:flex; gap:4px; flex-shrink:0; }
+  .habit-icon-btn{
+    width:22px; height:22px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:var(--ink-dim);
+    flex-shrink:0;
+  }
+  .habit-icon-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
+  .habit-icon-btn .material-symbols-outlined{ font-size:14px; }
+  .habit-difficulty-badge{
+    display:inline-block;
+    padding:2px 7px;
+    border-radius:6px;
+    font-size:0.56rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .habit-diff-easy{ background:rgba(74,222,128,0.16); color:#86efac; }
+  .habit-diff-medium{ background:rgba(250,204,21,0.16); color:#fde047; }
+  .habit-diff-hard{ background:rgba(251,146,60,0.16); color:#fdba74; }
+  .habit-diff-extreme{ background:rgba(248,113,113,0.16); color:#fca5a5; }
+  .habit-card-streaks{ display:flex; gap:14px; font-size:0.68rem; color:var(--ink-dim); }
+  .habit-card-streaks .streak-current{ color:var(--ink); font-weight:700; }
+  .habit-card-check-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:auto;
+    padding-top:10px;
+    border-top:1px solid rgba(255,255,255,0.06);
+    font-size:0.66rem;
+    color:var(--ink-dim);
+    cursor:pointer;
+  }
+  .habit-card-unscheduled{
+    font-size:0.62rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    margin-top:auto;
+    padding-top:10px;
+    border-top:1px solid rgba(255,255,255,0.06);
+  }
+
+  .habit-add-section{ flex-shrink:0; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08); }
+  .habit-add-toggle-btn{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    background:none;
+    border:1px dashed rgba(255,255,255,0.18);
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.62rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    padding:8px 14px;
+    border-radius:var(--r-sm);
+    cursor:pointer;
+  }
+  .habit-add-toggle-btn:hover{ background:rgba(255,255,255,0.06); color:var(--ink); }
+  .habit-add-toggle-btn .material-symbols-outlined{ font-size:14px; }
+  .habit-add-form{ margin-top:12px; }
+  .habit-add-form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .habit-days-row{ display:flex; gap:6px; }
+  .habit-day-btn{
+    width:30px; height:30px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.04);
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.62rem;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .15s ease;
+  }
+  .habit-day-btn.active{ background:#4ade80; border-color:#4ade80; color:#062013; }
+  .habit-color-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .habit-color-swatch{
+    width:26px; height:26px;
+    border-radius:50%;
+    cursor:pointer;
+    border:2px solid transparent;
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .habit-color-swatch:hover{ transform:scale(1.1); }
+  .habit-color-swatch.selected{ border-color:#fff; }
+  .habit-cancel-btn{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.16);
+    color:var(--ink-dim);
+    font-size:0.64rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding:9px 14px;
+    border-radius:var(--r-sm);
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .habit-cancel-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
+
+  /* ---------- Social Targets Triangle ---------- */
+  .social-card-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .social-empty{ font-size:0.66rem; color:var(--ink-faint); font-style:italic; padding:6px 2px; }
+  .social-row-left{ display:flex; align-items:center; gap:8px; min-width:0; }
+  .social-freq-label{
+    font-size:0.56rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+    flex-shrink:0;
+  }
+
+  .modal-card.social-modal-card{
+    width:85vw;
+    height:85vh;
+    max-width:85vw;
+    max-height:85vh;
+    padding:36px;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .social-modal-body{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    min-height:0;
+    gap:20px;
+  }
+  .social-pyramid-area{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:0;
+    padding:10px 0;
+  }
+  .triangle-wrap{
+    position:relative;
+    height:100%;
+    max-width:100%;
+    aspect-ratio:1.15/1;
+  }
+  .tri-tier{
+    position:absolute;
+    inset:0;
+    border-radius:4px;
+    filter:brightness(1);
+    transition:filter .15s ease;
+    background-image:linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.16) 100%);
+  }
+  .tri-tier.drag-over{ filter:brightness(1.35); }
+  .tri-tier-label{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:0.8rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:#fff;
+    text-shadow:0 2px 8px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.45);
+    text-decoration:underline;
+    text-underline-offset:4px;
+    white-space:nowrap;
+  }
+  .tri-chip-row{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    flex-wrap:wrap;
+    align-content:flex-start;
+    justify-content:center;
+    gap:7px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding-right:2px;
+  }
+
+  .social-bottom-section{
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .social-people-panel{
+    height:120px;
+    flex-shrink:0;
+    display:flex;
+    align-items:flex-start;
+    gap:18px;
+    padding:16px 20px;
+    border-radius:var(--r-md);
+  }
+  .social-people-header-inline{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-shrink:0;
+    padding-top:2px;
+  }
+  .social-people-title{
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:0;
+  }
+  .social-people-chips{
+    flex:1;
+    min-width:0;
+    height:100%;
+    overflow-y:auto;
+    display:flex;
+    flex-wrap:wrap;
+    align-content:flex-start;
+    gap:8px;
+    padding-left:18px;
+    border-left:1px solid rgba(255,255,255,0.1);
+  }
+  .social-people-empty{ font-size:0.7rem; color:var(--ink-faint); font-style:italic; padding:4px; }
+
+  .social-add-form{
+    display:flex;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:18px;
+    padding:16px 20px;
+    border-radius:var(--r-md);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .social-add-form .field-group{ margin-bottom:0; }
+  .social-add-form .field-group:first-child{ flex:1; min-width:200px; }
+
+  .person-chip{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:7px 12px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.18);
+    background:rgba(255,255,255,0.06);
+    font-size:0.74rem;
+    font-weight:600;
+    color:#fff;
+    cursor:grab;
+    user-select:none;
+    flex-shrink:0;
+  }
+  .person-chip.dragging{ opacity:0.4; }
+  .person-chip.person-chip-checked{ opacity:0.55; }
+  .person-chip-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; box-shadow:0 0 6px currentColor; }
+  .person-chip-name{ white-space:nowrap; }
+  .person-chip-check{ font-size:14px !important; color:#4ade80; flex-shrink:0; }
+  .person-chip-del{ font-size:13px !important; cursor:pointer; opacity:0.6; flex-shrink:0; }
+  .person-chip-del:hover{ opacity:1; }
+
+  .sidebar-spacer{ flex:1 1 auto; }
+
+  .sidebar-bottom{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .sidebar-version{
+    text-align:center;
+    font-size:0.6rem;
+    letter-spacing:0.12em;
+    color:var(--ink-faint);
+    margin:0;
+  }
+
+  /* ---------- Main content ---------- */
+  .main{
+    flex:1;
+    height:100%;
+    padding:28px 32px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+    overflow-y:auto;
+  }
+
+  .card{
+    border-radius:var(--r-lg);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  .panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:14px 18px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .panel-header .head-left{ display:flex; align-items:center; gap:8px; }
+  .panel-header .material-symbols-outlined{ font-size:18px; color:var(--hobbies); }
+  .panel-header h3{
+    margin:0;
+    font-size:0.7rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--hobbies);
+  }
+  .panel-header h3.hobby-card-title{ font-size:1.3rem; font-weight:700; }
+  .panel-body{ flex:1; padding:16px 18px; overflow-y:auto; }
+
+  /* Books/Movies/Shows cards: scrollable content area + fixed-height Ratings quarter */
+  .panel-body.hobby-panel-body{
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .hobby-scroll-area{
+    flex:3;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    padding:16px 18px 0;
+  }
+  .hobby-ratings-section{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:12px 18px 16px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.02);
+  }
+  .hobby-ratings-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .hobby-sort-select{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.58rem;
+    font-weight:600;
+    padding:3px 6px;
+    border-radius:6px;
+    outline:none;
+  }
+  .hobby-sort-select option{ background:#16171c; }
+  .hobby-ratings-list{ display:flex; flex-direction:column; gap:6px; }
+  .hobby-rating-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    border-left:3px solid transparent;
+    padding-left:8px;
+    margin-left:-3px;
+    border-radius:4px;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .hobby-rating-title{
+    font-size:0.68rem;
+    font-weight:600;
+    color:var(--ink-dim);
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    transition:color .2s ease;
+  }
+  .hobby-rating-date{
+    color:var(--ink-faint);
+    font-weight:500;
+    font-size:0.6rem;
+  }
+  .hobby-rating-input{
+    width:52px;
+    padding:3px 6px;
+    border-radius:6px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.05);
+    color:var(--hobbies);
+    font-size:0.66rem;
+    font-weight:700;
+    text-align:center;
+    outline:none;
+    flex-shrink:0;
+    -moz-appearance:textfield;
+    transition:background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+  }
+  .hobby-rating-input::-webkit-inner-spin-button,
+  .hobby-rating-input::-webkit-outer-spin-button{ -webkit-appearance:none; margin:0; }
+  .hobby-rating-input:focus{ border-color:rgba(255,255,255,0.32); background:rgba(255,255,255,0.08); }
+
+  .hobby-currently-stack{ display:flex; flex-direction:column; gap:8px; }
+  .hobby-sophia-tag{ color:#ff6b9d; font-weight:700; }
+
+  /* ---------- Hobbies page grid ---------- */
+  .hobbies-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    flex:0 0 auto;
+    height:100.8%;
+    min-height:0;
+  }
+
+  .media-block{ margin-bottom:14px; display:flex; flex-direction:column; min-height:0; }
+  .media-block:last-child{ margin-bottom:0; }
+  .hobby-currently-scroll{ flex:0 0 auto; max-height:180px; overflow-y:auto; padding-right:2px; }
+  .hobby-queue-scroll{ flex:1; min-height:70px; overflow-y:auto; padding-right:2px; }
+  .media-subhead{ font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin-bottom:6px; }
+  .media-box{ padding:10px; border-radius:var(--r-sm); background:rgba(251,146,60,0.08); border:1px solid rgba(251,146,60,0.16); }
+  .media-box .title{ font-size:0.75rem; font-weight:700; color:var(--ink); }
+  .media-box .subtitle{ font-size:0.6rem; color:var(--ink-faint); font-style:italic; margin-top:2px; }
+  .media-list-item{ padding:7px 10px; border-radius:8px; background:rgba(255,255,255,0.04); font-size:0.66rem; font-weight:600; color:var(--ink-dim); margin-bottom:4px; }
+  .media-list-item:last-child{ margin-bottom:0; }
+  .media-complete{ font-size:0.66rem; color:#6ee7b7; font-weight:700; display:flex; align-items:center; gap:4px; }
+  .media-complete .material-symbols-outlined{ font-size:14px; color:#6ee7b7; }
+  .mini-progress-track{ width:100%; height:4px; border-radius:4px; background:rgba(255,255,255,0.1); margin-top:8px; overflow:hidden; }
+  .mini-progress-fill{ height:100%; background:var(--hobbies); }
+
+  /* ---------- Icon button (add / etc.) ---------- */
+  .icon-btn{
+    width:26px; height:26px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .icon-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
+  .icon-btn .material-symbols-outlined{ font-size:16px; }
+
+  /* ---------- Hobby items: empty state, clickable rows ---------- */
+  .media-empty{ font-size:0.62rem; color:var(--ink-faint); font-style:italic; }
+  .hobby-clickable{ cursor:pointer; }
+
+  /* Currently Reading progress slider (books) */
+  .hobby-progress-slider{
+    width:100%;
+    accent-color:var(--hobbies);
+    margin-top:10px;
+    display:block;
+    cursor:pointer;
+  }
+  .hobby-progress-label{
+    text-align:right;
+    font-size:0.6rem;
+    font-weight:700;
+    color:var(--hobbies);
+    margin-top:2px;
+  }
+
+  /* Currently Watching episode subtitle + +1 Episode button (shows) */
+  .hobby-episode-subtitle{ font-size:0.6rem; color:#fdba74; font-style:normal; font-weight:700; margin-top:2px; }
+  .hobby-episode-subtitle.sophia{ color:#ff6b9d; }
+  .hobby-episode-btn{
+    margin-top:10px;
+    padding:5px 10px;
+    border-radius:999px;
+    border:1px solid rgba(251,146,60,0.32);
+    background:rgba(251,146,60,0.1);
+    color:#fdba74;
+    font-family:inherit;
+    font-size:0.6rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    cursor:pointer;
+  }
+  .hobby-episode-btn:hover{ background:rgba(251,146,60,0.2); }
+
+  /* Queue: draggable rows */
+  .hobby-queue-list{ list-style:none; margin:0; padding:0; }
+  .hobby-queue-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 10px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.04);
+    font-size:0.66rem;
+    font-weight:600;
+    color:var(--ink-dim);
+    margin-bottom:4px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .hobby-queue-item:last-child{ margin-bottom:0; }
+  .hobby-queue-item:hover{ background:rgba(255,255,255,0.08); }
+  .hobby-queue-item.drag-over{ outline:1px dashed rgba(251,146,60,0.6); outline-offset:-2px; }
+  .hobby-drag-handle{ font-size:14px; color:var(--ink-faint); cursor:grab; flex-shrink:0; }
+  .hobby-queue-sub{ color:var(--ink-faint); font-weight:500; }
+
+  /* Sophia color coding (Movies / Shows only) — pink instead of standard orange */
+  .hobby-queue-item.hobby-sophia-row{ background:rgba(255,107,157,0.10); }
+  .hobby-queue-item.hobby-sophia-row:hover{ background:rgba(255,107,157,0.16); }
+  .hobby-queue-item.hobby-sophia-row .hobby-queue-text{ color:#ff6b9d; }
+  .hobby-queue-item.hobby-sophia-row .hobby-drag-handle{ color:#ff6b9d; opacity:0.8; }
+  .media-box.hobby-sophia-box{ background:rgba(255,107,157,0.08); border-color:rgba(255,107,157,0.16); }
+  .media-box.hobby-sophia-box .title{ color:#ff6b9d; }
+
+  /* Movies: Watchlist is the primary section — big stacked cards, same treatment Currently Watching used to have */
+  .hobby-watchlist-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    border-radius:var(--r-sm);
+    background:rgba(251,146,60,0.08);
+    border:1px solid rgba(251,146,60,0.16);
+    margin-bottom:8px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .hobby-watchlist-item:last-child{ margin-bottom:0; }
+  .hobby-watchlist-item:hover{ background:rgba(251,146,60,0.14); }
+  .hobby-watchlist-item .title{ font-size:0.75rem; font-weight:700; color:var(--ink); flex:1; min-width:0; }
+  .hobby-watchlist-item.drag-over{ outline:1px dashed rgba(251,146,60,0.6); outline-offset:-2px; }
+  .hobby-watchlist-item.hobby-sophia-box{ background:rgba(255,107,157,0.08); border-color:rgba(255,107,157,0.16); }
+  .hobby-watchlist-item.hobby-sophia-box:hover{ background:rgba(255,107,157,0.14); }
+  .hobby-watchlist-item.hobby-sophia-box .title{ color:#ff6b9d; }
+
+  /* ---------- Genre chips (same system as academic Areas) ---------- */
+  .chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    padding:4px 9px;
+    border-radius:999px;
+    font-size:0.64rem;
+    font-weight:700;
+  }
+  .chip .remove-x{ cursor:pointer; opacity:0.75; font-size:12px; }
+  .chip .remove-x:hover{ opacity:1; }
+  .chip.suggestion{
+    background:rgba(255,255,255,0.06);
+    color:var(--ink-dim);
+    border:1px solid rgba(255,255,255,0.14);
+    cursor:pointer;
+  }
+  .chip.suggestion:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
+  .text-link-btn{
+    background:none;
+    border:none;
+    color:var(--hobbies);
+    font-size:0.6rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    cursor:pointer;
+    padding:0;
+    margin-top:8px;
+  }
+  .manage-areas-panel{
+    margin-top:8px;
+    padding:10px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.04);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .manage-area-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:0.68rem;
+    color:var(--ink-dim);
+  }
+  .manage-area-row .del-x{ cursor:pointer; color:#f87171; font-size:14px; }
+  .due-placeholder{ color:var(--ink-faint); }
+
+  .modal-actions-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:20px;
+  }
+  .danger-btn{
+    background:rgba(248,113,113,0.12);
+    border:1px solid rgba(248,113,113,0.32);
+    color:#f87171;
+    font-size:0.64rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding:9px 14px;
+    border-radius:var(--r-sm);
+    cursor:pointer;
+  }
+  .danger-btn:hover{ background:rgba(248,113,113,0.2); }
+  .neutral-btn{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.16);
+    color:var(--ink-dim);
+    font-size:0.64rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding:9px 14px;
+    border-radius:var(--r-sm);
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .neutral-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
+
+  /* Certifications & Courses */
+  .cert-block{ margin-bottom:18px; cursor:pointer; }
+  .cert-block:last-child{ margin-bottom:0; }
+  .cert-head{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+  .cert-head .title{ font-size:0.75rem; font-weight:700; color:var(--ink); }
+  .cert-head .sub{ font-size:0.6rem; color:var(--ink-faint); margin-top:2px; }
+  .cert-head .pct{ font-size:0.68rem; font-weight:700; color:var(--hobbies); }
+  .cert-track{ width:100%; height:5px; border-radius:5px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .cert-fill{ height:100%; background:var(--hobbies); }
+  .learn-heading{ font-size:0.85rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-faint); margin:16px 0 10px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.08); }
+  .cert-completed-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .cert-completed-item{ display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:var(--r-sm); background:rgba(255,255,255,0.04); cursor:pointer; transition:background .15s ease; min-width:0; }
+  .cert-completed-item:hover{ background:rgba(255,255,255,0.08); }
+  .cert-completed-text{ min-width:0; }
+  .cert-completed-text .title{ font-size:0.66rem; font-weight:700; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cert-completed-text .sub{ font-size:0.56rem; color:var(--ink-faint); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* ---------- Modals ---------- */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:rgba(6,6,10,0.55);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  .modal-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .modal-card{
+    width:360px;
+    max-width:92vw;
+    max-height:86vh;
+    overflow-y:auto;
+    border-radius:var(--r-lg);
+    padding:24px;
+    transform:translateY(12px) scale(0.98);
+    transition:transform .2s ease;
+  }
+  .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
+
+  .modal-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .modal-header .material-symbols-outlined{ font-size:22px; }
+  .modal-header h2{ margin:0; font-size:1.05rem; font-weight:700; }
+  .modal-header.morning .material-symbols-outlined{ color:#60a5fa; }
+  .modal-header.night .material-symbols-outlined{ color:#facc15; }
+
+  .field-group{ margin-bottom:16px; }
+  .field-label{
+    display:block;
+    font-size:0.64rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-faint);
+    margin-bottom:6px;
+  }
+  .field-select, .field-number, .field-text{
+    width:100%;
+    padding:9px 11px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    font-family:'Geist','Segoe UI',sans-serif;
+    font-size:0.8rem;
+    outline:none;
+  }
+  .field-select:focus, .field-number:focus, .field-text:focus{
+    border-color:rgba(255,255,255,0.32);
+    background:rgba(255,255,255,0.08);
+  }
+  .field-select option{ background:#16171c; color:var(--ink); }
+
+  .segmented{
+    display:flex;
+    gap:6px;
+  }
+  .segmented button{
+    flex:1;
+    padding:8px 6px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.04);
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.72rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .segmented button.active{
+    background:rgba(255,255,255,0.18);
+    border-color:rgba(255,255,255,0.34);
+    color:var(--ink);
+  }
+
+  .scale-row{
+    display:flex;
+    gap:8px;
+  }
+  .scale-dot{
+    flex:1;
+    aspect-ratio:1;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.04);
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.75rem;
+    font-weight:700;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:all .15s ease;
+  }
+  .scale-dot.active{
+    background:var(--academic);
+    border-color:var(--academic);
+    color:#0b0b10;
+  }
+
+  .field-slider{
+    width:100%;
+    accent-color:var(--secondbrain);
+  }
+  .slider-value{
+    text-align:center;
+    font-size:0.9rem;
+    font-weight:700;
+    margin-top:4px;
+    color:var(--ink);
+  }
+
+  .hidden-field{
+    display:none;
+    margin-top:10px;
+  }
+  .hidden-field.show{ display:block; }
+
+  .modal-close-row{
+    display:flex;
+    justify-content:center;
+    margin-top:20px;
+  }
+  .checkmark-btn{
+    width:48px; height:48px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.2);
+    background:linear-gradient(145deg, rgba(74,222,128,0.35), rgba(74,222,128,0.12));
+    color:#f0fff4;
+    font-size:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:transform .15s ease;
+  }
+  .checkmark-btn:hover{ transform:scale(1.06); }
+
+  /* ---------- Import Health Data ---------- */
+  .nav-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .nav-row .nav-link{ flex:1; min-width:0; }
+  .import-btn{
+    position:relative;
+    flex-shrink:0;
+    width:26px; height:26px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.05);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .import-btn .material-symbols-outlined{ font-size:15px; }
+  .import-btn:hover{
+    background:rgba(74,222,128,0.16);
+    border-color:rgba(74,222,128,0.4);
+    color:#86efac;
+  }
+  .import-btn-tooltip{
+    position:absolute;
+    bottom:calc(100% + 7px);
+    left:50%;
+    transform:translateX(-50%) translateY(4px);
+    white-space:nowrap;
+    background:rgba(10,10,14,0.94);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink);
+    font-size:0.64rem;
+    font-weight:600;
+    padding:5px 9px;
+    border-radius:6px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .15s ease, transform .15s ease;
+    z-index:60;
+  }
+  .import-btn:hover .import-btn-tooltip{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .import-modal-card{ width:440px; }
+  .import-dropzone{
+    border:1.5px dashed rgba(255,255,255,0.2);
+    border-radius:var(--r-md);
+    padding:32px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:10px;
+    transition:border-color .15s ease, background .15s ease;
+    cursor:pointer;
+  }
+  .import-dropzone .material-symbols-outlined{
+    font-size:34px;
+    color:var(--physical);
+    opacity:0.85;
+  }
+  .import-dropzone p{
+    margin:0;
+    font-size:0.8rem;
+    color:var(--ink-dim);
+  }
+  .import-dropzone.dragover{
+    border-color:var(--physical);
+    background:rgba(74,222,128,0.08);
+  }
+  .import-picker-btn{
+    margin-top:4px;
+    padding:8px 16px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.06);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.74rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .import-picker-btn:hover{ background:rgba(255,255,255,0.12); }
+
+  .import-progress-section{ padding:8px 2px 2px; }
+  .import-filename{
+    font-size:0.68rem;
+    color:var(--ink-dim);
+    text-align:center;
+    margin:0 0 12px;
+  }
+  .import-progress-track{
+    height:8px;
+    border-radius:4px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+  }
+  .import-progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--physical), #86efac);
+    transition:width .15s ease;
+  }
+  .import-status-text{
+    margin:10px 0 0;
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+
+  .import-summary-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .import-summary-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 12px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .import-summary-row .name{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.76rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .import-summary-row .name .material-symbols-outlined{
+    font-size:16px;
+    color:#4ade80;
+  }
+  .import-summary-row .count{
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--ink-dim);
+  }
+</style>
 </head>
-<body class="font-body-md text-on-surface">
-<div class="aspect-16-9-container shadow-2xl rounded-xl border border-black/5">
-<!-- SideNavBar -->
-<aside class="w-52 flex flex-col p-4 sidebar-gradient h-full">
-<div class="mb-6 text-center">
-<h1 class="font-headline-md text-2xl font-bold text-amber-950 tracking-tight leading-tight">Liberation Arc</h1>
-</div>
-<nav class="flex-1 space-y-0.5 overflow-y-auto pr-1">
-<a class="flex items-center gap-2 p-2 text-emerald-900 font-medium bg-emerald-500/10 hover:bg-emerald-500/20 rounded-lg transition-all" href="#"><span class="material-symbols-outlined text-lg text-emerald-600">fitness_center</span><span class="text-sm">Physical</span></a>
-<a class="flex items-center gap-2 p-2 text-blue-900 font-medium bg-blue-500/10 hover:bg-blue-500/20 rounded-lg transition-all" href="#"><span class="material-symbols-outlined text-lg text-blue-600">school</span><span class="text-sm">Academic</span></a>
-<a class="flex items-center gap-2 p-2 text-amber-950 font-bold bg-white/70 rounded-lg transition-all shadow-sm" href="#">
-<span class="material-symbols-outlined text-lg">palette</span>
-<span class="text-sm">Hobbies</span>
-</a>
-<a class="flex items-center gap-2 p-2 text-purple-900 font-medium bg-purple-500/10 hover:bg-purple-500/20 rounded-lg transition-all" href="#"><span class="material-symbols-outlined text-lg text-purple-600">payments</span><span class="text-sm">Financial</span></a>
-</nav>
-<div class="pt-3 border-t border-black/5 space-y-2">
-<div class="w-full aspect-video rounded-lg overflow-hidden border border-black/10">
-<img alt="Autumn forest" class="w-full h-full object-cover opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxeGCW3BKn-f6QMRx7Z-J7dK271KPC4jtvjspcAhJSsmRFNjVHV01QIaI9nFSE93yq1H0cXvkgPobSDc06oI0pfrccGWhBaMhfspx9tNdfxiw1uXyzH0FyHvh7N9SMWr9T9f0_e9h93xm3RA1alTpsCHRFA4dtvp3BeMD_MN0JQdRGVSO4uSljTVfHvG9WZCTnCWCUDofi7SRIktiBBDQCx6IS0Y1U3PGcwWJM4eyfbC4MoxhMv2HeOS1CMRfcy8ZAJLz1b3xEWb60"/>
-</div>
-</div>
-</aside>
-<!-- Main Content Area -->
-<main class="flex-1 p-6 overflow-hidden backdrop-blur-sm bg-black/5">
-<div class="h-full flex flex-col gap-4">
-<div class="flex-1 grid grid-cols-12 gap-6 overflow-hidden">
-<!-- Left Column: Consumption -->
-<section class="col-span-8 flex flex-col gap-4 overflow-hidden">
-<div class="grid grid-cols-3 gap-4 flex-1 overflow-hidden">
-<!-- Books -->
-<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
-<div class="flex items-center justify-between mb-3">
-<span class="text-[10px] font-bold uppercase tracking-widest text-amber-600">Books</span>
-<span class="material-symbols-outlined text-sm text-accent-yellow">book</span>
-</div>
-<div class="space-y-3 flex-1 overflow-y-auto pr-1">
-<div>
-<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Currently Reading</p>
-<div class="p-2 bg-amber-50/50 rounded-lg border border-amber-100">
-<p class="text-xs font-bold">Project Hail Mary</p>
-<p class="text-[9px] text-on-surface-variant italic">Andy Weir</p>
-</div>
-</div>
-<div>
-<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Queue</p>
-<div class="space-y-1">
-<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium">The Dark Forest</div>
-<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium">Dune: Messiah</div>
-</div>
-</div>
-<div>
-<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Completed</p>
-<div class="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
-<span class="material-symbols-outlined text-xs">check_circle</span>
-                                        Exhalation
-                                    </div>
-</div>
-</div>
-</div>
-<!-- Movies -->
-<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
-<div class="flex items-center justify-between mb-3">
-<span class="text-[10px] font-bold uppercase tracking-widest text-amber-600">Movies</span>
-<span class="material-symbols-outlined text-sm text-accent-yellow">movie</span>
-</div>
-<div class="space-y-3 flex-1 overflow-y-auto pr-1">
-<div>
-<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Watchlist</p>
-<div class="space-y-1.5">
-<div class="p-2 bg-amber-50/50 rounded-lg border border-amber-100">
-<p class="text-xs font-bold">Oppenheimer</p>
-<div class="w-full h-1 bg-black/10 rounded-full mt-1.5">
-<div class="w-1/3 h-full bg-accent-yellow rounded-full"></div>
-</div>
-</div>
-<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium">The Creator</div>
-</div>
-</div>
-<div>
-<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Recently Watched</p>
-<div class="p-1.5 bg-emerald-50 text-emerald-900 rounded text-[10px] font-bold border border-emerald-100">Across the Spider-Verse</div>
-</div>
-</div>
-</div>
-<!-- Shows -->
-<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
-<div class="flex items-center justify-between mb-3">
-<span class="text-[10px] font-bold uppercase tracking-widest text-amber-600">Shows</span>
-<span class="material-symbols-outlined text-sm text-accent-yellow">tv</span>
-</div>
-<div class="space-y-3 flex-1 overflow-y-auto pr-1">
-<div>
-<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Currently Watching</p>
-<div class="p-2 bg-amber-50/50 rounded-lg border border-amber-100">
-<p class="text-xs font-bold">Shogun</p>
-<p class="text-[9px] text-amber-700 font-bold mt-0.5">S1 E04 • 32m left</p>
-</div>
-</div>
-<div>
-<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Queue</p>
-<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium">The Bear S3</div>
-</div>
-<div>
-<p class="text-[8px] font-bold text-on-surface-variant uppercase mb-1">Completed</p>
-<div class="p-1.5 bg-black/5 rounded text-[10px] font-medium opacity-50 italic">Succession</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Bottom Grid Tools -->
-<div class="grid grid-cols-2 gap-4 h-32">
-<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
-<div class="flex items-center gap-1.5 mb-2">
-<span class="material-symbols-outlined text-accent-yellow text-sm">security</span>
-<h4 class="text-[9px] font-bold uppercase tracking-widest text-on-surface">Target Consumption Limits</h4>
-</div>
-<div class="flex items-center gap-4 flex-1">
-<div class="flex-1">
-<div class="flex justify-between items-center text-[10px] font-bold mb-1">
-<span class="">Social Media</span>
-<div class="flex items-center gap-1 text-red-600">
-<input class="w-8 h-4 glass-input rounded-sm text-[10px] font-bold" type="number" value="45"/>
-<span>m / 30m</span>
-</div>
-</div>
-<div class="w-full h-2 bg-black/10 rounded-full overflow-hidden">
-<div class="w-full h-full bg-red-500"></div>
-</div>
-</div>
-<div class="flex-1">
-<div class="flex justify-between items-center text-[10px] font-bold mb-1 text-emerald-700">
-<span class="">Reading</span>
-<div class="flex items-center gap-1">
-<input class="w-8 h-4 glass-input rounded-sm text-[10px] font-bold" type="number" value="20"/>
-<span>m / 60m</span>
-</div>
-</div>
-<div class="w-full h-2 bg-black/10 rounded-full overflow-hidden">
-<div class="w-[33%] h-full bg-emerald-500"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="liquid-glass rounded-2xl p-4 flex flex-col border border-accent-yellow/20">
-<div class="flex items-center gap-1.5 mb-1.5">
-<span class="material-symbols-outlined text-accent-yellow text-sm">smart_toy</span>
-<h4 class="text-[9px] font-bold uppercase tracking-widest text-amber-900">What I'd Enjoy Next</h4>
-</div>
-<div class="flex gap-2 flex-1">
-<div class="flex-1 flex flex-col justify-center">
-<p class="text-xs font-bold leading-tight">"Seveneves" by Neal Stephenson</p>
-<p class="text-[9px] text-on-surface-variant">Matches: Hard Sci-Fi, Engineering</p>
-</div>
-<button class="self-center bg-accent-yellow text-amber-950 p-2 rounded-lg material-symbols-outlined text-sm">recommend</button>
-</div>
-</div>
-</div>
-</section>
-<!-- Right Column: Learning -->
-<section class="col-span-4 flex flex-col gap-4 overflow-hidden">
-<div class="liquid-glass rounded-2xl p-5 flex flex-col flex-1 border border-accent-yellow/20">
-<div class="flex items-center justify-between mb-4">
-<h4 class="font-bold text-sm text-amber-900 uppercase tracking-widest">Certifications &amp; Courses</h4>
-<span class="px-2 py-0.5 bg-accent-yellow/20 text-amber-700 rounded text-[9px] font-bold uppercase">Active</span>
-</div>
-<div class="space-y-5 flex-1 overflow-y-auto">
-<div class="space-y-2">
-<div class="flex justify-between items-start">
-<div>
-<p class="text-xs font-bold leading-none">AWS Solutions Architect</p>
-<p class="text-[9px] text-on-surface-variant font-medium">Professional Level Exam Prep</p>
-</div>
-<span class="text-[10px] font-bold text-amber-700">82%</span>
-</div>
-<div class="w-full h-1.5 bg-black/5 rounded-full overflow-hidden">
-<div class="w-[82%] h-full bg-accent-yellow shadow-[0_0_8px_rgba(250,204,21,0.4)]"></div>
-</div>
-</div>
-<div class="space-y-2">
-<div class="flex justify-between items-start">
-<div>
-<p class="text-xs font-bold leading-none">GCP Professional</p>
-<p class="text-[9px] text-on-surface-variant font-medium">Cloud Architecture Fundamentals</p>
-</div>
-<span class="text-[10px] font-bold text-amber-700">34%</span>
-</div>
-<div class="w-full h-1.5 bg-black/5 rounded-full overflow-hidden">
-<div class="w-[34%] h-full bg-accent-yellow/60"></div>
-</div>
-</div>
-<div class="pt-4 mt-4 border-t border-black/5">
-<h5 class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant mb-3">Learning Targets</h5>
-<div class="space-y-3">
-<div class="flex items-center gap-3">
-<span class="text-[10px] font-medium w-12">Python</span>
-<div class="flex-1 h-1.5 bg-black/5 rounded-full overflow-hidden">
-<div class="w-[60%] h-full bg-accent-yellow"></div>
-</div>
-</div>
-<div class="flex items-center gap-3">
-<span class="text-[10px] font-medium w-12">French</span>
-<div class="flex-1 h-1.5 bg-black/5 rounded-full overflow-hidden">
-<div class="w-[25%] h-full bg-accent-yellow"></div>
-</div>
-</div>
-<div class="flex items-center gap-3">
-<span class="text-[10px] font-medium w-12">Guitar</span>
-<div class="flex-1 h-1.5 bg-black/5 rounded-full overflow-hidden">
-<div class="w-[45%] h-full bg-accent-yellow"></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-</div>
-</div>
-</main>
-</div>
-</body></html>
+<body>
+
+<div class="bg-layer" id="bg-layer"></div>
+<div class="bg-scrim"></div>
+
+<div class="app-shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar glass" style="border-radius:0;">
+    <div class="brand">
+      <h1>Liberation Arc</h1>
+      <p class="brand-datetime mono" id="sidebar-datetime"></p>
+    </div>
+
+    <nav class="nav">
+      <a class="nav-link" data-section="dashboard" href="../index.html">
+        <span class="material-symbols-outlined">arrow_back</span>
+        <span>Dashboard</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <div class="nav-row">
+        <a class="nav-link" data-section="physical" href="physical-subpage.html">
+          <span class="material-symbols-outlined">fitness_center</span>
+          <span>Physical</span>
+        </a>
+        <button type="button" class="import-btn" onclick="event.preventDefault(); openImportModal();" aria-label="Import Health Data">
+          <span class="material-symbols-outlined">upload</span>
+          <span class="import-btn-tooltip">Import Health Data</span>
+        </button>
+      </div>
+      <a class="nav-link" data-section="academic" href="academic-subpage.html">
+        <span class="material-symbols-outlined">school</span>
+        <span>Academic</span>
+      </a>
+      <a class="nav-link active" data-section="hobbies" href="hobbies-subpage.html">
+        <span class="material-symbols-outlined">palette</span>
+        <span>Hobbies</span>
+      </a>
+      <a class="nav-link" data-section="financial" href="../financial-subpage.html">
+        <span class="material-symbols-outlined">payments</span>
+        <span>Financial</span>
+      </a>
+      <a class="nav-link" data-section="secondbrain" href="#">
+        <span class="material-symbols-outlined">psychology</span>
+        <span>Second Brain</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="daycycle-buttons">
+      <button type="button" class="daycycle-btn morning" id="morning-btn" onclick="openMorningModal()">
+        <span class="material-symbols-outlined">light_mode</span>
+        Morning
+        <span class="done-badge material-symbols-outlined" id="morning-done-badge">check</span>
+      </button>
+      <button type="button" class="daycycle-btn night" id="night-btn" onclick="openNightModal()">
+        <span class="material-symbols-outlined">dark_mode</span>
+        Night
+        <span class="done-badge material-symbols-outlined" id="night-done-badge">check</span>
+      </button>
+    </div>
+
+    <div class="social-card glass">
+      <div class="social-card-header">
+        <p class="heading mono">Social Targets</p>
+        <div class="habit-mini-add-btn" onclick="openSocialModal()" title="Open Social Targets pyramid">
+          <span class="material-symbols-outlined">change_history</span>
+        </div>
+      </div>
+      <div id="social-widget-rows"></div>
+    </div>
+
+    <div class="streak-mini-card glass">
+      <div class="streak-mini-flame mono" id="sidebar-streak-flame">🔥 0 day streak</div>
+      <div class="streak-mini-goal">
+        <div class="streak-mini-track">
+          <div class="streak-mini-fill" id="sidebar-goal-fill"></div>
+        </div>
+        <div class="streak-mini-label mono" id="sidebar-goal-label">0.0 hrs / 10 hrs</div>
+      </div>
+    </div>
+
+    <div class="currently-mini-card glass">
+      <p class="currently-mini-title mono">Current Media</p>
+      <div class="currently-mini-row" id="sidebar-currently-book-row">
+        <span class="currently-mini-icon">📖</span>
+        <span class="currently-mini-text" id="sidebar-currently-book">Nothing yet</span>
+      </div>
+      <div class="currently-mini-row" id="sidebar-currently-movie-row">
+        <span class="currently-mini-icon">🎬</span>
+        <span class="currently-mini-text" id="sidebar-currently-movie">Nothing yet</span>
+      </div>
+      <div class="currently-mini-row" id="sidebar-currently-show-row">
+        <span class="currently-mini-icon">📺</span>
+        <span class="currently-mini-text" id="sidebar-currently-show">Nothing yet</span>
+      </div>
+    </div>
+
+    <div class="habit-mini-card glass">
+      <div class="habit-mini-header" onclick="openHabitModal()">
+        <div class="habit-mini-header-left">
+          <p class="currently-mini-title mono">Habits</p>
+          <span class="habit-mini-counter mono" id="habit-mini-counter"></span>
+        </div>
+        <div class="habit-mini-add-btn" onclick="event.stopPropagation(); openHabitModal();" title="Add habit">
+          <span class="material-symbols-outlined">add</span>
+        </div>
+      </div>
+      <div class="habit-mini-list" id="habit-mini-list"></div>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-bottom">
+      <p class="sidebar-version mono">v 1.0</p>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+    <div class="hobbies-grid">
+
+      <!-- Certifications & Courses -->
+      <div class="card glass">
+        <div class="panel-header">
+          <div class="head-left"><h3 class="hobby-card-title">Certifications &amp; Courses</h3></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined" style="color:var(--hobbies); opacity:0.7; font-size:18px;">school</span>
+            <button type="button" class="icon-btn" onclick="openCertModal()" title="Add course">
+              <span class="material-symbols-outlined">add</span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <p class="media-subhead" style="margin-bottom:8px;">Active</p>
+          <div id="cert-active-list"></div>
+
+          <p class="media-subhead" style="margin:16px 0 8px;">Queue</p>
+          <ul class="hobby-queue-list" id="cert-queue-list"></ul>
+
+          <p class="learn-heading">Completed</p>
+          <div class="cert-completed-grid" id="cert-completed-list"></div>
+        </div>
+      </div>
+
+      <!-- Books -->
+      <div class="card glass">
+        <div class="panel-header">
+          <div class="head-left"><h3 class="hobby-card-title">Books</h3></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined" style="color:var(--hobbies); opacity:0.7; font-size:18px;">book</span>
+            <button type="button" class="icon-btn" onclick="openHobbyModal('books')" title="Add book">
+              <span class="material-symbols-outlined">add</span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-body hobby-panel-body">
+          <div class="hobby-scroll-area">
+            <div class="media-block">
+              <p class="media-subhead">Currently Reading</p>
+              <div class="hobby-currently-scroll" id="books-currently"></div>
+            </div>
+            <div class="media-block">
+              <p class="media-subhead">Queue</p>
+              <ul class="hobby-queue-list hobby-queue-scroll" id="books-queue"></ul>
+            </div>
+          </div>
+          <div class="hobby-ratings-section">
+            <div class="hobby-ratings-header">
+              <p class="media-subhead" style="margin-bottom:0;">Ratings</p>
+              <select class="hobby-sort-select" id="books-sort" onchange="renderHobbyRatings('books')">
+                <option value="default">Recent</option>
+                <option value="rating">Highest Rated</option>
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+              </select>
+            </div>
+            <div class="hobby-ratings-list" id="books-ratings"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Movies -->
+      <div class="card glass">
+        <div class="panel-header">
+          <div class="head-left"><h3 class="hobby-card-title">Movies</h3></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined" style="color:var(--hobbies); opacity:0.7; font-size:18px;">movie</span>
+            <button type="button" class="icon-btn" onclick="openHobbyModal('movies')" title="Add movie">
+              <span class="material-symbols-outlined">add</span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-body hobby-panel-body">
+          <div class="hobby-scroll-area">
+            <div class="media-block" style="flex:1;">
+              <p class="media-subhead">Watchlist</p>
+              <ul class="hobby-queue-list hobby-queue-scroll" id="movies-queue"></ul>
+            </div>
+          </div>
+          <div class="hobby-ratings-section">
+            <div class="hobby-ratings-header">
+              <p class="media-subhead" style="margin-bottom:0;">Ratings</p>
+              <select class="hobby-sort-select" id="movies-sort" onchange="renderHobbyRatings('movies')">
+                <option value="default">Recent</option>
+                <option value="rating">Highest Rated</option>
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+              </select>
+            </div>
+            <div class="hobby-ratings-list" id="movies-ratings"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shows -->
+      <div class="card glass">
+        <div class="panel-header">
+          <div class="head-left"><h3 class="hobby-card-title">Shows</h3></div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined" style="color:var(--hobbies); opacity:0.7; font-size:18px;">tv</span>
+            <button type="button" class="icon-btn" onclick="openHobbyModal('shows')" title="Add show">
+              <span class="material-symbols-outlined">add</span>
+            </button>
+          </div>
+        </div>
+        <div class="panel-body hobby-panel-body">
+          <div class="hobby-scroll-area">
+            <div class="media-block">
+              <p class="media-subhead">Currently Watching</p>
+              <div class="hobby-currently-scroll" id="shows-currently"></div>
+            </div>
+            <div class="media-block">
+              <p class="media-subhead">Queue</p>
+              <ul class="hobby-queue-list hobby-queue-scroll" id="shows-queue"></ul>
+            </div>
+          </div>
+          <div class="hobby-ratings-section">
+            <div class="hobby-ratings-header">
+              <p class="media-subhead" style="margin-bottom:0;">Ratings</p>
+              <select class="hobby-sort-select" id="shows-sort" onchange="renderHobbyRatings('shows')">
+                <option value="default">Recent</option>
+                <option value="rating">Highest Rated</option>
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+              </select>
+            </div>
+            <div class="hobby-ratings-list" id="shows-ratings"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===================== MORNING MODAL ===================== -->
+<div class="modal-overlay" id="morning-modal">
+  <div class="modal-card glass">
+    <div class="modal-header morning">
+      <span class="material-symbols-outlined">light_mode</span>
+      <h2>Morning Check-In</h2>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Morning Mood</label>
+      <select class="field-select" id="morning-mood">
+        <option>Lethargic</option>
+        <option>Content</option>
+        <option>Anxious</option>
+        <option>Energized</option>
+        <option>Stressed</option>
+        <option>Calm</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Workload</label>
+      <select class="field-select" id="morning-workload">
+        <option>Low</option>
+        <option>Mid</option>
+        <option>Focused</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Sleep Hours</label>
+      <input class="field-number" id="morning-sleep-hours" type="number" min="0" max="24" step="1" placeholder="e.g. 7" oninput="sanitizeInt(this)">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Supplements Taken</label>
+      <div class="segmented" id="morning-supplements">
+        <button type="button" onclick="selectSegment(this)">Yes</button>
+        <button type="button" class="active" onclick="selectSegment(this)">No</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Energy Level</label>
+      <div class="scale-row" id="morning-energy">
+        <button type="button" class="scale-dot" onclick="selectScale(this)">1</button>
+        <button type="button" class="scale-dot" onclick="selectScale(this)">2</button>
+        <button type="button" class="scale-dot active" onclick="selectScale(this)">3</button>
+        <button type="button" class="scale-dot" onclick="selectScale(this)">4</button>
+        <button type="button" class="scale-dot" onclick="selectScale(this)">5</button>
+      </div>
+    </div>
+
+    <div class="modal-close-row">
+      <button type="button" class="checkmark-btn" onclick="saveMorningCheckin()" title="Save &amp; close">
+        <span class="material-symbols-outlined">check</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== NIGHT MODAL ===================== -->
+<div class="modal-overlay" id="night-modal">
+  <div class="modal-card glass">
+    <div class="modal-header night">
+      <span class="material-symbols-outlined">dark_mode</span>
+      <h2>Night Check-In</h2>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Night Mood</label>
+      <select class="field-select" id="night-mood">
+        <option>Excited</option>
+        <option>Content</option>
+        <option>Anxious</option>
+        <option>Sad</option>
+        <option>Depressed</option>
+        <option>Drained</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Productivity</label>
+      <input class="field-slider" id="productivity-slider" type="range" min="0" max="100" step="5" value="50" oninput="document.getElementById('productivity-value').textContent = this.value + '%'">
+      <div class="slider-value" id="productivity-value">50%</div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Productivity Hindered?</label>
+      <div class="segmented" id="night-hindered">
+        <button type="button" data-value="yes" onclick="toggleHinderedField(this)">Yes</button>
+        <button type="button" data-value="no" class="active" onclick="toggleHinderedField(this)">No</button>
+      </div>
+      <div class="hidden-field" id="hindered-field-wrap">
+        <input class="field-text" id="hindered-text-input" type="text" placeholder="What hindered it?">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Calorie Target Met</label>
+      <div class="segmented" id="night-calorie">
+        <button type="button" class="active" onclick="selectSegment(this)">Yes</button>
+        <button type="button" onclick="selectSegment(this)">No</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Workout Done</label>
+      <div class="segmented" id="night-workout">
+        <button type="button" class="active" onclick="selectSegment(this)">Yes</button>
+        <button type="button" onclick="selectSegment(this)">No</button>
+        <button type="button" onclick="selectSegment(this)">Rest</button>
+      </div>
+    </div>
+
+    <div class="modal-close-row">
+      <button type="button" class="checkmark-btn" onclick="saveNightCheckin()" title="Save &amp; close">
+        <span class="material-symbols-outlined">check</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== HOBBY ITEM MODAL (Books / Movies / Shows) ===================== -->
+<div class="modal-overlay" id="hobby-modal">
+  <div class="modal-card glass" style="width:400px;">
+    <div class="modal-header" style="color:var(--hobbies);">
+      <span class="material-symbols-outlined" id="hobby-modal-icon">book</span>
+      <h2 id="hobby-modal-title">Add Book</h2>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Title</label>
+      <input class="field-text" id="hobby-title" type="text" placeholder="e.g. Project Hail Mary">
+    </div>
+
+    <div class="field-group" id="hobby-author-group">
+      <label class="field-label">Author</label>
+      <input class="field-text" id="hobby-author" type="text" placeholder="e.g. Andy Weir">
+    </div>
+
+    <div class="field-group" id="hobby-episode-group">
+      <label class="field-label">Season / Episode</label>
+      <input class="field-text" id="hobby-episode-input" type="text" placeholder="e.g. S2 E04">
+    </div>
+
+    <div class="field-group" id="hobby-sophia-group">
+      <label class="field-label" style="display:flex; align-items:center; gap:8px; cursor:pointer; text-transform:none; letter-spacing:normal; font-size:0.8rem; color:var(--ink);">
+        <input type="checkbox" id="hobby-sophia" style="width:15px; height:15px; accent-color:var(--hobbies); cursor:pointer;">
+        Watch with Sophia?
+      </label>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Status</label>
+      <select class="field-select" id="hobby-status">
+        <option value="queue">Queue</option>
+        <option value="currently" id="hobby-status-currently-option">Currently</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Genres</label>
+      <div class="chip-row" id="hobby-selected-genres" style="margin-bottom:8px;"></div>
+      <input class="field-text" id="hobby-genre-input" type="text" placeholder="Type a genre and press Enter" onkeydown="handleGenreInputKey(event)">
+      <div class="chip-row suggestions" id="hobby-genre-suggestions" style="margin-top:8px;"></div>
+      <button type="button" class="text-link-btn" onclick="toggleManageGenres()">Manage genres</button>
+      <div class="manage-areas-panel" id="manage-genres-panel" style="display:none;"></div>
+    </div>
+
+    <div class="modal-actions-row">
+      <button type="button" class="danger-btn" id="hobby-delete-btn" onclick="deleteHobbyItem()" style="display:none;">Delete</button>
+      <button type="button" class="checkmark-btn" onclick="saveHobbyForm()" title="Save">
+        <span class="material-symbols-outlined">check</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MARK AS COMPLETED MODAL ===================== -->
+<div class="modal-overlay" id="complete-modal">
+  <div class="modal-card glass" style="width:340px;">
+    <div class="modal-header" style="color:var(--hobbies);">
+      <span class="material-symbols-outlined">check_circle</span>
+      <h2>Mark as Completed</h2>
+    </div>
+
+    <div class="field-group">
+      <p style="margin:0; font-size:0.85rem; font-weight:700; color:var(--ink);" id="complete-modal-item-title"></p>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Completion Date</label>
+      <div style="display:flex; gap:8px;">
+        <input class="field-text" id="complete-date-input" type="date" style="flex:1;">
+        <button type="button" class="neutral-btn" style="white-space:nowrap;" onclick="setCompleteDateToday()">Today</button>
+      </div>
+    </div>
+
+    <div class="modal-actions-row">
+      <button type="button" class="neutral-btn" onclick="cancelCompleteModal()">Cancel</button>
+      <button type="button" class="checkmark-btn" onclick="confirmCompleteModal()" title="Confirm">
+        <span class="material-symbols-outlined">check</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CERTIFICATION / COURSE MODAL ===================== -->
+<div class="modal-overlay" id="cert-modal">
+  <div class="modal-card glass" style="width:380px;">
+    <div class="modal-header" style="color:var(--hobbies);">
+      <span class="material-symbols-outlined">school</span>
+      <h2 id="cert-modal-title">Add Course</h2>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Course / Cert Name</label>
+      <input class="field-text" id="cert-name" type="text" placeholder="e.g. AWS Solutions Architect">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Provider</label>
+      <input class="field-text" id="cert-provider" type="text" placeholder="e.g. AWS, Coursera, Google">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Progress</label>
+      <input class="field-slider" id="cert-progress" type="range" min="0" max="100" step="1" value="0" oninput="document.getElementById('cert-progress-value').textContent = this.value + '%'">
+      <div class="slider-value" id="cert-progress-value">0%</div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Status</label>
+      <select class="field-select" id="cert-status">
+        <option value="in_progress">In Progress</option>
+        <option value="completed">Completed</option>
+        <option value="queued">Queued</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Link (optional)</label>
+      <input class="field-text" id="cert-link" type="url" placeholder="https://...">
+    </div>
+
+    <div class="modal-actions-row">
+      <button type="button" class="danger-btn" id="cert-delete-btn" onclick="deleteCertification()" style="display:none;">Delete</button>
+      <button type="button" class="checkmark-btn" onclick="saveCertForm()" title="Save">
+        <span class="material-symbols-outlined">check</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== HABIT TRACKER MODAL ===================== -->
+<div class="modal-overlay" id="habit-modal">
+  <div class="modal-card glass habit-modal-card">
+    <div class="habit-modal-header-row">
+      <div>
+        <h2 style="margin:0; font-size:1.2rem; font-weight:700;">Habit Tracker</h2>
+        <p class="habit-modal-date mono" id="habit-modal-date"></p>
+      </div>
+      <div class="habit-modal-close" onclick="closeModal('habit-modal')" title="Close">
+        <span class="material-symbols-outlined">close</span>
+      </div>
+    </div>
+
+    <div class="habit-view-toggle" id="habit-view-toggle">
+      <button type="button" class="habit-view-btn" data-mode="today" onclick="setHabitViewMode('today')">Today's Checklist</button>
+      <button type="button" class="habit-view-btn active" data-mode="all" onclick="setHabitViewMode('all')">All Habits</button>
+    </div>
+    <div class="habit-grid" id="habit-grid" ondragover="habitGridDragOver(event)" ondrop="habitGridDrop(event)"></div>
+
+    <div class="habit-add-section">
+      <button type="button" class="habit-add-toggle-btn" id="habit-add-toggle-btn" onclick="openHabitForm()">
+        <span class="material-symbols-outlined">add</span> Add Habit
+      </button>
+      <div class="habit-add-form" id="habit-add-form" style="display:none;">
+        <p style="margin:0 0 12px; font-size:0.9rem; font-weight:700; color:var(--ink);" id="habit-form-title">Add Habit</p>
+        <div class="field-group">
+          <label class="field-label">Habit Name</label>
+          <input class="field-text" id="habit-name-input" type="text" placeholder="e.g. Drink Water">
+        </div>
+        <div class="habit-add-form-grid">
+          <div class="field-group">
+            <label class="field-label">Frequency</label>
+            <select class="field-select" id="habit-frequency-input" onchange="toggleHabitCustomDays()">
+              <option value="daily">Daily</option>
+              <option value="weekdays">Weekdays Only</option>
+              <option value="weekends">Weekends Only</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Difficulty</label>
+            <select class="field-select" id="habit-difficulty-input">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+              <option value="extreme">Extreme</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group hidden-field" id="habit-custom-days-group">
+          <label class="field-label">Days</label>
+          <div class="habit-days-row" id="habit-custom-days-row"></div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Color</label>
+          <div class="habit-color-row" id="habit-color-row"></div>
+        </div>
+        <div class="modal-actions-row">
+          <button type="button" class="habit-cancel-btn" onclick="cancelHabitForm()">Cancel</button>
+          <button type="button" class="checkmark-btn" onclick="saveHabitForm()" title="Save">
+            <span class="material-symbols-outlined">check</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SOCIAL TARGETS TRIANGLE MODAL ===================== -->
+<div class="modal-overlay" id="social-modal">
+  <div class="modal-card glass social-modal-card">
+    <div class="habit-modal-header-row">
+      <h2 style="margin:0; font-size:1.2rem; font-weight:700;">Social Targets</h2>
+      <div class="habit-modal-close" onclick="closeModal('social-modal')" title="Close">
+        <span class="material-symbols-outlined">close</span>
+      </div>
+    </div>
+
+    <div class="social-modal-body">
+      <div class="social-pyramid-area">
+        <div class="triangle-wrap">
+          <div class="tri-tier" style="background-color:rgba(59,130,246,0.22); clip-path:polygon(50% 0%, 25% 50%, 75% 50%);"
+            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'daily')">
+            <div class="tri-tier-label" style="top:9%;">Daily</div>
+            <div class="tri-chip-row" id="tri-chips-daily" style="top:27.5%; width:25.3%; max-height:22.5%;"></div>
+          </div>
+          <div class="tri-tier" style="background-color:rgba(34,197,94,0.22); clip-path:polygon(25% 50%, 75% 50%, 85.35% 70.7%, 14.65% 70.7%);"
+            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'semiDaily')">
+            <div class="tri-tier-label" style="top:53.7%;">Semi-Daily</div>
+            <div class="tri-chip-row" id="tri-chips-semiDaily" style="top:61.39%; width:56.47%; max-height:9.32%;"></div>
+          </div>
+          <div class="tri-tier" style="background-color:rgba(234,179,8,0.22); clip-path:polygon(14.65% 70.7%, 85.35% 70.7%, 93.3% 86.6%, 6.7% 86.6%);"
+            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'weekly')">
+            <div class="tri-tier-label" style="top:73.6%;">Weekly</div>
+            <div class="tri-chip-row" id="tri-chips-weekly" style="top:79.45%; width:73.09%; max-height:7.16%;"></div>
+          </div>
+          <div class="tri-tier" style="background-color:rgba(239,68,68,0.22); clip-path:polygon(6.7% 86.6%, 93.3% 86.6%, 100% 100%, 0% 100%);"
+            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'monthly')">
+            <div class="tri-tier-label" style="top:89%;">Monthly</div>
+            <div class="tri-chip-row" id="tri-chips-monthly" style="top:93.97%; width:86.45%; max-height:6.03%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="social-bottom-section">
+        <div class="social-people-panel glass">
+          <div class="social-people-header-inline">
+            <p class="social-people-title mono">People</p>
+            <div class="habit-mini-add-btn" id="social-people-add-btn" onclick="openSocialPersonForm()" title="Add person">
+              <span class="material-symbols-outlined">add</span>
+            </div>
+          </div>
+          <div class="social-people-chips" id="social-people-list" ondragover="triTierDragOver(event)" ondrop="dropOnPeopleList(event)"></div>
+        </div>
+        <div class="social-add-form" id="social-add-form" style="display:none;">
+          <div class="field-group">
+            <label class="field-label">Name</label>
+            <input class="field-text" id="social-person-name-input" type="text" placeholder="e.g. Alex">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Color</label>
+            <div class="habit-color-row" id="social-color-row"></div>
+          </div>
+          <div style="display:flex; gap:8px; margin-left:auto;">
+            <button type="button" class="habit-cancel-btn" onclick="cancelSocialPersonForm()">Cancel</button>
+            <button type="button" class="checkmark-btn" onclick="saveSocialPerson()" title="Save">
+              <span class="material-symbols-outlined">check</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== IMPORT HEALTH DATA MODAL ===================== -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal-card glass import-modal-card">
+    <div class="modal-header" style="color:var(--physical);">
+      <span class="material-symbols-outlined">upload_file</span>
+      <h2>Import Health Data</h2>
+    </div>
+
+    <div class="import-dropzone" id="import-dropzone" onclick="document.getElementById('import-file-input').click()">
+      <span class="material-symbols-outlined">cloud_upload</span>
+      <p>Drop your Apple Health <b>export.xml</b> here</p>
+      <button type="button" class="import-picker-btn" onclick="event.stopPropagation(); document.getElementById('import-file-input').click();">Choose File</button>
+      <input type="file" id="import-file-input" accept=".xml,text/xml" style="display:none;">
+    </div>
+
+    <div class="import-progress-section" id="import-progress-section" style="display:none;">
+      <p class="import-filename mono" id="import-filename"></p>
+      <div class="import-progress-track"><div class="import-progress-fill" id="import-progress-fill"></div></div>
+      <p class="import-status-text mono" id="import-status-text">Reading file...</p>
+    </div>
+
+    <div class="import-summary-section" id="import-summary-section" style="display:none;">
+      <div class="import-summary-list" id="import-summary-list"></div>
+      <div class="modal-close-row">
+        <button type="button" class="checkmark-btn" onclick="closeImportModal()" title="Done">
+          <span class="material-symbols-outlined">check</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(id){
+    document.getElementById(id).classList.add('open');
+  }
+  function closeModal(id){
+    document.getElementById(id).classList.remove('open');
+  }
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+    overlay.addEventListener('click', function(e){
+      if(e.target === overlay){
+        overlay.classList.remove('open');
+      }
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      document.querySelectorAll('.modal-overlay.open').forEach(function(o){ o.classList.remove('open'); });
+    }
+  });
+
+  /* ============================================================
+     Apple Health Import (export.xml, chunk-streamed, string-matched)
+  ============================================================ */
+  var HEALTH_TYPE_LABELS = {
+    HKQuantityTypeIdentifierStepCount: 'steps',
+    HKCategoryTypeIdentifierSleepAnalysis: 'sleep records',
+    HKQuantityTypeIdentifierHeartRateVariabilitySDNN: 'HRV',
+    HKQuantityTypeIdentifierRestingHeartRate: 'resting heart rate',
+    HKQuantityTypeIdentifierBodyMass: 'weight',
+    HKQuantityTypeIdentifierVO2Max: 'VO2 max',
+    HKQuantityTypeIdentifierActiveEnergyBurned: 'active energy',
+    Workout: 'workouts'
+  };
+  var HEALTH_SUMMARY_META = [
+    { key:'la_health_steps', label:'Steps', unit:'days' },
+    { key:'la_health_sleep', label:'Sleep', unit:'nights' },
+    { key:'la_health_hrv', label:'HRV', unit:'days' },
+    { key:'la_health_rhr', label:'Resting Heart Rate', unit:'days' },
+    { key:'la_health_weight', label:'Weight', unit:'entries' },
+    { key:'la_health_vo2', label:'VO2 Max', unit:'entries' },
+    { key:'la_health_calories', label:'Active Calories', unit:'days' },
+    { key:'la_health_workouts', label:'Workouts', unit:'workouts' }
+  ];
+  var HEALTH_CHUNK_SIZE = 10 * 1024 * 1024;
+  var HEALTH_TAG_RE = /<(Record|Workout)\b([^>]*)>/g;
+  var healthImportState = null;
+
+  function openImportModal(){
+    resetImportModal();
+    openModal('import-modal');
+  }
+  function closeImportModal(){
+    closeModal('import-modal');
+    if(typeof renderHealthCards === 'function') renderHealthCards();
+  }
+  function resetImportModal(){
+    healthImportState = null;
+    document.getElementById('import-dropzone').style.display = 'flex';
+    document.getElementById('import-progress-section').style.display = 'none';
+    document.getElementById('import-summary-section').style.display = 'none';
+    document.getElementById('import-progress-fill').style.width = '0%';
+    document.getElementById('import-status-text').textContent = 'Reading file...';
+    document.getElementById('import-file-input').value = '';
+  }
+
+  (function initImportDropzone(){
+    var dropzone = document.getElementById('import-dropzone');
+    var fileInput = document.getElementById('import-file-input');
+    if(!dropzone || !fileInput) return;
+    fileInput.addEventListener('change', function(){
+      if(fileInput.files && fileInput.files[0]) startHealthImport(fileInput.files[0]);
+    });
+    ['dragenter','dragover'].forEach(function(evt){
+      dropzone.addEventListener(evt, function(e){
+        e.preventDefault(); e.stopPropagation();
+        dropzone.classList.add('dragover');
+      });
+    });
+    ['dragleave','drop'].forEach(function(evt){
+      dropzone.addEventListener(evt, function(e){
+        e.preventDefault(); e.stopPropagation();
+        dropzone.classList.remove('dragover');
+      });
+    });
+    dropzone.addEventListener('drop', function(e){
+      var files = e.dataTransfer && e.dataTransfer.files;
+      if(files && files[0]) startHealthImport(files[0]);
+    });
+  })();
+
+  function formatHealthBytes(bytes){
+    if(bytes > 1024*1024) return (bytes/(1024*1024)).toFixed(1) + ' MB';
+    if(bytes > 1024) return (bytes/1024).toFixed(1) + ' KB';
+    return bytes + ' B';
+  }
+
+  function startHealthImport(file){
+    document.getElementById('import-dropzone').style.display = 'none';
+    document.getElementById('import-progress-section').style.display = 'block';
+    document.getElementById('import-filename').textContent = file.name + ' · ' + formatHealthBytes(file.size);
+
+    healthImportState = {
+      offset: 0,
+      buffer: '',
+      fileSize: file.size,
+      lastLabel: '',
+      steps: {}, calories: {}, hrv: {}, rhr: {}, weight: {}, vo2: {},
+      sleep: {}, workouts: []
+    };
+    readHealthChunk(file);
+  }
+
+  function readHealthChunk(file){
+    var st = healthImportState;
+    if(!st) return;
+    if(st.offset >= st.fileSize){ finishHealthImport(); return; }
+    var slice = file.slice(st.offset, st.offset + HEALTH_CHUNK_SIZE);
+    var reader = new FileReader();
+    reader.onload = function(e){
+      st.offset += slice.size;
+      st.buffer += e.target.result;
+      processHealthBuffer();
+      var pct = Math.min(100, Math.round((st.offset / st.fileSize) * 100));
+      var fill = document.getElementById('import-progress-fill');
+      if(fill) fill.style.width = pct + '%';
+      setTimeout(function(){ readHealthChunk(file); }, 0);
+    };
+    reader.readAsText(slice);
+  }
+
+  function processHealthBuffer(){
+    var st = healthImportState;
+    HEALTH_TAG_RE.lastIndex = 0;
+    var match, lastEnd = 0;
+    while((match = HEALTH_TAG_RE.exec(st.buffer)) !== null){
+      var tagName = match[1];
+      var attrStr = match[2];
+      if(attrStr.charAt(attrStr.length - 1) === '/') attrStr = attrStr.slice(0, -1);
+      var attrs = parseHealthAttrs(attrStr);
+      if(tagName === 'Record') handleHealthRecord(attrs);
+      else handleHealthWorkout(attrs);
+      lastEnd = HEALTH_TAG_RE.lastIndex;
+    }
+    st.buffer = st.buffer.slice(lastEnd);
+  }
+
+  function parseHealthAttrs(str){
+    var attrs = {};
+    var re = /(\w+)="([^"]*)"/g;
+    var m;
+    while((m = re.exec(str)) !== null){ attrs[m[1]] = m[2]; }
+    return attrs;
+  }
+
+  function healthDateStr(s){ return s ? s.slice(0,10) : ''; }
+  function healthHour(s){ return s ? parseInt(s.slice(11,13), 10) : 0; }
+  function healthAddDays(dateStr, n){
+    var d = new Date(dateStr + 'T00:00:00Z');
+    d.setUTCDate(d.getUTCDate() + n);
+    return d.toISOString().slice(0,10);
+  }
+
+  function setHealthStatus(type){
+    var st = healthImportState;
+    var label = HEALTH_TYPE_LABELS[type];
+    if(!label || label === st.lastLabel) return;
+    st.lastLabel = label;
+    var el = document.getElementById('import-status-text');
+    if(el) el.textContent = 'Parsing ' + label + '...';
+  }
+
+  function handleHealthRecord(attrs){
+    var st = healthImportState;
+    var type = attrs.type;
+    if(!type || !attrs.startDate) return;
+    var date = healthDateStr(attrs.startDate);
+    var value = parseFloat(attrs.value);
+
+    if(type === 'HKQuantityTypeIdentifierStepCount'){
+      setHealthStatus(type);
+      if(!isNaN(value)) st.steps[date] = (st.steps[date] || 0) + value;
+    } else if(type === 'HKQuantityTypeIdentifierActiveEnergyBurned'){
+      setHealthStatus(type);
+      if(!isNaN(value)) st.calories[date] = (st.calories[date] || 0) + value;
+    } else if(type === 'HKQuantityTypeIdentifierHeartRateVariabilitySDNN'){
+      setHealthStatus(type);
+      if(!isNaN(value)){
+        var h = st.hrv[date] || { sum:0, count:0 };
+        h.sum += value; h.count++;
+        st.hrv[date] = h;
+      }
+    } else if(type === 'HKQuantityTypeIdentifierRestingHeartRate'){
+      setHealthStatus(type);
+      if(!isNaN(value)) st.rhr[date] = value;
+    } else if(type === 'HKQuantityTypeIdentifierBodyMass'){
+      setHealthStatus(type);
+      if(!isNaN(value)){
+        var unit = attrs.unit || 'lb';
+        var lb = unit.toLowerCase().indexOf('kg') !== -1 ? value * 2.20462 : value;
+        st.weight[date] = lb;
+      }
+    } else if(type === 'HKQuantityTypeIdentifierVO2Max'){
+      setHealthStatus(type);
+      if(!isNaN(value)) st.vo2[date] = value;
+    } else if(type === 'HKCategoryTypeIdentifierSleepAnalysis'){
+      setHealthStatus(type);
+      handleHealthSleep(attrs);
+    }
+  }
+
+  function handleHealthSleep(attrs){
+    var st = healthImportState;
+    if(!attrs.startDate || !attrs.endDate) return;
+    var startDate = attrs.startDate, endDate = attrs.endDate;
+    var minutes = (new Date(endDate) - new Date(startDate)) / 60000;
+    if(!isFinite(minutes) || minutes <= 0) return;
+    var night = healthHour(startDate) >= 18 ? healthAddDays(healthDateStr(startDate), 1) : healthDateStr(startDate);
+    var bucket = st.sleep[night] || { deep:0, rem:0, core:0, awake:0 };
+    var value = attrs.value || '';
+    if(value.indexOf('Deep') !== -1) bucket.deep += minutes;
+    else if(value.indexOf('REM') !== -1) bucket.rem += minutes;
+    else if(value.indexOf('Awake') !== -1) bucket.awake += minutes;
+    else if(value.indexOf('Core') !== -1 || value.indexOf('Asleep') !== -1) bucket.core += minutes;
+    st.sleep[night] = bucket;
+  }
+
+  function handleHealthWorkout(attrs){
+    var st = healthImportState;
+    if(!attrs.startDate) return;
+    setHealthStatus('Workout');
+    var type = (attrs.workoutActivityType || 'Workout').replace(/^HKWorkoutActivityType/, '').replace(/([A-Z])/g, ' $1').trim();
+    var distance = parseFloat(attrs.totalDistance);
+    var calories = parseFloat(attrs.totalEnergyBurned);
+    var duration = parseFloat(attrs.duration);
+    st.workouts.push({
+      date: healthDateStr(attrs.startDate),
+      type: type || 'Workout',
+      duration: isNaN(duration) ? 0 : duration,
+      calories: isNaN(calories) ? 0 : calories,
+      distance: isNaN(distance) ? 0 : distance
+    });
+  }
+
+  function finishHealthImport(){
+    var st = healthImportState;
+    if(!st) return;
+
+    var stepsArr = Object.keys(st.steps).sort().map(function(d){ return { date:d, steps:Math.round(st.steps[d]) }; });
+    var caloriesArr = Object.keys(st.calories).sort().map(function(d){ return { date:d, calories:Math.round(st.calories[d]) }; });
+    var hrvArr = Object.keys(st.hrv).sort().map(function(d){ var h = st.hrv[d]; return { date:d, value: Math.round((h.sum / h.count) * 10) / 10 }; });
+    var rhrArr = Object.keys(st.rhr).sort().map(function(d){ return { date:d, value: Math.round(st.rhr[d]) }; });
+    var weightArr = Object.keys(st.weight).sort().map(function(d){ return { date:d, value: Math.round(st.weight[d] * 10) / 10, unit:'lb' }; });
+    var vo2Arr = Object.keys(st.vo2).sort().map(function(d){ return { date:d, value: Math.round(st.vo2[d] * 10) / 10 }; });
+    var sleepArr = Object.keys(st.sleep).sort().map(function(d){
+      var b = st.sleep[d];
+      return {
+        date:d,
+        totalMinutes: Math.round(b.deep + b.rem + b.core),
+        deep: Math.round(b.deep), rem: Math.round(b.rem), core: Math.round(b.core), awake: Math.round(b.awake)
+      };
+    });
+    var workoutsArr = st.workouts.slice().sort(function(a,b){ return a.date < b.date ? 1 : -1; });
+
+    localStorage.setItem('la_health_steps', JSON.stringify(stepsArr));
+    localStorage.setItem('la_health_sleep', JSON.stringify(sleepArr));
+    localStorage.setItem('la_health_hrv', JSON.stringify(hrvArr));
+    localStorage.setItem('la_health_rhr', JSON.stringify(rhrArr));
+    localStorage.setItem('la_health_weight', JSON.stringify(weightArr));
+    localStorage.setItem('la_health_vo2', JSON.stringify(vo2Arr));
+    localStorage.setItem('la_health_calories', JSON.stringify(caloriesArr));
+    localStorage.setItem('la_health_workouts', JSON.stringify(workoutsArr));
+
+    showHealthImportSummary({
+      la_health_steps: stepsArr.length,
+      la_health_sleep: sleepArr.length,
+      la_health_hrv: hrvArr.length,
+      la_health_rhr: rhrArr.length,
+      la_health_weight: weightArr.length,
+      la_health_vo2: vo2Arr.length,
+      la_health_calories: caloriesArr.length,
+      la_health_workouts: workoutsArr.length
+    });
+    healthImportState = null;
+  }
+
+  function showHealthImportSummary(counts){
+    document.getElementById('import-progress-section').style.display = 'none';
+    var list = document.getElementById('import-summary-list');
+    list.innerHTML = '';
+    HEALTH_SUMMARY_META.forEach(function(meta){
+      var row = document.createElement('div');
+      row.className = 'import-summary-row';
+      row.innerHTML = '<span class="name"><span class="material-symbols-outlined">check_circle</span>' + meta.label + '</span>' +
+        '<span class="count mono">' + (counts[meta.key] || 0) + ' ' + meta.unit + '</span>';
+      list.appendChild(row);
+    });
+    document.getElementById('import-summary-section').style.display = 'block';
+  }
+
+  function selectSegment(btn){
+    var group = btn.parentElement;
+    group.querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+  }
+
+  function selectScale(btn){
+    var group = btn.parentElement;
+    group.querySelectorAll('.scale-dot').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+  }
+
+  function toggleHinderedField(btn){
+    selectSegment(btn);
+    var wrap = document.getElementById('hindered-field-wrap');
+    if(btn.dataset.value === 'yes'){
+      wrap.classList.add('show');
+    } else {
+      wrap.classList.remove('show');
+    }
+  }
+
+  function sanitizeInt(input){
+    input.value = input.value.replace(/[^0-9]/g,'');
+  }
+
+  /* ---- Check-in persistence ---- */
+
+  function setSegmentActive(containerId, value){
+    var container = document.getElementById(containerId);
+    if(!container || !value) return;
+    container.querySelectorAll('button').forEach(function(b){
+      b.classList.toggle('active', b.textContent.trim() === value);
+    });
+  }
+
+  function getSegmentValue(containerId){
+    var container = document.getElementById(containerId);
+    var activeBtn = container.querySelector('button.active');
+    return activeBtn ? activeBtn.textContent.trim() : null;
+  }
+
+  function setScaleActive(containerId, value){
+    var container = document.getElementById(containerId);
+    if(!container || !value) return;
+    container.querySelectorAll('.scale-dot').forEach(function(b){
+      b.classList.toggle('active', b.textContent.trim() === String(value));
+    });
+  }
+
+  function getScaleValue(containerId){
+    var container = document.getElementById(containerId);
+    var activeBtn = container.querySelector('.scale-dot.active');
+    return activeBtn ? activeBtn.textContent.trim() : null;
+  }
+
+  function updateCheckinBadges(){
+    var today = getAdjustedDate();
+    var morningDone = !!localStorage.getItem('la_checkin_morning_' + today);
+    var nightDone = !!localStorage.getItem('la_checkin_night_' + today);
+    document.getElementById('morning-done-badge').style.display = morningDone ? 'flex' : 'none';
+    document.getElementById('night-done-badge').style.display = nightDone ? 'flex' : 'none';
+  }
+
+  function populateMorningFromStorage(){
+    var raw = localStorage.getItem('la_checkin_morning_' + getAdjustedDate());
+    if(!raw) return;
+    var data = JSON.parse(raw);
+    if(data.mood) document.getElementById('morning-mood').value = data.mood;
+    if(data.workload) document.getElementById('morning-workload').value = data.workload;
+    if(data.sleepHours) document.getElementById('morning-sleep-hours').value = data.sleepHours;
+    setSegmentActive('morning-supplements', data.supplements);
+    setScaleActive('morning-energy', data.energyLevel);
+  }
+
+  function populateNightFromStorage(){
+    var raw = localStorage.getItem('la_checkin_night_' + getAdjustedDate());
+    if(!raw) return;
+    var data = JSON.parse(raw);
+    if(data.mood) document.getElementById('night-mood').value = data.mood;
+    if(data.productivity !== undefined){
+      document.getElementById('productivity-slider').value = data.productivity;
+      document.getElementById('productivity-value').textContent = data.productivity + '%';
+    }
+    setSegmentActive('night-hindered', data.hindered);
+    var wrap = document.getElementById('hindered-field-wrap');
+    if(data.hindered === 'Yes'){
+      wrap.classList.add('show');
+      document.getElementById('hindered-text-input').value = data.hinderedReason || '';
+    } else {
+      wrap.classList.remove('show');
+    }
+    setSegmentActive('night-calorie', data.calorieTarget);
+    setSegmentActive('night-workout', data.workoutDone);
+  }
+
+  function openMorningModal(){
+    populateMorningFromStorage();
+    openModal('morning-modal');
+  }
+
+  function openNightModal(){
+    populateNightFromStorage();
+    openModal('night-modal');
+  }
+
+  function saveMorningCheckin(){
+    var data = {
+      mood: document.getElementById('morning-mood').value,
+      workload: document.getElementById('morning-workload').value,
+      sleepHours: document.getElementById('morning-sleep-hours').value,
+      supplements: getSegmentValue('morning-supplements'),
+      energyLevel: getScaleValue('morning-energy'),
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem('la_checkin_morning_' + getAdjustedDate(), JSON.stringify(data));
+    updateCheckinBadges();
+    closeModal('morning-modal');
+  }
+
+  function saveNightCheckin(){
+    var hinderedValue = getSegmentValue('night-hindered');
+    var data = {
+      mood: document.getElementById('night-mood').value,
+      productivity: document.getElementById('productivity-slider').value,
+      hindered: hinderedValue,
+      hinderedReason: hinderedValue === 'Yes' ? document.getElementById('hindered-text-input').value : '',
+      calorieTarget: getSegmentValue('night-calorie'),
+      workoutDone: getSegmentValue('night-workout'),
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem('la_checkin_night_' + getAdjustedDate(), JSON.stringify(data));
+    updateCheckinBadges();
+    closeModal('night-modal');
+  }
+
+  updateCheckinBadges();
+
+  /* ============================================================
+     Storage helpers
+  ============================================================ */
+  function loadJSON(key, fallback){
+    try{
+      var raw = localStorage.getItem(key);
+      return raw !== null ? JSON.parse(raw) : fallback;
+    }catch(e){ return fallback; }
+  }
+  function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  function escapeHtml(s){
+    var div = document.createElement('div');
+    div.textContent = s == null ? '' : s;
+    return div.innerHTML;
+  }
+  function escapeAttr(s){
+    return (s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  }
+
+  function todayISO(){
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function getMondayKey(){
+    var d = new Date(getAdjustedDate() + 'T00:00:00');
+    var day = d.getDay();
+    var diff = (day === 0 ? -6 : 1 - day);
+    var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
+    return monday.getFullYear() + '-' + String(monday.getMonth()+1).padStart(2,'0') + '-' + String(monday.getDate()).padStart(2,'0');
+  }
+  function diffDaysISO(aISO, bISO){
+    var a = new Date(aISO + 'T00:00:00');
+    var b = new Date(bISO + 'T00:00:00');
+    return Math.round((b - a) / 86400000);
+  }
+
+  /* ---- Sidebar mini Study Streak card (read-only, sourced from academic-subpage.html) ---- */
+  function getEffectiveSidebarStreak(){
+    var s = loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null });
+    if(!s.lastCompletedDate) return 0;
+    var gap = diffDaysISO(s.lastCompletedDate, getAdjustedDate());
+    return gap > 1 ? 0 : s.current;
+  }
+  function getSidebarWeeklyHours(){
+    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
+    if(w.weekStart !== getMondayKey()) return 0;
+    return w.weekSeconds / 3600;
+  }
+  function renderSidebarStreak(){
+    var current = getEffectiveSidebarStreak();
+    var goal = loadJSON('la_weekly_goal_academic', 10);
+    var hours = getSidebarWeeklyHours();
+    var pct = goal > 0 ? Math.min(100, (hours / goal) * 100) : 0;
+    document.getElementById('sidebar-streak-flame').textContent = '🔥 ' + current + ' day streak';
+    var fill = document.getElementById('sidebar-goal-fill');
+    fill.style.width = pct + '%';
+    fill.classList.toggle('met', goal > 0 && hours >= goal);
+    document.getElementById('sidebar-goal-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs';
+  }
+
+  /* ---- Sidebar "Currently" mini card — reads this page's own la_books/la_movies/la_shows ---- */
+  function setSidebarCurrentlyRow(rowId, textId, title){
+    var row = document.getElementById(rowId);
+    var el = document.getElementById(textId);
+    if(title){
+      el.textContent = title;
+      row.classList.remove('empty');
+    } else {
+      el.textContent = 'Nothing yet';
+      row.classList.add('empty');
+    }
+  }
+  function renderSidebarCurrently(){
+    var books = loadJSON('la_books', []);
+    var movies = loadJSON('la_movies', []);
+    var shows = loadJSON('la_shows', []);
+
+    var book = books.find(function(i){ return i.status === 'currently'; });
+    var movie = movies.filter(function(i){ return i.status === 'queue'; })
+      .sort(function(a,b){ return (a.order||0)-(b.order||0); })[0];
+    var show = shows.find(function(i){ return i.status === 'currently'; });
+
+    setSidebarCurrentlyRow('sidebar-currently-book-row', 'sidebar-currently-book', book ? book.title : null);
+    setSidebarCurrentlyRow('sidebar-currently-movie-row', 'sidebar-currently-movie', movie ? movie.title : null);
+    setSidebarCurrentlyRow('sidebar-currently-show-row', 'sidebar-currently-show', show ? show.title : null);
+  }
+
+  /* ============================================================
+     Genre tags (shared free-text chip system — same pattern as
+     academic-subpage.html's Areas)
+  ============================================================ */
+  var GENRE_PALETTE = [
+    {bg:'rgba(251,146,60,0.16)', fg:'#fdba74'},
+    {bg:'rgba(96,165,250,0.16)', fg:'#93c5fd'},
+    {bg:'rgba(74,222,128,0.16)', fg:'#86efac'},
+    {bg:'rgba(192,132,252,0.16)', fg:'#d8b4fe'},
+    {bg:'rgba(34,211,238,0.16)', fg:'#67e8f9'},
+    {bg:'rgba(248,113,113,0.16)', fg:'#fca5a5'},
+    {bg:'rgba(250,204,21,0.16)', fg:'#fde047'}
+  ];
+  function genreColor(name){
+    var hash = 0;
+    for(var i=0;i<name.length;i++){ hash = (hash*31 + name.charCodeAt(i)) >>> 0; }
+    return GENRE_PALETTE[hash % GENRE_PALETTE.length];
+  }
+  function getGenres(){ return loadJSON('la_hobbies_genres', ['Sci-Fi','Drama','Comedy']); }
+  function saveGenres(list){ saveJSON('la_hobbies_genres', list); }
+  function addGenre(name){
+    name = name.trim();
+    if(!name) return;
+    var genres = getGenres();
+    if(genres.indexOf(name) === -1){ genres.push(name); saveGenres(genres); }
+  }
+  function removeGenre(name){
+    saveGenres(getGenres().filter(function(g){ return g !== name; }));
+  }
+
+  var currentHobbyGenres = [];
+
+  function renderHobbyGenreChips(){
+    var selectedWrap = document.getElementById('hobby-selected-genres');
+    selectedWrap.innerHTML = currentHobbyGenres.map(function(g){
+      var c = genreColor(g);
+      return '<span class="chip" style="background:'+c.bg+'; color:'+c.fg+';">'+escapeHtml(g)+' <span class="remove-x" onclick="removeSelectedGenre(\''+encodeURIComponent(g)+'\')">&times;</span></span>';
+    }).join('') || '<span class="due-placeholder" style="font-size:0.62rem;">No genres selected</span>';
+
+    var suggWrap = document.getElementById('hobby-genre-suggestions');
+    var allGenres = getGenres().filter(function(g){ return currentHobbyGenres.indexOf(g) === -1; });
+    suggWrap.innerHTML = allGenres.map(function(g){
+      return '<span class="chip suggestion" onclick="addSelectedGenre(\''+encodeURIComponent(g)+'\')">'+escapeHtml(g)+'</span>';
+    }).join('');
+
+    renderManageGenresList();
+  }
+
+  function addSelectedGenre(encoded){
+    var name = decodeURIComponent(encoded);
+    if(currentHobbyGenres.indexOf(name) === -1) currentHobbyGenres.push(name);
+    renderHobbyGenreChips();
+  }
+  function removeSelectedGenre(encoded){
+    var name = decodeURIComponent(encoded);
+    currentHobbyGenres = currentHobbyGenres.filter(function(g){ return g !== name; });
+    renderHobbyGenreChips();
+  }
+
+  function handleGenreInputKey(e){
+    if(e.key === 'Enter' || e.key === ','){
+      e.preventDefault();
+      var input = document.getElementById('hobby-genre-input');
+      var name = input.value.trim().replace(/,$/,'');
+      if(name){
+        addGenre(name);
+        if(currentHobbyGenres.indexOf(name) === -1) currentHobbyGenres.push(name);
+        input.value = '';
+        renderHobbyGenreChips();
+      }
+    }
+  }
+
+  function toggleManageGenres(){
+    var panel = document.getElementById('manage-genres-panel');
+    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+    renderManageGenresList();
+  }
+
+  function renderManageGenresList(){
+    var panel = document.getElementById('manage-genres-panel');
+    if(panel.style.display === 'none') return;
+    var genres = getGenres();
+    panel.innerHTML = genres.length ? genres.map(function(g){
+      return '<div class="manage-area-row"><span>'+escapeHtml(g)+'</span><span class="del-x" onclick="deleteGenreTag(\''+encodeURIComponent(g)+'\')">&times;</span></div>';
+    }).join('') : '<div class="manage-area-row"><span style="color:var(--ink-faint);">No saved genres</span></div>';
+  }
+
+  function deleteGenreTag(encoded){
+    var name = decodeURIComponent(encoded);
+    removeGenre(name);
+    currentHobbyGenres = currentHobbyGenres.filter(function(g){ return g !== name; });
+    renderHobbyGenreChips();
+  }
+
+  /* ============================================================
+     Books / Movies / Shows — la_books / la_movies / la_shows
+     Shared CRUD + render across all three cards (type = 'books' | 'movies' | 'shows')
+  ============================================================ */
+  var currentHobbyType = null;
+  var currentHobbyId = null;
+
+  function getHobbyItems(type){ return loadJSON('la_' + type, []); }
+  function saveHobbyItems(type, list){ saveJSON('la_' + type, list); renderSidebarCurrently(); }
+
+  function typeLabel(type){
+    return type === 'books' ? 'Book' : (type === 'movies' ? 'Movie' : 'Show');
+  }
+  function typeIcon(type){
+    return type === 'books' ? 'book' : (type === 'movies' ? 'movie' : 'tv');
+  }
+  function parseSeasonEpisode(text){
+    var m = /S\s*(\d+)\s*E\s*(\d+)/i.exec(text || '');
+    if(m) return { season: parseInt(m[1],10), episode: parseInt(m[2],10) };
+    return { season: 1, episode: 1 };
+  }
+
+  function renderHobbyCard(type){
+    var items = getHobbyItems(type);
+    var queue = items.filter(function(i){ return i.status === 'queue'; }).sort(function(a,b){ return (a.order||0)-(b.order||0); });
+
+    if(type !== 'movies'){
+      var currently = items.filter(function(i){ return i.status === 'currently'; });
+      renderHobbyCurrently(type, currently);
+    }
+    renderHobbyQueue(type, queue);
+    renderHobbyRatings(type);
+  }
+
+  function renderCurrentlyBox(type, item){
+    if(type === 'books'){
+      return '<div class="media-box">' +
+          '<div class="hobby-clickable" onclick="openHobbyModal(\'books\',\''+item.id+'\')">' +
+            '<div class="title">'+escapeHtml(item.title)+'</div>' +
+            '<div class="subtitle">'+escapeHtml(item.author||'')+'</div>' +
+          '</div>' +
+          '<input type="range" class="hobby-progress-slider" min="0" max="100" step="1" value="'+(item.progress||0)+'" oninput="updateBookProgress(\''+item.id+'\', this.value)">' +
+          '<div class="hobby-progress-label mono">'+(item.progress||0)+'%</div>' +
+        '</div>';
+    }
+    var sophiaClass = item.sophia ? ' hobby-sophia-box' : '';
+    var episodeClass = item.sophia ? ' sophia' : '';
+    return '<div class="media-box'+sophiaClass+'">' +
+        '<div class="hobby-clickable" onclick="openHobbyModal(\'shows\',\''+item.id+'\')">' +
+          '<div class="title">'+escapeHtml(item.title)+'</div>' +
+          '<div class="hobby-episode-subtitle'+episodeClass+'">S'+(item.season||1)+' E'+String(item.episode||1).padStart(2,'0')+'</div>' +
+        '</div>' +
+        '<button type="button" class="hobby-episode-btn" onclick="incrementEpisode(\'shows\',\''+item.id+'\')">+1 Episode</button>' +
+      '</div>';
+  }
+
+  function renderHobbyCurrently(type, items){
+    var wrap = document.getElementById(type + '-currently');
+    if(!items.length){
+      wrap.innerHTML = '<div class="media-empty">Nothing ' + (type === 'books' ? 'reading' : 'watching') + ' right now</div>';
+      return;
+    }
+    wrap.innerHTML = '<div class="hobby-currently-stack">' + items.map(function(item){ return renderCurrentlyBox(type, item); }).join('') + '</div>';
+  }
+
+  function renderHobbyQueue(type, queue){
+    var wrap = document.getElementById(type + '-queue');
+    if(!queue.length){
+      wrap.innerHTML = '<li class="media-empty" style="list-style:none;">' + (type === 'movies' ? 'Watchlist is empty' : 'Queue is empty') + '</li>';
+      return;
+    }
+    if(type === 'movies'){
+      wrap.innerHTML = queue.map(function(item){
+        var sophiaTag = item.sophia ? ' <span class="hobby-sophia-tag">♥ Sophia</span>' : '';
+        var sophiaClass = item.sophia ? ' hobby-sophia-box' : '';
+        return '<li class="hobby-watchlist-item'+sophiaClass+'" draggable="true" data-id="'+item.id+'" ' +
+          'ondragstart="handleHobbyDragStart(event,\'movies\',\''+item.id+'\')" ' +
+          'ondragover="handleHobbyDragOver(event, this)" ' +
+          'ondragleave="handleHobbyDragLeave(event, this)" ' +
+          'ondrop="handleHobbyDrop(event,\'movies\',\''+item.id+'\')" ' +
+          'onclick="openHobbyModal(\'movies\',\''+item.id+'\')">' +
+          '<span class="material-symbols-outlined hobby-drag-handle">drag_indicator</span>' +
+          '<span class="title">'+escapeHtml(item.title)+sophiaTag+'</span>' +
+        '</li>';
+      }).join('');
+      return;
+    }
+    wrap.innerHTML = queue.map(function(item){
+      var sub = (type === 'books' && item.author) ? ' <span class="hobby-queue-sub">— '+escapeHtml(item.author)+'</span>' : '';
+      var sophiaTag = (type === 'shows' && item.sophia) ? ' <span class="hobby-sophia-tag">♥ Sophia</span>' : '';
+      var sophiaClass = (type === 'shows' && item.sophia) ? ' hobby-sophia-row' : '';
+      return '<li class="hobby-queue-item'+sophiaClass+'" draggable="true" data-id="'+item.id+'" ' +
+        'ondragstart="handleHobbyDragStart(event,\''+type+'\',\''+item.id+'\')" ' +
+        'ondragover="handleHobbyDragOver(event, this)" ' +
+        'ondragleave="handleHobbyDragLeave(event, this)" ' +
+        'ondrop="handleHobbyDrop(event,\''+type+'\',\''+item.id+'\')" ' +
+        'onclick="openHobbyModal(\''+type+'\',\''+item.id+'\')">' +
+        '<span class="material-symbols-outlined hobby-drag-handle">drag_indicator</span>' +
+        '<span class="hobby-queue-text">'+escapeHtml(item.title)+sub+sophiaTag+'</span>' +
+      '</li>';
+    }).join('');
+  }
+
+  /* Rating → highlight color scale */
+  var RATING_COLOR_STEPS = [
+    { below:3,   hex:'#e74c3c' },
+    { below:5,   hex:'#e67e22' },
+    { below:7,   hex:'#f1c40f' },
+    { below:8.5, hex:'#2ecc71' },
+    { below:9.5, hex:'#1abc9c' },
+    { below:Infinity, hex:'#3498db' }
+  ];
+  function getRatingColor(rating){
+    if(rating === undefined || rating === null || isNaN(rating)) return null;
+    for(var i=0;i<RATING_COLOR_STEPS.length;i++){
+      if(rating < RATING_COLOR_STEPS[i].below) return RATING_COLOR_STEPS[i].hex;
+    }
+    return RATING_COLOR_STEPS[RATING_COLOR_STEPS.length-1].hex;
+  }
+  function hexToRgba(hex, alpha){
+    var r = parseInt(hex.slice(1,3),16);
+    var g = parseInt(hex.slice(3,5),16);
+    var b = parseInt(hex.slice(5,7),16);
+    return 'rgba('+r+','+g+','+b+','+alpha+')';
+  }
+
+  function formatCompletedDate(iso){
+    if(!iso) return '';
+    var d = new Date(iso + 'T00:00:00');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate();
+  }
+
+  function renderHobbyRatings(type){
+    var completed = getHobbyItems(type).filter(function(i){ return i.status === 'completed'; });
+    var sortSelect = document.getElementById(type + '-sort');
+    var sortVal = sortSelect ? sortSelect.value : 'default';
+    if(sortVal === 'rating'){
+      completed = completed.slice().sort(function(a,b){ return (b.rating||0) - (a.rating||0); });
+    } else if(sortVal === 'date-desc'){
+      completed = completed.slice().sort(function(a,b){ return (b.completedDate||'').localeCompare(a.completedDate||''); });
+    } else if(sortVal === 'date-asc'){
+      completed = completed.slice().sort(function(a,b){ return (a.completedDate||'').localeCompare(b.completedDate||''); });
+    }
+    var wrap = document.getElementById(type + '-ratings');
+    if(!completed.length){
+      wrap.innerHTML = '<div class="media-empty">Nothing completed yet</div>';
+      return;
+    }
+    wrap.innerHTML = completed.map(function(item){
+      var color = getRatingColor(item.rating);
+      var rowStyle = color ? ('border-left-color:'+color+'; box-shadow:inset 3px 0 10px -6px '+hexToRgba(color,0.6)+';') : '';
+      var titleStyle = color ? ('color:'+color+';') : '';
+      var badgeStyle = color ? ('background:'+hexToRgba(color,0.18)+'; border-color:'+hexToRgba(color,0.55)+'; color:'+color+';') : '';
+      var dateText = item.completedDate ? ' <span class="hobby-rating-date">· Completed '+formatCompletedDate(item.completedDate)+'</span>' : '';
+      return '<div class="hobby-rating-row" style="'+rowStyle+'">' +
+        '<span class="hobby-rating-title hobby-clickable" onclick="openHobbyModal(\''+type+'\',\''+item.id+'\')" title="'+escapeAttr(item.title)+'" style="'+titleStyle+'">'+escapeHtml(item.title)+dateText+'</span>' +
+        '<input type="number" class="hobby-rating-input mono" min="0" max="10" step="0.1" value="'+(item.rating !== undefined ? item.rating : '')+'" placeholder="—" style="'+badgeStyle+'" onclick="event.stopPropagation();" onchange="updateHobbyRating(\''+type+'\',\''+item.id+'\', this.value)">' +
+      '</div>';
+    }).join('');
+  }
+
+  function updateHobbyRating(type, id, value){
+    var items = getHobbyItems(type);
+    var item = items.find(function(i){ return i.id === id; });
+    if(!item) return;
+    var v = parseFloat(value);
+    item.rating = isNaN(v) ? undefined : Math.max(0, Math.min(10, Math.round(v*10)/10));
+    saveHobbyItems(type, items);
+    renderHobbyRatings(type);
+  }
+
+  function openHobbyModal(type, id){
+    currentHobbyType = type;
+    currentHobbyId = id || null;
+    var deleteBtn = document.getElementById('hobby-delete-btn');
+    document.getElementById('hobby-author-group').style.display = type === 'books' ? 'block' : 'none';
+    document.getElementById('hobby-episode-group').style.display = type === 'shows' ? 'block' : 'none';
+    document.getElementById('hobby-sophia-group').style.display = (type === 'movies' || type === 'shows') ? 'block' : 'none';
+    document.getElementById('hobby-status-currently-option').style.display = type === 'movies' ? 'none' : '';
+    document.getElementById('hobby-modal-icon').textContent = typeIcon(type);
+
+    if(id){
+      var item = getHobbyItems(type).find(function(i){ return i.id === id; });
+      document.getElementById('hobby-modal-title').textContent = 'Edit ' + typeLabel(type);
+      deleteBtn.style.display = 'inline-block';
+      document.getElementById('hobby-title').value = item.title || '';
+      document.getElementById('hobby-author').value = item.author || '';
+      document.getElementById('hobby-episode-input').value = item.season ? ('S'+item.season+' E'+String(item.episode||1).padStart(2,'0')) : '';
+      document.getElementById('hobby-sophia').checked = !!item.sophia;
+      document.getElementById('hobby-status').value = item.status || 'queue';
+      currentHobbyGenres = (item.genres || []).slice();
+    } else {
+      document.getElementById('hobby-modal-title').textContent = 'Add ' + typeLabel(type);
+      deleteBtn.style.display = 'none';
+      document.getElementById('hobby-title').value = '';
+      document.getElementById('hobby-author').value = '';
+      document.getElementById('hobby-episode-input').value = '';
+      document.getElementById('hobby-sophia').checked = false;
+      document.getElementById('hobby-status').value = 'queue';
+      currentHobbyGenres = [];
+    }
+    document.getElementById('hobby-genre-input').value = '';
+    document.getElementById('manage-genres-panel').style.display = 'none';
+    renderHobbyGenreChips();
+    openModal('hobby-modal');
+  }
+
+  function saveHobbyForm(){
+    var title = document.getElementById('hobby-title').value.trim();
+    if(!title){ document.getElementById('hobby-title').focus(); return; }
+    var type = currentHobbyType;
+    var status = document.getElementById('hobby-status').value;
+    var items = getHobbyItems(type);
+
+    var item = currentHobbyId ? items.find(function(i){ return i.id === currentHobbyId; }) : null;
+    if(!item){
+      item = { id: uid() };
+      items.push(item);
+    }
+    var prevStatus = item.status;
+    item.title = title;
+    item.genres = currentHobbyGenres.slice();
+
+    if(type === 'books'){
+      item.author = document.getElementById('hobby-author').value.trim();
+      if(item.progress === undefined) item.progress = 0;
+    } else if(type === 'movies'){
+      item.sophia = document.getElementById('hobby-sophia').checked;
+    } else if(type === 'shows'){
+      var parsed = parseSeasonEpisode(document.getElementById('hobby-episode-input').value);
+      item.season = parsed.season;
+      item.episode = parsed.episode;
+      item.sophia = document.getElementById('hobby-sophia').checked;
+    }
+
+    if(status === 'queue' && prevStatus !== 'queue'){
+      var maxOrder = items.filter(function(i){ return i.status === 'queue' && i.id !== item.id; })
+        .reduce(function(m,i){ return Math.max(m, i.order||0); }, -1);
+      item.order = maxOrder + 1;
+    }
+
+    if(status === 'completed' && prevStatus !== 'completed'){
+      openCompleteModal(type, items, item);
+      return;
+    }
+
+    item.status = status;
+    saveHobbyItems(type, items);
+    renderHobbyCard(type);
+    closeModal('hobby-modal');
+  }
+
+  /* ---- Mark as Completed modal (prompts for a completion date) ---- */
+  var pendingComplete = null;
+
+  function openCompleteModal(type, items, item){
+    pendingComplete = { type: type, items: items, item: item };
+    document.getElementById('complete-modal-item-title').textContent = item.title;
+    document.getElementById('complete-date-input').value = todayISO();
+    closeModal('hobby-modal');
+    openModal('complete-modal');
+  }
+
+  function setCompleteDateToday(){
+    document.getElementById('complete-date-input').value = todayISO();
+  }
+
+  function cancelCompleteModal(){
+    pendingComplete = null;
+    closeModal('complete-modal');
+  }
+
+  function confirmCompleteModal(){
+    if(!pendingComplete) return;
+    var dateVal = document.getElementById('complete-date-input').value || todayISO();
+    pendingComplete.item.status = 'completed';
+    pendingComplete.item.completedDate = dateVal;
+    saveHobbyItems(pendingComplete.type, pendingComplete.items);
+    renderHobbyCard(pendingComplete.type);
+    closeModal('complete-modal');
+    pendingComplete = null;
+  }
+
+  function deleteHobbyItem(){
+    if(!currentHobbyId) return;
+    var type = currentHobbyType;
+    saveHobbyItems(type, getHobbyItems(type).filter(function(i){ return i.id !== currentHobbyId; }));
+    renderHobbyCard(type);
+    closeModal('hobby-modal');
+  }
+
+  function incrementEpisode(type, id){
+    var items = getHobbyItems(type);
+    var item = items.find(function(i){ return i.id === id; });
+    if(!item) return;
+    item.episode = (item.episode || 1) + 1;
+    saveHobbyItems(type, items);
+    renderHobbyCard(type);
+  }
+
+  function updateBookProgress(id, value){
+    var items = getHobbyItems('books');
+    var item = items.find(function(i){ return i.id === id; });
+    if(!item) return;
+    item.progress = parseInt(value, 10);
+    saveHobbyItems('books', items);
+    var label = document.querySelector('#books-currently .hobby-progress-label');
+    if(label) label.textContent = item.progress + '%';
+  }
+
+  /* ---- Queue drag-to-reorder ---- */
+  var dragHobby = { type:null, id:null };
+
+  function handleHobbyDragStart(e, type, id){
+    dragHobby = { type: type, id: id };
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', id);
+  }
+  function handleHobbyDragOver(e, el){
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    el.classList.add('drag-over');
+  }
+  function handleHobbyDragLeave(e, el){
+    el.classList.remove('drag-over');
+  }
+  function handleHobbyDrop(e, type, targetId){
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if(dragHobby.type !== type || !dragHobby.id || dragHobby.id === targetId){
+      dragHobby = { type:null, id:null };
+      return;
+    }
+    var items = getHobbyItems(type);
+    var queue = items.filter(function(i){ return i.status === 'queue'; }).sort(function(a,b){ return (a.order||0)-(b.order||0); });
+    var fromIdx = queue.findIndex(function(i){ return i.id === dragHobby.id; });
+    var toIdx = queue.findIndex(function(i){ return i.id === targetId; });
+    if(fromIdx === -1 || toIdx === -1){
+      dragHobby = { type:null, id:null };
+      return;
+    }
+    var moved = queue.splice(fromIdx,1)[0];
+    queue.splice(toIdx,0,moved);
+    queue.forEach(function(item,idx){ item.order = idx; });
+    saveHobbyItems(type, items);
+    renderHobbyCard(type);
+    dragHobby = { type:null, id:null };
+  }
+
+  /* ============================================================
+     Certifications & Courses — la_certifications
+  ============================================================ */
+  var currentCertId = null;
+
+  function getCertifications(){ return loadJSON('la_certifications', []); }
+  function saveCertifications(list){ saveJSON('la_certifications', list); }
+
+  function renderCertifications(){
+    var items = getCertifications();
+    var active = items.filter(function(i){ return i.status === 'in_progress'; });
+    var queued = items.filter(function(i){ return i.status === 'queued'; });
+    var completed = items.filter(function(i){ return i.status === 'completed'; });
+
+    var activeWrap = document.getElementById('cert-active-list');
+    activeWrap.innerHTML = active.length ? active.map(function(item){
+      var pct = item.progress || 0;
+      return '<div class="cert-block hobby-clickable" onclick="openCertModal(\''+item.id+'\')">' +
+          '<div class="cert-head">' +
+            '<div>' +
+              '<div class="title">'+escapeHtml(item.name)+'</div>' +
+              '<div class="sub">'+escapeHtml(item.provider||'')+'</div>' +
+            '</div>' +
+            '<span class="pct">'+pct+'%</span>' +
+          '</div>' +
+          '<div class="cert-track"><div class="cert-fill" style="width:'+pct+'%;"></div></div>' +
+        '</div>';
+    }).join('') : '<div class="media-empty">No active courses</div>';
+
+    var queueWrap = document.getElementById('cert-queue-list');
+    queueWrap.innerHTML = queued.length ? queued.map(function(item){
+      var sub = item.provider ? ' <span class="hobby-queue-sub">— '+escapeHtml(item.provider)+'</span>' : '';
+      return '<li class="hobby-queue-item" onclick="openCertModal(\''+item.id+'\')">' +
+          '<span class="hobby-queue-text">'+escapeHtml(item.name)+sub+'</span>' +
+        '</li>';
+    }).join('') : '<li class="media-empty" style="list-style:none;">Nothing queued</li>';
+
+    var completedWrap = document.getElementById('cert-completed-list');
+    completedWrap.innerHTML = completed.length ? completed.map(function(item){
+      return '<div class="cert-completed-item" onclick="openCertModal(\''+item.id+'\')">' +
+          '<span class="material-symbols-outlined" style="color:#6ee7b7; font-size:16px; flex-shrink:0;">check_circle</span>' +
+          '<div class="cert-completed-text">' +
+            '<div class="title">'+escapeHtml(item.name)+'</div>' +
+            '<div class="sub">'+escapeHtml(item.provider||'')+'</div>' +
+          '</div>' +
+        '</div>';
+    }).join('') : '<div class="media-empty" style="grid-column:1/-1;">Nothing completed yet</div>';
+  }
+
+  function openCertModal(id){
+    currentCertId = id || null;
+    var deleteBtn = document.getElementById('cert-delete-btn');
+    if(id){
+      var item = getCertifications().find(function(i){ return i.id === id; });
+      document.getElementById('cert-modal-title').textContent = 'Edit Course';
+      deleteBtn.style.display = 'inline-block';
+      document.getElementById('cert-name').value = item.name || '';
+      document.getElementById('cert-provider').value = item.provider || '';
+      document.getElementById('cert-progress').value = item.progress || 0;
+      document.getElementById('cert-progress-value').textContent = (item.progress||0) + '%';
+      document.getElementById('cert-status').value = item.status || 'in_progress';
+      document.getElementById('cert-link').value = item.link || '';
+    } else {
+      document.getElementById('cert-modal-title').textContent = 'Add Course';
+      deleteBtn.style.display = 'none';
+      document.getElementById('cert-name').value = '';
+      document.getElementById('cert-provider').value = '';
+      document.getElementById('cert-progress').value = 0;
+      document.getElementById('cert-progress-value').textContent = '0%';
+      document.getElementById('cert-status').value = 'in_progress';
+      document.getElementById('cert-link').value = '';
+    }
+    openModal('cert-modal');
+  }
+
+  function saveCertForm(){
+    var name = document.getElementById('cert-name').value.trim();
+    if(!name){ document.getElementById('cert-name').focus(); return; }
+    var items = getCertifications();
+    var item = currentCertId ? items.find(function(i){ return i.id === currentCertId; }) : null;
+    if(!item){
+      item = { id: uid() };
+      items.push(item);
+    }
+    item.name = name;
+    item.provider = document.getElementById('cert-provider').value.trim();
+    item.progress = parseInt(document.getElementById('cert-progress').value, 10) || 0;
+    item.status = document.getElementById('cert-status').value;
+    item.link = document.getElementById('cert-link').value.trim();
+    saveCertifications(items);
+    renderCertifications();
+    closeModal('cert-modal');
+  }
+
+  function deleteCertification(){
+    if(!currentCertId) return;
+    saveCertifications(getCertifications().filter(function(i){ return i.id !== currentCertId; }));
+    renderCertifications();
+    closeModal('cert-modal');
+  }
+
+  /* ============================================================
+     Habit Tracker — la_habits
+     Day resets at 5:00 AM (not midnight). Frequency-aware streaks.
+  ============================================================ */
+  function formatDateHuman(iso){
+    if(!iso) return '—';
+    var d = new Date(iso + 'T00:00:00');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate();
+  }
+
+  var HABIT_COLORS = ['#4ade80','#60a5fa','#fb923c','#c084fc','#f87171','#facc15','#22d3ee','#f472b6'];
+  var selectedHabitColor = HABIT_COLORS[0];
+  var selectedHabitDays = [];
+  var currentHabitId = null;
+  var dragHabitId = null;
+  var habitViewMode = 'all';
+
+  function setHabitViewMode(mode){
+    habitViewMode = mode;
+    document.querySelectorAll('.habit-view-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+    renderHabitGrid();
+  }
+
+  function habitColorRgba(hex, alpha){
+    var h = (hex || '#4ade80').replace('#','');
+    if(h.length === 3){ h = h.split('').map(function(c){ return c+c; }).join(''); }
+    var r = parseInt(h.substring(0,2),16);
+    var g = parseInt(h.substring(2,4),16);
+    var b = parseInt(h.substring(4,6),16);
+    return 'rgba('+r+','+g+','+b+','+alpha+')';
+  }
+
+  function getHabits(){ return loadJSON('la_habits', []); }
+  function saveHabits(list){
+    list.forEach(function(h){
+      if(!h.completedDates) h.completedDates = [];
+      if(h.bestStreak === undefined) h.bestStreak = 0;
+      h.currentStreak = computeHabitStreak(h);
+      var sorted = h.completedDates.slice().sort();
+      h.lastCompletedDate = sorted.length ? sorted[sorted.length - 1] : null;
+    });
+    saveJSON('la_habits', list);
+  }
+
+  function isLateNightWindow(){
+    var hour = new Date().getHours();
+    return hour >= 0 && hour < 5;
+  }
+
+  function getAdjustedDate(){
+    var d = new Date();
+    if(isLateNightWindow()){ d.setDate(d.getDate() - 1); }
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function addDaysISO(iso, delta){
+    var d = new Date(iso + 'T00:00:00');
+    d.setDate(d.getDate() + delta);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function isScheduledDay(habit, dateISO){
+    var dow = new Date(dateISO + 'T00:00:00').getDay();
+    if(habit.frequency === 'weekdays') return dow >= 1 && dow <= 5;
+    if(habit.frequency === 'weekends') return dow === 0 || dow === 6;
+    if(habit.frequency === 'custom') return (habit.customDays || []).indexOf(dow) !== -1;
+    return true;
+  }
+  function computeHabitStreak(habit){
+    var completed = habit.completedDates || [];
+    var cursor = getAdjustedDate();
+    if(isScheduledDay(habit, cursor) && completed.indexOf(cursor) === -1){
+      cursor = addDaysISO(cursor, -1);
+    }
+    var streak = 0;
+    var guard = 0;
+    while(guard++ < 730){
+      if(isScheduledDay(habit, cursor)){
+        if(completed.indexOf(cursor) !== -1){
+          streak++;
+          cursor = addDaysISO(cursor, -1);
+        } else {
+          break;
+        }
+      } else {
+        cursor = addDaysISO(cursor, -1);
+      }
+    }
+    return streak;
+  }
+
+  function toggleHabitToday(id){
+    var habits = getHabits();
+    var habit = habits.find(function(h){ return h.id === id; });
+    if(!habit) return;
+    var today = getAdjustedDate();
+    if(!habit.completedDates) habit.completedDates = [];
+    var idx = habit.completedDates.indexOf(today);
+    if(idx !== -1){
+      habit.completedDates.splice(idx, 1);
+    } else {
+      habit.completedDates.push(today);
+      habit.bestStreak = Math.max(habit.bestStreak || 0, computeHabitStreak(habit));
+    }
+    saveHabits(habits);
+    renderSidebarHabits();
+    if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
+  }
+
+  function deleteHabitDirect(id){
+    saveHabits(getHabits().filter(function(h){ return h.id !== id; }));
+    renderHabitGrid();
+    renderSidebarHabits();
+  }
+
+  function renderSidebarHabits(){
+    var today = getAdjustedDate();
+    var habits = getHabits().filter(function(h){ return isScheduledDay(h, today); });
+    var list = document.getElementById('habit-mini-list');
+    var completedCount = habits.filter(function(h){ return (h.completedDates || []).indexOf(today) !== -1; }).length;
+    document.getElementById('habit-mini-counter').textContent = completedCount + ' / ' + habits.length;
+    if(!habits.length){
+      list.innerHTML = '<div class="habit-mini-empty">No habits today</div>';
+      return;
+    }
+    list.innerHTML = habits.map(function(h){
+      var completed = (h.completedDates || []).indexOf(today) !== -1;
+      var streak = computeHabitStreak(h);
+      return '<div class="habit-mini-row" style="background:'+habitColorRgba(h.color, 0.12)+';">' +
+          '<span class="habit-mini-dot" style="background:'+h.color+'; color:'+h.color+';"></span>' +
+          '<span class="habit-mini-name">'+escapeHtml(h.name)+'</span>' +
+          '<span class="habit-mini-streak mono">🔥 '+streak+'</span>' +
+          '<input type="checkbox" class="habit-checkbox"'+(completed ? ' checked' : '')+' onclick="event.stopPropagation(); toggleHabitToday(\''+h.id+'\')">' +
+        '</div>';
+    }).join('');
+  }
+
+  function renderHabitGrid(){
+    var today = getAdjustedDate();
+    var allHabits = getHabits();
+    var habits = habitViewMode === 'today' ? allHabits.filter(function(h){ return isScheduledDay(h, today); }) : allHabits;
+    var dateLabel = document.getElementById('habit-modal-date');
+    if(dateLabel) dateLabel.textContent = formatDateHuman(today);
+    var grid = document.getElementById('habit-grid');
+    if(!habits.length){
+      grid.innerHTML = '<div class="habit-empty-msg">' + (habitViewMode === 'today' ? 'No habits scheduled today' : 'No habits yet — add one below') + '</div>';
+      return;
+    }
+    grid.innerHTML = habits.map(function(h){
+      var streak = computeHabitStreak(h);
+      var completedToday = (h.completedDates || []).indexOf(today) !== -1;
+      var scheduledToday = isScheduledDay(h, today);
+      var checkRow = scheduledToday
+        ? '<label class="habit-card-check-row"><input type="checkbox" class="habit-checkbox"'+(completedToday ? ' checked' : '')+' onclick="toggleHabitToday(\''+h.id+'\')"> '+(completedToday ? 'Completed today' : 'Mark complete')+'</label>'
+        : '<div class="habit-card-unscheduled">Not scheduled today</div>';
+      return '<div class="habit-card'+(completedToday ? ' completed' : '')+'" style="background:'+habitColorRgba(h.color, 0.12)+'; border-color:'+habitColorRgba(h.color, 0.3)+';" draggable="true" data-habit-id="'+h.id+'" ondragstart="habitDragStart(event,\''+h.id+'\')" ondragend="habitDragEnd(event)" ondragover="habitDragOver(event)" ondrop="habitDrop(event,\''+h.id+'\')">' +
+          '<div class="habit-card-top">' +
+            '<div>' +
+              '<div class="habit-card-name" style="color:'+h.color+';">'+escapeHtml(h.name)+'</div>' +
+              '<span class="habit-difficulty-badge habit-diff-'+h.difficulty+'">'+h.difficulty+'</span>' +
+            '</div>' +
+            '<div class="habit-card-actions">' +
+              '<div class="habit-icon-btn" onclick="openHabitForm(\''+h.id+'\')" title="Edit"><span class="material-symbols-outlined">edit</span></div>' +
+              '<div class="habit-icon-btn" onclick="deleteHabitDirect(\''+h.id+'\')" title="Delete"><span class="material-symbols-outlined">close</span></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="habit-card-streaks">' +
+            '<span class="streak-current">🔥 '+streak+'</span>' +
+            '<span>Best: '+(h.bestStreak || 0)+'</span>' +
+          '</div>' +
+          checkRow +
+        '</div>';
+    }).join('');
+  }
+
+  function habitDragStart(e, id){
+    dragHabitId = id;
+    e.currentTarget.classList.add('dragging');
+    if(e.dataTransfer){
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', id); } catch(err){}
+    }
+  }
+  function habitDragEnd(e){
+    e.currentTarget.classList.remove('dragging');
+    dragHabitId = null;
+  }
+  function habitDragOver(e){
+    e.preventDefault();
+    if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+  }
+  function habitDrop(e, targetId){
+    e.preventDefault();
+    e.stopPropagation();
+    if(dragHabitId === targetId) return;
+    reorderHabits(dragHabitId, targetId);
+  }
+  function habitGridDragOver(e){
+    e.preventDefault();
+  }
+  function habitGridDrop(e){
+    e.preventDefault();
+    reorderHabits(dragHabitId, null);
+  }
+  function reorderHabits(fromId, targetId){
+    if(!fromId) return;
+    var habits = getHabits();
+    var fromIdx = habits.findIndex(function(h){ return h.id === fromId; });
+    if(fromIdx === -1) return;
+    var moved = habits.splice(fromIdx, 1)[0];
+    var toIdx = targetId ? habits.findIndex(function(h){ return h.id === targetId; }) : -1;
+    if(toIdx === -1){ habits.push(moved); } else { habits.splice(toIdx, 0, moved); }
+    saveHabits(habits);
+    renderHabitGrid();
+    renderSidebarHabits();
+  }
+
+  function openHabitModal(){
+    cancelHabitForm();
+    renderHabitGrid();
+    openModal('habit-modal');
+  }
+
+  function toggleHabitCustomDays(){
+    var freq = document.getElementById('habit-frequency-input').value;
+    document.getElementById('habit-custom-days-group').classList.toggle('show', freq === 'custom');
+  }
+
+  function renderHabitDaysRow(){
+    var labels = ['M','T','W','T','F','S','S'];
+    var dows =   [1,2,3,4,5,6,0];
+    var row = document.getElementById('habit-custom-days-row');
+    row.innerHTML = dows.map(function(dow, i){
+      var active = selectedHabitDays.indexOf(dow) !== -1;
+      var style = active ? ' style="background:'+selectedHabitColor+'; border-color:'+selectedHabitColor+'; color:#0b0b10;"' : '';
+      return '<button type="button" class="habit-day-btn'+(active ? ' active' : '')+'"'+style+' onclick="toggleHabitDay('+dow+')">'+labels[i]+'</button>';
+    }).join('');
+  }
+  function toggleHabitDay(dow){
+    var idx = selectedHabitDays.indexOf(dow);
+    if(idx === -1){ selectedHabitDays.push(dow); } else { selectedHabitDays.splice(idx, 1); }
+    renderHabitDaysRow();
+  }
+
+  function renderHabitColorSwatches(){
+    var row = document.getElementById('habit-color-row');
+    row.innerHTML = HABIT_COLORS.map(function(c){
+      var sel = c === selectedHabitColor ? ' selected' : '';
+      return '<div class="habit-color-swatch'+sel+'" style="background:'+c+';" onclick="selectHabitColor(\''+c+'\')"></div>';
+    }).join('');
+  }
+  function selectHabitColor(c){
+    selectedHabitColor = c;
+    renderHabitColorSwatches();
+    renderHabitDaysRow();
+  }
+
+  function openHabitForm(id){
+    currentHabitId = id || null;
+    document.getElementById('habit-add-form').style.display = 'block';
+    document.getElementById('habit-add-toggle-btn').style.display = 'none';
+    if(id){
+      var h = getHabits().find(function(x){ return x.id === id; });
+      document.getElementById('habit-form-title').textContent = 'Edit Habit';
+      document.getElementById('habit-name-input').value = h.name;
+      document.getElementById('habit-frequency-input').value = h.frequency;
+      document.getElementById('habit-difficulty-input').value = h.difficulty;
+      selectedHabitColor = h.color;
+      selectedHabitDays = (h.customDays || []).slice();
+    } else {
+      document.getElementById('habit-form-title').textContent = 'Add Habit';
+      document.getElementById('habit-name-input').value = '';
+      document.getElementById('habit-frequency-input').value = 'daily';
+      document.getElementById('habit-difficulty-input').value = 'medium';
+      selectedHabitColor = HABIT_COLORS[0];
+      selectedHabitDays = [];
+    }
+    toggleHabitCustomDays();
+    renderHabitDaysRow();
+    renderHabitColorSwatches();
+  }
+
+  function cancelHabitForm(){
+    var form = document.getElementById('habit-add-form');
+    var toggleBtn = document.getElementById('habit-add-toggle-btn');
+    if(form) form.style.display = 'none';
+    if(toggleBtn) toggleBtn.style.display = 'inline-flex';
+    currentHabitId = null;
+  }
+
+  function saveHabitForm(){
+    var name = document.getElementById('habit-name-input').value.trim();
+    if(!name){ document.getElementById('habit-name-input').focus(); return; }
+    var habits = getHabits();
+    var habit = currentHabitId ? habits.find(function(h){ return h.id === currentHabitId; }) : null;
+    if(!habit){
+      habit = { id: uid(), completedDates: [], bestStreak: 0 };
+      habits.push(habit);
+    }
+    habit.name = name;
+    habit.frequency = document.getElementById('habit-frequency-input').value;
+    habit.customDays = habit.frequency === 'custom' ? selectedHabitDays.slice() : [];
+    habit.difficulty = document.getElementById('habit-difficulty-input').value;
+    habit.color = selectedHabitColor;
+    saveHabits(habits);
+    cancelHabitForm();
+    renderHabitGrid();
+    renderSidebarHabits();
+  }
+
+  /* ============================================================
+     Cross-page live sync (fires when the OTHER tab/page changes
+     localStorage — index.html shares these keys)
+  ============================================================ */
+  window.addEventListener('storage', function(e){
+    if(e.key === 'la_books'){ renderHobbyCard('books'); renderSidebarCurrently(); }
+    else if(e.key === 'la_movies'){ renderHobbyCard('movies'); renderSidebarCurrently(); }
+    else if(e.key === 'la_shows'){ renderHobbyCard('shows'); renderSidebarCurrently(); }
+    else if(e.key === 'la_hobbies_genres'){
+      if(document.getElementById('hobby-modal').classList.contains('open')){ renderHobbyGenreChips(); }
+    }
+    else if(e.key === 'la_certifications'){ renderCertifications(); }
+    else if(e.key === 'la_study_streak_academic' || e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){
+      renderSidebarStreak();
+    }
+    else if(e.key === 'la_habits'){
+      renderSidebarHabits();
+      if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
+    }
+    else if(e.key === 'la_social_people' || e.key === 'la_social_state'){
+      renderSidebarSocial();
+      if(document.getElementById('social-modal').classList.contains('open')){
+        renderTrianglePeopleList();
+        renderTriangleTiers();
+      }
+    }
+  });
+
+  /* ============================================================
+     Late night mode — 12AM-5AM amber tint on "yesterday" elements
+  ============================================================ */
+  function updateLateNightMode(){
+    document.body.classList.toggle('late-night', isLateNightWindow());
+  }
+
+  function runClockTick(){
+    updateLateNightMode();
+    checkDailyReset();
+  }
+
+  /* ============================================================
+     Daily reset at 5AM — refresh check-in badges, social daily
+     state, and nutrition entry for the new day. Only fires once
+     per adjusted day (la_last_reset_date, 5AM-adjusted YYYY-MM-DD).
+  ============================================================ */
+  function clearTodayNutritionEntry(){
+    var cfg = loadJSON('la_nutrition', null);
+    if(cfg && cfg.entries && cfg.entries[getAdjustedDate()] !== undefined){
+      delete cfg.entries[getAdjustedDate()];
+      saveJSON('la_nutrition', cfg);
+    }
+  }
+
+  function performDailyReset(){
+    updateCheckinBadges();
+    renderSidebarSocial();
+    clearTodayNutritionEntry();
+    if(typeof renderMoodCard === 'function'){ renderMoodCard(); }
+    if(typeof renderSplitPlanner === 'function'){ renderSplitPlanner(); }
+    if(typeof renderSplitCalendar === 'function'){ renderSplitCalendar(); }
+    if(typeof renderNutritionCard === 'function'){ renderNutritionCard(); }
+    if(typeof renderPhysicalHealthCard === 'function'){ renderPhysicalHealthCard(); }
+  }
+
+  function checkDailyReset(){
+    var adjusted = getAdjustedDate();
+    var last = localStorage.getItem('la_last_reset_date');
+    if(last !== adjusted){
+      performDailyReset();
+      localStorage.setItem('la_last_reset_date', adjusted);
+    }
+  }
+
+  /* ============================================================
+     Sidebar live date/time
+  ============================================================ */
+  function updateSidebarDateTime(){
+    var el = document.getElementById('sidebar-datetime');
+    if(!el) return;
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var now = new Date();
+    var hours = now.getHours();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    var h12 = hours % 12 || 12;
+    var mins = now.getMinutes();
+    var minStr = mins < 10 ? '0' + mins : '' + mins;
+    el.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() +
+      '  ·  ' + h12 + ':' + minStr + ' ' + ampm;
+  }
+
+  /* ============================================================
+     Social Targets Triangle — la_social_people / la_social_state
+  ============================================================ */
+  var SOCIAL_COLORS = ['#3b82f6','#22c55e','#eab308','#ef4444','#a855f7','#ec4899','#14b8a6','#f97316'];
+  var SOCIAL_TIER_INTERVAL_DAYS = { semiDaily:1, weekly:7, monthly:30 };
+  var selectedSocialColor = SOCIAL_COLORS[0];
+  var dragPersonId = null;
+
+  function getSocialPeople(){ return loadJSON('la_social_people', []); }
+  function saveSocialPeople(list){ saveJSON('la_social_people', list); }
+
+  function getSocialState(){
+    var s = loadJSON('la_social_state', null) || {};
+    s.tiers = s.tiers || {};
+    ['daily','semiDaily','weekly','monthly'].forEach(function(k){ if(!s.tiers[k]) s.tiers[k] = []; });
+    s.rotation = s.rotation || {};
+    ['semiDaily','weekly','monthly'].forEach(function(k){
+      if(!s.rotation[k]) s.rotation[k] = { currentIndex:0, clearedUntil:null };
+    });
+    s.daily = s.daily || { talkedDay:null, talkedIds:[] };
+    return s;
+  }
+  function saveSocialState(s){ saveJSON('la_social_state', s); }
+
+  function ensureDailyReset(state){
+    var today = getAdjustedDate();
+    if(state.daily.talkedDay !== today){
+      state.daily.talkedDay = today;
+      state.daily.talkedIds = [];
+    }
+  }
+
+  function resolveTierPerson(state, tierKey){
+    var people = state.tiers[tierKey];
+    var rot = state.rotation[tierKey];
+    if(!people.length) return null;
+    var today = getAdjustedDate();
+    if(rot.clearedUntil && diffDaysISO(today, rot.clearedUntil) <= 0){
+      rot.currentIndex = (rot.currentIndex + 1) % people.length;
+      rot.clearedUntil = null;
+    }
+    if(rot.clearedUntil) return null;
+    var idx = ((rot.currentIndex % people.length) + people.length) % people.length;
+    return people[idx];
+  }
+
+  function markSocialTalked(tierKey, personId){
+    var state = getSocialState();
+    if(tierKey === 'daily'){
+      ensureDailyReset(state);
+      if(state.daily.talkedIds.indexOf(personId) === -1){ state.daily.talkedIds.push(personId); }
+    } else {
+      var today = getAdjustedDate();
+      state.rotation[tierKey].clearedUntil = addDaysISO(today, SOCIAL_TIER_INTERVAL_DAYS[tierKey]);
+    }
+    saveSocialState(state);
+    renderSidebarSocial();
+  }
+
+  function renderSidebarSocial(){
+    var wrap = document.getElementById('social-widget-rows');
+    if(!wrap) return;
+    var people = getSocialPeople();
+    var state = getSocialState();
+    ensureDailyReset(state);
+
+    var rows = [];
+    state.tiers.daily.forEach(function(pid){
+      if(state.daily.talkedIds.indexOf(pid) !== -1) return;
+      var p = people.find(function(x){ return x.id === pid; });
+      if(p) rows.push({ person:p, tier:'daily', freqLabel:'Daily' });
+    });
+    [['semiDaily','Semi'], ['weekly','Weekly'], ['monthly','Monthly']].forEach(function(pair){
+      var pid = resolveTierPerson(state, pair[0]);
+      if(!pid) return;
+      var p = people.find(function(x){ return x.id === pid; });
+      if(p) rows.push({ person:p, tier:pair[0], freqLabel:pair[1] });
+    });
+
+    saveSocialState(state);
+
+    if(!rows.length){
+      wrap.innerHTML = '<div class="social-empty">No targets set</div>';
+      return;
+    }
+    wrap.innerHTML = rows.map(function(r){
+      return '<div class="social-row">' +
+          '<div class="social-row-left">' +
+            '<span class="dot" style="background:'+r.person.color+'; color:'+r.person.color+';"></span>' +
+            '<span class="name">'+escapeHtml(r.person.name)+'</span>' +
+            '<span class="social-freq-label mono">'+r.freqLabel+'</span>' +
+          '</div>' +
+          '<input type="checkbox" class="habit-checkbox" onclick="markSocialTalked(\''+r.tier+'\',\''+r.person.id+'\')">' +
+        '</div>';
+    }).join('');
+  }
+
+  function renderPersonChipHtml(p, checkedOff){
+    var checkedClass = checkedOff ? ' person-chip-checked' : '';
+    var checkBadge = checkedOff ? '<span class="person-chip-check material-symbols-outlined" title="Checked off">check_circle</span>' : '';
+    return '<div class="person-chip'+checkedClass+'" draggable="true" style="border-color:'+habitColorRgba(p.color,0.5)+'; background:'+habitColorRgba(p.color,0.12)+';" data-person-id="'+p.id+'" ondragstart="personDragStart(event,\''+p.id+'\')" ondragend="personDragEnd(event)">' +
+        '<span class="person-chip-dot" style="background:'+p.color+'; color:'+p.color+';"></span>' +
+        '<span class="person-chip-name">'+escapeHtml(p.name)+'</span>' +
+        checkBadge +
+        '<span class="person-chip-del material-symbols-outlined" onclick="event.stopPropagation(); deleteSocialPerson(\''+p.id+'\')" title="Remove">close</span>' +
+      '</div>';
+  }
+
+  function renderTrianglePeopleList(){
+    var people = getSocialPeople();
+    var state = getSocialState();
+    var assigned = {};
+    ['daily','semiDaily','weekly','monthly'].forEach(function(k){
+      state.tiers[k].forEach(function(id){ assigned[id] = true; });
+    });
+    var unassigned = people.filter(function(p){ return !assigned[p.id]; });
+    var list = document.getElementById('social-people-list');
+    list.innerHTML = unassigned.length
+      ? unassigned.map(function(p){ return renderPersonChipHtml(p); }).join('')
+      : '<div class="social-people-empty">No unassigned people — add or drag someone here</div>';
+  }
+
+  function renderTriangleTiers(){
+    var people = getSocialPeople();
+    var state = getSocialState();
+    ensureDailyReset(state);
+    saveSocialState(state);
+    ['daily','semiDaily','weekly','monthly'].forEach(function(key){
+      var wrap = document.getElementById('tri-chips-' + key);
+      if(!wrap) return;
+      var ids = state.tiers[key];
+      var checkedOffId = null;
+      if(key !== 'daily'){
+        var rot = state.rotation[key];
+        if(rot.clearedUntil && ids.length){
+          var idx = ((rot.currentIndex % ids.length) + ids.length) % ids.length;
+          checkedOffId = ids[idx];
+        }
+      }
+      wrap.innerHTML = ids.map(function(id){
+        var p = people.find(function(x){ return x.id === id; });
+        if(!p) return '';
+        var checkedOff = key === 'daily' ? (state.daily.talkedIds.indexOf(id) !== -1) : (id === checkedOffId);
+        return renderPersonChipHtml(p, checkedOff);
+      }).join('');
+    });
+  }
+
+  function openSocialModal(){
+    cancelSocialPersonForm();
+    renderTrianglePeopleList();
+    renderTriangleTiers();
+    openModal('social-modal');
+  }
+
+  function personDragStart(e, id){
+    dragPersonId = id;
+    if(e.dataTransfer){ e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', id); }
+    e.currentTarget.classList.add('dragging');
+  }
+  function personDragEnd(e){
+    e.currentTarget.classList.remove('dragging');
+    dragPersonId = null;
+  }
+  function triTierDragOver(e){
+    e.preventDefault();
+    if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+  }
+  function triTierDragEnter(e){ e.currentTarget.classList.add('drag-over'); }
+  function triTierDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+
+  function unassignPersonFromAllTiers(state, id){
+    ['daily','semiDaily','weekly','monthly'].forEach(function(k){
+      var idx = state.tiers[k].indexOf(id);
+      if(idx !== -1) state.tiers[k].splice(idx,1);
+    });
+  }
+
+  function dropOnTier(e, tierKey){
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('drag-over');
+    if(!dragPersonId) return;
+    var state = getSocialState();
+    unassignPersonFromAllTiers(state, dragPersonId);
+    state.tiers[tierKey].push(dragPersonId);
+    saveSocialState(state);
+    renderTriangleTiers();
+    renderTrianglePeopleList();
+    renderSidebarSocial();
+  }
+  function dropOnPeopleList(e){
+    e.preventDefault();
+    if(!dragPersonId) return;
+    var state = getSocialState();
+    unassignPersonFromAllTiers(state, dragPersonId);
+    saveSocialState(state);
+    renderTriangleTiers();
+    renderTrianglePeopleList();
+    renderSidebarSocial();
+  }
+
+  function openSocialPersonForm(){
+    document.getElementById('social-add-form').style.display = 'flex';
+    document.getElementById('social-people-add-btn').style.display = 'none';
+    document.getElementById('social-person-name-input').value = '';
+    selectedSocialColor = SOCIAL_COLORS[0];
+    renderSocialColorSwatches();
+    document.getElementById('social-person-name-input').focus();
+  }
+  function cancelSocialPersonForm(){
+    var form = document.getElementById('social-add-form');
+    var btn = document.getElementById('social-people-add-btn');
+    if(form) form.style.display = 'none';
+    if(btn) btn.style.display = 'flex';
+  }
+  function renderSocialColorSwatches(){
+    var row = document.getElementById('social-color-row');
+    if(!row) return;
+    row.innerHTML = SOCIAL_COLORS.map(function(c){
+      var sel = c === selectedSocialColor ? ' selected' : '';
+      return '<div class="habit-color-swatch'+sel+'" style="background:'+c+';" onclick="selectSocialColor(\''+c+'\')"></div>';
+    }).join('');
+  }
+  function selectSocialColor(c){
+    selectedSocialColor = c;
+    renderSocialColorSwatches();
+  }
+  function saveSocialPerson(){
+    var input = document.getElementById('social-person-name-input');
+    var name = input.value.trim();
+    if(!name){ input.focus(); return; }
+    var people = getSocialPeople();
+    people.push({ id: uid(), name: name, color: selectedSocialColor });
+    saveSocialPeople(people);
+    cancelSocialPersonForm();
+    renderTrianglePeopleList();
+    renderSidebarSocial();
+  }
+  function deleteSocialPerson(id){
+    saveSocialPeople(getSocialPeople().filter(function(p){ return p.id !== id; }));
+    var state = getSocialState();
+    unassignPersonFromAllTiers(state, id);
+    saveSocialState(state);
+    renderTriangleTiers();
+    renderTrianglePeopleList();
+    renderSidebarSocial();
+  }
+
+  /* ============================================================
+     Init
+  ============================================================ */
+  ['books','movies','shows'].forEach(function(type){ renderHobbyCard(type); });
+  renderCertifications();
+  renderSidebarStreak();
+  renderSidebarCurrently();
+  renderSidebarHabits();
+  renderSidebarSocial();
+  updateSidebarDateTime();
+  setInterval(updateSidebarDateTime, 1000);
+  runClockTick();
+  setInterval(runClockTick, 60000);
+</script>
+
+</body>
+</html>

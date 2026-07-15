@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liberation Arc — Academic</title>
+<title>Liberation Arc — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-photo: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCVzPhRLtlYmQD1DG8eKCYmXPeJ4qLxCCyPChAi2i_wlhZriDtnGqmnmCbVX0IisEfWzdG7QRkjgbL9URKKPu78WkGUdIYWS4IduwZUwjk51FIrVJVlUxCJxSUV_py3IOw4YCRN-Zh1DbnosNme7fnYESLf5UD0dl39ywDuhMfm1ETLKoeGUE69uJB_JOVCoJ0JmlLQgqYdEirJ5OYI4P7FzI8hqDR_LeqSpKtYB_iwlamPuTYj0GTNsDYvxJ219sPUwbRYxexcj4Iz');
+    --bg-photo: url('https://lh3.googleusercontent.com/aida-public/AB6AXuArtrKS8zX1W3VGGKF3eY133dF7BDxKpNswelj4g1NAgV0bQMSMJ_PL-HhRqijaWokiF3HrYoh9lYBLEQUzZByzvAF4OhcKb3LqR9Mjc_o71H3ZSfJXJMSS3U2TsUba3csDbhjnUHpqHfiHx006NMeoR01ym90MaCUFi6pz8VYFsNmCT4Hy7G23K7NQ7i1EV6CBGcIszbEJUqFVWw1EEXqmf0-CGBzX53KKYRpnnzJd5AWgFeO5LdtkDBYrCF7T3ULOT4a6oh7pLk06');
 
     --ink: #f2f2f5;
     --ink-dim: rgba(242,242,245,0.62);
@@ -46,6 +46,7 @@
     line-height:1;
   }
 
+  /* Full-bleed background photo with a dark scrim so glass panels always read as "dark base" */
   .bg-layer{
     position:fixed;
     inset:0;
@@ -281,7 +282,7 @@
     box-shadow:0 0 8px currentColor;
   }
 
-  /* Study Streak mini card (sidebar, read-only summary of the Study Streak card below) */
+  /* Study Streak mini card (read-only, sourced from academic-subpage.html) */
   .streak-mini-card{
     padding:14px;
     border-radius:var(--r-md);
@@ -831,19 +832,11 @@
     display:grid;
     grid-template-columns:minmax(240px, 320px) 1fr;
     gap:22px;
-    flex:1 1 auto;
-    min-height:620px;
-  }
-
-  .right-column{
-    display:flex;
-    flex-direction:column;
-    gap:22px;
-    min-height:0;
+    flex:1 1 56%;
+    min-height:340px;
   }
 
   .research-stack{
-    min-height:0;
     display:flex;
     flex-direction:column;
     gap:18px;
@@ -1004,7 +997,7 @@
   }
   .filter-group select option{ background:#16171c; }
 
-  /* ---------- Deadline / Countdown modal extras ---------- */
+  /* ---------- Deadline modal extras ---------- */
   .chip-row{ display:flex; flex-wrap:wrap; gap:6px; }
   .chip{
     display:inline-flex;
@@ -1086,19 +1079,18 @@
     flex:1;
     background:transparent;
     border:none;
-    border-bottom:1px solid transparent;
+    border-bottom:1px solid rgba(255,255,255,0.08);
     color:var(--ink-dim);
     font-size:0.74rem;
     font-family:inherit;
     padding:2px 0;
     outline:none;
     min-width:0;
-    transition:border-color .15s ease;
   }
   .task-text-input:focus{ border-bottom-color:rgba(255,255,255,0.32); color:var(--ink); }
   .task-date-input{
-    background:transparent;
-    border:1px solid transparent;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.12);
     border-radius:6px;
     color:var(--ink-dim);
     font-size:0.58rem;
@@ -1107,11 +1099,6 @@
     color-scheme:dark;
     outline:none;
     flex-shrink:0;
-    transition:background .15s ease, border-color .15s ease;
-  }
-  .task-date-input:focus{
-    background:rgba(255,255,255,0.05);
-    border-color:rgba(255,255,255,0.12);
   }
   .add-task-btn{
     display:flex;
@@ -1209,7 +1196,7 @@
   .status-select option{ background:#16171c; }
 
   /* Deadlines table card */
-  .deadlines-card{ display:flex; flex-direction:column; flex:1; min-height:0; }
+  .deadlines-card{ display:flex; flex-direction:column; }
   .deadlines-header{
     display:flex;
     align-items:center;
@@ -1264,265 +1251,310 @@
   .task-cell{ display:flex; align-items:center; gap:10px; }
   .task-cell .material-symbols-outlined{ font-size:17px; color:var(--ink-faint); }
   .task-cell .name{ font-weight:700; color:var(--ink); }
-  .task-cell .recurring-icon{ font-size:13px; color:var(--academic); flex-shrink:0; }
-
-  /* ---------- Second bottom row: Important Tasks + Streak/Goal + Pomodoro ---------- */
-  .second-row{
+  /* ---------- Bottom section ---------- */
+  .bottom-section{
     display:grid;
-    grid-template-columns:1fr 1fr 1fr;
+    grid-template-columns:0.5fr 0.5fr 1fr 1fr;
     gap:22px;
-    flex:0 0 auto;
-    min-height:260px;
+    flex:1 1 40%;
+    min-height:220px;
   }
-  .countdown-card{ padding:20px; }
+  .bottom-card{ padding:20px; }
+  .bottom-card .card-eyebrow{ font-size:0.68rem; margin-bottom:14px; }
+  .bottom-card .card-eyebrow .material-symbols-outlined{ font-size:17px; }
+  .bottom-card-body{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:6px;
+    color:var(--ink-faint);
+  }
+  .bottom-card-body .material-symbols-outlined{
+    font-size:26px;
+    opacity:0.45;
+  }
+  .bottom-card-body .empty-label{
+    font-size:0.72rem;
+    color:var(--ink-dim);
+    font-weight:500;
+  }
+  .bottom-card-body .empty-sub{
+    font-size:0.62rem;
+    color:var(--ink-faint);
+  }
 
-  /* ---------- Study Streak & Weekly Goal card ---------- */
-  .streak-card{ padding:20px; }
-  .streak-display{
+  /* ---------- Hobbies card (synced from la_books / la_movies / la_shows / la_certifications) ---------- */
+  .hobbies-top-row{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:2px;
+  }
+  .hobbies-col{
+    padding:0 0 8px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:8px;
+    min-width:0;
+  }
+  .hobbies-col:last-child{ border-bottom:none; padding-bottom:0; }
+  .hobbies-col-label{
+    font-size:0.68rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:var(--ink-faint);
+    margin:0;
+    flex-shrink:0;
+  }
+  .hobbies-col-value{
+    font-size:0.86rem;
+    font-weight:700;
+    color:var(--ink);
+    margin:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    min-width:0;
+    text-align:right;
+  }
+  .hobbies-col-value.empty{
+    color:var(--ink-faint);
+    font-weight:500;
+    font-style:italic;
+    font-size:0.72rem;
+  }
+  .hobbies-divider{
+    height:1px;
+    background:rgba(255,255,255,0.08);
+    margin:16px 0 14px;
+  }
+  .hobbies-courses-section{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+  }
+  .hobbies-courses-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+    overflow-y:auto;
+    max-height:170px;
+    padding-right:2px;
+  }
+  .hobbies-course-item{
+    padding:8px 10px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.04);
+    min-width:0;
+  }
+  .hobbies-course-name{
+    font-size:0.68rem;
+    font-weight:700;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .hobbies-course-provider{
+    font-size:0.58rem;
+    color:var(--ink-faint);
+    margin-top:1px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .hobbies-course-track{
+    width:100%;
+    height:4px;
+    border-radius:4px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+    margin-top:6px;
+  }
+  .hobbies-course-fill{ height:100%; background:var(--hobbies); }
+  .hobbies-courses-empty{
+    grid-column:1/-1;
+    font-size:0.68rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    text-align:center;
+    padding:12px 0;
+  }
+
+  /* ---------- Tasklist card (index.html) ---------- */
+  .tasklist-card{
+    background:rgba(220,38,38,0.08);
+    border:1px solid rgba(220,38,38,0.3);
+  }
+  .tasklist-header{
+    margin:0 0 12px;
+    font-size:1.2rem;
+    font-weight:800;
+    text-align:center;
+    color:#dc2626;
+    letter-spacing:0.02em;
+  }
+  .tasklist-items{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    padding-right:2px;
+  }
+  .tasklist-row{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:5px 2px;
+  }
+  .tasklist-num{
+    font-size:0.66rem;
+    font-weight:700;
+    color:rgba(220,38,38,0.7);
+    width:16px;
+    flex-shrink:0;
+    text-align:right;
+  }
+  .tasklist-checkbox{
+    appearance:none;
+    -webkit-appearance:none;
+    width:14px; height:14px;
+    border-radius:4px;
+    border:1.5px solid rgba(220,38,38,0.45);
+    background:transparent;
+    cursor:pointer;
+    flex-shrink:0;
+    position:relative;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .tasklist-checkbox:hover{ border-color:rgba(220,38,38,0.85); }
+  .tasklist-checkbox:disabled{ cursor:default; opacity:0.4; }
+  .tasklist-checkbox:checked{ background:#dc2626; border-color:#dc2626; }
+  .tasklist-checkbox:checked::after{
+    content:'';
+    position:absolute;
+    left:4px; top:1px;
+    width:3px; height:7px;
+    border:solid #fff;
+    border-width:0 2px 2px 0;
+    transform:rotate(45deg);
+  }
+  .tasklist-text{
+    flex:1;
+    min-width:0;
+    background:transparent;
+    border:none;
+    border-bottom:1px solid transparent;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.76rem;
+    padding:3px 2px;
+    outline:none;
+  }
+  .tasklist-text:focus{ border-bottom-color:rgba(220,38,38,0.35); }
+  .tasklist-text.completed{ text-decoration:line-through; color:var(--ink-faint); }
+  .tasklist-text::placeholder{ color:var(--ink-faint); }
+
+  /* ---------- Physical Health card (index.html) ---------- */
+  .physical-divider{
+    height:1px;
+    background:rgba(255,255,255,0.08);
+    margin:14px 0;
+    flex-shrink:0;
+  }
+  .physical-mood-row{
+    display:flex;
+    gap:12px;
+    flex:1;
+    min-height:96px;
+  }
+  .physical-mood-block{
+    flex:1;
+    min-width:0;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     gap:6px;
-    flex:1;
-    padding:10px 0 16px;
+    padding:14px 10px;
+    border-radius:var(--r-md);
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);
   }
-  .streak-current{
-    font-size:1.3rem;
+  .physical-mood-label{
+    font-size:0.6rem;
     font-weight:700;
-    color:var(--ink);
-    text-align:center;
-  }
-  .streak-best{
-    font-size:0.64rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
     color:var(--ink-faint);
-    text-align:center;
   }
-  .streak-divider{
-    height:1px;
-    background:rgba(255,255,255,0.08);
-    margin:0 0 16px;
-  }
-  .weekly-goal-section{ display:flex; flex-direction:column; gap:10px; }
-  .weekly-goal-header{
+  .physical-mood-emoji{ font-size:1.9rem; line-height:1; }
+  .physical-mood-name{ font-size:0.8rem; font-weight:700; }
+  .physical-mood-empty-mark{ font-size:1.4rem; color:var(--ink-faint); }
+  .physical-split-row{
+    flex-shrink:0;
     display:flex;
-    align-items:center;
+    flex-direction:column;
+    gap:2px;
+  }
+  .physical-cal-section{ flex-shrink:0; display:flex; flex-direction:column; gap:8px; }
+  .physical-cal-top{
+    display:flex;
+    align-items:flex-end;
     justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
   }
-  .goal-target-input-wrap{
-    display:flex;
-    align-items:center;
-    gap:5px;
-  }
-  .goal-target-input{
-    width:44px;
-    padding:4px 6px;
-    border-radius:6px;
-    border:1px solid rgba(255,255,255,0.14);
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    font-family:inherit;
-    font-size:0.68rem;
-    text-align:center;
-    outline:none;
-  }
-  .goal-target-input:focus{ border-color:rgba(255,255,255,0.32); background:rgba(255,255,255,0.08); }
-  .goal-target-unit{
+  .physical-cal-value-wrap{ margin:0; display:flex; align-items:baseline; gap:5px; }
+  .physical-cal-value{ font-size:1.5rem; font-weight:700; color:var(--physical); }
+  .physical-cal-target{ font-size:0.68rem; color:var(--ink-faint); }
+  .physical-cal-input-wrap{ display:flex; align-items:center; gap:6px; }
+  .physical-cal-input-wrap label{
     font-size:0.58rem;
-    color:var(--ink-faint);
     font-weight:700;
     text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink-faint);
   }
-  .goal-progress-track{
-    height:10px;
+  .physical-cal-input{
+    width:64px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:6px;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.72rem;
+    padding:4px 6px;
+    outline:none;
+    transition:border-color .3s ease, background-color .3s ease;
+  }
+  body.late-night .physical-cal-input{
+    border-color:rgba(251,191,36,0.4);
+    background:rgba(251,191,36,0.08);
+  }
+  .physical-cal-track{
+    height:6px;
     border-radius:999px;
     background:rgba(255,255,255,0.08);
     overflow:hidden;
   }
-  .goal-progress-fill{
+  .physical-cal-fill{
     height:100%;
     border-radius:999px;
-    background:var(--secondbrain);
+    background:var(--physical);
     width:0%;
     transition:width .3s ease, background .3s ease;
   }
-  .goal-progress-fill.met{ background:#4ade80; }
-  .goal-progress-label{
-    font-size:0.6rem;
-    color:var(--ink-faint);
-    text-align:center;
-  }
-  .panel-header-alt{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:12px;
-  }
-  .countdown-list{ display:flex; flex-direction:column; gap:10px; max-height:220px; overflow-y:auto; }
-  .countdown-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:10px 12px;
-    border-radius:var(--r-sm);
-    background:rgba(255,255,255,0.04);
-  }
-  .countdown-item .name{ font-size:0.74rem; font-weight:700; color:var(--ink); }
-  .countdown-item .target-date{ font-size:0.58rem; color:var(--ink-faint); margin-top:2px; }
-  .countdown-item .time-left{ font-size:0.72rem; font-weight:700; color:var(--ink-dim); }
-  .countdown-item .time-left.warn{ color:#fb923c; }
-  .countdown-item .time-left.urgent{ color:#f87171; }
-  .countdown-empty{ font-size:0.68rem; color:var(--ink-faint); text-align:center; padding:24px 0; }
-
-  /* ---------- Pomodoro Timer Card (colors matched to the other cards) ---------- */
-  .pomo-card{
-    position:relative;
-    padding:22px 20px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    overflow:visible;
-  }
-  .pomo-settings-btn{
-    position:absolute;
-    top:14px; right:14px;
-  }
-  .pomo-tabs{
-    display:flex;
-    gap:6px;
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.1);
-    padding:4px;
-    border-radius:999px;
-    margin-bottom:16px;
-  }
-  .pomo-tab{
-    padding:6px 14px;
-    border-radius:999px;
-    border:none;
-    background:transparent;
-    color:var(--ink-dim);
-    font-family:inherit;
-    font-size:0.62rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.04em;
-    cursor:pointer;
-    transition:background .2s ease, color .2s ease;
-  }
-  .pomo-tab.active{
-    background:rgba(255,255,255,0.16);
-    color:var(--ink);
-  }
-  .pomo-display{
-    font-size:3rem;
-    font-weight:700;
-    letter-spacing:0.01em;
-    margin:2px 0 16px;
-    line-height:1;
-    color:var(--academic);
-  }
-  @keyframes pomoFlash{
-    0%,100%{ opacity:1; }
-    50%{ opacity:0.15; }
-  }
-  .pomo-display.flash{
-    animation:pomoFlash 0.3s ease-in-out 3;
-  }
-  .pomo-controls-row{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    margin-bottom:14px;
-  }
-  .pomo-start-btn{
-    padding:9px 30px;
-    border-radius:999px;
-    border:none;
-    background:var(--academic);
-    color:#0b0b10;
-    font-family:inherit;
-    font-size:0.74rem;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:0.06em;
-    cursor:pointer;
-    transition:transform .15s ease;
-  }
-  .pomo-start-btn:hover{ transform:translateY(-1px); }
-  .pomo-icon-btn{
-    width:32px; height:32px;
-    border-radius:50%;
-    border:1px solid rgba(255,255,255,0.14);
-    background:rgba(255,255,255,0.06);
-    color:var(--ink-dim);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-  }
-  .pomo-icon-btn .material-symbols-outlined{ font-size:16px; }
-  .pomo-icon-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
-  .pomo-week-row{
-    font-size:0.6rem;
-    color:var(--ink-faint);
-    margin-bottom:14px;
-  }
-  .pomo-week-row span{ color:var(--academic); font-weight:700; }
-  .pomo-card .field-label.pomo-focus-label{
-    align-self:flex-start;
-    margin-top:14px;
-  }
-
-  .pomo-settings-popover{
-    position:absolute;
-    top:56px;
-    right:16px;
-    width:190px;
-    background:#16171c;
-    border:1px solid rgba(255,255,255,0.14);
-    border-radius:var(--r-md);
-    padding:14px;
-    box-shadow:0 12px 32px rgba(0,0,0,0.5);
-    display:none;
-    z-index:20;
-  }
-  .pomo-settings-popover.open{ display:block; }
-  .pomo-settings-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:10px;
-    font-size:0.64rem;
-    font-weight:600;
-    color:var(--ink-dim);
-    gap:8px;
-  }
-  .pomo-settings-row input{
-    width:48px;
-    padding:4px 6px;
-    border-radius:6px;
-    border:1px solid rgba(255,255,255,0.14);
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    font-family:inherit;
-    font-size:0.68rem;
-    text-align:center;
-  }
-  .pomo-settings-save{
-    width:100%;
-    padding:7px;
-    border-radius:8px;
-    border:none;
-    background:var(--academic);
-    color:#0b0b10;
-    font-weight:800;
-    font-size:0.62rem;
-    text-transform:uppercase;
-    letter-spacing:0.05em;
-    cursor:pointer;
-    margin-top:2px;
-  }
+  .physical-cal-fill.over{ background:#f87171; }
 
   /* ---------- Modals ---------- */
   .modal-overlay{
@@ -1847,13 +1879,8 @@
     </div>
 
     <nav class="nav">
-      <a class="nav-link" data-section="dashboard" href="../index.html">
-        <span class="material-symbols-outlined">arrow_back</span>
-        <span>Dashboard</span>
-      </a>
-      <div class="sidebar-divider"></div>
       <div class="nav-row">
-        <a class="nav-link" data-section="physical" href="physical-subpage.html">
+        <a class="nav-link active" data-section="physical" href="screens/physical-subpage.html">
           <span class="material-symbols-outlined">fitness_center</span>
           <span>Physical</span>
         </a>
@@ -1862,15 +1889,15 @@
           <span class="import-btn-tooltip">Import Health Data</span>
         </button>
       </div>
-      <a class="nav-link active" data-section="academic" href="academic-subpage.html">
+      <a class="nav-link" data-section="academic" href="screens/academic-subpage.html">
         <span class="material-symbols-outlined">school</span>
         <span>Academic</span>
       </a>
-      <a class="nav-link" data-section="hobbies" href="hobbies-subpage.html">
+      <a class="nav-link" data-section="hobbies" href="screens/hobbies-subpage.html">
         <span class="material-symbols-outlined">palette</span>
         <span>Hobbies</span>
       </a>
-      <a class="nav-link" data-section="financial" href="../financial-subpage.html">
+      <a class="nav-link" data-section="financial" href="financial-subpage.html">
         <span class="material-symbols-outlined">payments</span>
         <span>Financial</span>
       </a>
@@ -1954,6 +1981,7 @@
   <!-- ===================== MAIN ===================== -->
   <main class="main">
 
+    <!-- Top: research cards + deadlines -->
     <div class="top-section">
       <div class="research-stack">
         <div class="card glass research-card">
@@ -2033,7 +2061,6 @@
         </div>
       </div>
 
-      <div class="right-column">
       <div class="card glass deadlines-card">
         <div class="accent-blob" style="background:rgba(255,255,255,0.06); width:72px; height:72px;"></div>
         <div class="deadlines-header">
@@ -2092,91 +2119,104 @@
           </table>
         </div>
       </div>
+    </div>
 
-      <!-- Second bottom row: Important Tasks + Study Streak/Weekly Goal + Pomodoro Timer -->
-      <div class="second-row">
+    <!-- Bottom: three cards, full width -->
+    <div class="bottom-section">
 
-      <div class="card glass countdown-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
-        <div class="panel-header-alt">
-          <div class="card-eyebrow" style="color:var(--secondbrain); margin-bottom:0;">
-            <span class="material-symbols-outlined">timer</span>
-            Important Tasks
-          </div>
-        </div>
-        <div class="countdown-list" id="countdown-list"></div>
+      <div class="card glass bottom-card tasklist-card">
+        <div class="accent-blob" style="background:rgba(220,38,38,0.14);"></div>
+        <p class="tasklist-header mono">TASKLIST</p>
+        <div class="tasklist-items" id="tasklist-items"></div>
       </div>
 
-      <div class="card glass streak-card">
-        <div class="accent-blob" style="background:rgba(34,211,238,0.14);"></div>
-        <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
-          <div class="card-eyebrow" style="color:var(--secondbrain);">
-            <span class="material-symbols-outlined">local_fire_department</span>
-            Study Streak
+      <div class="card glass bottom-card hobbies-card">
+        <div class="accent-blob" style="background:rgba(251,146,60,0.14);"></div>
+        <div class="card-eyebrow" style="color:var(--hobbies);">
+          <span class="material-symbols-outlined">palette</span>
+          Hobbies
+        </div>
+        <div class="hobbies-top-row">
+          <div class="hobbies-col">
+            <p class="hobbies-col-label mono">Reading</p>
+            <p class="hobbies-col-value empty" id="hobbies-reading-value">Nothing yet</p>
           </div>
-
-          <div class="streak-display">
-            <div class="streak-current mono" id="streak-current">🔥 0 day streak</div>
-            <div class="streak-best mono" id="streak-best">Best: 0 days</div>
+          <div class="hobbies-col">
+            <p class="hobbies-col-label mono">Watching</p>
+            <p class="hobbies-col-value empty" id="hobbies-watching-value">Nothing yet</p>
           </div>
+          <div class="hobbies-col">
+            <p class="hobbies-col-label mono">Viewing</p>
+            <p class="hobbies-col-value empty" id="hobbies-upnext-value">Nothing yet</p>
+          </div>
+        </div>
+        <div class="hobbies-divider"></div>
+        <div class="hobbies-courses-section">
+          <p class="hobbies-col-label mono" style="margin-bottom:8px;">All Courses</p>
+          <div class="hobbies-courses-grid" id="hobbies-courses-grid"></div>
+        </div>
+      </div>
 
-          <div class="streak-divider"></div>
+      <div class="card glass bottom-card physical-health-card">
+        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
+        <div class="card-eyebrow" style="color:var(--physical);">
+          <span class="material-symbols-outlined">fitness_center</span>
+          Physical Health
+        </div>
 
-          <div class="weekly-goal-section">
-            <div class="weekly-goal-header">
-              <div class="card-eyebrow" style="color:var(--secondbrain); margin-bottom:0;">
-                <span class="material-symbols-outlined">flag</span>
-                Weekly Goal
-              </div>
-              <div class="goal-target-input-wrap">
-                <input type="number" class="goal-target-input" id="weekly-goal-input" min="0.5" max="100" step="0.5" onchange="saveWeeklyGoal(this.value)">
-                <span class="goal-target-unit">hrs</span>
-              </div>
+        <div class="physical-mood-row" id="physical-mood-row"></div>
+
+        <div class="physical-divider"></div>
+
+        <div class="physical-split-row" id="physical-split-row">
+          <p class="hobbies-col-label mono">Gym Split</p>
+          <p class="hobbies-col-value" id="physical-split-value">—</p>
+        </div>
+
+        <div class="physical-divider"></div>
+
+        <div class="physical-cal-section">
+          <div class="physical-cal-top">
+            <div>
+              <p class="hobbies-col-label mono">Calories</p>
+              <p class="physical-cal-value-wrap mono">
+                <span class="physical-cal-value" id="physical-cal-value">0</span>
+                <span class="physical-cal-target" id="physical-cal-target">/ 2200 kcal</span>
+              </p>
             </div>
-            <div class="goal-progress-track">
-              <div class="goal-progress-fill" id="goal-progress-fill"></div>
+            <div class="physical-cal-input-wrap">
+              <label for="physical-cal-input">Log calories</label>
+              <input type="number" id="physical-cal-input" class="physical-cal-input" min="0" step="10" placeholder="kcal" oninput="updatePhysicalCalories(this.value)">
             </div>
-            <div class="goal-progress-label mono" id="goal-progress-label">0.0 hrs / 10 hrs this week</div>
+          </div>
+          <div class="physical-cal-track">
+            <div class="physical-cal-fill" id="physical-cal-fill"></div>
           </div>
         </div>
       </div>
 
-      <div class="card glass pomo-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
-        <button type="button" class="pomo-icon-btn pomo-settings-btn" onclick="togglePomoSettings()" title="Settings">
-          <span class="material-symbols-outlined">settings</span>
-        </button>
-
-        <div class="pomo-tabs">
-          <button type="button" class="pomo-tab active" data-mode="pomodoro" onclick="selectPomoTab('pomodoro')">Pomodoro</button>
-          <button type="button" class="pomo-tab" data-mode="short" onclick="selectPomoTab('short')">Short Break</button>
-          <button type="button" class="pomo-tab" data-mode="long" onclick="selectPomoTab('long')">Long Break</button>
+      <div class="card glass bottom-card">
+        <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
+        <div class="card-eyebrow" style="color:var(--financial);">
+          <span class="material-symbols-outlined">payments</span>
+          Financial
         </div>
-
-        <div class="pomo-display mono" id="pomo-display">25:00</div>
-
-        <div class="pomo-controls-row">
-          <button type="button" class="pomo-icon-btn" onclick="resetPomo()" title="Reset">
-            <span class="material-symbols-outlined">replay</span>
-          </button>
-          <button type="button" class="pomo-start-btn" id="pomo-start-btn" onclick="togglePomoStartPause()">Start</button>
+        <div class="physical-split-row">
+          <p class="hobbies-col-label mono">Net This Month</p>
+          <p class="hobbies-col-value" id="financial-net-value">$0.00</p>
         </div>
-
-        <div class="pomo-week-row mono">This week: <span id="pomo-week-total">0.0h</span></div>
-
-        <label class="field-label pomo-focus-label">Today's Focus</label>
-        <input class="field-text" id="today-focus-input" type="text" placeholder="What are you working on today?" oninput="saveTodayFocus(this.value)">
-
-        <div class="pomo-settings-popover" id="pomo-settings-popover">
-          <div class="pomo-settings-row"><span>Pomodoro (min)</span><input type="number" id="setting-pomodoro" min="1" max="180"></div>
-          <div class="pomo-settings-row"><span>Short Break (min)</span><input type="number" id="setting-short" min="1" max="60"></div>
-          <div class="pomo-settings-row"><span>Long Break (min)</span><input type="number" id="setting-long" min="1" max="120"></div>
-          <button type="button" class="pomo-settings-save" onclick="savePomoSettings()">Save</button>
+        <div class="physical-divider"></div>
+        <div class="physical-split-row">
+          <p class="hobbies-col-label mono">Monthly Recurring</p>
+          <p class="hobbies-col-value" id="financial-recurring-value">$0.00</p>
+        </div>
+        <div class="physical-divider"></div>
+        <div class="physical-split-row">
+          <p class="hobbies-col-label mono">Top Savings Goal</p>
+          <p class="hobbies-col-value" id="financial-savings-value">—</p>
         </div>
       </div>
 
-      </div>
-      </div>
     </div>
   </main>
 </div>
@@ -2329,35 +2369,6 @@
     <div class="field-group">
       <label class="field-label">Due Date</label>
       <input class="field-text" id="deadline-due" type="date">
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Frequency</label>
-      <select class="field-select" id="deadline-frequency" onchange="toggleRecurrenceFields()">
-        <option value="none">None</option>
-        <option value="daily">Daily</option>
-        <option value="weekly">Weekly</option>
-        <option value="biweekly">Biweekly</option>
-        <option value="monthly">Monthly</option>
-        <option value="custom">Custom</option>
-      </select>
-    </div>
-
-    <div class="field-group hidden-field" id="recurrence-dates-group">
-      <div class="habit-add-form-grid">
-        <div class="field-group">
-          <label class="field-label">Start Date</label>
-          <input class="field-text" id="deadline-start-date" type="date">
-        </div>
-        <div class="field-group">
-          <label class="field-label">End Date</label>
-          <input class="field-text" id="deadline-end-date" type="date">
-        </div>
-      </div>
-      <div class="field-group hidden-field" id="deadline-custom-days-group" style="margin-bottom:0;">
-        <label class="field-label">Repeat On</label>
-        <div class="habit-days-row" id="deadline-custom-days-row"></div>
-      </div>
     </div>
 
     <div class="field-group">
@@ -3033,16 +3044,9 @@
     if(diff === 0) return { text:'Due Today', cls:'status-today' };
     return { text: diff + (diff === 1 ? ' day' : ' days'), cls:'status-normal' };
   }
-  function getMondayKey(){
-    var d = new Date(getAdjustedDate() + 'T00:00:00');
-    var day = d.getDay();
-    var diff = (day === 0 ? -6 : 1 - day);
-    var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
-    return monday.getFullYear() + '-' + String(monday.getMonth()+1).padStart(2,'0') + '-' + String(monday.getDate()).padStart(2,'0');
-  }
 
   /* ============================================================
-     Areas (shared tag list — synced with index.html)
+     Areas (shared tag list — synced with academic-subpage.html)
   ============================================================ */
   var AREA_PALETTE = [
     {bg:'rgba(74,222,128,0.16)', fg:'#86efac'},
@@ -3071,11 +3075,11 @@
   }
 
   /* ============================================================
-     Deadlines task manager — la_deadlines (shared with index.html)
+     Deadlines — la_deadlines (shared with academic-subpage.html)
+     Dashboard shows only the 4 soonest upcoming tasks.
   ============================================================ */
   var currentDeadlineId = null;
   var currentDeadlineAreas = [];
-  var selectedDeadlineDays = [];
   var deadlineFilters = { dueSort:'asc', importance:'All', type:'All' };
 
   function getDeadlines(){ return loadJSON('la_deadlines', []); }
@@ -3102,6 +3106,7 @@
       if(deadlineFilters.dueSort === 'desc') return da < db ? 1 : -1;
       return da < db ? -1 : 1;
     });
+    tasks = tasks.slice(0, 4);
     var tbody = document.getElementById('deadlines-tbody');
     if(tasks.length === 0){
       var msg = all.length === 0 ? 'No deadlines yet' : 'No matching tasks';
@@ -3114,10 +3119,9 @@
         var c = areaColor(a);
         return '<span class="area-chip" style="background:'+c.bg+'; color:'+c.fg+';">'+escapeHtml(a)+'</span>';
       }).join('');
-      var repeatIcon = t.recurring ? '<span class="material-symbols-outlined recurring-icon" title="Recurring task">repeat</span>' : '';
       return '<tr onclick="openDeadlineModal(\''+t.id+'\')" style="cursor:pointer;">' +
         '<td class="checkbox-col" onclick="event.stopPropagation();"><input type="checkbox" class="task-checkbox" onclick="deleteDeadlineImmediate(\''+t.id+'\')"></td>' +
-        '<td><span class="task-cell"><span class="material-symbols-outlined">description</span><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span>'+repeatIcon+'</span></td>' +
+        '<td><span class="task-cell"><span class="material-symbols-outlined">description</span><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span></span></td>' +
         '<td><div class="chip-row">'+ (areaChips || '<span class="due-placeholder">—</span>') +'</div></td>' +
         '<td>'+ formatDateHuman(t.due) +'</td>' +
         '<td><span class="'+status.cls+'">'+status.text+'</span></td>' +
@@ -3130,28 +3134,6 @@
   function deleteDeadlineImmediate(id){
     saveDeadlines(getDeadlines().filter(function(t){ return t.id !== id; }));
     renderDeadlinesTable();
-    renderCountdownList();
-  }
-
-  function toggleRecurrenceFields(){
-    var freq = document.getElementById('deadline-frequency').value;
-    document.getElementById('recurrence-dates-group').classList.toggle('show', freq !== 'none');
-    document.getElementById('deadline-custom-days-group').classList.toggle('show', freq === 'custom');
-  }
-
-  function renderDeadlineDaysRow(){
-    var labels = ['M','T','W','T','F','S','S'];
-    var dows =   [1,2,3,4,5,6,0];
-    var row = document.getElementById('deadline-custom-days-row');
-    row.innerHTML = dows.map(function(dow, i){
-      var active = selectedDeadlineDays.indexOf(dow) !== -1;
-      return '<button type="button" class="habit-day-btn'+(active ? ' active' : '')+'" onclick="toggleDeadlineDay('+dow+')">'+labels[i]+'</button>';
-    }).join('');
-  }
-  function toggleDeadlineDay(dow){
-    var idx = selectedDeadlineDays.indexOf(dow);
-    if(idx === -1){ selectedDeadlineDays.push(dow); } else { selectedDeadlineDays.splice(idx, 1); }
-    renderDeadlineDaysRow();
   }
 
   function openDeadlineModal(id){
@@ -3165,11 +3147,7 @@
       document.getElementById('deadline-due').value = task.due || '';
       document.getElementById('deadline-importance').value = task.importance || 'Low';
       document.getElementById('deadline-type').value = task.type || 'Asynch';
-      document.getElementById('deadline-frequency').value = task.frequency || 'none';
-      document.getElementById('deadline-start-date').value = task.startDate || '';
-      document.getElementById('deadline-end-date').value = task.endDate || '';
       currentDeadlineAreas = (task.areas || []).slice();
-      selectedDeadlineDays = (task.customDays || []).slice();
     } else {
       document.getElementById('deadline-modal-title').textContent = 'New Task';
       deleteBtn.style.display = 'none';
@@ -3177,14 +3155,8 @@
       document.getElementById('deadline-due').value = '';
       document.getElementById('deadline-importance').value = 'Low';
       document.getElementById('deadline-type').value = 'Asynch';
-      document.getElementById('deadline-frequency').value = 'none';
-      document.getElementById('deadline-start-date').value = '';
-      document.getElementById('deadline-end-date').value = '';
       currentDeadlineAreas = [];
-      selectedDeadlineDays = [];
     }
-    toggleRecurrenceFields();
-    renderDeadlineDaysRow();
     document.getElementById('deadline-area-input').value = '';
     document.getElementById('manage-areas-panel').style.display = 'none';
     renderDeadlineAreaChips();
@@ -3254,97 +3226,23 @@
     renderDeadlineAreaChips();
   }
 
-  function nextOccurrenceDate(dueISO, frequency){
-    if(frequency === 'daily') return addDaysISO(dueISO, 1);
-    if(frequency === 'weekly') return addDaysISO(dueISO, 7);
-    if(frequency === 'biweekly') return addDaysISO(dueISO, 14);
-    if(frequency === 'monthly'){
-      var d = new Date(dueISO + 'T00:00:00');
-      d.setMonth(d.getMonth() + 1);
-      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-    }
-    return dueISO;
-  }
-
-  function generateRecurringInstances(base, frequency, startDate, endDate, customDays){
-    var recurrenceId = uid();
-    var instances = [];
-    var maxInstances = endDate ? 60 : 24;
-
-    if(frequency === 'custom' && customDays && customDays.length){
-      var cursor = startDate;
-      var scanGuard = 0;
-      while(instances.length < maxInstances && scanGuard < 400){
-        if(endDate && cursor > endDate) break;
-        var dow = new Date(cursor + 'T00:00:00').getDay();
-        if(customDays.indexOf(dow) !== -1){
-          instances.push(Object.assign({}, base, {
-            id: uid(),
-            due: cursor,
-            frequency: frequency,
-            startDate: startDate,
-            endDate: endDate || null,
-            customDays: customDays.slice(),
-            recurring: true,
-            recurrenceId: recurrenceId
-          }));
-        }
-        cursor = addDaysISO(cursor, 1);
-        scanGuard++;
-      }
-      return instances;
-    }
-
-    var due = startDate;
-    for(var i = 0; i < maxInstances; i++){
-      if(endDate && due > endDate) break;
-      instances.push(Object.assign({}, base, {
-        id: uid(),
-        due: due,
-        frequency: frequency,
-        startDate: startDate,
-        endDate: endDate || null,
-        recurring: true,
-        recurrenceId: recurrenceId
-      }));
-      due = nextOccurrenceDate(due, frequency);
-    }
-    return instances;
-  }
-
   function saveDeadlineForm(){
     var name = document.getElementById('deadline-name').value.trim();
     if(!name){ document.getElementById('deadline-name').focus(); return; }
     var due = document.getElementById('deadline-due').value;
     var importance = document.getElementById('deadline-importance').value;
     var type = document.getElementById('deadline-type').value;
-    var frequency = document.getElementById('deadline-frequency').value;
-    var startDate = document.getElementById('deadline-start-date').value;
-    var endDate = document.getElementById('deadline-end-date').value;
-    var customDays = selectedDeadlineDays.slice();
-    var canRecur = frequency !== 'none' && !!startDate && (frequency !== 'custom' || customDays.length > 0);
     var tasks = getDeadlines();
     if(currentDeadlineId){
       var idx = tasks.findIndex(function(t){ return t.id === currentDeadlineId; });
       if(idx > -1){
-        tasks[idx] = {
-          id: currentDeadlineId, name: name, areas: currentDeadlineAreas.slice(), due: due,
-          importance: importance, type: type, frequency: frequency,
-          startDate: startDate || null, endDate: endDate || null,
-          customDays: frequency === 'custom' ? customDays : [],
-          recurring: canRecur,
-          recurrenceId: tasks[idx].recurrenceId || null
-        };
+        tasks[idx] = { id: currentDeadlineId, name: name, areas: currentDeadlineAreas.slice(), due: due, importance: importance, type: type };
       }
-    } else if(canRecur){
-      var base = { name: name, areas: currentDeadlineAreas.slice(), importance: importance, type: type };
-      tasks = tasks.concat(generateRecurringInstances(base, frequency, startDate, endDate || null, customDays));
     } else {
-      tasks.push({ id: uid(), name: name, areas: currentDeadlineAreas.slice(), due: due, importance: importance, type: type, frequency:'none', recurring:false });
+      tasks.push({ id: uid(), name: name, areas: currentDeadlineAreas.slice(), due: due, importance: importance, type: type });
     }
     saveDeadlines(tasks);
     renderDeadlinesTable();
-    renderCountdownList();
     closeModal('deadline-modal');
   }
 
@@ -3352,26 +3250,33 @@
     if(!currentDeadlineId) return;
     saveDeadlines(getDeadlines().filter(function(t){ return t.id !== currentDeadlineId; }));
     renderDeadlinesTable();
-    renderCountdownList();
     closeModal('deadline-modal');
   }
 
   /* ============================================================
-     Lab task lists (Kranker / Ballard) — la_kranker_tasks / la_ballard_tasks
+     Lab task lists — la_kranker_tasks / la_ballard_tasks
+     Dashboard shows only the top 3 by soonest due date.
   ============================================================ */
   function getLabTasks(lab){ return loadJSON('la_' + lab + '_tasks', []); }
   function saveLabTasks(lab, list){ saveJSON('la_' + lab + '_tasks', list); }
 
   function renderLabTasks(lab){
-    var list = getLabTasks(lab);
+    var list = getLabTasks(lab).slice().sort(function(a,b){
+      var da = a.due || '9999-99-99', db = b.due || '9999-99-99';
+      return da < db ? -1 : 1;
+    }).slice(0, 3);
     var ul = document.getElementById(lab + '-task-list');
-    ul.innerHTML = list.map(function(task){
-      return '<li class="lab-task-row">' +
-        '<input type="checkbox" class="task-checkbox" onclick="deleteLabTask(\''+lab+'\',\''+task.id+'\')">' +
-        '<input type="text" class="task-text-input" value="'+ escapeAttr(task.text) +'" placeholder="Task description" oninput="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">' +
-        '<input type="date" class="task-date-input" value="'+ (task.due || '') +'" onchange="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'due\',this.value)">' +
-      '</li>';
-    }).join('');
+    if(!list.length){
+      ul.innerHTML = '<li style="color:var(--ink-faint); font-size:0.72rem;">No tasks yet</li>';
+    } else {
+      ul.innerHTML = list.map(function(task){
+        return '<li class="lab-task-row">' +
+          '<input type="checkbox" class="task-checkbox" onclick="deleteLabTask(\''+lab+'\',\''+task.id+'\')">' +
+          '<input type="text" class="task-text-input" value="'+ escapeAttr(task.text) +'" placeholder="Task description" oninput="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">' +
+          '<input type="date" class="task-date-input" value="'+ (task.due || '') +'" onchange="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'due\',this.value)">' +
+        '</li>';
+      }).join('');
+    }
     renderLabDueSoonest(lab);
   }
 
@@ -3428,247 +3333,42 @@
     document.getElementById(lab + '-hours-value').textContent = getLabHours(lab).toFixed(1) + ' hrs';
   }
 
-  function saveTodayFocus(value){ saveJSON('la_today_focus_academic', value); }
-  function loadTodayFocus(){
-    document.getElementById('today-focus-input').value = loadJSON('la_today_focus_academic', '');
-  }
-
   /* ============================================================
-     Pomodoro Timer Card (standalone, tabs + settings popover)
+     Sidebar Study Streak mini card — read-only, sourced from the
+     same localStorage keys academic-subpage.html's Study Streak
+     card writes to. Never writes back (display only).
   ============================================================ */
-  var pomoInterval = null;
-  var pomoAudioCtx = null;
-
-  function getPomoAudioCtx(){
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if(!AC) return null;
-    if(!pomoAudioCtx) pomoAudioCtx = new AC();
-    if(pomoAudioCtx.state === 'suspended') pomoAudioCtx.resume();
-    return pomoAudioCtx;
+  function getMondayKey(){
+    var d = new Date(getAdjustedDate() + 'T00:00:00');
+    var day = d.getDay();
+    var diff = (day === 0 ? -6 : 1 - day);
+    var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
+    return monday.getFullYear() + '-' + String(monday.getMonth()+1).padStart(2,'0') + '-' + String(monday.getDate()).padStart(2,'0');
   }
 
-  function playPomoChime(){
-    var ctx = getPomoAudioCtx();
-    if(!ctx) return;
-    var now = ctx.currentTime;
-    var notes = [
-      { freq:880.00, start:0,    dur:0.4 },
-      { freq:1174.66, start:0.16, dur:0.45 },
-      { freq:1567.98, start:0.32, dur:0.6 }
-    ];
-    notes.forEach(function(n){
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = n.freq;
-      var t0 = now + n.start;
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.22, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + n.dur);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + n.dur + 0.05);
-    });
-  }
-
-  function flashPomoDisplay(){
-    var el = document.getElementById('pomo-display');
-    el.classList.remove('flash');
-    void el.offsetWidth;
-    el.classList.add('flash');
-    setTimeout(function(){ el.classList.remove('flash'); }, 900);
-  }
-
-  function getPomoSettings(){ return loadJSON('la_pomo_settings', {pomodoro:25, short:5, long:15}); }
-  function savePomoSettingsToStorage(s){ saveJSON('la_pomo_settings', s); }
-
-  function getPomoState(){
-    var settings = getPomoSettings();
-    return loadJSON('la_pomo_state', null) || { mode:'pomodoro', remaining: settings.pomodoro*60, running:false };
-  }
-  function savePomoState(state){ saveJSON('la_pomo_state', state); }
-
-  function getPomoWeek(){
-    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
-    if(w.weekStart !== getMondayKey()){ w.weekStart = getMondayKey(); w.weekSeconds = 0; }
-    return w;
-  }
-  function savePomoWeek(w){ saveJSON('la_pomo_week', w); }
-
-  function formatMMSSGeneric(sec){
-    sec = Math.max(0, Math.round(sec));
-    var m = Math.floor(sec/60), s = sec%60;
-    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  }
-
-  function renderPomo(){
-    var state = getPomoState();
-    document.getElementById('pomo-display').textContent = formatMMSSGeneric(state.remaining);
-    document.querySelectorAll('.pomo-tab').forEach(function(btn){
-      btn.classList.toggle('active', btn.dataset.mode === state.mode);
-    });
-    document.getElementById('pomo-start-btn').textContent = state.running ? 'Pause' : 'Start';
-    var week = getPomoWeek();
-    document.getElementById('pomo-week-total').textContent = (week.weekSeconds/3600).toFixed(1) + 'h';
-  }
-
-  function selectPomoTab(mode){
-    stopPomoInterval();
-    var settings = getPomoSettings();
-    savePomoState({ mode: mode, remaining: settings[mode]*60, running:false });
-    renderPomo();
-  }
-
-  function togglePomoStartPause(){
-    var state = getPomoState();
-    if(state.running){ pausePomoInternal(); } else { startPomoInternal(); }
-  }
-
-  function startPomoInternal(){
-    getPomoAudioCtx();
-    var state = getPomoState();
-    state.running = true;
-    savePomoState(state);
-    stopPomoInterval();
-    pomoInterval = setInterval(tickPomo, 1000);
-    renderPomo();
-  }
-
-  function pausePomoInternal(){
-    var state = getPomoState();
-    state.running = false;
-    savePomoState(state);
-    stopPomoInterval();
-    renderPomo();
-  }
-
-  function stopPomoInterval(){
-    if(pomoInterval){ clearInterval(pomoInterval); pomoInterval = null; }
-  }
-
-  function resetPomo(){
-    var settings = getPomoSettings();
-    var state = getPomoState();
-    state.remaining = settings[state.mode]*60;
-    state.running = false;
-    savePomoState(state);
-    stopPomoInterval();
-    renderPomo();
-  }
-
-  function tickPomo(){
-    var state = getPomoState();
-    if(!state.running) return;
-    state.remaining -= 1;
-    if(state.mode === 'pomodoro'){
-      var week = getPomoWeek();
-      week.weekSeconds += 1;
-      savePomoWeek(week);
-    }
-    if(state.remaining <= 0){
-      var settings = getPomoSettings();
-      state.remaining = settings[state.mode]*60;
-      state.running = false;
-      stopPomoInterval();
-      playPomoChime();
-      flashPomoDisplay();
-      if(state.mode === 'pomodoro'){
-        recordPomodoroCompletion();
-      }
-    }
-    savePomoState(state);
-    renderPomo();
-    renderWeeklyGoal();
-  }
-
-  function togglePomoSettings(){
-    var pop = document.getElementById('pomo-settings-popover');
-    pop.classList.toggle('open');
-    if(pop.classList.contains('open')){
-      var s = getPomoSettings();
-      document.getElementById('setting-pomodoro').value = s.pomodoro;
-      document.getElementById('setting-short').value = s.short;
-      document.getElementById('setting-long').value = s.long;
-    }
-  }
-
-  function savePomoSettings(){
-    var s = {
-      pomodoro: parseInt(document.getElementById('setting-pomodoro').value, 10) || 25,
-      short: parseInt(document.getElementById('setting-short').value, 10) || 5,
-      long: parseInt(document.getElementById('setting-long').value, 10) || 15
-    };
-    savePomoSettingsToStorage(s);
-    var state = getPomoState();
-    if(!state.running){
-      state.remaining = s[state.mode]*60;
-      savePomoState(state);
-    }
-    document.getElementById('pomo-settings-popover').classList.remove('open');
-    renderPomo();
-  }
-
-  function initPomoOnLoad(){
-    var state = getPomoState();
-    savePomoState(state);
-    renderPomo();
-    if(state.running){
-      pomoInterval = setInterval(tickPomo, 1000);
-    }
-  }
-
-  /* ============================================================
-     Study Streak & Weekly Goal (page-local, driven by Pomodoro data)
-  ============================================================ */
   function diffDaysISO(aISO, bISO){
     var a = new Date(aISO + 'T00:00:00');
     var b = new Date(bISO + 'T00:00:00');
     return Math.round((b - a) / 86400000);
   }
 
-  function getStreakData(){ return loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null }); }
-  function saveStreakData(s){ saveJSON('la_study_streak_academic', s); }
-
-  /* Non-destructive read: a streak with no completion yesterday/today
-     displays as broken (0) without needing a background job to reset it. */
-  function getEffectiveStreak(){
-    var s = getStreakData();
-    if(!s.lastCompletedDate) return { current:0, best:s.best };
+  function getEffectiveSidebarStreak(){
+    var s = loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null });
+    if(!s.lastCompletedDate) return 0;
     var gap = diffDaysISO(s.lastCompletedDate, getAdjustedDate());
-    if(gap > 1) return { current:0, best:s.best };
-    return { current:s.current, best:s.best };
+    return gap > 1 ? 0 : s.current;
   }
 
-  function recordPomodoroCompletion(){
-    var today = getAdjustedDate();
-    var s = getStreakData();
-    var gap = s.lastCompletedDate ? diffDaysISO(s.lastCompletedDate, today) : null;
-    if(gap === 0){
-      /* already logged a completion today */
-    } else if(gap === 1){
-      s.current += 1;
-    } else {
-      s.current = 1;
-    }
-    s.lastCompletedDate = today;
-    if(s.current > s.best) s.best = s.current;
-    saveStreakData(s);
-    renderStreak();
+  function getSidebarWeeklyHours(){
+    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
+    if(w.weekStart !== getMondayKey()) return 0;
+    return w.weekSeconds / 3600;
   }
 
-  function renderStreak(){
-    var eff = getEffectiveStreak();
-    document.getElementById('streak-current').textContent = '🔥 ' + eff.current + ' day streak';
-    document.getElementById('streak-best').textContent = 'Best: ' + eff.best + ' day' + (eff.best === 1 ? '' : 's');
-    renderSidebarStreak();
-  }
-
-  /* ---- Sidebar mini Study Streak card (read-only summary of the card above) ---- */
   function renderSidebarStreak(){
-    var current = getEffectiveStreak().current;
-    var goal = getWeeklyGoal();
-    var hours = getPomoWeek().weekSeconds / 3600;
+    var current = getEffectiveSidebarStreak();
+    var goal = loadJSON('la_weekly_goal_academic', 10);
+    var hours = getSidebarWeeklyHours();
     var pct = goal > 0 ? Math.min(100, (hours / goal) * 100) : 0;
     document.getElementById('sidebar-streak-flame').textContent = '🔥 ' + current + ' day streak';
     var fill = document.getElementById('sidebar-goal-fill');
@@ -3677,88 +3377,323 @@
     document.getElementById('sidebar-goal-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs';
   }
 
-  function getWeeklyGoal(){ return loadJSON('la_weekly_goal_academic', 10); }
-  function saveWeeklyGoal(value){
-    var v = parseFloat(value);
-    if(isNaN(v) || v <= 0) v = 10;
-    saveJSON('la_weekly_goal_academic', v);
-    renderWeeklyGoal();
-  }
-
-  function renderWeeklyGoal(){
-    var goal = getWeeklyGoal();
-    var hours = getPomoWeek().weekSeconds / 3600;
-    var pct = goal > 0 ? Math.min(100, (hours / goal) * 100) : 0;
-    var fill = document.getElementById('goal-progress-fill');
-    fill.style.width = pct + '%';
-    fill.classList.toggle('met', goal > 0 && hours >= goal);
-    document.getElementById('goal-progress-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs this week';
-    var input = document.getElementById('weekly-goal-input');
-    if(document.activeElement !== input) input.value = goal;
-    renderSidebarStreak();
+  /* ============================================================
+     Hobbies summary — la_books / la_movies / la_shows
+     (same keys hobbies-subpage.html's Books/Movies/Shows cards write to)
+  ============================================================ */
+  function setHobbiesColValue(id, text){
+    var el = document.getElementById(id);
+    if(text){
+      el.textContent = text;
+      el.classList.remove('empty');
+    } else {
+      el.textContent = 'Nothing yet';
+      el.classList.add('empty');
+    }
   }
 
   /* ============================================================
-     Important Tasks (auto-synced, read-only — sourced entirely from
-     Critical-importance deadlines; add/edit those from the Deadlines card)
+     Physical Health card — mood (la_checkin_morning_/night_),
+     gym split (la_gym_split), calories (la_nutrition)
+     Read-only summary except calorie logging input.
   ============================================================ */
-  function getCombinedCountdownItems(){
-    return getDeadlines().filter(function(t){
-      return (t.importance || 'Low') === 'Critical' && t.due;
-    }).map(function(t){
-      return { id:'crit-'+t.id, name:t.name || 'Untitled', date:t.due, time:'23:59' };
-    }).sort(function(a,b){
-      var ta = new Date(a.date + 'T' + (a.time || '23:59') + ':00').getTime();
-      var tb = new Date(b.date + 'T' + (b.time || '23:59') + ':00').getTime();
-      return ta - tb;
-    });
+  var PHYSICAL_MORNING_MOOD_VALUES = { Energized:1.0, Calm:0.6, Content:0.3, Lethargic:-0.3, Anxious:-0.6, Stressed:-0.8 };
+  var PHYSICAL_NIGHT_MOOD_VALUES = { Excited:1.0, Content:0.6, Calm:0.3, Drained:-0.3, Anxious:-0.6, Sad:-0.8, Depressed:-1.0 };
+  var PHYSICAL_MOOD_EMOJI = { Energized:'⚡', Excited:'✨', Content:'😌', Calm:'🌊', Lethargic:'😴', Drained:'🪫', Anxious:'😰', Stressed:'🔥', Sad:'🌧️', Depressed:'🌑' };
+
+  function physicalMoodValue(period, mood){
+    var map = period === 'morning' ? PHYSICAL_MORNING_MOOD_VALUES : PHYSICAL_NIGHT_MOOD_VALUES;
+    return mood && map.hasOwnProperty(mood) ? map[mood] : null;
   }
 
-  function renderCountdownList(){
-    var list = getCombinedCountdownItems();
-    var wrap = document.getElementById('countdown-list');
-    if(!list.length){
-      wrap.innerHTML = '<div class="countdown-empty">No important tasks yet</div>';
+  function physicalMoodBlockHtml(period, mood){
+    var label = period === 'morning' ? 'MORNING' : 'NIGHT';
+    if(!mood){
+      return '<div class="physical-mood-block empty">' +
+          '<span class="physical-mood-label mono">' + label + '</span>' +
+          '<span class="physical-mood-empty-mark">—</span>' +
+        '</div>';
+    }
+    var v = physicalMoodValue(period, mood);
+    var hue = v == null || v >= 0 ? 142 : 4;
+    var mag = v == null ? 0 : Math.min(1, Math.abs(v));
+    var sat = 60 + mag * 10;
+    var textColor = 'hsl(' + hue + ', ' + sat + '%, ' + (68 - mag * 14) + '%)';
+    var bg = 'hsla(' + hue + ', ' + sat + '%, 50%, 0.12)';
+    var border = 'hsla(' + hue + ', ' + sat + '%, 55%, 0.32)';
+    var emoji = PHYSICAL_MOOD_EMOJI[mood] || '❔';
+    return '<div class="physical-mood-block" style="background:' + bg + '; border-color:' + border + ';">' +
+        '<span class="physical-mood-label mono">' + label + '</span>' +
+        '<span class="physical-mood-emoji">' + emoji + '</span>' +
+        '<span class="physical-mood-name" style="color:' + textColor + ';">' + escapeHtml(mood) + '</span>' +
+      '</div>';
+  }
+
+  function renderPhysicalMood(){
+    var today = getAdjustedDate();
+    var mData = loadJSON('la_checkin_morning_' + today, null);
+    var nData = loadJSON('la_checkin_night_' + today, null);
+    document.getElementById('physical-mood-row').innerHTML =
+      physicalMoodBlockHtml('morning', mData ? mData.mood : null) +
+      physicalMoodBlockHtml('night', nData ? nData.mood : null);
+  }
+
+  function renderPhysicalSplit(){
+    var data = loadJSON('la_gym_split', null);
+    var dow = new Date(getAdjustedDate() + 'T00:00:00').getDay();
+    var row = data ? data[dow] : null;
+    var el = document.getElementById('physical-split-value');
+    if(!row || row.isRest || !row.name){
+      el.textContent = 'Rest Day';
+      el.classList.add('empty');
       return;
     }
-    wrap.innerHTML = list.map(function(item){
-      return '<div class="countdown-item">' +
-        '<div><div class="name">'+ escapeHtml(item.name) +'</div><div class="target-date">'+ formatDateHuman(item.date) + ' ' + item.time +'</div></div>' +
-        '<div style="display:flex; align-items:center; gap:8px;">' +
-          '<span class="time-left mono" id="countdown-left-'+item.id+'">—</span>' +
-          '<span class="material-symbols-outlined" id="countdown-warn-'+item.id+'" style="font-size:14px; color:#fca5a5; display:none;" title="Due soon">priority_high</span>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-    updateCountdownTimers();
+    el.classList.remove('empty');
+    el.textContent = row.name + (row.notes ? ' · ' + row.notes : '');
   }
 
-  function updateCountdownTimers(){
-    var list = getCombinedCountdownItems();
-    var now = new Date();
-    list.forEach(function(item){
-      var el = document.getElementById('countdown-left-' + item.id);
-      var warnIcon = document.getElementById('countdown-warn-' + item.id);
-      if(!el) return;
-      var target = new Date(item.date + 'T' + (item.time || '23:59') + ':00');
-      var diffMs = target - now;
-      el.classList.remove('warn','urgent');
-      if(warnIcon) warnIcon.style.display = (diffMs < 3*24*60*60*1000) ? '' : 'none';
-      if(diffMs <= 0){
-        el.textContent = 'Overdue';
-        el.classList.add('urgent');
-        return;
-      }
-      if(diffMs < 24*60*60*1000){
-        el.textContent = 'Due Today';
-        el.classList.add('warn');
-        return;
-      }
-      var days = Math.floor(diffMs / 86400000);
-      el.textContent = days + 'd';
-    });
+  function renderPhysicalCalories(){
+    var cfg = loadJSON('la_nutrition', null);
+    var target = cfg && cfg.target != null ? cfg.target : 2200;
+    var today = getAdjustedDate();
+    var val = cfg && cfg.entries && cfg.entries[today] != null ? cfg.entries[today] : 0;
+
+    document.getElementById('physical-cal-value').textContent = Math.round(val).toLocaleString();
+    document.getElementById('physical-cal-target').textContent = '/ ' + Math.round(target).toLocaleString() + ' kcal';
+
+    var input = document.getElementById('physical-cal-input');
+    if(document.activeElement !== input){
+      input.value = (cfg && cfg.entries && cfg.entries[today] != null) ? cfg.entries[today] : '';
+    }
+
+    var pct = target > 0 ? Math.min(100, (val / target) * 100) : 0;
+    var fill = document.getElementById('physical-cal-fill');
+    fill.style.width = pct + '%';
+    fill.classList.toggle('over', val > target);
   }
-  setInterval(updateCountdownTimers, 1000);
+
+  function updatePhysicalCalories(value){
+    var cfg = loadJSON('la_nutrition', null);
+    if(!cfg){ cfg = { target:2200, entries:{} }; }
+    if(!cfg.entries) cfg.entries = {};
+    if(cfg.target == null) cfg.target = 2200;
+    var today = getAdjustedDate();
+    var num = parseFloat(value);
+    if(value === '' || isNaN(num)){ delete cfg.entries[today]; }
+    else { cfg.entries[today] = num; }
+    saveJSON('la_nutrition', cfg);
+    renderPhysicalCalories();
+  }
+
+  function renderPhysicalHealthCard(){
+    renderPhysicalMood();
+    renderPhysicalSplit();
+    renderPhysicalCalories();
+  }
+
+  /* ============================================================
+     Financial summary card — reads la_spending_log / la_recurring /
+     la_savings (managed on financial-subpage.html). Read-only here.
+  ============================================================ */
+  function formatCurrency(n){
+    n = n || 0;
+    var sign = n < 0 ? '-' : '';
+    return sign + '$' + Math.abs(n).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function renderFinancialSummary(){
+    var spending = loadJSON('la_spending_log', []);
+    var monthPrefix = getAdjustedDate().slice(0,7);
+    var netThisMonth = spending.filter(function(e){ return e.date && e.date.slice(0,7) === monthPrefix; })
+      .reduce(function(sum, e){ return sum + e.amount; }, 0);
+    document.getElementById('financial-net-value').textContent = formatCurrency(netThisMonth);
+
+    var recurring = loadJSON('la_recurring', []);
+    var totalRecurring = recurring.reduce(function(sum, r){ return sum + Math.abs(r.amount); }, 0);
+    document.getElementById('financial-recurring-value').textContent = formatCurrency(-totalRecurring);
+
+    var savings = loadJSON('la_savings', []);
+    var savingsEl = document.getElementById('financial-savings-value');
+    if(!savings.length){
+      savingsEl.textContent = 'No goals yet';
+      savingsEl.classList.add('empty');
+    } else {
+      var top = savings[0];
+      var pct = top.target > 0 ? Math.min(100, Math.round((top.saved / top.target) * 100)) : 0;
+      savingsEl.classList.remove('empty');
+      savingsEl.textContent = top.name + ' · ' + pct + '%';
+    }
+  }
+
+  /* ============================================================
+     Tasklist card — la_tasklist
+     Stored array is always kept in display order (incomplete
+     tasks first, completed tasks at the bottom) so Enter/Backspace
+     can splice directly at the row's index. A trailing unsaved
+     placeholder row is always rendered for adding the next task.
+  ============================================================ */
+  var TASKLIST_PLACEHOLDER_ID = '__placeholder__';
+
+  function getTasklist(){ return loadJSON('la_tasklist', []); }
+  function saveTasklistData(list){ saveJSON('la_tasklist', list); }
+
+  function buildTasklistRowHtml(t, num){
+    var isPlaceholder = t.id === TASKLIST_PLACEHOLDER_ID;
+    return '<div class="tasklist-row" data-id="' + t.id + '">' +
+        '<span class="tasklist-num mono">' + num + '.</span>' +
+        '<input type="checkbox" class="tasklist-checkbox"' + (t.completed ? ' checked' : '') + (isPlaceholder ? ' disabled' : '') + ' onclick="toggleTasklistItem(\'' + t.id + '\')">' +
+        '<input type="text" class="tasklist-text' + (t.completed ? ' completed' : '') + '" value="' + escapeAttr(t.text) + '" placeholder="Type a task…" ' +
+          'oninput="updateTasklistText(\'' + t.id + '\', this.value)" ' +
+          'onkeydown="handleTasklistKeydown(event, \'' + t.id + '\')">' +
+      '</div>';
+  }
+
+  function renderTasklist(){
+    var wrap = document.getElementById('tasklist-items');
+    if(!wrap) return;
+    var tasks = getTasklist();
+    var html = tasks.map(function(t, i){ return buildTasklistRowHtml(t, i + 1); }).join('');
+    html += buildTasklistRowHtml({ id: TASKLIST_PLACEHOLDER_ID, text:'', completed:false }, tasks.length + 1);
+    wrap.innerHTML = html;
+  }
+
+  function focusTasklistInput(id, caretPos){
+    var row = document.querySelector('.tasklist-row[data-id="' + id + '"]');
+    if(!row) return;
+    var input = row.querySelector('.tasklist-text');
+    if(!input) return;
+    input.focus();
+    if(caretPos != null) input.setSelectionRange(caretPos, caretPos);
+  }
+
+  function updateTasklistText(id, value){
+    var tasks = getTasklist();
+    if(id === TASKLIST_PLACEHOLDER_ID){
+      if(value === '') return;
+      var newTask = { id: uid(), text: value, completed:false };
+      tasks.push(newTask);
+      saveTasklistData(tasks);
+      renderTasklist();
+      focusTasklistInput(newTask.id, value.length);
+      return;
+    }
+    var t = tasks.find(function(x){ return x.id === id; });
+    if(t){ t.text = value; saveTasklistData(tasks); }
+  }
+
+  function toggleTasklistItem(id){
+    if(id === TASKLIST_PLACEHOLDER_ID) return;
+    var tasks = getTasklist();
+    var idx = tasks.findIndex(function(x){ return x.id === id; });
+    if(idx === -1) return;
+    var task = tasks[idx];
+    task.completed = !task.completed;
+    tasks.splice(idx, 1);
+    if(task.completed){
+      tasks.push(task);
+    } else {
+      var firstCompletedIdx = tasks.findIndex(function(x){ return x.completed; });
+      if(firstCompletedIdx === -1) tasks.push(task);
+      else tasks.splice(firstCompletedIdx, 0, task);
+    }
+    saveTasklistData(tasks);
+    renderTasklist();
+  }
+
+  function handleTasklistKeydown(e, id){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      if(id === TASKLIST_PLACEHOLDER_ID) return;
+      var tasks = getTasklist();
+      var idx = tasks.findIndex(function(x){ return x.id === id; });
+      if(idx === -1) return;
+      var newTask = { id: uid(), text:'', completed:false };
+      tasks.splice(idx + 1, 0, newTask);
+      saveTasklistData(tasks);
+      renderTasklist();
+      focusTasklistInput(newTask.id, 0);
+    } else if(e.key === 'Backspace'){
+      if(e.target.value !== '') return;
+      if(id === TASKLIST_PLACEHOLDER_ID) return;
+      e.preventDefault();
+      var tasks2 = getTasklist();
+      var idx2 = tasks2.findIndex(function(x){ return x.id === id; });
+      if(idx2 === -1) return;
+      tasks2.splice(idx2, 1);
+      saveTasklistData(tasks2);
+      renderTasklist();
+      if(idx2 > 0){
+        var prev = tasks2[idx2 - 1];
+        focusTasklistInput(prev.id, prev.text.length);
+      } else {
+        focusTasklistInput(TASKLIST_PLACEHOLDER_ID, 0);
+      }
+    }
+  }
+
+  function renderHobbiesSummary(){
+    var books = loadJSON('la_books', []);
+    var movies = loadJSON('la_movies', []);
+    var shows = loadJSON('la_shows', []);
+    var certs = loadJSON('la_certifications', []);
+
+    var book = books.find(function(i){ return i.status === 'currently'; });
+    var show = shows.find(function(i){ return i.status === 'currently'; });
+    var nextMovie = movies.filter(function(i){ return i.status === 'queue'; })
+      .sort(function(a,b){ return (a.order||0)-(b.order||0); })[0];
+
+    setHobbiesColValue('hobbies-reading-value', book ? book.title : null);
+    setHobbiesColValue('hobbies-watching-value', show ? (show.title + ' · S'+(show.season||1)+' E'+String(show.episode||1).padStart(2,'0')) : null);
+    setHobbiesColValue('hobbies-upnext-value', nextMovie ? nextMovie.title : null);
+
+    var activeCourses = certs.filter(function(c){ return c.status === 'in_progress' || c.status === 'queued'; });
+    var grid = document.getElementById('hobbies-courses-grid');
+    if(!activeCourses.length){
+      grid.innerHTML = '<div class="hobbies-courses-empty">No courses yet</div>';
+      return;
+    }
+    grid.innerHTML = activeCourses.map(function(c){
+      var bar = c.status === 'in_progress'
+        ? '<div class="hobbies-course-track"><div class="hobbies-course-fill" style="width:'+(c.progress||0)+'%;"></div></div>'
+        : '';
+      return '<div class="hobbies-course-item">' +
+          '<div class="hobbies-course-name">'+escapeHtml(c.name)+'</div>' +
+          '<div class="hobbies-course-provider">'+escapeHtml(c.provider||'')+'</div>' +
+          bar +
+        '</div>';
+    }).join('');
+  }
+
+  /* ============================================================
+     Sidebar "Currently" mini card — la_books / la_movies / la_shows
+     Read-only, updates live via storage event. No editing here.
+  ============================================================ */
+  function setSidebarCurrentlyRow(rowId, textId, title){
+    var row = document.getElementById(rowId);
+    var el = document.getElementById(textId);
+    if(title){
+      el.textContent = title;
+      row.classList.remove('empty');
+    } else {
+      el.textContent = 'Nothing yet';
+      row.classList.add('empty');
+    }
+  }
+
+  function renderSidebarCurrently(){
+    var books = loadJSON('la_books', []);
+    var movies = loadJSON('la_movies', []);
+    var shows = loadJSON('la_shows', []);
+
+    var book = books.find(function(i){ return i.status === 'currently'; });
+    var movie = movies.filter(function(i){ return i.status === 'queue'; })
+      .sort(function(a,b){ return (a.order||0)-(b.order||0); })[0];
+    var show = shows.find(function(i){ return i.status === 'currently'; });
+
+    setSidebarCurrentlyRow('sidebar-currently-book-row', 'sidebar-currently-book', book ? book.title : null);
+    setSidebarCurrentlyRow('sidebar-currently-movie-row', 'sidebar-currently-movie', movie ? movie.title : null);
+    setSidebarCurrentlyRow('sidebar-currently-show-row', 'sidebar-currently-show', show ? show.title : null);
+  }
 
   /* ============================================================
      Habit Tracker — la_habits
@@ -4066,10 +4001,10 @@
 
   /* ============================================================
      Cross-page live sync (fires when the OTHER tab/page changes
-     localStorage — index.html and this page share these keys)
+     localStorage — academic-subpage.html shares these keys)
   ============================================================ */
   window.addEventListener('storage', function(e){
-    if(e.key === 'la_deadlines'){ renderDeadlinesTable(); renderCountdownList(); }
+    if(e.key === 'la_deadlines'){ renderDeadlinesTable(); }
     else if(e.key === 'la_kranker_tasks'){ renderLabTasks('kranker'); }
     else if(e.key === 'la_ballard_tasks'){ renderLabTasks('ballard'); }
     else if(e.key === 'la_kranker_hours'){ renderLabHours('kranker'); }
@@ -4079,9 +4014,19 @@
     else if(e.key === 'la_areas'){
       if(document.getElementById('deadline-modal').classList.contains('open')){ renderDeadlineAreaChips(); }
     }
-    else if(e.key === 'la_study_streak_academic'){ renderStreak(); }
-    else if(e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){ renderWeeklyGoal(); }
-    else if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){ renderSidebarCurrently(); }
+    else if(e.key === 'la_study_streak_academic' || e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){
+      renderSidebarStreak();
+    }
+    else if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){
+      renderHobbiesSummary();
+      renderSidebarCurrently();
+    }
+    else if(e.key === 'la_certifications'){ renderHobbiesSummary(); }
+    else if(e.key === 'la_tasklist'){ renderTasklist(); }
+    else if(e.key && e.key.indexOf('la_checkin_') === 0){ renderPhysicalMood(); }
+    else if(e.key === 'la_gym_split'){ renderPhysicalSplit(); }
+    else if(e.key === 'la_nutrition'){ renderPhysicalCalories(); }
+    else if(e.key === 'la_spending_log' || e.key === 'la_recurring' || e.key === 'la_savings'){ renderFinancialSummary(); }
     else if(e.key === 'la_habits'){
       renderSidebarHabits();
       if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
@@ -4094,49 +4039,6 @@
       }
     }
   });
-
-  /* ============================================================
-     Sidebar "Currently" mini card — la_books / la_movies / la_shows
-     Read-only, updates live via storage event. No editing here.
-  ============================================================ */
-  function setSidebarCurrentlyRow(rowId, textId, title){
-    var row = document.getElementById(rowId);
-    var el = document.getElementById(textId);
-    if(title){
-      el.textContent = title;
-      row.classList.remove('empty');
-    } else {
-      el.textContent = 'Nothing yet';
-      row.classList.add('empty');
-    }
-  }
-
-  function renderSidebarCurrently(){
-    var books = loadJSON('la_books', []);
-    var movies = loadJSON('la_movies', []);
-    var shows = loadJSON('la_shows', []);
-
-    var book = books.find(function(i){ return i.status === 'currently'; });
-    var movie = movies.filter(function(i){ return i.status === 'queue'; })
-      .sort(function(a,b){ return (a.order||0)-(b.order||0); })[0];
-    var show = shows.find(function(i){ return i.status === 'currently'; });
-
-    setSidebarCurrentlyRow('sidebar-currently-book-row', 'sidebar-currently-book', book ? book.title : null);
-    setSidebarCurrentlyRow('sidebar-currently-movie-row', 'sidebar-currently-movie', movie ? movie.title : null);
-    setSidebarCurrentlyRow('sidebar-currently-show-row', 'sidebar-currently-show', show ? show.title : null);
-  }
-
-  /* ============================================================
-     Late night mode — 12AM-5AM amber tint on "yesterday" elements
-  ============================================================ */
-  function updateLateNightMode(){
-    document.body.classList.toggle('late-night', isLateNightWindow());
-  }
-
-  function runClockTick(){
-    updateLateNightMode();
-    checkDailyReset();
-  }
 
   /* ============================================================
      Daily reset at 5AM — refresh check-in badges, social daily
@@ -4155,9 +4057,6 @@
     updateCheckinBadges();
     renderSidebarSocial();
     clearTodayNutritionEntry();
-    if(typeof renderMoodCard === 'function'){ renderMoodCard(); }
-    if(typeof renderSplitPlanner === 'function'){ renderSplitPlanner(); }
-    if(typeof renderSplitCalendar === 'function'){ renderSplitCalendar(); }
     if(typeof renderNutritionCard === 'function'){ renderNutritionCard(); }
     if(typeof renderPhysicalHealthCard === 'function'){ renderPhysicalHealthCard(); }
   }
@@ -4169,6 +4068,20 @@
       performDailyReset();
       localStorage.setItem('la_last_reset_date', adjusted);
     }
+  }
+
+  /* ============================================================
+     Late night mode — 12AM-5AM amber tint on "yesterday" elements.
+     Shares isLateNightWindow() with getAdjustedDate() so the tint
+     and the 5AM data reset always agree on the boundary.
+  ============================================================ */
+  function updateLateNightMode(){
+    document.body.classList.toggle('late-night', isLateNightWindow());
+  }
+
+  function runClockTick(){
+    updateLateNightMode();
+    checkDailyReset();
   }
 
   /* ============================================================
@@ -4447,11 +4360,11 @@
     loadLabStatus(lab);
     renderLabHours(lab);
   });
-  initPomoOnLoad();
-  renderCountdownList();
-  loadTodayFocus();
-  renderStreak();
-  renderWeeklyGoal();
+  renderSidebarStreak();
+  renderHobbiesSummary();
+  renderPhysicalHealthCard();
+  renderFinancialSummary();
+  renderTasklist();
   renderSidebarCurrently();
   renderSidebarHabits();
   renderSidebarSocial();
