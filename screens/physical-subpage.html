@@ -906,7 +906,6 @@
   .activity-bottom-row{ flex:0 0 20%; min-height:0; display:flex; gap:14px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
   .activity-workout-group{ flex:1; min-width:0; min-height:0; display:flex; flex-direction:column; gap:4px; }
   .activity-workout-group-title{ font-size:0.5rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint); flex-shrink:0; }
-  .activity-workout-group.walk-group{ justify-content:center; }
   .activity-walk-avg-big{ font-size:1rem; font-weight:800; color:var(--ink); }
   .activity-walk-avg-big .unit{ font-size:0.6rem; font-weight:600; color:var(--ink-faint); margin-left:3px; }
   .activity-walk-avg-big.empty{ font-size:0.6rem; font-weight:500; font-style:italic; color:var(--ink-faint); }
@@ -1517,7 +1516,7 @@
         <span class="material-symbols-outlined">palette</span>
         <span>Hobbies</span>
       </a>
-      <a class="nav-link" data-section="financial" href="../financial-subpage.html">
+      <a class="nav-link" data-section="financial" href="../financial-subpage.html" onclick="sessionStorage.setItem('la_financial_return', window.location.href)">
         <span class="material-symbols-outlined">payments</span>
         <span>Financial</span>
       </a>

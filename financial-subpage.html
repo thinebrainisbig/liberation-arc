@@ -835,6 +835,8 @@
     flex-direction:column;
     overflow:hidden;
   }
+  .fin-card-outline{ border:1px solid rgba(248,113,113,0.3); }
+  .financial-grid > .fin-spending-card{ height:100%; min-height:0; }
 
   .panel-header{
     display:flex;
@@ -955,17 +957,14 @@
   .fin-recurring-mini-name{ color:var(--ink-dim); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .fin-recurring-mini-amount{ color:#f87171; font-weight:700; flex-shrink:0; margin-left:8px; }
   .fin-recurring-total-row{ font-size:0.76rem; color:var(--ink-faint); margin-top:8px; text-align:right; }
-  .fin-breakdown-row{ display:grid; grid-template-columns:20fr 28fr 32fr 20fr; align-items:flex-start; gap:10px; margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
-  .fin-breakdown-col{ min-width:0; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .fin-breakdown-row{ display:grid; grid-template-columns:repeat(4, 1fr); align-items:flex-start; gap:10px; margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
+  .fin-breakdown-col{ min-width:0; width:100%; display:flex; flex-direction:column; align-items:center; gap:4px; }
   .fin-breakdown-formula{ font-size:0.78rem; color:var(--ink-faint); }
   .fin-free-money{ font-size:1.4rem; font-weight:800; }
-  /* Bottom row of the Monthly Budget card is narrower per-column than
-     other uses of these classes (e.g. the Projected card's own net
-     section), so shrink text there to avoid overflow/wrap. Projected
-     Net's column is widest (32%) specifically so it never needs to wrap. */
-  .fin-breakdown-row .fin-breakdown-formula{ font-size:0.66rem; }
-  .fin-breakdown-row .fin-free-money{ font-size:1.15rem; }
-  #fin-budget-projected-formula, #fin-budget-projected-value{ white-space:nowrap; }
+  /* Bottom row of the Monthly Budget card has four equal-width columns,
+     so text there is shrunk and locked to one line to avoid wrap. */
+  .fin-breakdown-row .fin-breakdown-formula{ font-size:0.58rem; white-space:nowrap; }
+  .fin-breakdown-row .fin-free-money{ font-size:1rem; white-space:nowrap; }
   .fin-free-money.positive{ color:#4ade80; }
   .fin-free-money.negative{ color:#f87171; }
   .fin-free-money.amber{ color:#fbbf24; }
@@ -1100,22 +1099,17 @@
   .fin-planned-expenses-total-row{ display:flex; align-items:center; justify-content:space-between; font-size:0.78rem; color:var(--ink-faint); padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
   .fin-planned-expenses-total-row .fin-planned-expenses-total-value{ color:#f87171; font-weight:700; }
 
-  /* Investing Snapshot */
-  .fin-investing-body{ display:flex; flex-direction:column; gap:10px; }
-  .fin-investing-top{ display:flex; align-items:baseline; gap:10px; }
-  .fin-investing-value{ font-size:1.4rem; font-weight:800; color:var(--ink); }
-  .fin-investing-change{ font-size:0.72rem; font-weight:700; display:flex; align-items:center; gap:2px; }
-  .fin-investing-change.positive{ color:#4ade80; }
-  .fin-investing-change.negative{ color:#f87171; }
-  .fin-investing-input-row{ display:flex; gap:8px; align-items:center; }
-  .fin-investing-input-row .field-number{ flex:1; }
-  .fin-investing-chart-wrap{ position:relative; flex:1; min-height:80px; }
-  .fin-investing-chart{ width:100%; height:100%; }
-  .fin-investing-empty{
-    position:absolute; inset:0;
-    display:flex; align-items:center; justify-content:center;
-    font-size:0.68rem; color:var(--ink-faint); font-style:italic;
-  }
+  /* Savings and Investments */
+  .fin-investing-body{ display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+  .fin-savings-section{ flex-shrink:0; display:flex; flex-direction:column; gap:8px; }
+  .fin-savings-fields-row{ display:flex; gap:10px; }
+  .fin-savings-field{ flex:1; min-width:0; margin-bottom:0; }
+  .fin-savings-total-group{ margin-bottom:0; }
+  .fin-savings-total-hint{ text-transform:none; letter-spacing:normal; font-weight:500; color:var(--ink-faint); font-size:0.6rem; }
+  .fin-savings-total-input{ font-weight:800; font-size:1.05rem; color:var(--ink); text-align:left; }
+  .fin-investments-section{ flex:1; min-height:0; display:flex; flex-direction:column; margin-top:10px; }
+  .fin-investments-list{ flex:1; min-height:0; overflow-y:auto; margin-top:8px; }
+  .fin-investment-platform-sub{ color:var(--ink-faint); font-weight:500; }
 
   .modal-actions-row{
     display:flex;
@@ -1559,12 +1553,39 @@
     padding:10px 12px;
     margin-bottom:14px;
   }
+
+  /* ---------- Financial exit button (works pre- and post-auth) ---------- */
+  .financial-exit-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    z-index:1100;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.18);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .financial-exit-btn:hover{ background:rgba(248,113,113,0.18); border-color:rgba(248,113,113,0.45); color:#fecaca; }
+  .financial-exit-btn .material-symbols-outlined{ font-size:20px; }
 </style>
 </head>
 <body>
 
 <div class="bg-layer" id="bg-layer"></div>
 <div class="bg-scrim"></div>
+
+<button type="button" class="financial-exit-btn" id="financial-exit-btn" onclick="exitFinancial()" title="Close and go back">
+  <span class="material-symbols-outlined">close</span>
+</button>
 
 <!-- ===================== PIN GATE ===================== -->
 <div class="pin-gate-overlay" id="pin-gate-overlay">
@@ -1768,7 +1789,7 @@
     <div class="financial-grid">
 
       <!-- LEFT COLUMN: Spending Log -->
-      <div class="card glass fin-spending-card">
+      <div class="card glass fin-spending-card fin-card-outline">
         <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
         <div class="panel-header">
           <div class="head-left"><h3>Spending Log</h3></div>
@@ -1808,7 +1829,7 @@
 
       <!-- MIDDLE COLUMN -->
       <div class="fin-middle-col">
-        <div class="card glass fin-budget-card">
+        <div class="card glass fin-budget-card fin-card-outline">
           <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
           <div class="panel-header">
             <div class="head-left"><h3>Monthly Budget</h3></div>
@@ -1873,7 +1894,7 @@
           </div>
         </div>
 
-        <div class="card glass fin-recurring-card">
+        <div class="card glass fin-recurring-card fin-card-outline">
           <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
           <div class="panel-header">
             <div class="head-left"><h3>Recurring</h3></div>
@@ -1886,7 +1907,7 @@
 
       <!-- RIGHT COLUMN -->
       <div class="fin-right-col">
-        <div class="card glass fin-projected-card">
+        <div class="card glass fin-projected-card fin-card-outline">
           <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
           <div class="panel-header">
             <div class="head-left"><h3>Projected</h3></div>
@@ -1930,23 +1951,40 @@
           </div>
         </div>
 
-        <div class="card glass fin-investing-card">
+        <div class="card glass fin-investing-card fin-card-outline">
           <div class="accent-blob" style="background:rgba(248,113,113,0.14);"></div>
           <div class="panel-header">
-            <div class="head-left"><h3>Investing</h3></div>
+            <div class="head-left"><h3>Savings and Investments</h3></div>
           </div>
           <div class="panel-body fin-investing-body">
-            <div class="fin-investing-top">
-              <span class="fin-investing-value mono" id="investing-latest-value">$0.00</span>
-              <span class="fin-investing-change mono" id="investing-change"></span>
+            <div class="fin-savings-section">
+              <p class="fin-subhead">Savings</p>
+              <div class="fin-savings-fields-row">
+                <div class="field-group fin-savings-field">
+                  <label class="field-label">Monthly Deposit</label>
+                  <input class="field-number" id="savings-monthly-input" type="number" min="0" step="0.01" placeholder="e.g. 200" onchange="saveSavingsSettings()">
+                </div>
+                <div class="field-group fin-savings-field">
+                  <label class="field-label">Interest Rate (%/yr)</label>
+                  <input class="field-number" id="savings-rate-input" type="number" min="0" step="0.01" placeholder="e.g. 4.5" onchange="saveSavingsSettings()">
+                </div>
+              </div>
+              <div class="field-group fin-savings-total-group">
+                <label class="field-label">Current Total <span class="fin-savings-total-hint">(auto-calculated — editable)</span></label>
+                <input class="field-number mono fin-savings-total-input" id="savings-total-input" type="number" step="0.01" placeholder="e.g. 5000" onchange="saveSavingsTotalOverride(this.value)">
+              </div>
             </div>
-            <div class="fin-investing-input-row">
-              <input class="field-number" id="investing-value-input" type="number" min="0" step="0.01" placeholder="Portfolio value">
-              <button type="button" class="neutral-btn" onclick="addInvestingEntry()">Add Entry</button>
-            </div>
-            <div class="fin-investing-chart-wrap">
-              <svg class="fin-investing-chart" id="investing-chart" viewBox="0 0 280 100" preserveAspectRatio="none"></svg>
-              <div class="fin-investing-empty" id="investing-empty">No entries yet</div>
+
+            <div class="fin-divider"></div>
+
+            <div class="fin-investments-section">
+              <div class="fin-recurring-header-row">
+                <p class="fin-subhead" style="margin:0;">Investments</p>
+                <button type="button" class="icon-btn" onclick="openInvestmentModal()" title="Add investment">
+                  <span class="material-symbols-outlined">add</span>
+                </button>
+              </div>
+              <div class="fin-recurring-list fin-investments-list" id="investments-list"></div>
             </div>
           </div>
         </div>
@@ -2161,6 +2199,48 @@
     <div class="modal-actions-row">
       <button type="button" class="danger-btn" id="recurring-delete-btn" onclick="deleteRecurringItem()" style="display:none;">Delete</button>
       <button type="button" class="checkmark-btn" onclick="saveRecurringForm()" title="Save">
+        <span class="material-symbols-outlined">check</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== INVESTMENT MODAL ===================== -->
+<div class="modal-overlay" id="investment-modal">
+  <div class="modal-card glass" style="width:340px;">
+    <div class="modal-header" style="color:var(--financial);">
+      <span class="material-symbols-outlined">trending_up</span>
+      <h2 id="investment-modal-title">Add Investment</h2>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Platform / Broker</label>
+      <input class="field-text" id="investment-platform-input" type="text" placeholder="e.g. Robinhood, Fidelity">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Stock / Asset</label>
+      <input class="field-text" id="investment-asset-input" type="text" placeholder="e.g. VTI, AAPL">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Amount</label>
+      <input class="field-number" id="investment-amount-input" type="number" min="0" step="0.01" placeholder="e.g. 100">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Frequency</label>
+      <select class="field-select" id="investment-frequency-input">
+        <option value="one-time">One-time</option>
+        <option value="weekly">Weekly</option>
+        <option value="biweekly">Biweekly</option>
+        <option value="monthly" selected>Monthly</option>
+      </select>
+    </div>
+
+    <div class="modal-actions-row">
+      <button type="button" class="danger-btn" id="investment-delete-btn" onclick="deleteInvestmentItem()" style="display:none;">Delete</button>
+      <button type="button" class="checkmark-btn" onclick="saveInvestmentForm()" title="Save">
         <span class="material-symbols-outlined">check</span>
       </button>
     </div>
@@ -2419,7 +2499,14 @@
   });
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){
-      document.querySelectorAll('.modal-overlay.open').forEach(function(o){ o.classList.remove('open'); });
+      if(document.body.classList.contains('pin-unlocked')){
+        var openModals = document.querySelectorAll('.modal-overlay.open');
+        if(openModals.length){
+          openModals.forEach(function(o){ o.classList.remove('open'); });
+          return;
+        }
+      }
+      exitFinancial();
     }
   });
 
@@ -4362,6 +4449,15 @@
   var PIN_STORAGE_KEY = 'la_financial_pin';
   var PIN_RECOVERY_Q_KEY = 'la_financial_recovery_q';
   var PIN_RECOVERY_A_KEY = 'la_financial_recovery_a';
+  var FINANCIAL_RETURN_KEY = 'la_financial_return';
+
+  function getFinancialReturnUrl(){
+    return sessionStorage.getItem(FINANCIAL_RETURN_KEY) || document.referrer || 'index.html';
+  }
+
+  function exitFinancial(){
+    window.location.href = getFinancialReturnUrl();
+  }
 
   async function sha256Hex(str){
     var enc = new TextEncoder().encode(str);
