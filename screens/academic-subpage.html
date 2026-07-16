@@ -872,7 +872,7 @@
   }
   .card-eyebrow .material-symbols-outlined{ font-size:14px; }
 
-  .research-card{ flex:1; border:1px solid rgba(96,165,250,0.3); }
+  .research-card{ flex:1; min-height:0; border:1px solid rgba(96,165,250,0.3); }
   .research-card .card-title{
     font-size:0.8rem;
     font-weight:700;
@@ -888,7 +888,8 @@
     display:flex;
     flex-direction:column;
     gap:8px;
-    max-height:130px;
+    flex:1;
+    min-height:0;
     overflow-y:auto;
     padding-right:4px;
   }

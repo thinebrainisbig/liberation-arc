@@ -850,7 +850,7 @@
     min-width:0;
     min-height:0;
   }
-  .physical-card{ flex:1 1 0; min-height:0; }
+  .physical-card{ flex:1 1 0; min-height:0; border:1px solid rgba(167,139,250,0.3); }
 
   .panel-header{
     display:flex;
@@ -1088,9 +1088,9 @@
   .mood-line-days span{ font-size:0.56rem; color:var(--ink-faint); font-weight:600; flex:1; text-align:center; }
 
   .mood-summary{ display:flex; gap:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
-  .mood-summary-box{ flex:1; }
+  .mood-summary-box{ flex:1; text-align:center; }
   .mood-summary-box .label{ font-size:0.54rem; font-weight:700; text-transform:uppercase; color:var(--ink-faint); }
-  .mood-summary-box .value{ font-size:0.76rem; font-weight:700; color:var(--ink); margin-top:3px; display:flex; align-items:center; gap:5px; }
+  .mood-summary-box .value{ font-size:0.76rem; font-weight:700; color:var(--ink); margin-top:3px; display:flex; align-items:center; justify-content:center; gap:5px; }
   .dot-inline{ width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
 
   /* Nutrition */
@@ -1113,7 +1113,7 @@
   .nutrition-day-labels{ flex:1; display:flex; gap:8px; padding-left:6px; }
   .nutrition-day-labels span{ flex:1; text-align:center; font-size:0.5rem; color:var(--ink-faint); font-weight:600; }
 
-  .nutrition-bottom-row{ flex:0 0 20%; min-height:0; display:flex; gap:14px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
+  .nutrition-bottom-row{ flex:0 0 auto; min-height:0; display:flex; gap:14px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
   .nutrition-bottom-col{ flex:1; min-width:0; min-height:0; display:flex; flex-direction:column; gap:5px; }
   .nutrition-bottom-title{ font-size:0.5rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-faint); flex-shrink:0; }
   .nutrition-today-inputs{ display:flex; gap:8px; flex:1; }
@@ -1134,19 +1134,16 @@
     transition:border-color .3s ease, background-color .3s ease;
   }
   .nutrition-input-group input:focus{ border-color:rgba(255,255,255,0.32); background:rgba(255,255,255,0.08); }
-  body.late-night #nutrition-calorie-group{
-    border-color:rgba(251,191,36,0.4);
-  }
   body.late-night #nutrition-calorie-group input{
     border-color:rgba(251,191,36,0.4);
     background:rgba(251,191,36,0.08);
   }
-  .nutrition-weekly-avg{ flex:1; display:flex; align-items:center; font-size:0.95rem; font-weight:800; color:var(--ink); }
+  .nutrition-weekly-avg{ flex:1; display:flex; align-items:center; justify-content:center; font-size:0.95rem; font-weight:800; color:var(--ink); }
   .nutrition-weekly-avg .unit{ font-size:0.6rem; font-weight:600; color:var(--ink-faint); margin-left:4px; }
   .nutrition-weekly-avg.empty{ font-size:0.62rem; font-weight:500; font-style:italic; color:var(--ink-faint); }
 
   /* Biometrics */
-  .bio-card-body{ padding:16px 20px; display:flex; flex-direction:column; flex:1; min-height:0; }
+  .bio-card-body{ padding:15px 18px; display:flex; flex-direction:column; flex:1; min-height:0; }
   .bio-grid-2x2{ display:grid; grid-template-columns:repeat(2,1fr); grid-template-rows:repeat(2,1fr); gap:10px; flex:1; min-height:0; }
   .bio-tile{
     padding:10px 12px;
@@ -1610,7 +1607,6 @@
         <!-- Sleep Analysis -->
         <div class="card glass physical-card">
           <div class="panel-header">
-            <span class="material-symbols-outlined" style="color:#818cf8;">bedtime</span>
             <h3>Sleep Analysis</h3>
           </div>
           <div class="sleep-card-body">
@@ -1654,7 +1650,6 @@
         <!-- Mood Tracker -->
         <div class="card glass physical-card">
           <div class="panel-header">
-            <span class="material-symbols-outlined" style="color:#f472b6;">mood</span>
             <h3>Mood</h3>
           </div>
           <div class="mood-card-body">
@@ -1690,7 +1685,6 @@
       <div class="physical-col">
         <div class="card glass physical-card">
           <div class="panel-header">
-            <span class="material-symbols-outlined" style="color:#60a5fa;">exercise</span>
             <h3>Gym Split</h3>
           </div>
           <div class="split-body">
@@ -1718,7 +1712,6 @@
         <!-- Activity -->
         <div class="card glass physical-card">
           <div class="panel-header">
-            <span class="material-symbols-outlined" style="color:#fb923c;">directions_run</span>
             <h3>Activity</h3>
           </div>
           <div class="activity-card-body">
@@ -1759,7 +1752,6 @@
         <!-- Nutrition -->
         <div class="card glass physical-card">
           <div class="panel-header">
-            <span class="material-symbols-outlined" style="color:#34d399;">restaurant</span>
             <h3>Nutrition</h3>
           </div>
           <div class="nutrition-card-body">
@@ -1801,7 +1793,6 @@
         <!-- Biometrics -->
         <div class="card glass physical-card">
           <div class="panel-header">
-            <span class="material-symbols-outlined" style="color:#fb7185;">monitoring</span>
             <h3>Biometrics</h3>
           </div>
           <div class="bio-card-body">
@@ -3296,7 +3287,7 @@
     var stepX = n > 1 ? plotW / (n - 1) : 0;
     var seriesOffset = 3;
 
-    function valToY(v){ return h - ((v + 1) / 2) * h; }
+    function valToY(v){ return h - ((v + 1.05) / 2.1) * h; }
 
     var gridCount = 4;
     var gridLines = '';
