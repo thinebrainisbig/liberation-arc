@@ -889,10 +889,15 @@
     gap:22px;
     min-height:0;
   }
-  .fin-budget-card{ flex:0 0 55%; min-height:0; }
-  .fin-recurring-card{ flex:0 0 45%; min-height:0; }
-  .fin-projected-card{ flex:0 0 50%; min-height:0; }
-  .fin-investing-card{ flex:0 0 50%; min-height:0; }
+  /* Each column stacks 2 cards with a 22px gap between them; the gap sits
+     on top of the percentage basis rather than being carved out of it, so
+     it's split evenly and subtracted from both cards' basis here — otherwise
+     the pair overflows the column by one gap's worth and the bottom card
+     eats into .main's bottom padding, leaving no breathing room below it. */
+  .fin-budget-card{ flex:0 0 calc(55% - 11px); min-height:0; }
+  .fin-recurring-card{ flex:0 0 calc(45% - 11px); min-height:0; }
+  .fin-projected-card{ flex:0 0 calc(50% - 11px); min-height:0; }
+  .fin-investing-card{ flex:0 0 calc(50% - 11px); min-height:0; }
 
   .fin-subhead{
     font-size:0.8rem;
@@ -958,13 +963,18 @@
   .fin-recurring-mini-amount{ color:#f87171; font-weight:700; flex-shrink:0; margin-left:8px; }
   .fin-recurring-total-row{ font-size:0.76rem; color:var(--ink-faint); margin-top:8px; text-align:right; }
   .fin-breakdown-row{ display:grid; grid-template-columns:repeat(4, 1fr); align-items:flex-start; gap:10px; margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
-  .fin-breakdown-col{ min-width:0; width:100%; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .fin-breakdown-col{ min-width:0; width:100%; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center; }
   .fin-breakdown-formula{ font-size:0.78rem; color:var(--ink-faint); }
   .fin-free-money{ font-size:1.4rem; font-weight:800; }
   /* Bottom row of the Monthly Budget card has four equal-width columns,
-     so text there is shrunk and locked to one line to avoid wrap. */
-  .fin-breakdown-row .fin-breakdown-formula{ font-size:0.58rem; white-space:nowrap; }
-  .fin-breakdown-row .fin-free-money{ font-size:1rem; white-space:nowrap; }
+     so text there is shrunk, locked to one line, and ellipsized if a
+     fallback message (e.g. "Set hourly rates") is still too wide. */
+  .fin-breakdown-row .fin-breakdown-formula,
+  .fin-breakdown-row .fin-free-money,
+  .fin-breakdown-row .fin-subhead{ max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fin-breakdown-row .fin-breakdown-formula{ font-size:0.58rem; }
+  .fin-breakdown-row .fin-free-money{ font-size:0.92rem; }
+  .fin-breakdown-row .fin-subhead{ font-size:0.56rem; }
   .fin-free-money.positive{ color:#4ade80; }
   .fin-free-money.negative{ color:#f87171; }
   .fin-free-money.amber{ color:#fbbf24; }
@@ -1107,6 +1117,20 @@
   .fin-savings-total-group{ margin-bottom:0; }
   .fin-savings-total-hint{ text-transform:none; letter-spacing:normal; font-weight:500; color:var(--ink-faint); font-size:0.6rem; }
   .fin-savings-total-input{ font-weight:800; font-size:1.05rem; color:var(--ink); text-align:left; }
+  .fin-savings-total-static{
+    margin:0;
+    padding:9px 11px;
+    border-radius:var(--r-sm);
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--ink);
+    font-weight:800;
+    font-size:1.05rem;
+    cursor:pointer;
+    display:none;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .fin-savings-total-static:hover{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.14); }
   .fin-investments-section{ flex:1; min-height:0; display:flex; flex-direction:column; margin-top:10px; }
   .fin-investments-list{ flex:1; min-height:0; overflow-y:auto; margin-top:8px; }
   .fin-investment-platform-sub{ color:var(--ink-faint); font-weight:500; }
@@ -1117,6 +1141,12 @@
     justify-content:space-between;
     margin-top:20px;
   }
+  /* Investment modal has no delete button when adding a new entry, which
+     left the checkmark stranded at the left edge under space-between (a
+     lone flex item isn't centered by that value); pin it dead-center of
+     the row regardless of whether Delete is present. */
+  #investment-modal .modal-actions-row{ position:relative; justify-content:flex-start; }
+  #investment-modal .modal-actions-row .checkmark-btn{ position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); }
   .danger-btn{
     background:rgba(248,113,113,0.12);
     border:1px solid rgba(248,113,113,0.32);
@@ -1971,7 +2001,8 @@
               </div>
               <div class="field-group fin-savings-total-group">
                 <label class="field-label">Current Total <span class="fin-savings-total-hint">(auto-calculated — editable)</span></label>
-                <input class="field-number mono fin-savings-total-input" id="savings-total-input" type="number" step="0.01" placeholder="e.g. 5000" onchange="saveSavingsTotalOverride(this.value)">
+                <input class="field-number mono fin-savings-total-input" id="savings-total-input" type="number" step="0.01" placeholder="e.g. 5000" onchange="saveSavingsTotalOverride(this.value)" onblur="renderSavingsTotalMode()" onkeydown="if(event.key==='Enter'){ this.blur(); }">
+                <p class="fin-savings-total-static mono" id="savings-total-static" onclick="editSavingsTotal()"></p>
               </div>
             </div>
 
@@ -3701,69 +3732,156 @@
   }
 
   /* ============================================================
-     Investing Snapshot — la_investing
+     Savings — la_savings_monthly / la_savings_rate / la_savings_total
+     Current Total auto-accrues: for each calendar month elapsed since
+     la_savings_last_accrual, that month's interest (annual rate ÷ 12,
+     applied to the balance already on hand) is added on top of that
+     month's deposit. Total stays directly editable to true it up
+     against a real account; editing it resets the accrual anchor to
+     today so past months aren't re-applied.
   ============================================================ */
-  function getInvesting(){ return loadJSON('la_investing', []); }
-  function saveInvestingData(list){ saveJSON('la_investing', list); }
+  function getSavingsMonthly(){ return loadJSON('la_savings_monthly', 0) || 0; }
+  function getSavingsRate(){ return loadJSON('la_savings_rate', 0) || 0; }
+  function getSavingsTotal(){ return loadJSON('la_savings_total', 0) || 0; }
 
-  function addInvestingEntry(){
-    var input = document.getElementById('investing-value-input');
-    var value = parseFloat(input.value);
-    if(isNaN(value)) return;
-    var list = getInvesting();
+  function saveSavingsSettings(){
+    var monthly = parseFloat(document.getElementById('savings-monthly-input').value);
+    var rate = parseFloat(document.getElementById('savings-rate-input').value);
+    saveJSON('la_savings_monthly', isNaN(monthly) ? 0 : monthly);
+    saveJSON('la_savings_rate', isNaN(rate) ? 0 : rate);
+    renderSavingsSection();
+  }
+
+  function saveSavingsTotalOverride(value){
+    var total = parseFloat(value);
+    saveJSON('la_savings_total', isNaN(total) ? 0 : total);
+    saveJSON('la_savings_last_accrual', getAdjustedDate());
+    renderSavingsSection();
+  }
+
+  function editSavingsTotal(){
+    var input = document.getElementById('savings-total-input');
+    var staticEl = document.getElementById('savings-total-static');
+    staticEl.style.display = 'none';
+    input.style.display = '';
+    input.value = getSavingsTotal() ? Math.round(getSavingsTotal() * 100) / 100 : '';
+    input.focus();
+    input.select();
+  }
+
+  function renderSavingsTotalMode(){
+    var input = document.getElementById('savings-total-input');
+    var staticEl = document.getElementById('savings-total-static');
+    input.style.display = 'none';
+    staticEl.style.display = 'block';
+  }
+
+  function accrueSavings(){
+    var lastAccrual = localStorage.getItem('la_savings_last_accrual');
     var today = getAdjustedDate();
-    var existing = list.find(function(x){ return x.date === today; });
-    if(existing) existing.value = value;
-    else list.push({ date: today, value: value });
-    list.sort(function(a,b){ return a.date.localeCompare(b.date); });
-    saveInvestingData(list);
-    input.value = '';
-    renderInvestingCard();
-  }
-
-  function buildInvestingChartSVG(list){
-    var w = 280, h = 100, padX = 6, padY = 8;
-    var values = list.map(function(x){ return x.value; });
-    var min = Math.min.apply(null, values);
-    var max = Math.max.apply(null, values);
-    var range = (max - min) || 1;
-    var n = values.length;
-    var stepX = n > 1 ? (w - padX * 2) / (n - 1) : 0;
-    function valToY(v){ return h - padY - ((v - min) / range) * (h - padY * 2); }
-    var points = values.map(function(v, i){ return (padX + i * stepX) + ',' + valToY(v); });
-    var linePoints = points.join(' ');
-    var areaPath = 'M' + points[0] + ' L' + points.slice(1).join(' L') + ' L' + (padX + (n - 1) * stepX) + ',' + h + ' L' + padX + ',' + h + ' Z';
-    return '<path d="'+areaPath+'" fill="rgba(248,113,113,0.18)" stroke="none"></path>' +
-      '<polyline points="'+linePoints+'" fill="none" stroke="#f87171" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></polyline>';
-  }
-
-  function renderInvestingCard(){
-    var list = getInvesting();
-    var latestEl = document.getElementById('investing-latest-value');
-    var changeEl = document.getElementById('investing-change');
-    var chart = document.getElementById('investing-chart');
-    var emptyEl = document.getElementById('investing-empty');
-    if(!list.length){
-      latestEl.textContent = '$0.00';
-      changeEl.textContent = '';
-      chart.innerHTML = '';
-      emptyEl.style.display = 'flex';
+    if(!lastAccrual){
+      localStorage.setItem('la_savings_last_accrual', today);
       return;
     }
-    emptyEl.style.display = 'none';
-    var latest = list[list.length - 1];
-    latestEl.textContent = formatCurrency(latest.value);
-    if(list.length > 1){
-      var prev = list[list.length - 2];
-      var pctChange = prev.value !== 0 ? ((latest.value - prev.value) / Math.abs(prev.value)) * 100 : 0;
-      var up = pctChange >= 0;
-      changeEl.innerHTML = '<span class="material-symbols-outlined" style="font-size:13px;">'+(up ? 'trending_up' : 'trending_down')+'</span> ' + (up ? '+' : '') + pctChange.toFixed(1) + '%';
-      changeEl.className = 'fin-investing-change mono ' + (up ? 'positive' : 'negative');
-    } else {
-      changeEl.textContent = '';
-      changeEl.className = 'fin-investing-change mono';
+    var cursor = new Date(lastAccrual + 'T00:00:00');
+    var todayDate = new Date(today + 'T00:00:00');
+    var monthly = getSavingsMonthly();
+    var monthlyRate = (getSavingsRate() / 100) / 12;
+    var total = getSavingsTotal();
+    var changed = false;
+    var guard = 0;
+    while(guard++ < 1200){
+      var next = addOneCalendarMonth(cursor);
+      if(next > todayDate) break;
+      total = total + (total * monthlyRate) + monthly;
+      cursor = next;
+      changed = true;
     }
-    chart.innerHTML = buildInvestingChartSVG(list);
+    if(changed){
+      saveJSON('la_savings_total', total);
+      localStorage.setItem('la_savings_last_accrual', dateToISO(cursor));
+    }
+  }
+
+  function renderSavingsSection(){
+    var monthly = getSavingsMonthly();
+    var rate = getSavingsRate();
+    var total = getSavingsTotal();
+    document.getElementById('savings-monthly-input').value = monthly || '';
+    document.getElementById('savings-rate-input').value = rate || '';
+    var totalInput = document.getElementById('savings-total-input');
+    var staticEl = document.getElementById('savings-total-static');
+    totalInput.value = total ? Math.round(total * 100) / 100 : '';
+    staticEl.textContent = total ? formatCurrency(total) : 'e.g. 5000';
+    staticEl.style.color = total ? 'var(--ink)' : 'var(--ink-faint)';
+    staticEl.style.fontStyle = total ? 'normal' : 'italic';
+    if(document.activeElement !== totalInput) renderSavingsTotalMode();
+  }
+
+  /* ============================================================
+     Investments — la_investments (array-of-objects + modal CRUD,
+     same pattern as Recurring Payments / la_recurring)
+  ============================================================ */
+  var editingInvestmentId = null;
+  var INVESTMENT_FREQUENCY_LABELS = { 'one-time':'One-time', weekly:'Weekly', biweekly:'Biweekly', monthly:'Monthly' };
+
+  function getInvestments(){ return loadJSON('la_investments', []); }
+  function saveInvestments(list){ saveJSON('la_investments', list); }
+
+  function openInvestmentModal(id){
+    editingInvestmentId = id || null;
+    var item = id ? getInvestments().find(function(x){ return x.id === id; }) : null;
+    document.getElementById('investment-modal-title').textContent = id ? 'Edit Investment' : 'Add Investment';
+    document.getElementById('investment-platform-input').value = item ? item.platform : '';
+    document.getElementById('investment-asset-input').value = item ? item.asset : '';
+    document.getElementById('investment-amount-input').value = item ? item.amount : '';
+    document.getElementById('investment-frequency-input').value = item ? item.frequency : 'monthly';
+    document.getElementById('investment-delete-btn').style.display = id ? 'inline-flex' : 'none';
+    openModal('investment-modal');
+  }
+  function closeInvestmentModal(){ closeModal('investment-modal'); editingInvestmentId = null; }
+
+  function saveInvestmentForm(){
+    var platform = document.getElementById('investment-platform-input').value.trim();
+    var asset = document.getElementById('investment-asset-input').value.trim();
+    var amount = parseFloat(document.getElementById('investment-amount-input').value);
+    var frequency = document.getElementById('investment-frequency-input').value;
+    if(!asset || isNaN(amount)) return;
+    var list = getInvestments();
+    if(editingInvestmentId){
+      var item = list.find(function(x){ return x.id === editingInvestmentId; });
+      if(item){ item.platform = platform; item.asset = asset; item.amount = amount; item.frequency = frequency; }
+    } else {
+      list.push({ id: uid(), platform: platform, asset: asset, amount: amount, frequency: frequency });
+    }
+    saveInvestments(list);
+    closeInvestmentModal();
+    renderInvestmentsList();
+  }
+
+  function deleteInvestmentItem(){
+    if(!editingInvestmentId) return;
+    saveInvestments(getInvestments().filter(function(x){ return x.id !== editingInvestmentId; }));
+    closeInvestmentModal();
+    renderInvestmentsList();
+  }
+
+  function renderInvestmentsList(){
+    var list = getInvestments();
+    var wrap = document.getElementById('investments-list');
+    if(!list.length){
+      wrap.innerHTML = '<div class="fin-empty">No investments yet</div>';
+      return;
+    }
+    wrap.innerHTML = list.map(function(item){
+      var freqLabel = INVESTMENT_FREQUENCY_LABELS[item.frequency] || 'Monthly';
+      var platformSub = item.platform ? ' <span class="fin-investment-platform-sub">— '+escapeHtml(item.platform)+'</span>' : '';
+      return '<div class="fin-recurring-row" onclick="openInvestmentModal(\''+item.id+'\')">' +
+          '<span class="fin-recurring-name">'+escapeHtml(item.asset)+platformSub+'</span>' +
+          '<span class="fin-recurring-day mono">'+freqLabel+'</span>' +
+          '<span class="fin-recurring-amount mono" style="color:#4ade80;">'+formatCurrency(Math.abs(item.amount))+'</span>' +
+        '</div>';
+    }).join('');
   }
 
   /* ============================================================
@@ -4089,7 +4207,8 @@
     else if(e.key === 'la_cash_on_hand'){ renderCurrentNet(); }
     else if(e.key === 'la_jobs'){ renderJobsCard(); renderProjectedCard(); }
     else if(e.key === 'la_kranker_hours' || e.key === 'la_ballard_hours'){ renderProjectedCard(); }
-    else if(e.key === 'la_investing'){ renderInvestingCard(); }
+    else if(e.key === 'la_savings_monthly' || e.key === 'la_savings_rate' || e.key === 'la_savings_total'){ renderSavingsSection(); }
+    else if(e.key === 'la_investments'){ renderInvestmentsList(); }
     else if(e.key === 'la_study_streak_academic' || e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){
       renderSidebarStreak();
     }
@@ -4138,6 +4257,8 @@
     processRecurringDeductions();
     renderSpendingLog();
     checkPayday();
+    accrueSavings();
+    renderSavingsSection();
     if(typeof renderMoodCard === 'function'){ renderMoodCard(); }
     if(typeof renderSplitPlanner === 'function'){ renderSplitPlanner(); }
     if(typeof renderSplitCalendar === 'function'){ renderSplitCalendar(); }
@@ -4429,7 +4550,9 @@
   renderRecurringCard();
   renderJobsCard();
   renderProjectedCard();
-  renderInvestingCard();
+  accrueSavings();
+  renderSavingsSection();
+  renderInvestmentsList();
   renderSidebarStreak();
   renderSidebarCurrently();
   renderSidebarHabits();

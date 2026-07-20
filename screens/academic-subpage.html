@@ -2358,7 +2358,7 @@
       <div class="manage-areas-panel" id="manage-areas-panel" style="display:none;"></div>
     </div>
 
-    <div class="field-group">
+    <div class="field-group" id="deadline-due-group">
       <label class="field-label">Due Date</label>
       <input class="field-text" id="deadline-due" type="date">
     </div>
@@ -3169,6 +3169,7 @@
     var freq = document.getElementById('deadline-frequency').value;
     document.getElementById('recurrence-dates-group').classList.toggle('show', freq !== 'none');
     document.getElementById('deadline-custom-days-group').classList.toggle('show', freq === 'custom');
+    document.getElementById('deadline-due-group').style.display = freq === 'custom' ? 'none' : '';
   }
 
   function renderDeadlineDaysRow(){
@@ -3359,14 +3360,28 @@
     if(currentDeadlineId){
       var idx = tasks.findIndex(function(t){ return t.id === currentDeadlineId; });
       if(idx > -1){
-        tasks[idx] = {
-          id: currentDeadlineId, name: name, areas: currentDeadlineAreas.slice(), due: due,
-          importance: importance, type: type, frequency: frequency,
-          startDate: startDate || null, endDate: endDate || null,
-          customDays: frequency === 'custom' ? customDays : [],
-          recurring: canRecur,
-          recurrenceId: tasks[idx].recurrenceId || null
-        };
+        var existing = tasks[idx];
+        if(frequency === 'custom' && canRecur && !existing.recurrenceId){
+          // Turning a plain (not-yet-expanded) task into a Custom recurring
+          // series: replace it with one freshly generated entry per matching
+          // occurrence, rather than overwriting it as a single dateless task.
+          // Tasks that are already one occurrence of an existing series
+          // (recurrenceId set) fall through to the in-place edit below, so
+          // editing a single occurrence doesn't regenerate/duplicate the
+          // whole series.
+          tasks.splice(idx, 1);
+          var base = { name: name, areas: currentDeadlineAreas.slice(), importance: importance, type: type };
+          tasks = tasks.concat(generateRecurringInstances(base, frequency, startDate, endDate || null, customDays));
+        } else {
+          tasks[idx] = {
+            id: currentDeadlineId, name: name, areas: currentDeadlineAreas.slice(), due: due,
+            importance: importance, type: type, frequency: frequency,
+            startDate: startDate || null, endDate: endDate || null,
+            customDays: frequency === 'custom' ? customDays : [],
+            recurring: canRecur,
+            recurrenceId: existing.recurrenceId || null
+          };
+        }
       }
     } else if(canRecur){
       var base = { name: name, areas: currentDeadlineAreas.slice(), importance: importance, type: type };

@@ -696,6 +696,26 @@
     background-image:linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.16) 100%);
   }
   .tri-tier.drag-over{ filter:brightness(1.35); }
+  .tri-border-overlay{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    filter:drop-shadow(0 0 3px rgba(255,255,255,0.65)) drop-shadow(0 0 9px rgba(255,255,255,0.4));
+  }
+  .tri-border-outer{
+    fill:none;
+    stroke:#ffffff;
+    stroke-width:2.5;
+    stroke-linejoin:round;
+    vector-effect:non-scaling-stroke;
+  }
+  .tri-border-divider{
+    stroke:#ffffff;
+    stroke-width:1.5;
+    vector-effect:non-scaling-stroke;
+  }
   .tri-tier-label{
     position:absolute;
     left:50%;
@@ -2491,26 +2511,32 @@
     <div class="social-modal-body">
       <div class="social-pyramid-area">
         <div class="triangle-wrap">
-          <div class="tri-tier" style="background-color:rgba(59,130,246,0.22); clip-path:polygon(50% 0%, 25% 50%, 75% 50%);"
+          <div class="tri-tier" style="background-color:rgba(0,200,255,0.42); clip-path:polygon(50% 0%, 25% 50%, 75% 50%);"
             ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'daily')">
             <div class="tri-tier-label" style="top:9%;">Daily</div>
             <div class="tri-chip-row" id="tri-chips-daily" style="top:27.5%; width:25.3%; max-height:22.5%;"></div>
           </div>
-          <div class="tri-tier" style="background-color:rgba(34,197,94,0.22); clip-path:polygon(25% 50%, 75% 50%, 85.35% 70.7%, 14.65% 70.7%);"
+          <div class="tri-tier" style="background-color:rgba(57,255,20,0.38); clip-path:polygon(25% 50%, 75% 50%, 85.35% 70.7%, 14.65% 70.7%);"
             ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'semiDaily')">
             <div class="tri-tier-label" style="top:53.7%;">Semi-Daily</div>
             <div class="tri-chip-row" id="tri-chips-semiDaily" style="top:61.39%; width:56.47%; max-height:9.32%;"></div>
           </div>
-          <div class="tri-tier" style="background-color:rgba(234,179,8,0.22); clip-path:polygon(14.65% 70.7%, 85.35% 70.7%, 93.3% 86.6%, 6.7% 86.6%);"
+          <div class="tri-tier" style="background-color:rgba(255,230,0,0.36); clip-path:polygon(14.65% 70.7%, 85.35% 70.7%, 93.3% 86.6%, 6.7% 86.6%);"
             ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'weekly')">
             <div class="tri-tier-label" style="top:73.6%;">Weekly</div>
             <div class="tri-chip-row" id="tri-chips-weekly" style="top:79.45%; width:73.09%; max-height:7.16%;"></div>
           </div>
-          <div class="tri-tier" style="background-color:rgba(239,68,68,0.22); clip-path:polygon(6.7% 86.6%, 93.3% 86.6%, 100% 100%, 0% 100%);"
+          <div class="tri-tier" style="background-color:rgba(255,0,90,0.4); clip-path:polygon(6.7% 86.6%, 93.3% 86.6%, 100% 100%, 0% 100%);"
             ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'monthly')">
             <div class="tri-tier-label" style="top:89%;">Monthly</div>
             <div class="tri-chip-row" id="tri-chips-monthly" style="top:93.97%; width:86.45%; max-height:6.03%;"></div>
           </div>
+          <svg class="tri-border-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M50 0 L100 100 L0 100 Z" class="tri-border-outer"/>
+            <line x1="25" y1="50" x2="75" y2="50" class="tri-border-divider"/>
+            <line x1="14.65" y1="70.7" x2="85.35" y2="70.7" class="tri-border-divider"/>
+            <line x1="6.7" y1="86.6" x2="93.3" y2="86.6" class="tri-border-divider"/>
+          </svg>
         </div>
       </div>
 
