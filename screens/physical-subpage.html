@@ -727,9 +727,29 @@
     border-radius:4px;
     filter:brightness(1);
     transition:filter .15s ease;
-    background-image:linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.16) 100%);
+    background-image:linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.08) 100%);
   }
   .tri-tier.drag-over{ filter:brightness(1.35); }
+  .tri-border-overlay{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    filter:drop-shadow(0 0 3px rgba(255,255,255,0.65)) drop-shadow(0 0 9px rgba(255,255,255,0.4));
+  }
+  .tri-border-outer{
+    fill:none;
+    stroke:#ffffff;
+    stroke-width:2.5;
+    stroke-linejoin:round;
+    vector-effect:non-scaling-stroke;
+  }
+  .tri-border-divider{
+    stroke:#ffffff;
+    stroke-width:1.5;
+    vector-effect:non-scaling-stroke;
+  }
   .tri-tier-label{
     position:absolute;
     left:50%;
@@ -754,10 +774,15 @@
     flex-wrap:wrap;
     align-content:flex-start;
     justify-content:center;
-    gap:7px;
+    gap:5px;
     overflow-y:auto;
     overflow-x:hidden;
-    padding-right:2px;
+    padding:0 2px;
+  }
+  .tri-chip-row .person-chip{
+    padding:4px 9px;
+    gap:5px;
+    font-size:0.7rem;
   }
 
   .social-bottom-section{
@@ -2097,26 +2122,32 @@
     <div class="social-modal-body">
       <div class="social-pyramid-area">
         <div class="triangle-wrap">
-          <div class="tri-tier" style="background-color:rgba(59,130,246,0.22); clip-path:polygon(50% 0%, 35.5% 29%, 64.5% 29%);"
+          <div class="tri-tier" style="background-color:rgba(0,225,255,0.78); clip-path:polygon(50% 0%, 35.5% 29%, 64.5% 29%);"
             ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'daily')">
-            <div class="tri-chip-row" id="tri-chips-daily" style="top:10%; width:22%; max-height:18%;"></div>
+            <div class="tri-chip-row" id="tri-chips-daily" style="top:10%; width:16%; max-height:18%;"></div>
           </div>
-          <div class="tri-tier" style="background-color:rgba(34,197,94,0.22); clip-path:polygon(35.5% 29%, 64.5% 29%, 77.02% 54.04%, 22.98% 54.04%);"
+          <div class="tri-tier" style="background-color:rgba(60,255,20,0.72); clip-path:polygon(35.5% 29%, 64.5% 29%, 77.02% 54.04%, 22.98% 54.04%);"
             ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'semiDaily')">
-            <div class="tri-chip-row" id="tri-chips-semiDaily" style="top:38.3%; width:47.56%; max-height:14.6%;"></div>
+            <div class="tri-chip-row" id="tri-chips-semiDaily" style="top:38.3%; width:39%; max-height:14.6%;"></div>
           </div>
-          <div class="tri-tier" style="background-color:rgba(234,179,8,0.22); clip-path:polygon(22.98% 54.04%, 77.02% 54.04%, 89.13% 78.27%, 10.87% 78.27%);"
+          <div class="tri-tier" style="background-color:rgba(255,240,0,0.68); clip-path:polygon(22.98% 54.04%, 77.02% 54.04%, 89.13% 78.27%, 10.87% 78.27%);"
             ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'weekly')">
-            <div class="tri-chip-row" id="tri-chips-weekly" style="top:61.79%; width:68.88%; max-height:15.51%;"></div>
+            <div class="tri-chip-row" id="tri-chips-weekly" style="top:61.79%; width:59%; max-height:15.51%;"></div>
           </div>
-          <div class="tri-tier" style="background-color:rgba(239,68,68,0.22); clip-path:polygon(10.87% 78.27%, 89.13% 78.27%, 100% 100%, 0% 100%);"
+          <div class="tri-tier" style="background-color:rgba(255,20,95,0.75); clip-path:polygon(10.87% 78.27%, 89.13% 78.27%, 100% 100%, 0% 100%);"
             ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'monthly')">
-            <div class="tri-chip-row" id="tri-chips-monthly" style="top:85.22%; width:88%; max-height:13.91%;"></div>
+            <div class="tri-chip-row" id="tri-chips-monthly" style="top:85.22%; width:78%; max-height:13.91%;"></div>
           </div>
           <div class="tri-tier-label" style="top:6%;">Daily</div>
           <div class="tri-tier-label" style="top:31%;">Semi-Daily</div>
           <div class="tri-tier-label" style="top:55.98%;">Weekly</div>
           <div class="tri-tier-label" style="top:80.01%;">Monthly</div>
+          <svg class="tri-border-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M50 0 L100 100 L0 100 Z" class="tri-border-outer"/>
+            <line x1="35.5" y1="29" x2="64.5" y2="29" class="tri-border-divider"/>
+            <line x1="22.98" y1="54.04" x2="77.02" y2="54.04" class="tri-border-divider"/>
+            <line x1="10.87" y1="78.27" x2="89.13" y2="78.27" class="tri-border-divider"/>
+          </svg>
         </div>
       </div>
 
@@ -3865,7 +3896,7 @@
   function renderPersonChipHtml(p, checkedOff, tierKey){
     var checkedClass = checkedOff ? ' person-chip-checked' : '';
     var checkBadge = checkedOff ? '<span class="person-chip-check material-symbols-outlined" title="Click to uncheck" onclick="event.stopPropagation(); unmarkSocialTalked(\''+tierKey+'\',\''+p.id+'\')">check_circle</span>' : '';
-    return '<div class="person-chip'+checkedClass+'" draggable="true" style="border-color:'+habitColorRgba(p.color,0.5)+'; background:'+habitColorRgba(p.color,1)+';" data-person-id="'+p.id+'" ondragstart="personDragStart(event,\''+p.id+'\')" ondragend="personDragEnd(event)">' +
+    return '<div class="person-chip'+checkedClass+'" draggable="true" style="border-color:'+habitColorRgba(p.color,0.5)+'; background:'+habitColorRgba(p.color,0.6)+';" data-person-id="'+p.id+'" ondragstart="personDragStart(event,\''+p.id+'\')" ondragend="personDragEnd(event)">' +
         '<span class="person-chip-dot" style="background:'+p.color+'; color:'+p.color+';"></span>' +
         '<span class="person-chip-name">'+escapeHtml(p.name)+'</span>' +
         checkBadge +
