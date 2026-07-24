@@ -3084,7 +3084,7 @@
       var rowStyle = color ? ('border-left-color:'+color+'; box-shadow:inset 3px 0 10px -6px '+hexToRgba(color,0.6)+';') : '';
       var titleStyle = color ? ('color:'+color+';') : '';
       var badgeStyle = color ? ('background:'+hexToRgba(color,0.18)+'; border-color:'+hexToRgba(color,0.55)+'; color:'+color+';') : '';
-      var dateText = item.completedDate ? ' <span class="hobby-rating-date">· Completed '+formatCompletedDate(item.completedDate)+'</span>' : '';
+      var dateText = item.completedDate ? ' <span class="hobby-rating-date">· '+formatCompletedDate(item.completedDate)+'</span>' : '';
       var editing = !!hobbyRatingEditing[type+'|'+item.id];
       var ratingHtml;
       if(item.rating !== undefined && !editing){
