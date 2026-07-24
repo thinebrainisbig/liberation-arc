@@ -217,13 +217,8 @@
   .daycycle-buttons{
     display:flex;
     border-radius:var(--r-sm);
-    border:1.5px solid transparent;
+    border:1px solid rgba(255,255,255,0.85);
     overflow:hidden;
-    background-image:
-      linear-gradient(90deg, rgba(96,165,250,0.16) 0%, rgba(96,165,250,0.05) 45%, rgba(250,204,21,0.05) 55%, rgba(250,204,21,0.16) 100%),
-      linear-gradient(90deg, rgba(96,165,250,0.5) 0%, rgba(96,165,250,0) 50%, rgba(250,204,21,0) 50%, rgba(250,204,21,0.5) 100%);
-    background-origin:border-box;
-    background-clip:padding-box, border-box;
   }
   .daycycle-btn{
     flex:1;
@@ -245,12 +240,12 @@
   }
   .daycycle-btn{ position:relative; }
   .daycycle-btn .material-symbols-outlined{ font-size:16px; }
-  .daycycle-btn.morning{ color:#bcd4fb; }
+  .daycycle-btn.morning{ color:#bcd4fb; background:rgba(48,83,125,0.55); }
   .daycycle-btn.morning .material-symbols-outlined{ color:#60a5fa; }
-  .daycycle-btn.morning:hover{ background:rgba(96,165,250,0.16); color:#eaf2ff; }
-  .daycycle-btn.night{ color:#f5e3a8; }
+  .daycycle-btn.morning:hover{ background:rgba(48,83,125,0.8); color:#eaf2ff; }
+  .daycycle-btn.night{ color:#f5e3a8; background:rgba(125,102,11,0.55); border-left:1px solid rgba(255,255,255,0.85); }
   .daycycle-btn.night .material-symbols-outlined{ color:#facc15; }
-  .daycycle-btn.night:hover{ background:rgba(250,204,21,0.16); color:#fff8dc; }
+  .daycycle-btn.night:hover{ background:rgba(125,102,11,0.8); color:#fff8dc; }
   .done-badge{
     position:absolute;
     top:-6px; right:-6px;
@@ -905,7 +900,7 @@
     align-items:center;
     justify-content:space-between;
     gap:8px;
-    padding:14px 18px;
+    padding:10px 18px 14px;
     border-bottom:1px solid rgba(255,255,255,0.08);
   }
   .panel-header .head-left{ display:flex; align-items:center; gap:8px; }
@@ -1211,6 +1206,16 @@
     align-items:center;
     justify-content:space-between;
     margin-top:20px;
+  }
+  #hobby-modal .modal-actions-row,
+  #cert-modal .modal-actions-row{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+  }
+  #hobby-modal .modal-actions-row .checkmark-btn,
+  #cert-modal .modal-actions-row .checkmark-btn{
+    grid-column:2;
   }
   .danger-btn{
     background:rgba(248,113,113,0.12);
@@ -1774,7 +1779,7 @@
               <p class="media-subhead" style="margin-bottom:0;">Ratings</p>
               <select class="hobby-sort-select" id="books-sort" onchange="renderHobbyRatings('books')">
                 <option value="default">Recent</option>
-                <option value="rating">Highest Rated</option>
+                <option value="rating" selected>Highest Rated</option>
                 <option value="date-desc">Newest First</option>
                 <option value="date-asc">Oldest First</option>
               </select>
@@ -1806,7 +1811,7 @@
               <p class="media-subhead" style="margin-bottom:0;">Ratings</p>
               <select class="hobby-sort-select" id="movies-sort" onchange="renderHobbyRatings('movies')">
                 <option value="default">Recent</option>
-                <option value="rating">Highest Rated</option>
+                <option value="rating" selected>Highest Rated</option>
                 <option value="date-desc">Newest First</option>
                 <option value="date-asc">Oldest First</option>
               </select>
@@ -1842,7 +1847,7 @@
               <p class="media-subhead" style="margin-bottom:0;">Ratings</p>
               <select class="hobby-sort-select" id="shows-sort" onchange="renderHobbyRatings('shows')">
                 <option value="default">Recent</option>
-                <option value="rating">Highest Rated</option>
+                <option value="rating" selected>Highest Rated</option>
                 <option value="date-desc">Newest First</option>
                 <option value="date-asc">Oldest First</option>
               </select>
@@ -1984,17 +1989,17 @@
 
     <div class="field-group">
       <label class="field-label">Title</label>
-      <input class="field-text" id="hobby-title" type="text" placeholder="e.g. Project Hail Mary">
+      <input class="field-text" id="hobby-title" type="text" placeholder="e.g. Project Hail Mary" onkeydown="if(event.key==='Enter') saveHobbyForm();">
     </div>
 
     <div class="field-group" id="hobby-author-group">
       <label class="field-label">Author</label>
-      <input class="field-text" id="hobby-author" type="text" placeholder="e.g. Andy Weir">
+      <input class="field-text" id="hobby-author" type="text" placeholder="e.g. Andy Weir" onkeydown="if(event.key==='Enter') saveHobbyForm();">
     </div>
 
     <div class="field-group" id="hobby-episode-group">
       <label class="field-label">Season / Episode</label>
-      <input class="field-text" id="hobby-episode-input" type="text" placeholder="e.g. S2 E04">
+      <input class="field-text" id="hobby-episode-input" type="text" placeholder="e.g. S2 E04" onkeydown="if(event.key==='Enter') saveHobbyForm();">
     </div>
 
     <div class="field-group" id="hobby-sophia-group">
@@ -2070,12 +2075,12 @@
 
     <div class="field-group">
       <label class="field-label">Course / Cert Name</label>
-      <input class="field-text" id="cert-name" type="text" placeholder="e.g. AWS Solutions Architect">
+      <input class="field-text" id="cert-name" type="text" placeholder="e.g. AWS Solutions Architect" onkeydown="if(event.key==='Enter') saveCertForm();">
     </div>
 
     <div class="field-group">
       <label class="field-label">Provider</label>
-      <input class="field-text" id="cert-provider" type="text" placeholder="e.g. AWS, Coursera, Google">
+      <input class="field-text" id="cert-provider" type="text" placeholder="e.g. AWS, Coursera, Google" onkeydown="if(event.key==='Enter') saveCertForm();">
     </div>
 
     <div class="field-group">
@@ -2095,7 +2100,7 @@
 
     <div class="field-group">
       <label class="field-label">Link (optional)</label>
-      <input class="field-text" id="cert-link" type="url" placeholder="https://...">
+      <input class="field-text" id="cert-link" type="url" placeholder="https://..." onkeydown="if(event.key==='Enter') saveCertForm();">
     </div>
 
     <div class="modal-actions-row">
@@ -2712,6 +2717,7 @@
     };
     localStorage.setItem('la_checkin_morning_' + getAdjustedDate(), JSON.stringify(data));
     updateCheckinBadges();
+    notifyStateChange('la_checkin_morning_' + getAdjustedDate());
     closeModal('morning-modal');
   }
 
@@ -2731,10 +2737,10 @@
       var nutritionCfg = loadJSON('la_nutrition', {target:2200, entries:{}});
       nutritionCfg.entries[getAdjustedDate()] = Number(calorieRaw);
       saveJSON('la_nutrition', nutritionCfg);
-      if(typeof renderPhysicalCalories === 'function') renderPhysicalCalories();
-      if(typeof renderNutritionCard === 'function') renderNutritionCard();
+      notifyStateChange('la_nutrition');
     }
     updateCheckinBadges();
+    notifyStateChange('la_checkin_night_' + getAdjustedDate());
     closeModal('night-modal');
   }
 
@@ -3054,7 +3060,7 @@
     if(!iso) return '';
     var d = new Date(iso + 'T00:00:00');
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[d.getMonth()] + ' ' + d.getDate();
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
   }
 
   var hobbyRatingEditing = {};
@@ -3713,10 +3719,15 @@
   }
 
   /* ============================================================
-     Cross-page live sync (fires when the OTHER tab/page changes
-     localStorage — index.html shares these keys)
+     Cross-page live sync. handleStorageSync is the single source of
+     truth for "what to re-render when key X changes" — it's wired to
+     the native `storage` event (fires in OTHER tabs only, never the
+     tab that made the change) AND to a local `state-change` CustomEvent
+     dispatched by notifyStateChange(), so same-tab mutations (e.g. the
+     Morning/Night modal save) get the identical re-render treatment
+     instantly, without waiting for a refresh.
   ============================================================ */
-  window.addEventListener('storage', function(e){
+  function handleStorageSync(e){
     if(e.key === 'la_books'){ renderHobbyCard('books'); renderSidebarCurrently(); }
     else if(e.key === 'la_movies'){ renderHobbyCard('movies'); renderSidebarCurrently(); }
     else if(e.key === 'la_shows'){ renderHobbyCard('shows'); renderSidebarCurrently(); }
@@ -3738,7 +3749,12 @@
         renderTriangleTiers();
       }
     }
-  });
+  }
+  window.addEventListener('storage', handleStorageSync);
+  window.addEventListener('state-change', function(e){ handleStorageSync({ key: e.detail.key }); });
+  function notifyStateChange(key){
+    window.dispatchEvent(new CustomEvent('state-change', { detail: { key: key } }));
+  }
 
   /* ============================================================
      Late night mode — 12AM-5AM amber tint on "yesterday" elements

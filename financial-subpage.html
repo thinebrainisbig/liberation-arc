@@ -217,13 +217,8 @@
   .daycycle-buttons{
     display:flex;
     border-radius:var(--r-sm);
-    border:1.5px solid transparent;
+    border:1px solid rgba(255,255,255,0.85);
     overflow:hidden;
-    background-image:
-      linear-gradient(90deg, rgba(96,165,250,0.16) 0%, rgba(96,165,250,0.05) 45%, rgba(250,204,21,0.05) 55%, rgba(250,204,21,0.16) 100%),
-      linear-gradient(90deg, rgba(96,165,250,0.5) 0%, rgba(96,165,250,0) 50%, rgba(250,204,21,0) 50%, rgba(250,204,21,0.5) 100%);
-    background-origin:border-box;
-    background-clip:padding-box, border-box;
   }
   .daycycle-btn{
     flex:1;
@@ -245,12 +240,12 @@
   }
   .daycycle-btn{ position:relative; }
   .daycycle-btn .material-symbols-outlined{ font-size:16px; }
-  .daycycle-btn.morning{ color:#bcd4fb; }
+  .daycycle-btn.morning{ color:#bcd4fb; background:rgba(48,83,125,0.55); }
   .daycycle-btn.morning .material-symbols-outlined{ color:#60a5fa; }
-  .daycycle-btn.morning:hover{ background:rgba(96,165,250,0.16); color:#eaf2ff; }
-  .daycycle-btn.night{ color:#f5e3a8; }
+  .daycycle-btn.morning:hover{ background:rgba(48,83,125,0.8); color:#eaf2ff; }
+  .daycycle-btn.night{ color:#f5e3a8; background:rgba(125,102,11,0.55); border-left:1px solid rgba(255,255,255,0.85); }
   .daycycle-btn.night .material-symbols-outlined{ color:#facc15; }
-  .daycycle-btn.night:hover{ background:rgba(250,204,21,0.16); color:#fff8dc; }
+  .daycycle-btn.night:hover{ background:rgba(125,102,11,0.8); color:#fff8dc; }
   .done-badge{
     position:absolute;
     top:-6px; right:-6px;
@@ -1040,7 +1035,7 @@
   .fin-free-money.positive{ color:#4ade80; }
   .fin-free-money.negative{ color:#f87171; }
   .fin-free-money.amber{ color:#fbbf24; }
-  .fin-shortfall-label{ font-size:0.62rem; font-weight:700; color:#f87171; margin-left:4px; white-space:nowrap; }
+  .fin-shortfall-label{ font-size:1.6rem; font-weight:700; color:#f87171; margin-left:6px; white-space:nowrap; line-height:1; vertical-align:middle; }
 
   .fin-update-balance-btn{
     display:flex;
@@ -3057,6 +3052,7 @@
     };
     localStorage.setItem('la_checkin_morning_' + getAdjustedDate(), JSON.stringify(data));
     updateCheckinBadges();
+    notifyStateChange('la_checkin_morning_' + getAdjustedDate());
     closeModal('morning-modal');
   }
 
@@ -3076,10 +3072,10 @@
       var nutritionCfg = loadJSON('la_nutrition', {target:2200, entries:{}});
       nutritionCfg.entries[getAdjustedDate()] = Number(calorieRaw);
       saveJSON('la_nutrition', nutritionCfg);
-      if(typeof renderPhysicalCalories === 'function') renderPhysicalCalories();
-      if(typeof renderNutritionCard === 'function') renderNutritionCard();
+      notifyStateChange('la_nutrition');
     }
     updateCheckinBadges();
+    notifyStateChange('la_checkin_night_' + getAdjustedDate());
     closeModal('night-modal');
   }
 
@@ -3425,10 +3421,6 @@
     return iso;
   }
 
-  function getSecondPaydayDate(){
-    return addDaysISO(getNextPaydayDate(), PAYDAY_INTERVAL_DAYS);
-  }
-
   /* Most recent scheduled payday <= dateISO, or null if dateISO predates
      the base payday entirely (used for catch-up detection in checkPayday). */
   function getMostRecentPaydayOnOrBefore(dateISO){
@@ -3522,7 +3514,7 @@
 
     document.getElementById('fin-current-net-formula').textContent = formatCurrency(parts.cash) + ' − ' + formatCurrency(parts.dueBefore) + ' =';
     var el = document.getElementById('fin-current-net-value');
-    el.innerHTML = formatCurrency(parts.currentNet) + (parts.currentNet < 0 ? ' <span class="fin-shortfall-label">⚠ Shortfall</span>' : '');
+    el.innerHTML = formatCurrency(parts.currentNet) + (parts.currentNet < 0 ? ' <span class="fin-shortfall-label">⚠</span>' : '');
     el.classList.toggle('positive', parts.currentNet >= 0);
     el.classList.toggle('negative', parts.currentNet < 0);
 
@@ -3708,13 +3700,12 @@
      la_cash_on_hand except read-only for display; hours/earnings
      tracking here never mutates the actual balance.
   ============================================================ */
-  /* Planned expenses window runs from today through the day before the
-     SECOND upcoming payday (next payday + 14 days, minus a day). Boundary
-     here is exclusive, so a bill due exactly on the second payday itself
-     is not included — e.g. next payday Jul 24 -> second payday Aug 7 ->
-     bills due Jul 12 (today) through Aug 6 are in the window. */
+  /* Planned expenses window runs from today through the next payday,
+     inclusive — feeds Current Net / Projected Net / Hours Needed on the
+     Monthly Budget card. Boundary is exclusive, so +1 day makes next
+     payday itself inclusive. */
   function getPlannedExpensesBoundaryDate(){
-    return new Date(getSecondPaydayDate() + 'T00:00:00');
+    return new Date(addDaysISO(getNextPaydayDate(), 1) + 'T00:00:00');
   }
 
   function getEstimatedFullPaycheck(){
@@ -3755,15 +3746,21 @@
     return getRecurringItemsWithinBoundary(new Date(addDaysISO(getNextPaydayDate(), 1) + 'T00:00:00'));
   }
 
-  function getPlannedFutureSpendingItems(){
+  /* boundaryISO, if given, additionally excludes entries dated after it
+     (inclusive) — used to scope Current Net / Projected Net to the next
+     payday window. The Spending Log card's own "Planned" list calls this
+     with no boundary, since it intentionally shows all future entries. */
+  function getPlannedFutureSpendingItems(boundaryISO){
     var today = getAdjustedDate();
-    return getSpendingLog().filter(function(e){ return e.date > today && e.amount < 0; })
+    return getSpendingLog().filter(function(e){ return e.date > today && e.amount < 0 && (!boundaryISO || e.date <= boundaryISO); })
       .sort(function(a,b){ return a.date.localeCompare(b.date); })
       .map(function(e){ return { id: e.id, name: e.note || e.category, amount: Math.abs(e.amount), date: e.date }; });
   }
 
+  /* Current Net / Projected Net window: today through the next payday,
+     inclusive, for both recurring bills and one-off planned spending. */
   function getPlannedExpenses(){
-    return getPlannedRecurringItems().concat(getPlannedFutureSpendingItems());
+    return getPlannedRecurringItems().concat(getPlannedFutureSpendingItems(getNextPaydayDate()));
   }
 
   function renderProjectedCard(){
@@ -3791,7 +3788,7 @@
     var projectedCashAfterEarnings = cash + earned;
     document.getElementById('projected-net-formula').textContent = formatCurrency(cash) + ' + ' + formatCurrency(earned) + ' =';
     var el = document.getElementById('projected-net-value');
-    el.innerHTML = formatCurrency(projectedCashAfterEarnings) + (projectedCashAfterEarnings < 0 ? ' <span class="fin-shortfall-label">⚠ Shortfall</span>' : '');
+    el.innerHTML = formatCurrency(projectedCashAfterEarnings) + (projectedCashAfterEarnings < 0 ? ' <span class="fin-shortfall-label">⚠</span>' : '');
     el.classList.toggle('positive', projectedCashAfterEarnings >= 0);
     el.classList.toggle('negative', projectedCashAfterEarnings < 0);
 
@@ -3844,7 +3841,7 @@
     var projectedNet = cash - plannedTotal + earned;
     document.getElementById('fin-budget-projected-formula').textContent = formatCurrency(cash) + ' − ' + formatCurrency(plannedTotal) + ' + ' + formatCurrency(earned) + ' =';
     var el = document.getElementById('fin-budget-projected-value');
-    el.innerHTML = formatCurrency(projectedNet) + (projectedNet < 0 ? ' <span class="fin-shortfall-label">⚠ Shortfall</span>' : '');
+    el.innerHTML = formatCurrency(projectedNet) + (projectedNet < 0 ? ' <span class="fin-shortfall-label">⚠</span>' : '');
     el.classList.toggle('positive', projectedNet >= 0);
     el.classList.toggle('negative', projectedNet < 0);
 
@@ -4348,10 +4345,15 @@
   }
 
   /* ============================================================
-     Cross-page live sync (fires when the OTHER tab/page changes
-     localStorage — index.html shares these keys)
+     Cross-page live sync. handleStorageSync is the single source of
+     truth for "what to re-render when key X changes" — it's wired to
+     the native `storage` event (fires in OTHER tabs only, never the
+     tab that made the change) AND to a local `state-change` CustomEvent
+     dispatched by notifyStateChange(), so same-tab mutations (e.g. the
+     Morning/Night modal save) get the identical re-render treatment
+     instantly, without waiting for a refresh.
   ============================================================ */
-  window.addEventListener('storage', function(e){
+  function handleStorageSync(e){
     if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){ renderSidebarCurrently(); }
     else if(e.key === 'la_spending_log'){ renderSpendingLog(); }
     else if(e.key === 'la_recurring'){ renderRecurringEverywhere(); }
@@ -4375,7 +4377,12 @@
         renderTriangleTiers();
       }
     }
-  });
+  }
+  window.addEventListener('storage', handleStorageSync);
+  window.addEventListener('state-change', function(e){ handleStorageSync({ key: e.detail.key }); });
+  function notifyStateChange(key){
+    window.dispatchEvent(new CustomEvent('state-change', { detail: { key: key } }));
+  }
 
   /* ============================================================
      Late night mode — 12AM-5AM amber tint on "yesterday" elements

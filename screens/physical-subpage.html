@@ -217,13 +217,8 @@
   .daycycle-buttons{
     display:flex;
     border-radius:var(--r-sm);
-    border:1.5px solid transparent;
+    border:1px solid rgba(255,255,255,0.85);
     overflow:hidden;
-    background-image:
-      linear-gradient(90deg, rgba(96,165,250,0.16) 0%, rgba(96,165,250,0.05) 45%, rgba(250,204,21,0.05) 55%, rgba(250,204,21,0.16) 100%),
-      linear-gradient(90deg, rgba(96,165,250,0.5) 0%, rgba(96,165,250,0) 50%, rgba(250,204,21,0) 50%, rgba(250,204,21,0.5) 100%);
-    background-origin:border-box;
-    background-clip:padding-box, border-box;
   }
   .daycycle-btn{
     flex:1;
@@ -245,12 +240,12 @@
   }
   .daycycle-btn{ position:relative; }
   .daycycle-btn .material-symbols-outlined{ font-size:16px; }
-  .daycycle-btn.morning{ color:#bcd4fb; }
+  .daycycle-btn.morning{ color:#bcd4fb; background:rgba(48,83,125,0.55); }
   .daycycle-btn.morning .material-symbols-outlined{ color:#60a5fa; }
-  .daycycle-btn.morning:hover{ background:rgba(96,165,250,0.16); color:#eaf2ff; }
-  .daycycle-btn.night{ color:#f5e3a8; }
+  .daycycle-btn.morning:hover{ background:rgba(48,83,125,0.8); color:#eaf2ff; }
+  .daycycle-btn.night{ color:#f5e3a8; background:rgba(125,102,11,0.55); border-left:1px solid rgba(255,255,255,0.85); }
   .daycycle-btn.night .material-symbols-outlined{ color:#facc15; }
-  .daycycle-btn.night:hover{ background:rgba(250,204,21,0.16); color:#fff8dc; }
+  .daycycle-btn.night:hover{ background:rgba(125,102,11,0.8); color:#fff8dc; }
   .done-badge{
     position:absolute;
     top:-6px; right:-6px;
@@ -1786,7 +1781,7 @@
                 </div>
               </div>
               <div class="split-cal-weekdays">
-                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+                <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
               </div>
               <div class="split-cal-grid" id="split-cal-grid"></div>
             </div>
@@ -2646,7 +2641,7 @@
     };
     localStorage.setItem('la_checkin_morning_' + getAdjustedDate(), JSON.stringify(data));
     updateCheckinBadges();
-    renderMoodCard();
+    notifyStateChange('la_checkin_morning_' + getAdjustedDate());
     closeModal('morning-modal');
   }
 
@@ -2666,12 +2661,10 @@
       var nutritionCfg = loadJSON('la_nutrition', {target:2200, entries:{}});
       nutritionCfg.entries[getAdjustedDate()] = Number(calorieRaw);
       saveJSON('la_nutrition', nutritionCfg);
+      notifyStateChange('la_nutrition');
     }
     updateCheckinBadges();
-    renderMoodCard();
-    renderSplitPlanner();
-    renderSplitCalendar();
-    renderNutritionCard();
+    notifyStateChange('la_checkin_night_' + getAdjustedDate());
     closeModal('night-modal');
   }
 
@@ -2817,7 +2810,7 @@
 
     var data = getGymSplit();
     var firstOfMonth = new Date(splitCalViewYear, splitCalViewMonth, 1);
-    var leadBlank = (firstOfMonth.getDay() + 6) % 7;
+    var leadBlank = firstOfMonth.getDay();
     var daysInMonth = new Date(splitCalViewYear, splitCalViewMonth + 1, 0).getDate();
     var todayIso = getAdjustedDate();
 
@@ -3210,10 +3203,15 @@
   }
 
   /* ============================================================
-     Cross-page live sync (fires when the OTHER tab/page changes
-     localStorage — academic-subpage.html / hobbies-subpage.html share these keys)
+     Cross-page live sync. handleStorageSync is the single source of
+     truth for "what to re-render when key X changes" — it's wired to
+     the native `storage` event (fires in OTHER tabs only, never the
+     tab that made the change) AND to a local `state-change` CustomEvent
+     dispatched by notifyStateChange(), so same-tab mutations (e.g. the
+     Morning/Night modal save) get the identical re-render treatment
+     instantly, without waiting for a refresh.
   ============================================================ */
-  window.addEventListener('storage', function(e){
+  function handleStorageSync(e){
     if(e.key === 'la_study_streak_academic' || e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){
       renderSidebarStreak();
     }
@@ -3247,7 +3245,12 @@
         renderTriangleTiers();
       }
     }
-  });
+  }
+  window.addEventListener('storage', handleStorageSync);
+  window.addEventListener('state-change', function(e){ handleStorageSync({ key: e.detail.key }); });
+  function notifyStateChange(key){
+    window.dispatchEvent(new CustomEvent('state-change', { detail: { key: key } }));
+  }
 
   /* ============================================================
      Imported Apple Health data → card rendering
@@ -3388,15 +3391,15 @@
     return v >= 0 ? 'hsl(142, 55%, ' + light + '%)' : 'hsl(4, 62%, ' + light + '%)';
   }
 
-  function buildMoodLineSVG(morningVals, nightVals){
-    var w = 280, h = 100;
+  function buildMoodLineSVG(morningVals, nightVals, w, h){
+    w = w || 280; h = h || 100;
     var padX = 10;
     var plotW = w - padX * 2;
     var n = morningVals.length;
     var stepX = n > 1 ? plotW / (n - 1) : 0;
     var seriesOffset = 3;
 
-    function valToY(v){ return h - ((v + 1.05) / 2.1) * h; }
+    function valToY(v){ return h - ((v + 1.15) / 2.3) * h; }
 
     var gridCount = 4;
     var gridLines = '';
@@ -3451,7 +3454,9 @@
     }).join('');
     document.getElementById('mood-dots').innerHTML = dotsHtml;
 
-    document.getElementById('mood-line-chart').innerHTML = buildMoodLineSVG(morningVals, nightVals);
+    var moodChartEl = document.getElementById('mood-line-chart');
+    var moodChartRect = moodChartEl.getBoundingClientRect();
+    moodChartEl.innerHTML = buildMoodLineSVG(morningVals, nightVals, moodChartRect.width, moodChartRect.height);
     document.getElementById('mood-line-days').innerHTML = days.map(function(d){ return '<span>' + dowLabel(d) + '</span>'; }).join('');
 
     function mostCommon(arr){
