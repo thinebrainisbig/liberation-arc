@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-photo: url('https://lh3.googleusercontent.com/aida-public/AB6AXuClymCSmM9Yvud81lSoPUR0UG93qODCoHDRy2kIfe7CvBu2NIkTx-VthnilePvdNNG4Zqn03LMicKoKvjDVHhRu4CMAEAbhKvyDk-0D32JnzdbNUyYuMEPHWan0G4QUT7IqgKM3MkMwXB2_TBsGpAOvtuIlXWB-2G3fEQTCW0wFEdANCj6A84-AtW_l8JhjON1VSG5crwLSuzwucr0YyHEQ8slImCEbkS7eYodo849frITGSVKD_lgAxfJC6OWm-M69-0dDBhH7xDh7');
+    --bg-photo: url('../assets/physical.jpeg');
 
     --ink: #f2f2f5;
     --ink-dim: rgba(242,242,245,0.62);
@@ -54,6 +54,8 @@
     background-image:var(--bg-photo);
     background-size:cover;
     background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
     filter:none;
     transition:filter .3s ease;
   }
@@ -201,7 +203,7 @@
   }
   .nav-link.active .material-symbols-outlined{ color:var(--nav-color); }
   .nav-link[data-section="physical"]{ --nav-color:var(--physical-nav); }
-  .nav-link[data-section="academic"]{ --nav-color:var(--academic); }
+  .nav-link[data-section="academic"]{ --nav-color:#4ade80; }
   .nav-link[data-section="hobbies"]{ --nav-color:var(--hobbies); }
   .nav-link[data-section="financial"]{ --nav-color:var(--financial); }
   .nav-link[data-section="secondbrain"]{ --nav-color:var(--secondbrain); }
@@ -217,7 +219,6 @@
   .daycycle-buttons{
     display:flex;
     border-radius:var(--r-sm);
-    border:1px solid rgba(255,255,255,0.85);
     overflow:hidden;
   }
   .daycycle-btn{
@@ -240,25 +241,19 @@
   }
   .daycycle-btn{ position:relative; }
   .daycycle-btn .material-symbols-outlined{ font-size:16px; }
-  .daycycle-btn.morning{ color:#bcd4fb; background:rgba(48,83,125,0.55); }
+  .daycycle-btn.morning{ color:#bcd4fb; background:#223b57; }
   .daycycle-btn.morning .material-symbols-outlined{ color:#60a5fa; }
   .daycycle-btn.morning:hover{ background:rgba(48,83,125,0.8); color:#eaf2ff; }
-  .daycycle-btn.night{ color:#f5e3a8; background:rgba(125,102,11,0.55); border-left:1px solid rgba(255,255,255,0.85); }
+  .daycycle-btn.morning.completed{ background:#1e3a5f; }
+  .daycycle-btn.night{ color:#f5e3a8; background:#4c4518; border-left:1px solid rgba(255,255,255,0.85); }
   .daycycle-btn.night .material-symbols-outlined{ color:#facc15; }
   .daycycle-btn.night:hover{ background:rgba(125,102,11,0.8); color:#fff8dc; }
-  .done-badge{
-    position:absolute;
-    top:2px; right:2px;
-    width:16px; height:16px;
-    border-radius:50%;
-    background:#0b0b10;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    font-size:12px;
-    color:#4ade80;
-    border:1px solid rgba(255,255,255,0.25);
-  }
+  .daycycle-btn.night.completed{ background:#d4af37; }
+  .daycycle-btn-check{ display:none; }
+  .daycycle-btn .daycycle-btn-check{ font-size:22px; }
+  .daycycle-btn.completed .daycycle-btn-icon,
+  .daycycle-btn.completed .daycycle-btn-label{ display:none; }
+  .daycycle-btn.completed .daycycle-btn-check{ display:inline-flex; color:#ffffff; }
 
   /* Late night mode (12AM-5AM): amber tint = still "yesterday" */
   body.late-night .daycycle-btn.morning,
@@ -276,7 +271,7 @@
   .social-card{
     padding:14px;
     border-radius:var(--r-md);
-    background:rgba(167,139,250,0.16);
+    background:#292f4a;
     border:1px solid rgba(167,139,250,0.55);
     transition:border-color .3s ease;
   }
@@ -320,8 +315,8 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    background:rgba(96,165,250,0.16);
-    border:1px solid rgba(96,165,250,0.55);
+    background:#1a3c36;
+    border:1px solid rgba(74,222,128,0.55);
   }
   .streak-mini-flame{
     font-size:0.78rem;
@@ -361,7 +356,7 @@
     display:flex;
     flex-direction:column;
     gap:8px;
-    background:rgba(251,146,60,0.16);
+    background:#36302b;
     border:1px solid rgba(251,146,60,0.55);
   }
   .currently-mini-title{
@@ -400,8 +395,8 @@
     display:flex;
     flex-direction:column;
     gap:8px;
-    background:rgba(74,222,128,0.16);
-    border:1px solid rgba(74,222,128,0.55);
+    background:#381d24;
+    border:1px solid rgba(127,29,29,0.7);
     transition:border-color .3s ease;
   }
   .habit-mini-header{
@@ -907,7 +902,11 @@
     min-width:0;
     min-height:0;
   }
-  .physical-card{ flex:1 1 0; min-height:0; border:1px solid rgba(167,139,250,0.3); }
+  .physical-card{
+    flex:1 1 0; min-height:0;
+    border:1px solid rgba(167,139,250,0.55);
+    box-shadow:0 0 18px 0 rgba(167,139,250,0.125), inset 0 1px 0 rgba(221,214,254,0.5);
+  }
 
   .panel-header{
     display:flex;
@@ -1257,7 +1256,7 @@
     transition:transform .2s ease;
   }
   .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
-  #morning-modal .modal-card{ background:linear-gradient(160deg, rgba(96,165,250,0.18) 0%, rgba(96,165,250,0.05) 55%, rgba(10,14,20,0.6) 100%); }
+  #morning-modal .modal-card{ background:linear-gradient(160deg, rgba(48,83,125,0.3) 0%, rgba(48,83,125,0.08) 55%, rgba(10,14,20,0.6) 100%); }
   #night-modal .modal-card{ background:linear-gradient(160deg, rgba(250,204,21,0.18) 0%, rgba(250,204,21,0.05) 55%, rgba(10,14,20,0.6) 100%); }
 
   .modal-header{
@@ -1366,8 +1365,8 @@
     transition:all .15s ease;
   }
   .scale-dot.active{
-    background:var(--academic);
-    border-color:var(--academic);
+    background:#60a5fa;
+    border-color:#60a5fa;
     color:#0b0b10;
   }
 
@@ -1613,14 +1612,14 @@
 
     <div class="daycycle-buttons">
       <button type="button" class="daycycle-btn morning" id="morning-btn" onclick="openMorningModal()">
-        <span class="material-symbols-outlined">light_mode</span>
-        Morning
-        <span class="done-badge material-symbols-outlined" id="morning-done-badge">check</span>
+        <span class="daycycle-btn-icon material-symbols-outlined">light_mode</span>
+        <span class="daycycle-btn-label">Morning</span>
+        <span class="daycycle-btn-check material-symbols-outlined">check</span>
       </button>
       <button type="button" class="daycycle-btn night" id="night-btn" onclick="openNightModal()">
-        <span class="material-symbols-outlined">dark_mode</span>
-        Night
-        <span class="done-badge material-symbols-outlined" id="night-done-badge">check</span>
+        <span class="daycycle-btn-icon material-symbols-outlined">dark_mode</span>
+        <span class="daycycle-btn-label">Night</span>
+        <span class="daycycle-btn-check material-symbols-outlined">check</span>
       </button>
     </div>
 
@@ -2580,8 +2579,8 @@
     var today = getAdjustedDate();
     var morningDone = !!localStorage.getItem('la_checkin_morning_' + today);
     var nightDone = !!localStorage.getItem('la_checkin_night_' + today);
-    document.getElementById('morning-done-badge').style.display = morningDone ? 'flex' : 'none';
-    document.getElementById('night-done-badge').style.display = nightDone ? 'flex' : 'none';
+    document.getElementById('morning-btn').classList.toggle('completed', morningDone);
+    document.getElementById('night-btn').classList.toggle('completed', nightDone);
   }
 
   function populateMorningFromStorage(){

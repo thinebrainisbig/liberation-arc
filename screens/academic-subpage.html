@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-photo: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCVzPhRLtlYmQD1DG8eKCYmXPeJ4qLxCCyPChAi2i_wlhZriDtnGqmnmCbVX0IisEfWzdG7QRkjgbL9URKKPu78WkGUdIYWS4IduwZUwjk51FIrVJVlUxCJxSUV_py3IOw4YCRN-Zh1DbnosNme7fnYESLf5UD0dl39ywDuhMfm1ETLKoeGUE69uJB_JOVCoJ0JmlLQgqYdEirJ5OYI4P7FzI8hqDR_LeqSpKtYB_iwlamPuTYj0GTNsDYvxJ219sPUwbRYxexcj4Iz');
+    --bg-photo: url('../assets/academic.jpeg');
 
     --ink: #f2f2f5;
     --ink-dim: rgba(242,242,245,0.62);
@@ -20,11 +20,11 @@
     --glass-border: rgba(255,255,255,0.14);
     --glass-sheen: rgba(255,255,255,0.10);
 
-    --sidebar-bg: color-mix(in srgb, var(--academic) 14%, rgba(21,29,40,0.55));
+    --sidebar-bg: color-mix(in srgb, var(--physical) 14%, rgba(21,29,40,0.55));
 
     --physical: #4ade80;
     --physical-nav: #a78bfa; /* violet, matches physical-subpage.html card highlight */
-    --academic: #60a5fa;
+    --academic: #4ade80;
     --hobbies: #fb923c;
     --financial: #f87171;
     --secondbrain: #22d3ee;
@@ -54,6 +54,8 @@
     background-image:var(--bg-photo);
     background-size:cover;
     background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
     filter:none;
     transition:filter .3s ease;
   }
@@ -201,7 +203,7 @@
   }
   .nav-link.active .material-symbols-outlined{ color:var(--nav-color); }
   .nav-link[data-section="physical"]{ --nav-color:var(--physical-nav); }
-  .nav-link[data-section="academic"]{ --nav-color:var(--academic); }
+  .nav-link[data-section="academic"]{ --nav-color:#4ade80; }
   .nav-link[data-section="hobbies"]{ --nav-color:var(--hobbies); }
   .nav-link[data-section="financial"]{ --nav-color:var(--financial); }
   .nav-link[data-section="secondbrain"]{ --nav-color:var(--secondbrain); }
@@ -217,7 +219,6 @@
   .daycycle-buttons{
     display:flex;
     border-radius:var(--r-sm);
-    border:1px solid rgba(255,255,255,0.85);
     overflow:hidden;
   }
   .daycycle-btn{
@@ -240,25 +241,19 @@
   }
   .daycycle-btn{ position:relative; }
   .daycycle-btn .material-symbols-outlined{ font-size:16px; }
-  .daycycle-btn.morning{ color:#bcd4fb; background:rgba(48,83,125,0.55); }
+  .daycycle-btn.morning{ color:#bcd4fb; background:#223b57; }
   .daycycle-btn.morning .material-symbols-outlined{ color:#60a5fa; }
   .daycycle-btn.morning:hover{ background:rgba(48,83,125,0.8); color:#eaf2ff; }
-  .daycycle-btn.night{ color:#f5e3a8; background:rgba(125,102,11,0.55); border-left:1px solid rgba(255,255,255,0.85); }
+  .daycycle-btn.morning.completed{ background:#1e3a5f; }
+  .daycycle-btn.night{ color:#f5e3a8; background:#4c4518; border-left:1px solid rgba(255,255,255,0.85); }
   .daycycle-btn.night .material-symbols-outlined{ color:#facc15; }
   .daycycle-btn.night:hover{ background:rgba(125,102,11,0.8); color:#fff8dc; }
-  .done-badge{
-    position:absolute;
-    top:2px; right:2px;
-    width:16px; height:16px;
-    border-radius:50%;
-    background:#0b0b10;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    font-size:12px;
-    color:#4ade80;
-    border:1px solid rgba(255,255,255,0.25);
-  }
+  .daycycle-btn.night.completed{ background:#d4af37; }
+  .daycycle-btn-check{ display:none; }
+  .daycycle-btn .daycycle-btn-check{ font-size:22px; }
+  .daycycle-btn.completed .daycycle-btn-icon,
+  .daycycle-btn.completed .daycycle-btn-label{ display:none; }
+  .daycycle-btn.completed .daycycle-btn-check{ display:inline-flex; color:#ffffff; }
 
   /* Late night mode (12AM-5AM): amber tint = still "yesterday" */
   body.late-night .daycycle-btn.morning,
@@ -276,7 +271,7 @@
   .social-card{
     padding:14px;
     border-radius:var(--r-md);
-    background:rgba(167,139,250,0.16);
+    background:#292f4a;
     border:1px solid rgba(167,139,250,0.55);
     transition:border-color .3s ease;
   }
@@ -320,8 +315,8 @@
     display:flex;
     flex-direction:column;
     gap:10px;
-    background:rgba(96,165,250,0.16);
-    border:1px solid rgba(96,165,250,0.55);
+    background:#1a3c36;
+    border:1px solid rgba(74,222,128,0.55);
   }
   .streak-mini-flame{
     font-size:0.78rem;
@@ -361,7 +356,7 @@
     display:flex;
     flex-direction:column;
     gap:8px;
-    background:rgba(251,146,60,0.16);
+    background:#36302b;
     border:1px solid rgba(251,146,60,0.55);
   }
   .currently-mini-title{
@@ -400,8 +395,8 @@
     display:flex;
     flex-direction:column;
     gap:8px;
-    background:rgba(74,222,128,0.16);
-    border:1px solid rgba(74,222,128,0.55);
+    background:#381d24;
+    border:1px solid rgba(127,29,29,0.7);
     transition:border-color .3s ease;
   }
   .habit-mini-header{
@@ -929,7 +924,11 @@
   }
   .card-eyebrow .material-symbols-outlined{ font-size:14px; }
 
-  .research-card{ flex:1; min-height:0; border:1px solid rgba(96,165,250,0.3); }
+  .research-card{
+    flex:1; min-height:0;
+    border:1px solid rgba(74,222,128,0.55);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.5);
+  }
   .research-card .card-title{
     font-size:0.8rem;
     font-weight:700;
@@ -981,17 +980,17 @@
     -webkit-appearance:none;
     width:16px; height:16px;
     border-radius:4px;
-    border:1.5px solid rgba(96,165,250,0.5);
+    border:1.5px solid rgba(74,222,128,0.5);
     background:transparent;
     cursor:pointer;
     flex-shrink:0;
     position:relative;
     transition:background .15s ease, border-color .15s ease;
   }
-  .task-checkbox:hover{ border-color:rgba(96,165,250,0.85); }
+  .task-checkbox:hover{ border-color:rgba(74,222,128,0.85); }
   .task-checkbox:checked{
-    background:#60a5fa;
-    border-color:#60a5fa;
+    background:#4ade80;
+    border-color:#4ade80;
   }
   .task-checkbox:checked::after{
     content:'';
@@ -1030,8 +1029,8 @@
     border-radius:6px;
     font-size:0.7rem;
     font-weight:700;
-    background:rgba(96,165,250,0.14);
-    color:#93c5fd;
+    background:rgba(74,222,128,0.14);
+    color:#86efac;
     font-family:'JetBrains Mono',monospace;
   }
 
@@ -1152,7 +1151,7 @@
   }
   .lab-due-soonest{ font-size:0.6rem; color:var(--ink-faint); }
   .lab-task-row{ display:flex; align-items:center; gap:8px; }
-  .lab-task-row.due-soon{ background:rgba(96,165,250,0.14); border-left:3px solid #60a5fa; padding-left:5px; border-radius:4px; }
+  .lab-task-row.due-soon{ background:rgba(74,222,128,0.14); border-left:3px solid #4ade80; padding-left:5px; border-radius:4px; }
   .task-text-input{
     flex:1;
     background:transparent;
@@ -1237,7 +1236,7 @@
     font-weight:700;
     color:var(--academic);
     background:rgba(255,255,255,0.05);
-    border:1px solid rgba(96,165,250,0.32);
+    border:1px solid rgba(74,222,128,0.32);
     border-radius:4px;
     padding:1px 4px;
     text-align:center;
@@ -1245,8 +1244,8 @@
   .hours-counter-mini-btn{
     width:19px; height:19px;
     border-radius:50%;
-    border:1px solid rgba(96,165,250,0.3);
-    background:rgba(96,165,250,0.08);
+    border:1px solid rgba(74,222,128,0.3);
+    background:rgba(74,222,128,0.08);
     color:var(--academic);
     font-family:inherit;
     font-size:0.68rem;
@@ -1259,7 +1258,7 @@
     cursor:pointer;
     flex-shrink:0;
   }
-  .hours-counter-mini-btn:hover{ background:rgba(96,165,250,0.18); }
+  .hours-counter-mini-btn:hover{ background:rgba(74,222,128,0.18); }
   .hours-reset-btn{
     width:19px; height:19px;
     border-radius:50%;
@@ -1292,7 +1291,11 @@
   .status-select option{ background:#16171c; }
 
   /* Deadlines table card */
-  .deadlines-card{ display:flex; flex-direction:column; flex:1; min-height:0; border:1px solid rgba(96,165,250,0.3); }
+  .deadlines-card{
+    display:flex; flex-direction:column; flex:1; min-height:0;
+    border:1px solid rgba(74,222,128,0.55);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.5);
+  }
   .deadlines-header{
     display:flex;
     align-items:center;
@@ -1360,10 +1363,17 @@
     flex:0 0 auto;
     min-height:260px;
   }
-  .countdown-card{ padding:20px; border:1px solid rgba(96,165,250,0.3); }
+  .countdown-card{
+    padding:20px;
+    border:1px solid rgba(74,222,128,0.55);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.5);
+  }
 
   /* ---------- Study Streak & Weekly Goal card ---------- */
-  .streak-card{ border:1px solid rgba(96,165,250,0.3); }
+  .streak-card{
+    border:1px solid rgba(74,222,128,0.55);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.5);
+  }
   .streak-display{
     display:flex;
     flex-direction:column;
@@ -1483,7 +1493,8 @@
     flex-direction:column;
     align-items:center;
     overflow:visible;
-    border:1px solid rgba(96,165,250,0.3);
+    border:1px solid rgba(74,222,128,0.55);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.5);
   }
   .pomo-settings-anchor{ position:relative; }
   .pomo-tabs{
@@ -1670,7 +1681,7 @@
     transition:transform .2s ease;
   }
   .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
-  #morning-modal .modal-card{ background:linear-gradient(160deg, rgba(96,165,250,0.18) 0%, rgba(96,165,250,0.05) 55%, rgba(10,14,20,0.6) 100%); }
+  #morning-modal .modal-card{ background:linear-gradient(160deg, rgba(48,83,125,0.3) 0%, rgba(48,83,125,0.08) 55%, rgba(10,14,20,0.6) 100%); }
   #night-modal .modal-card{ background:linear-gradient(160deg, rgba(250,204,21,0.18) 0%, rgba(250,204,21,0.05) 55%, rgba(10,14,20,0.6) 100%); }
 
   .modal-header{
@@ -1779,8 +1790,8 @@
     transition:all .15s ease;
   }
   .scale-dot.active{
-    background:var(--academic);
-    border-color:var(--academic);
+    background:#60a5fa;
+    border-color:#60a5fa;
     color:#0b0b10;
   }
 
@@ -2026,14 +2037,14 @@
 
     <div class="daycycle-buttons">
       <button type="button" class="daycycle-btn morning" id="morning-btn" onclick="openMorningModal()">
-        <span class="material-symbols-outlined">light_mode</span>
-        Morning
-        <span class="done-badge material-symbols-outlined" id="morning-done-badge">check</span>
+        <span class="daycycle-btn-icon material-symbols-outlined">light_mode</span>
+        <span class="daycycle-btn-label">Morning</span>
+        <span class="daycycle-btn-check material-symbols-outlined">check</span>
       </button>
       <button type="button" class="daycycle-btn night" id="night-btn" onclick="openNightModal()">
-        <span class="material-symbols-outlined">dark_mode</span>
-        Night
-        <span class="done-badge material-symbols-outlined" id="night-done-badge">check</span>
+        <span class="daycycle-btn-icon material-symbols-outlined">dark_mode</span>
+        <span class="daycycle-btn-label">Night</span>
+        <span class="daycycle-btn-check material-symbols-outlined">check</span>
       </button>
     </div>
 
@@ -2099,7 +2110,7 @@
     <div class="top-section">
       <div class="research-stack">
         <div class="card glass research-card">
-          <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
+          <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
           <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
             <div class="lab-header-row">
               <h3 class="card-title" style="margin:0;">Kranker Lab</h3>
@@ -2134,7 +2145,7 @@
         </div>
 
         <div class="card glass research-card">
-          <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
+          <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
           <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
             <div class="lab-header-row">
               <h3 class="card-title" style="margin:0;">Ballard Lab</h3>
@@ -2171,7 +2182,7 @@
 
       <div class="right-column">
       <div class="card glass deadlines-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
+        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
         <div class="deadlines-header">
           <h3>Deadlines</h3>
           <button type="button" class="icon-btn" onclick="toggleDeadlineFilters()" title="Filters">
@@ -2236,7 +2247,7 @@
       <div class="second-row">
 
       <div class="card glass pomo-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
+        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
 
         <div class="pomo-tabs">
           <button type="button" class="pomo-tab active" data-mode="pomodoro" onclick="selectPomoTab('pomodoro')">Pomodoro</button>
@@ -2272,7 +2283,7 @@
       </div>
 
       <div class="card glass streak-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
+        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
         <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
           <div class="card-eyebrow" style="color:var(--academic);">
             <span class="material-symbols-outlined">local_fire_department</span>
@@ -2307,7 +2318,7 @@
       </div>
 
       <div class="card glass countdown-card">
-        <div class="accent-blob" style="background:rgba(96,165,250,0.14);"></div>
+        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
         <div class="panel-header-alt">
           <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
             <span class="material-symbols-outlined">timer</span>
@@ -3067,8 +3078,8 @@
     var today = getAdjustedDate();
     var morningDone = !!localStorage.getItem('la_checkin_morning_' + today);
     var nightDone = !!localStorage.getItem('la_checkin_night_' + today);
-    document.getElementById('morning-done-badge').style.display = morningDone ? 'flex' : 'none';
-    document.getElementById('night-done-badge').style.display = nightDone ? 'flex' : 'none';
+    document.getElementById('morning-btn').classList.toggle('completed', morningDone);
+    document.getElementById('night-btn').classList.toggle('completed', nightDone);
   }
 
   function populateMorningFromStorage(){
