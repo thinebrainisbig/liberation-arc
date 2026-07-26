@@ -202,6 +202,14 @@
     box-shadow:0 0 6px var(--nav-color), 0 0 10px var(--nav-color);
   }
   .nav-link.active .material-symbols-outlined{ color:var(--nav-color); }
+  /* Active nav pill doubles as a "back to dashboard" link (its href
+     now points at ../index.html): a small muted arrow precedes the
+     section's own icon rather than replacing it, so the pill still
+     reads as "you are here" while signaling it now navigates away. */
+  .nav-link.active .back-arrow{
+    font-size:15px !important;
+    color:var(--ink-faint) !important;
+  }
   .nav-link[data-section="physical"]{ --nav-color:var(--physical-nav); }
   .nav-link[data-section="academic"]{ --nav-color:#4ade80; }
   .nav-link[data-section="hobbies"]{ --nav-color:var(--hobbies); }
@@ -1559,8 +1567,9 @@
     color:var(--ink-dim);
   }
 </style>
+<link rel="stylesheet" href="../css/layout.css">
 </head>
-<body>
+<body class="is-subpage">
 
 <div class="bg-layer" id="bg-layer"></div>
 <div class="bg-scrim"></div>
@@ -1575,13 +1584,9 @@
     </div>
 
     <nav class="nav">
-      <a class="nav-link" data-section="dashboard" href="../index.html">
-        <span class="material-symbols-outlined">arrow_back</span>
-        <span>Dashboard</span>
-      </a>
-      <div class="sidebar-divider"></div>
       <div class="nav-row">
-        <a class="nav-link active" data-section="physical" href="physical-subpage.html">
+        <a class="nav-link active" data-section="physical" href="../index.html">
+          <span class="back-arrow material-symbols-outlined">arrow_back</span>
           <span class="material-symbols-outlined">fitness_center</span>
           <span>Physical</span>
         </a>
@@ -1607,6 +1612,15 @@
         <span>Second Brain</span>
       </a>
     </nav>
+
+    <div class="mobile-quick-actions">
+      <button type="button" class="mobile-quick-btn" onclick="openSocialModal()" aria-label="Social Targets">
+        <span class="material-symbols-outlined">person</span>
+      </button>
+      <button type="button" class="mobile-quick-btn" onclick="openHabitModal()" aria-label="Habits">
+        <span class="material-symbols-outlined">checklist</span>
+      </button>
+    </div>
 
     <div class="sidebar-divider"></div>
 

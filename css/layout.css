@@ -1,0 +1,387 @@
+/* ============================================================
+   Shared mobile layout — bottom nav, modal triggers, and main-grid
+   stacking for viewports <=768px.
+
+   Linked (identically) from index.html, financial-subpage.html,
+   and screens/{academic,physical,hobbies}-subpage.html so the
+   mobile nav only needs to be written once. Page-specific grid
+   selectors below (.top-section, .physical-columns, .hobbies-grid,
+   .financial-grid, .second-row) are scoped to class names that only
+   exist on their own page, so one shared file can safely cover all
+   five without cross-page interference.
+
+   Loaded via <link> placed *after* each page's inline <style> block,
+   so these rules win cascade ties against the desktop rules of equal
+   specificity without needing !important everywhere.
+============================================================ */
+
+/* Quick-action buttons (Social Targets / Habits) that replace the
+   sidebar's mini-cards on mobile — hidden on desktop since the mini
+   cards + their headers already open these same modals there. */
+.mobile-quick-actions{
+  display:none;
+}
+
+/* index.html-only in-flow Morning/Night pill pair (see the mobile
+   media query below) — hidden on desktop, where the original pair
+   inside .sidebar is used instead. */
+.daycycle-buttons-mobile{
+  display:none;
+}
+
+@media (max-width: 768px){
+
+  /* .main is normally the scroll container (desktop uses a fixed
+     100vh app-shell); it's switched to height:auto below so cards
+     can stack to their natural height, which means the page itself
+     needs to scroll instead. */
+  html{ overflow-x:hidden; }
+  body{ overflow-y:auto !important; overflow-x:hidden !important; }
+
+  /* ---------- Sidebar -> fixed bottom nav ---------- */
+  .sidebar{
+    position:fixed;
+    left:0; right:0; bottom:0; top:auto;
+    width:100%;
+    height:calc(60px + env(safe-area-inset-bottom));
+    margin:0;
+    border-radius:0;
+    flex-direction:row;
+    align-items:center;
+    padding:0 8px calc(env(safe-area-inset-bottom));
+    gap:0;
+    background:rgba(10,10,14,0.72);
+    backdrop-filter:blur(24px) saturate(160%);
+    -webkit-backdrop-filter:blur(24px) saturate(160%);
+    border:none;
+    border-top:1px solid rgba(255,255,255,0.10);
+    z-index:500;
+  }
+  .sidebar::after{ display:none; }
+
+  /* Least-essential / non-mobile-friendly widgets: not replaced,
+     just unavailable on mobile. */
+  .sidebar > .brand,
+  .sidebar > .sidebar-divider,
+  .sidebar > .streak-mini-card,
+  .sidebar > .currently-mini-card,
+  .sidebar > .social-card,
+  .sidebar > .habit-mini-card,
+  .sidebar > .sidebar-spacer,
+  .sidebar > .sidebar-bottom{
+    display:none !important;
+  }
+
+  /* Primary nav: left/main portion of the bar (~2/3 width) */
+  .sidebar > .nav{
+    display:flex;
+    flex:2 1 0;
+    flex-direction:row;
+    align-items:stretch;
+    justify-content:space-around;
+    gap:2px;
+    min-width:0;
+  }
+  .sidebar > .nav .nav-row{ display:contents; }
+  .sidebar > .nav .import-btn{ display:none !important; }
+  .sidebar > .nav .nav-link{
+    flex:1 1 0;
+    min-width:0;
+    flex-direction:column;
+    justify-content:center;
+    gap:2px;
+    padding:6px 2px;
+    border:none !important;
+    text-align:center;
+  }
+  .sidebar > .nav .nav-link .material-symbols-outlined{ font-size:20px; }
+  .sidebar > .nav .nav-link span:last-child{
+    font-size:0.56rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:100%;
+  }
+  .sidebar > .nav .nav-link.active::after{ display:none; }
+  /* Active subpage tab becomes a "back to Dashboard" control: show
+     only the back-arrow (already wired to href="index.html"/
+     "../index.html" on the .active link itself, so tapping it just
+     navigates like any other link — no extra click handler needed)
+     and hide the section's own icon so the tab still shows a single
+     icon instead of two stacked ones. */
+  .sidebar > .nav .nav-link.active .back-arrow{
+    display:inline-flex !important;
+    opacity:1 !important;
+  }
+  .sidebar > .nav .nav-link.active > .material-symbols-outlined:not(.back-arrow){
+    display:none !important;
+  }
+
+  /* Quick actions: right portion of the bar (~1/3 width) — open the
+     existing Social Targets / Habits modals (same modals + JS the
+     desktop mini-cards already use, just triggered from here). */
+  .mobile-quick-actions{
+    display:flex;
+    flex:1 1 0;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+    padding-left:6px;
+  }
+  .mobile-quick-btn{
+    width:38px;
+    height:38px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+  }
+  .mobile-quick-btn .material-symbols-outlined{ font-size:19px; }
+  .mobile-quick-btn:active{ background:rgba(255,255,255,0.14); }
+
+  /* Morning/Night: the original sidebar pair is superseded on mobile
+     by .daycycle-buttons-mobile (in-flow pills at the top of
+     index.html's <main> — see below), so hide it everywhere. */
+  .sidebar > .daycycle-buttons{ display:none !important; }
+
+  /* In-flow Morning/Night pills — index.html only (dashboard-only
+     control; subpages never render this element at all). Sits in
+     normal document flow, not fixed/sticky, right above the cards. */
+  .daycycle-buttons-mobile{
+    display:flex;
+    width:100%;
+    justify-content:center;
+    gap:16px;
+    margin-top:16px;
+    border-radius:0;
+    overflow:visible;
+    background:none;
+    border:none;
+  }
+  .daycycle-buttons-mobile .daycycle-btn{
+    flex:0 0 auto;
+    border-radius:9999px;
+    padding:8px 18px;
+    border-left:none !important;
+  }
+  .daycycle-buttons-mobile .daycycle-btn .daycycle-btn-check{ font-size:18px; }
+
+  /* ---------- Page containers: room for the fixed bottom bar ---------- */
+  /* .app-shell is a row flex container (sidebar + main); with the
+     sidebar taken out of flow (fixed bottom nav, above), align-items
+     defaults to stretch and would otherwise force .main to a rigid
+     100vh regardless of its own height:auto below — flex-start lets
+     .main size to its actual (now taller, stacked) content instead. */
+  .app-shell{
+    height:auto !important;
+    min-height:100vh;
+    align-items:flex-start !important;
+  }
+  .main{
+    height:auto !important;
+    min-height:100vh;
+    align-self:flex-start;
+    overflow:visible !important;
+    overflow-y:visible !important;
+    padding-bottom:calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* ---------- index.html / academic-subpage.html: top-section + bottom-section ---------- */
+  .top-section,
+  .bottom-section,
+  .second-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) !important;
+    grid-template-rows:none !important;
+    flex:none !important;
+    min-height:0 !important;
+    height:auto !important;
+    gap:16px;
+  }
+  .top-section .research-stack{ flex:none !important; }
+  /* Kranker Lab / Ballard Lab cards: +50% over the original 220px. */
+  .top-section .research-card{ flex:none !important; min-height:330px !important; }
+  /* .card-pad has an inline height:100%, but .research-card only sets
+     min-height (not a definite height), so that percentage doesn't
+     resolve and .card-pad just shrinks to its content — leaving the
+     status/hours row's own margin-top:auto with no extra space inside
+     .card-pad to push into. flex:1 makes it actually fill the taller
+     card instead (needs !important to beat the inline style). */
+  .top-section .research-card .card-pad{
+    flex:1 !important;
+    height:auto !important;
+  }
+  .top-section .calendar-card{ flex:none !important; height:480px !important; min-height:480px !important; }
+  .bottom-section .deadlines-card,
+  .bottom-section .hobbies-card,
+  .bottom-section .physical-health-card,
+  .bottom-section .tasklist-card{
+    grid-column:auto !important;
+    grid-row:auto !important;
+  }
+  .bottom-section .hobbies-card,
+  .bottom-section .physical-health-card,
+  .bottom-section .tasklist-card{
+    min-height:220px;
+  }
+  /* Tasklist: +40% over the 220px baseline above. Needs !important to
+     beat `.bottom-section .tasklist-card` on specificity (two classes
+     vs. one), same issue hit with the Deadlines card earlier. */
+  .tasklist-card{
+    min-height:308px !important;
+  }
+  .right-column{ min-width:0; }
+  /* Deadlines card: +50% over the original 280px. Needs to beat the
+     `.bottom-section .deadlines-card` selector above on specificity
+     (two classes vs. one), not just source order. */
+  .deadlines-card{ min-height:420px !important; }
+  /* Kranker/Ballard's status-select + hours-counter row already has
+     margin-top:auto in the desktop rule, pinning it to the bottom of
+     .card-pad's flex column — carries over here now that the taller
+     card leaves visible room below the task list for it to drop into. */
+
+  /* ---------- index.html only: custom mobile card order ----------
+     Desired stream: Tasklist, Calendar, Deadlines, Research Cards,
+     Hobbies, Physical Health. .top-section/.bottom-section normally
+     each keep their own cards grouped together (see above); making
+     them `display:contents` unwraps their children into direct flex
+     items of .main (which is already flex-direction:column) so
+     `order` can freely interleave cards that used to live in two
+     separate containers. Scoped to `:not(.is-subpage)` so this never
+     touches academic-subpage.html's own .top-section. */
+  body:not(.is-subpage) .top-section,
+  body:not(.is-subpage) .bottom-section{
+    display:contents;
+  }
+  body:not(.is-subpage) .tasklist-card{ order:1; }
+  body:not(.is-subpage) #calendar-card{ order:2; }
+  body:not(.is-subpage) .deadlines-card{ order:3; }
+  body:not(.is-subpage) .research-stack{ order:4; }
+  body:not(.is-subpage) .hobbies-card{ order:5; }
+  body:not(.is-subpage) .physical-health-card{ order:6; }
+
+  /* ---------- Deadlines table: scroll + column reduction ---------- */
+  .table-scroll{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  /* Keep only Task + Due (checkbox column stays — it's functional,
+     not a data column). Column order differs between index.html's
+     compact table (checkbox, Task, Areas, Importance, Due, Status,
+     Type) and academic's full table (checkbox, Task, Areas, Due,
+     Status, Importance, Type), so each gets its own nth-child list
+     rather than one that would hide the wrong column on one of them. */
+  .deadlines-compact th:nth-child(3), .deadlines-compact td:nth-child(3),
+  .deadlines-compact th:nth-child(4), .deadlines-compact td:nth-child(4){
+    display:none;
+  }
+  .deadlines-card:not(.deadlines-compact) th:nth-child(3), .deadlines-card:not(.deadlines-compact) td:nth-child(3),
+  .deadlines-card:not(.deadlines-compact) th:nth-child(5), .deadlines-card:not(.deadlines-compact) td:nth-child(5),
+  .deadlines-card:not(.deadlines-compact) th:nth-child(6), .deadlines-card:not(.deadlines-compact) td:nth-child(6),
+  .deadlines-card:not(.deadlines-compact) th:nth-child(7), .deadlines-card:not(.deadlines-compact) td:nth-child(7){
+    display:none;
+  }
+  /* Shrink the Task name text a touch so the checkbox/status icon to
+     its left never wraps or clips it in the narrower mobile column. */
+  .task-cell .name{ font-size:0.9em; }
+  /* Give the row checkbox more breathing room — the JS resize init
+     only reserves DEADLINES_CHECKBOX_COL_WIDTH (20px) for math, so
+     table-layout:fixed's own width redistribution (once the hidden
+     Areas/Importance/Status/Type columns above are factored in) can
+     otherwise render this column too narrow to show the checkbox
+     without it looking clipped against the Task text next to it. */
+  th.checkbox-col, td.checkbox-col{
+    width:44px;
+  }
+
+  /* ---------- physical-subpage.html: three side-by-side columns ---------- */
+  .physical-columns{
+    flex-direction:column !important;
+    height:auto !important;
+  }
+  .physical-col{
+    flex:none !important;
+    min-height:0 !important;
+  }
+  .physical-card{
+    flex:none !important;
+    min-height:260px !important;
+  }
+
+  /* ---------- hobbies-subpage.html: 4-column grid ---------- */
+  .hobbies-grid{
+    grid-template-columns:minmax(0,1fr) !important;
+    height:auto !important;
+    min-height:0 !important;
+  }
+  .hobbies-grid .card{
+    height:auto !important;
+    min-height:390px !important; /* +50% over the original 260px */
+  }
+
+  /* ---------- financial-subpage.html: 3-column grid ---------- */
+  .financial-grid{
+    grid-template-columns:minmax(0,1fr) !important;
+    height:auto !important;
+    min-height:0 !important;
+  }
+  /* Custom mobile card order: Spending Log, Recurring, Monthly
+     Budget, Projected, Savings and Investments. Only .fin-spending-
+     card is a direct child of .financial-grid — Monthly Budget/
+     Recurring live inside a .fin-middle-col wrapper and Projected/
+     Savings inside .fin-right-col, so `order` on the cards themselves
+     wouldn't do anything (it only reorders siblings within the same
+     container). display:contents unwraps those two column divs so
+     all 5 cards become direct grid children that `order` can freely
+     interleave — same technique used for index.html's top-section/
+     bottom-section above. */
+  .fin-middle-col,
+  .fin-right-col{
+    display:contents;
+  }
+  .fin-spending-card{ order:1; }
+  .fin-recurring-card{ order:2; }
+  .fin-budget-card{ order:3; }
+  .fin-projected-card{ order:4; }
+  .fin-investing-card{ order:5; }
+  /* Baseline +50% over the originals (260px / 220px), then further
+     bumped per-card: Spending Log +30% (390->507), Monthly Budget
+     +30% (330->429), Savings and Investments +40% (330->462). */
+  .financial-grid .card{
+    min-height:330px;
+  }
+  .fin-spending-card{
+    height:auto !important;
+    min-height:507px !important;
+  }
+  .fin-budget-card{
+    min-height:429px !important;
+  }
+  .fin-investing-card{
+    min-height:462px !important;
+  }
+
+  /* ---------- Habit Tracker modal ---------- */
+  .habit-view-toggle{
+    justify-content:center;
+    width:100%;
+    gap:12px;
+  }
+  /* Habit cards scaled down ~10% (padding/gap/font-size, not a visual
+     transform:scale — a transform wouldn't reclaim the saved space
+     in the grid, so the grid would still need the same scroll height)
+     so more of them fit inside the modal's fixed 80vh without the
+     grid's overflow-y:auto kicking in. */
+  #habit-grid{ gap:12.6px; }
+  #habit-grid .habit-card{ padding:12.6px; gap:9px; }
+  #habit-grid .habit-card-top{ gap:7.2px; }
+  #habit-grid .habit-card-name{ font-size:0.792rem; }
+  #habit-grid .habit-card-streaks{ font-size:0.612rem; gap:12.6px; }
+  #habit-grid .habit-card-check-row{ font-size:0.594rem; padding-top:9px; gap:7.2px; }
+  #habit-grid .habit-card-unscheduled{ font-size:0.558rem; padding-top:9px; }
+}

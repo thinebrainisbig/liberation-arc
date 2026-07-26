@@ -1,0 +1,422 @@
+/* ============================================================
+   Calendar card — Google Calendar Day View (FullCalendar)
+   FullCalendar renders directly inside #calendar-card — no inner
+   wrapper/border box, so there's a single card edge instead of a
+   double-boxed look. Theme colors are exposed as FullCalendar's
+   own `--fc-*` root variables (its supported customization
+   surface) so retheming stays a one-place edit.
+============================================================ */
+
+:root{
+  --fc-border-color: rgba(255,255,255,0.05);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: transparent;
+  --fc-event-bg-color: rgba(147,197,253,0.25);
+  --fc-event-border-color: transparent;
+  --fc-event-text-color: #f5f5f7;
+  --fc-now-indicator-color: #ff3b30;
+  --fc-today-bg-color: rgba(255,255,255,0.02);
+}
+
+/* Specificity note: `#calendar-card` also carries `.glass`, and
+   index.html's base `.glass{ border:...; box-shadow:...; }` rule has
+   the same one-class specificity as `.calendar-card` below. Since
+   that base rule lives in the inline <style> block which loads
+   after this linked stylesheet, it was winning the cascade tie and
+   silently overriding this border/glow entirely (computed style
+   showed the generic glass border, not blue). The ID selector
+   outranks it regardless of source order. */
+#calendar-card.calendar-card{
+  height:100%;
+  width:100%;
+  padding:14px;
+  border:1px solid rgba(56,189,248,0.55);
+  box-shadow:0 0 18px 0 rgba(56,189,248,0.125), inset 0 1px 0 rgba(186,230,253,0.5);
+}
+
+/* FullCalendar puts its own `.fc` class directly on the element you
+   construct it against, rather than creating a child wrapper — so
+   `#calendar-body` *is* the `.fc` root, not a container around one.
+   Sizing/font-family belong here, not on a `#calendar-body .fc`
+   descendant selector (that selector matched nothing). */
+#calendar-body{
+  position:relative;
+  flex:1;
+  min-height:0;
+  width:100%;
+  height:100%;
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Geist', sans-serif;
+}
+
+/* ---------- Header row: view tabs + time-range toggles ----------
+   Sits where the card's eyebrow header used to be; the calendar
+   body claims the rest of that vertical space instead. */
+/* Specificity note: `.calendar-header` is a direct child of
+   `.calendar-card` (which carries `.glass`), and so is `#calendar-body`
+   right after it. index.html's base `.glass > *{ position:relative;
+   z-index:2; }` rule gives both the same z-index, and DOM order then
+   lets the calendar grid stack on top — swallowing clicks on the
+   custom-range popover. The doubled selector outranks that rule so
+   the header (and its popover) reliably stacks above the grid. */
+.calendar-card > .calendar-header{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+  flex-shrink:0;
+  margin-bottom:8px;
+  position:relative;
+  z-index:6;
+}
+
+.calendar-tabs{
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-start;
+  gap:4px;
+  flex-shrink:0;
+}
+.calendar-tab{
+  padding:6px 14px;
+  border:1px solid rgba(255,255,255,0.10);
+  border-bottom:1px solid transparent;
+  border-radius:8px 8px 0 0;
+  background:rgba(255,255,255,0.03);
+  color:var(--ink-faint);
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.66rem;
+  font-weight:700;
+  letter-spacing:0.04em;
+  cursor:pointer;
+  transition:background-color .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.calendar-tab:hover{
+  color:var(--ink);
+  background:rgba(255,255,255,0.06);
+}
+.calendar-tab.active{
+  color:var(--calendar);
+  background:rgba(56,189,248,0.12);
+  border-color:rgba(56,189,248,0.45);
+  box-shadow:0 0 10px 0 rgba(56,189,248,0.25);
+  border-bottom:2px solid var(--calendar);
+}
+
+/* ---------- Y-axis time-range toggles ----------
+   Glassmorphic pill buttons, visually distinct from the folder-tab
+   view switcher (rounded-full vs. folder-cut top corners). */
+.calendar-range-toggles{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.calendar-range-btn{
+  padding:5px 11px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  color:var(--ink-faint);
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.62rem;
+  font-weight:700;
+  letter-spacing:0.03em;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.calendar-range-btn:hover{
+  color:var(--ink);
+  background:rgba(255,255,255,0.08);
+}
+.calendar-range-btn.active{
+  color:var(--calendar);
+  background:rgba(56,189,248,0.14);
+  border-color:rgba(56,189,248,0.5);
+  box-shadow:0 0 10px 0 rgba(56,189,248,0.25);
+}
+
+.calendar-range-custom{
+  position:relative;
+}
+.calendar-range-popover{
+  position:absolute;
+  top:calc(100% + 8px);
+  right:0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:12px;
+  min-width:150px;
+  border-radius:12px;
+  border:1px solid rgba(56,189,248,0.3);
+  background:rgba(10,12,18,0.94);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  box-shadow:0 8px 24px rgba(0,0,0,0.4), 0 0 16px 0 rgba(56,189,248,0.15);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-4px);
+  transition:opacity .18s ease, transform .18s ease;
+  z-index:10;
+}
+.calendar-range-popover.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+.calendar-range-popover label{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:0.6rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--ink-faint);
+}
+.calendar-range-popover input[type="time"]{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:6px;
+  color:var(--ink);
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;
+  padding:5px 7px;
+  outline:none;
+  color-scheme:dark;
+}
+.calendar-range-apply{
+  margin-top:2px;
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid rgba(56,189,248,0.45);
+  background:rgba(56,189,248,0.14);
+  color:var(--calendar);
+  font-family:'Geist','Segoe UI',system-ui,sans-serif;
+  font-size:0.68rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:background-color .2s ease, box-shadow .2s ease;
+}
+.calendar-range-apply:hover{
+  background:rgba(56,189,248,0.24);
+  box-shadow:0 0 12px 0 rgba(56,189,248,0.3);
+}
+
+/* ---------- Connect Calendar fallback pill ----------
+   Shown when there's no valid token, silent refresh fails, or the
+   GIS script hasn't loaded — overlays the card instead of leaving
+   a blank grid. */
+/* Specificity note: this button is a direct child of `.calendar-card`,
+   which carries `.glass`. index.html's base stylesheet has a later,
+   equal-specificity `.glass > *{ position:relative; z-index:2; }` rule
+   that would otherwise win the cascade tie and strand this pill in
+   normal flow. The doubled selector below outranks it. */
+.calendar-card > .calendar-connect-pill{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) translateY(6px);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:9px 16px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,0.45);
+  background:rgba(10,12,18,0.86);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  color:var(--ink);
+  font-family:'Geist','Segoe UI',system-ui,sans-serif;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.02em;
+  cursor:pointer;
+  box-shadow:0 0 16px 0 rgba(56,189,248,0.2);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+  z-index:5;
+}
+.calendar-connect-pill:hover{
+  border-color:rgba(56,189,248,0.75);
+  box-shadow:0 0 22px 0 rgba(56,189,248,0.32);
+}
+.calendar-connect-pill .material-symbols-outlined{
+  font-size:16px;
+  color:var(--calendar);
+}
+.calendar-connect-pill.show{
+  opacity:1;
+  pointer-events:auto;
+  transform:translate(-50%,-50%) translateY(0);
+}
+
+/* ---------- FullCalendar overrides ----------
+   Apple Calendar (iOS) styling over the card's own dark liquid-glass
+   background: every inner FullCalendar table/column/cell stays
+   transparent so that glass shows through, grid lines are reduced to
+   a hairline, and the neon accents used elsewhere on the dashboard
+   are dropped in favor of soft pastel event fills + a true red
+   "now" line. */
+#calendar-body .fc-header-toolbar{ display:none; }
+
+#calendar-body .fc-scrollgrid,
+#calendar-body .fc-scrollgrid table,
+#calendar-body .fc-timegrid-col,
+#calendar-body .fc-timegrid-body,
+#calendar-body .fc-timegrid-slots,
+#calendar-body .fc-daygrid-body{
+  background:transparent;
+}
+
+#calendar-body .fc-col-header-cell{
+  background:transparent;
+}
+#calendar-body .fc-col-header-cell-cushion{
+  display:inline-block;
+  width:100%;
+  padding:8px 4px;
+  text-align:center;
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  font-size:0.68rem;
+  font-weight:600;
+  color:rgba(235,235,245,0.6);
+}
+#calendar-body .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion{
+  color:#f5f5f7;
+  font-weight:700;
+}
+
+/* ---------- Time (y-)axis typography ----------
+   Apple-style system font, left-aligned against the grid rather than
+   crowded up against the divider line, in bright high-contrast white
+   so the hour labels stay legible at a glance. */
+#calendar-body .fc-timegrid-axis,
+#calendar-body .fc-timegrid-slot-label,
+#calendar-body .fc-timegrid-slot-label-frame,
+#calendar-body .fc-timegrid-slot-label-cushion{
+  font-size:0.68rem;
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  text-align:left;
+  padding-left:6px;
+  color:#ffffff !important;
+  font-weight:600 !important;
+  opacity:1 !important;
+}
+
+#calendar-body .fc-timegrid-slot{ height:2.1em; }
+
+/* ---------- "Now" indicator: Apple red ---------- */
+#calendar-body .fc-timegrid-now-indicator-line{
+  border-color:#ff3b30;
+  border-width:1.5px;
+}
+#calendar-body .fc-timegrid-now-indicator-arrow{
+  border-color:#ff3b30;
+  background:#ff3b30;
+  color:#ff3b30;
+  border-radius:999px;
+  width:8px;
+  height:8px;
+  border-width:0;
+}
+
+/* ---------- Apple-style event blocks ----------
+   Soft rounded corners, a solid accent bar on the left edge instead
+   of a full border, translucent pastel fill (per-event accent color
+   set inline via `--event-color`, see eventDidMount in calendar.js),
+   and a small horizontal gutter so events never touch the column
+   divider lines. */
+#calendar-body .fc-timegrid-event{
+  border:none;
+  border-left:4px solid var(--event-color, #93c5fd);
+  border-radius:8px;
+  margin-left:2px;
+  margin-right:2px;
+  box-shadow:none;
+  overflow:hidden;
+  min-height:16px;
+}
+#calendar-body .fc-timegrid-event:hover{
+  box-shadow:none;
+  filter:brightness(1.08);
+}
+
+/* Title + time inline on one line, e.g. "TB: BREAK! • 1:00 - 1:20",
+   instead of stacking as separate rows. `.fc-event-main` is
+   FullCalendar's own mount point for eventContent's returned nodes,
+   and calendar.js now returns title/separator/time as direct
+   siblings so this flex row lays them out directly (no extra
+   wrapper div in between). */
+#calendar-body .fc-timegrid-event .fc-event-main{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  gap:6px !important;
+  white-space:nowrap !important;
+  padding:3px 6px;
+  overflow:hidden;
+}
+#calendar-body .fc-event-title,
+#calendar-body .fc-event-time{
+  display:inline !important;
+  font-size:0.8em !important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+#calendar-body .fc-event-title{
+  font-weight:700;
+  color:#f5f5f7;
+  min-width:0;
+  flex-shrink:1;
+}
+#calendar-body .fc-event-time{
+  font-weight:500;
+  color:rgba(235,235,245,0.6);
+  flex-shrink:0;
+}
+#calendar-body .fc-la-event-sep{
+  color:rgba(235,235,245,0.4);
+  font-size:0.7em;
+  flex-shrink:0;
+}
+
+#calendar-body .fc-timegrid-col.fc-day-today{
+  background:var(--fc-today-bg-color);
+}
+
+#calendar-body .fc-scrollgrid{
+  border:none;
+}
+
+/* Sleek dark scrollbars for the internal FullCalendar scroller */
+#calendar-body .fc-scroller::-webkit-scrollbar{
+  width:5px;
+}
+#calendar-body .fc-scroller::-webkit-scrollbar-track{
+  background:transparent;
+}
+#calendar-body .fc-scroller::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,0.14);
+  border-radius:10px;
+}
+#calendar-body .fc-scroller::-webkit-scrollbar-thumb:hover{
+  background:rgba(255,255,255,0.24);
+}
+
+/* ---------- Mobile: single-day view only ----------
+   Below 768px the calendar auto-switches to timeGridDay (see
+   calendar.js applyResponsiveView) — the 3D/5D tabs would only
+   invite a view that's cramped at that width, so they're hidden
+   and 1D is the sole visible option. */
+@media (max-width: 768px){
+  .calendar-tab[data-view="timeGridThreeDay"],
+  .calendar-tab[data-view="timeGridFiveDay"]{
+    display:none;
+  }
+}

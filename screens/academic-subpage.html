@@ -202,6 +202,14 @@
     box-shadow:0 0 6px var(--nav-color), 0 0 10px var(--nav-color);
   }
   .nav-link.active .material-symbols-outlined{ color:var(--nav-color); }
+  /* Active nav pill doubles as a "back to dashboard" link (its href
+     now points at ../index.html): a small muted arrow precedes the
+     section's own icon rather than replacing it, so the pill still
+     reads as "you are here" while signaling it now navigates away. */
+  .nav-link.active .back-arrow{
+    font-size:15px !important;
+    color:var(--ink-faint) !important;
+  }
   .nav-link[data-section="physical"]{ --nav-color:var(--physical-nav); }
   .nav-link[data-section="academic"]{ --nav-color:#4ade80; }
   .nav-link[data-section="hobbies"]{ --nav-color:var(--hobbies); }
@@ -894,6 +902,7 @@
     flex-direction:column;
     gap:22px;
     min-height:0;
+    min-width:0;
   }
 
   .research-stack{
@@ -1303,6 +1312,12 @@
     padding:18px 24px;
     border-bottom:1px solid rgba(255,255,255,0.08);
   }
+  .deadlines-header-actions{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+  }
   .deadlines-header h3{
     margin:0;
     font-size:0.8rem;
@@ -1316,6 +1331,20 @@
   table{
     width:100%;
     border-collapse:collapse;
+  }
+  /* Resizable columns: table-layout:fixed makes each <th>'s explicit
+     inline width authoritative, and dropping the table's own width
+     back to auto (set via JS to the true sum of column widths — see
+     initDeadlinesColumnResize) lets it grow past the card's edge
+     instead of squeezing its siblings; .table-scroll then scrolls
+     horizontally instead of anything wrapping/breaking. Initial
+     widths are seeded proportionally (Task 4 : Areas 1 : Due 2 :
+     Status 3 : Importance 1 : Type 1) rather than split evenly —
+     see DEADLINES_COL_RATIOS — and free-dragging still works from
+     there. */
+  .deadlines-table{
+    table-layout:fixed;
+    width:auto;
   }
   thead tr{
     border-bottom:1px solid rgba(255,255,255,0.08);
@@ -1331,15 +1360,56 @@
     color:var(--ink);
   }
   th.checkbox-col{ padding-right:0; width:20px; }
+  /* box-sizing:border-box means a cell's rendered width can never go
+     below its own horizontal padding — the default 24px+24px alone
+     would floor these columns at 48px, above the 10px drag minimum. */
+  th.col-resizable{
+    position:relative;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    padding-left:4px;
+    padding-right:4px;
+  }
+  .col-resize-handle{
+    position:absolute;
+    top:0;
+    right:0;
+    width:8px;
+    height:100%;
+    cursor:col-resize;
+    z-index:3;
+  }
+  .col-resize-handle::after{
+    content:'';
+    position:absolute;
+    top:2px;
+    bottom:2px;
+    right:3px;
+    width:2px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.12);
+    transition:background-color .15s ease;
+  }
+  .col-resize-handle:hover::after,
+  .col-resize-handle.dragging::after{
+    background:rgba(74,222,128,0.7);
+  }
   td{
     padding:14px 24px;
     font-size:0.78rem;
     color:var(--ink-dim);
     border-bottom:1px solid rgba(255,255,255,0.05);
     text-align:center;
+    overflow:hidden;
   }
   td.checkbox-col{ padding-right:0; }
-  .table-scroll{ flex:1; overflow-y:auto; }
+  td:nth-child(2), td:nth-child(3), td:nth-child(4),
+  td:nth-child(5), td:nth-child(6), td:nth-child(7){
+    padding-left:4px;
+    padding-right:4px;
+  }
+  .table-scroll{ flex:1; overflow:auto; }
   .empty-row td{
     text-align:center;
     padding:36px 24px;
@@ -1351,9 +1421,20 @@
     font-size:26px;
     opacity:0.5;
   }
-  .task-cell{ display:flex; align-items:center; justify-content:center; gap:10px; }
+  .task-cell{ display:flex; align-items:center; justify-content:center; gap:10px; min-width:0; }
   .task-cell .material-symbols-outlined{ font-size:17px; color:var(--ink-faint); }
-  .task-cell .name{ font-weight:700; color:var(--ink); }
+  /* min-width:0 lets this flex item shrink below its content's
+     intrinsic width (the usual flexbox gotcha) so ellipsis
+     truncation kicks in once the resizable Task column is narrowed. */
+  .task-cell .name{
+    font-weight:700;
+    color:var(--ink);
+    display:block;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
 
   /* ---------- Second bottom row: Important Tasks + Streak/Goal + Pomodoro ---------- */
   .second-row{
@@ -1984,8 +2065,9 @@
     color:var(--ink-dim);
   }
 </style>
+<link rel="stylesheet" href="../css/layout.css">
 </head>
-<body>
+<body class="is-subpage">
 
 <div class="bg-layer" id="bg-layer"></div>
 <div class="bg-scrim"></div>
@@ -2000,11 +2082,6 @@
     </div>
 
     <nav class="nav">
-      <a class="nav-link" data-section="dashboard" href="../index.html">
-        <span class="material-symbols-outlined">arrow_back</span>
-        <span>Dashboard</span>
-      </a>
-      <div class="sidebar-divider"></div>
       <div class="nav-row">
         <a class="nav-link" data-section="physical" href="physical-subpage.html">
           <span class="material-symbols-outlined">fitness_center</span>
@@ -2015,7 +2092,8 @@
           <span class="import-btn-tooltip">Import Health Data</span>
         </button>
       </div>
-      <a class="nav-link active" data-section="academic" href="academic-subpage.html">
+      <a class="nav-link active" data-section="academic" href="../index.html">
+        <span class="back-arrow material-symbols-outlined">arrow_back</span>
         <span class="material-symbols-outlined">school</span>
         <span>Academic</span>
       </a>
@@ -2032,6 +2110,15 @@
         <span>Second Brain</span>
       </a>
     </nav>
+
+    <div class="mobile-quick-actions">
+      <button type="button" class="mobile-quick-btn" onclick="openSocialModal()" aria-label="Social Targets">
+        <span class="material-symbols-outlined">person</span>
+      </button>
+      <button type="button" class="mobile-quick-btn" onclick="openHabitModal()" aria-label="Habits">
+        <span class="material-symbols-outlined">checklist</span>
+      </button>
+    </div>
 
     <div class="sidebar-divider"></div>
 
@@ -2185,12 +2272,14 @@
         <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
         <div class="deadlines-header">
           <h3>Deadlines</h3>
-          <button type="button" class="icon-btn" onclick="toggleDeadlineFilters()" title="Filters">
-            <span class="material-symbols-outlined">filter_list</span>
-          </button>
-          <button type="button" class="icon-btn" onclick="openDeadlineModal()" title="Add task">
-            <span class="material-symbols-outlined">add</span>
-          </button>
+          <div class="deadlines-header-actions">
+            <button type="button" class="icon-btn" onclick="toggleDeadlineFilters()" title="Filters">
+              <span class="material-symbols-outlined">filter_list</span>
+            </button>
+            <button type="button" class="icon-btn" onclick="openDeadlineModal()" title="Add task">
+              <span class="material-symbols-outlined">add</span>
+            </button>
+          </div>
         </div>
         <div class="filter-bar" id="deadline-filter-bar">
           <div class="filter-group">
@@ -2219,16 +2308,16 @@
           </div>
         </div>
         <div class="table-scroll">
-          <table>
+          <table class="deadlines-table" id="deadlines-table">
             <thead>
               <tr>
                 <th class="checkbox-col"></th>
-                <th>Task</th>
-                <th>Areas</th>
-                <th>Due</th>
-                <th>Status</th>
-                <th>Importance</th>
-                <th>Type</th>
+                <th class="col-resizable">Task<span class="col-resize-handle"></span></th>
+                <th class="col-resizable">Areas<span class="col-resize-handle"></span></th>
+                <th class="col-resizable">Due<span class="col-resize-handle"></span></th>
+                <th class="col-resizable">Status<span class="col-resize-handle"></span></th>
+                <th class="col-resizable">Importance<span class="col-resize-handle"></span></th>
+                <th class="col-resizable">Type<span class="col-resize-handle"></span></th>
               </tr>
             </thead>
             <tbody id="deadlines-tbody">
@@ -3317,6 +3406,82 @@
     saveDeadlines(getDeadlines().filter(function(t){ return t.id !== id; }));
     renderDeadlinesTable();
     renderCountdownList();
+  }
+
+  /* ============================================================
+     Deadlines table — draggable column widths (Task/Areas/Due/
+     Status/Importance/Type). table-layout:fixed makes each <th>'s
+     inline width authoritative; widths are independent per-column
+     (no "push the neighbor" behavior), so widening one column past
+     the card's edge grows the table itself and .table-scroll picks
+     up a horizontal scrollbar instead of anything wrapping/breaking.
+     Initial widths are seeded proportionally per DEADLINES_COL_RATIOS
+     rather than split evenly; dragging still works freely from there.
+  ============================================================ */
+  var DEADLINES_COL_MIN = 10;
+  var DEADLINES_CHECKBOX_COL_WIDTH = 20;
+  var DEADLINES_COL_RATIOS = [4, 1, 2, 3, 1, 1]; // Task, Areas, Due, Status, Importance, Type
+
+  /* A <table width:auto> still fills its containing block like any
+     other auto-width block box — table-layout:fixed does NOT make it
+     shrink/grow to its columns' actual widths on its own. Without an
+     explicit table width, the browser silently redistributes our
+     per-column pixel widths proportionally to keep the total pinned
+     at the container's width, so widening one column visibly shrinks
+     the others instead of growing the table. Setting the table's own
+     width to the true sum of its column widths is what lets it
+     genuinely exceed .table-scroll's width and trigger a scrollbar. */
+  function updateDeadlinesTableWidth(table, resizableThs){
+    var sum = DEADLINES_CHECKBOX_COL_WIDTH;
+    resizableThs.forEach(function(th){
+      sum += parseFloat(th.style.width) || th.getBoundingClientRect().width;
+    });
+    table.style.width = sum + 'px';
+  }
+
+  function initDeadlinesColumnResize(){
+    var table = document.getElementById('deadlines-table');
+    if(!table) return;
+    var scrollWrap = table.closest('.table-scroll');
+    var card = table.closest('.deadlines-card');
+    var resizableThs = Array.prototype.slice.call(table.querySelectorAll('th.col-resizable'));
+    if(!resizableThs.length || !scrollWrap || !card) return;
+
+    var available = scrollWrap.clientWidth - DEADLINES_CHECKBOX_COL_WIDTH;
+    var ratioTotal = DEADLINES_COL_RATIOS.reduce(function(a, b){ return a + b; }, 0);
+    resizableThs.forEach(function(th, i){
+      var ratio = DEADLINES_COL_RATIOS[i] || 1;
+      var widthPx = Math.max(DEADLINES_COL_MIN, Math.floor(available * ratio / ratioTotal));
+      th.style.width = widthPx + 'px';
+    });
+    updateDeadlinesTableWidth(table, resizableThs);
+
+    resizableThs.forEach(function(th){
+      var handle = th.querySelector('.col-resize-handle');
+      if(!handle) return;
+
+      handle.addEventListener('mousedown', function(e){
+        e.preventDefault();
+        var startX = e.clientX;
+        var startWidth = th.getBoundingClientRect().width;
+        var maxWidth = card.getBoundingClientRect().width;
+        handle.classList.add('dragging');
+
+        function onMouseMove(e2){
+          var delta = e2.clientX - startX;
+          var newWidth = Math.min(maxWidth, Math.max(DEADLINES_COL_MIN, startWidth + delta));
+          th.style.width = newWidth + 'px';
+          updateDeadlinesTableWidth(table, resizableThs);
+        }
+        function onMouseUp(){
+          handle.classList.remove('dragging');
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        }
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+    });
   }
 
   function toggleRecurrenceFields(){
@@ -4748,6 +4913,7 @@
      Init
   ============================================================ */
   renderDeadlinesTable();
+  initDeadlinesColumnResize();
   ['kranker','ballard'].forEach(function(lab){
     renderLabTasks(lab);
     loadLabStatus(lab);
