@@ -864,15 +864,65 @@
 
   .sidebar-bottom{
     display:flex;
-    flex-direction:column;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
     gap:10px;
   }
   .sidebar-version{
-    text-align:center;
+    text-align:right;
     font-size:0.6rem;
     letter-spacing:0.12em;
     color:var(--ink-faint);
     margin:0;
+  }
+  .sync-btn{
+    position:relative;
+    flex-shrink:0;
+    width:26px; height:26px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.05);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .sync-btn .material-symbols-outlined{ font-size:15px; }
+  .sync-btn:hover{
+    background:rgba(74,222,128,0.16);
+    border-color:rgba(74,222,128,0.4);
+    color:#86efac;
+  }
+  .sync-btn.synced{
+    background:rgba(74,222,128,0.22);
+    border-color:rgba(74,222,128,0.5);
+    color:#4ade80;
+  }
+  .sync-btn-tooltip{
+    position:absolute;
+    bottom:calc(100% + 7px);
+    left:0;
+    white-space:nowrap;
+    background:rgba(10,10,14,0.94);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink);
+    font-size:0.64rem;
+    font-weight:600;
+    padding:5px 9px;
+    border-radius:6px;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(4px);
+    transition:opacity .15s ease, transform .15s ease;
+    z-index:60;
+  }
+  .sync-btn:hover .sync-btn-tooltip,
+  .sync-btn.synced .sync-btn-tooltip{
+    opacity:1;
+    transform:translateY(0);
   }
 
   /* ---------- Main content ---------- */
@@ -2205,6 +2255,10 @@
     <div class="sidebar-spacer"></div>
 
     <div class="sidebar-bottom">
+      <button type="button" class="sync-btn" id="sync-btn" onclick="syncData()" aria-label="Sync data">
+        <span class="material-symbols-outlined" id="sync-btn-icon">sync</span>
+        <span class="sync-btn-tooltip" id="sync-btn-tooltip">Sync</span>
+      </button>
       <p class="sidebar-version mono">v 1.3</p>
     </div>
   </aside>
@@ -2572,7 +2626,7 @@
     </div>
 
     <div class="field-group">
-      <label class="field-label">Areas</label>
+      <label class="field-label">Area</label>
       <div class="chip-row" id="deadline-selected-areas" style="margin-bottom:8px;"></div>
       <input class="field-text" id="deadline-area-input" type="text" placeholder="Type an area and press Enter" onkeydown="handleAreaInputKey(event)">
       <div class="chip-row suggestions" id="deadline-area-suggestions" style="margin-top:8px;"></div>
@@ -3310,6 +3364,41 @@
   function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 
+  function syncData(){
+    var data = {};
+    for(var i=0;i<localStorage.length;i++){
+      var key = localStorage.key(i);
+      if(key && key.indexOf('la_') === 0){
+        data[key] = loadJSON(key, localStorage.getItem(key));
+      }
+    }
+    var blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'liberation-arc-sync.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+
+    var btn = document.getElementById('sync-btn');
+    var icon = document.getElementById('sync-btn-icon');
+    var tip = document.getElementById('sync-btn-tooltip');
+    if(btn && icon && tip){
+      var prevIcon = icon.textContent;
+      var prevTip = tip.textContent;
+      icon.textContent = 'check';
+      tip.textContent = 'Synced!';
+      btn.classList.add('synced');
+      setTimeout(function(){
+        icon.textContent = prevIcon;
+        tip.textContent = prevTip;
+        btn.classList.remove('synced');
+      }, 1600);
+    }
+  }
+
   function escapeHtml(s){
     var div = document.createElement('div');
     div.textContent = s == null ? '' : s;
@@ -3381,7 +3470,7 @@
      Dashboard shows only the 4 soonest upcoming tasks.
   ============================================================ */
   var currentDeadlineId = null;
-  var currentDeadlineAreas = [];
+  var currentDeadlineArea = null;
   var deadlineFilters = { dueSort:'asc', importance:'All', type:'All' };
 
   function getDeadlines(){ return loadJSON('la_deadlines', []); }
@@ -3420,10 +3509,8 @@
     }
     tbody.innerHTML = tasks.map(function(t){
       var status = computeStatus(t.due);
-      var areaChips = (t.areas || []).map(function(a){
-        var c = areaColor(a);
-        return '<span class="area-chip" style="background:'+c.bg+'; color:'+c.fg+';">'+escapeHtml(a)+'</span>';
-      }).join('');
+      var areaVal = Array.isArray(t.areas) ? (t.areas[0] || '') : (t.areas || '');
+      var areaChips = areaVal ? '<span class="area-chip" style="background:'+areaColor(areaVal).bg+'; color:'+areaColor(areaVal).fg+';">'+escapeHtml(areaVal)+'</span>' : '';
       return '<tr onclick="openDeadlineModal(\''+t.id+'\')" style="cursor:pointer;">' +
         '<td class="checkbox-col" onclick="event.stopPropagation();"><input type="checkbox" class="task-checkbox" onclick="deleteDeadlineImmediate(\''+t.id+'\')"></td>' +
         '<td><span class="task-cell"><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span></span></td>' +
@@ -3614,7 +3701,7 @@
       document.getElementById('deadline-frequency').value = task.frequency || 'none';
       document.getElementById('deadline-start-date').value = task.startDate || '';
       document.getElementById('deadline-end-date').value = task.endDate || '';
-      currentDeadlineAreas = (task.areas || []).slice();
+      currentDeadlineArea = Array.isArray(task.areas) ? (task.areas[0] || null) : (task.areas || null);
       selectedDeadlineDays = (task.customDays || []).slice();
     } else {
       document.getElementById('deadline-modal-title').textContent = 'New Task';
@@ -3626,7 +3713,7 @@
       document.getElementById('deadline-frequency').value = 'none';
       document.getElementById('deadline-start-date').value = '';
       document.getElementById('deadline-end-date').value = '';
-      currentDeadlineAreas = [];
+      currentDeadlineArea = null;
       selectedDeadlineDays = [];
     }
     toggleRecurrenceFields();
@@ -3639,13 +3726,15 @@
 
   function renderDeadlineAreaChips(){
     var selectedWrap = document.getElementById('deadline-selected-areas');
-    selectedWrap.innerHTML = currentDeadlineAreas.map(function(a){
-      var c = areaColor(a);
-      return '<span class="chip" style="background:'+c.bg+'; color:'+c.fg+';">'+escapeHtml(a)+' <span class="remove-x" onclick="removeSelectedArea(\''+encodeURIComponent(a)+'\')">&times;</span></span>';
-    }).join('') || '<span class="due-placeholder" style="font-size:0.62rem;">No areas selected</span>';
+    if(currentDeadlineArea){
+      var c = areaColor(currentDeadlineArea);
+      selectedWrap.innerHTML = '<span class="chip" style="background:'+c.bg+'; color:'+c.fg+';">'+escapeHtml(currentDeadlineArea)+' <span class="remove-x" onclick="removeSelectedArea()">&times;</span></span>';
+    } else {
+      selectedWrap.innerHTML = '<span class="due-placeholder" style="font-size:0.62rem;">No area selected</span>';
+    }
 
     var suggWrap = document.getElementById('deadline-area-suggestions');
-    var allAreas = getAreas().filter(function(a){ return currentDeadlineAreas.indexOf(a) === -1; });
+    var allAreas = getAreas().filter(function(a){ return a !== currentDeadlineArea; });
     suggWrap.innerHTML = allAreas.map(function(a){
       return '<span class="chip suggestion" onclick="addSelectedArea(\''+encodeURIComponent(a)+'\')">'+escapeHtml(a)+'</span>';
     }).join('');
@@ -3654,13 +3743,11 @@
   }
 
   function addSelectedArea(encoded){
-    var name = decodeURIComponent(encoded);
-    if(currentDeadlineAreas.indexOf(name) === -1) currentDeadlineAreas.push(name);
+    currentDeadlineArea = decodeURIComponent(encoded);
     renderDeadlineAreaChips();
   }
-  function removeSelectedArea(encoded){
-    var name = decodeURIComponent(encoded);
-    currentDeadlineAreas = currentDeadlineAreas.filter(function(a){ return a !== name; });
+  function removeSelectedArea(){
+    currentDeadlineArea = null;
     renderDeadlineAreaChips();
   }
 
@@ -3671,7 +3758,7 @@
       var name = input.value.trim().replace(/,$/,'');
       if(name){
         addArea(name);
-        if(currentDeadlineAreas.indexOf(name) === -1) currentDeadlineAreas.push(name);
+        currentDeadlineArea = name;
         input.value = '';
         renderDeadlineAreaChips();
       }
@@ -3696,7 +3783,7 @@
   function deleteAreaTag(encoded){
     var name = decodeURIComponent(encoded);
     removeArea(name);
-    currentDeadlineAreas = currentDeadlineAreas.filter(function(a){ return a !== name; });
+    if(currentDeadlineArea === name) currentDeadlineArea = null;
     renderDeadlineAreaChips();
   }
 
@@ -3718,11 +3805,11 @@
         var existing = tasks[idx];
         if(frequency === 'custom' && canRecur && !existing.recurrenceId){
           tasks.splice(idx, 1);
-          var base = { name: name, areas: currentDeadlineAreas.slice(), importance: importance, type: type };
+          var base = { name: name, areas: currentDeadlineArea, importance: importance, type: type };
           tasks = tasks.concat(generateRecurringInstances(base, frequency, startDate, endDate || null, customDays));
         } else {
           tasks[idx] = {
-            id: currentDeadlineId, name: name, areas: currentDeadlineAreas.slice(), due: due,
+            id: currentDeadlineId, name: name, areas: currentDeadlineArea, due: due,
             importance: importance, type: type, frequency: frequency,
             startDate: startDate || null, endDate: endDate || null,
             customDays: frequency === 'custom' ? customDays : [],
@@ -3732,10 +3819,10 @@
         }
       }
     } else if(canRecur){
-      var base = { name: name, areas: currentDeadlineAreas.slice(), importance: importance, type: type };
+      var base = { name: name, areas: currentDeadlineArea, importance: importance, type: type };
       tasks = tasks.concat(generateRecurringInstances(base, frequency, startDate, endDate || null, customDays));
     } else {
-      tasks.push({ id: uid(), name: name, areas: currentDeadlineAreas.slice(), due: due, importance: importance, type: type, frequency:'none', recurring:false });
+      tasks.push({ id: uid(), name: name, areas: currentDeadlineArea, due: due, importance: importance, type: type, frequency:'none', recurring:false });
     }
     saveDeadlines(tasks);
     renderDeadlinesTable();
@@ -4847,23 +4934,6 @@
   setInterval(updateSidebarDateTime, 1000);
   runClockTick();
   setInterval(runClockTick, 60000);
-</script>
-
-<script>
-window.getLiberationArcState = function() {
-  const state = {};
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key.startsWith('la_')) {
-      try {
-        state[key] = JSON.parse(localStorage.getItem(key));
-      } catch (e) {
-        state[key] = localStorage.getItem(key);
-      }
-    }
-  }
-  return state;
-};
 </script>
 
 </body>

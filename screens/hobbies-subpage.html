@@ -867,15 +867,65 @@
 
   .sidebar-bottom{
     display:flex;
-    flex-direction:column;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
     gap:10px;
   }
   .sidebar-version{
-    text-align:center;
+    text-align:right;
     font-size:0.6rem;
     letter-spacing:0.12em;
     color:var(--ink-faint);
     margin:0;
+  }
+  .sync-btn{
+    position:relative;
+    flex-shrink:0;
+    width:26px; height:26px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.05);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .sync-btn .material-symbols-outlined{ font-size:15px; }
+  .sync-btn:hover{
+    background:rgba(74,222,128,0.16);
+    border-color:rgba(74,222,128,0.4);
+    color:#86efac;
+  }
+  .sync-btn.synced{
+    background:rgba(74,222,128,0.22);
+    border-color:rgba(74,222,128,0.5);
+    color:#4ade80;
+  }
+  .sync-btn-tooltip{
+    position:absolute;
+    bottom:calc(100% + 7px);
+    left:0;
+    white-space:nowrap;
+    background:rgba(10,10,14,0.94);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink);
+    font-size:0.64rem;
+    font-weight:600;
+    padding:5px 9px;
+    border-radius:6px;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(4px);
+    transition:opacity .15s ease, transform .15s ease;
+    z-index:60;
+  }
+  .sync-btn:hover .sync-btn-tooltip,
+  .sync-btn.synced .sync-btn-tooltip{
+    opacity:1;
+    transform:translateY(0);
   }
 
   /* ---------- Main content ---------- */
@@ -1742,6 +1792,10 @@
     <div class="sidebar-spacer"></div>
 
     <div class="sidebar-bottom">
+      <button type="button" class="sync-btn" id="sync-btn" onclick="syncData()" aria-label="Sync data">
+        <span class="material-symbols-outlined" id="sync-btn-icon">sync</span>
+        <span class="sync-btn-tooltip" id="sync-btn-tooltip">Sync</span>
+      </button>
       <p class="sidebar-version mono">v 1.3</p>
     </div>
   </aside>
@@ -2780,6 +2834,41 @@
   }
   function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  function syncData(){
+    var data = {};
+    for(var i=0;i<localStorage.length;i++){
+      var key = localStorage.key(i);
+      if(key && key.indexOf('la_') === 0){
+        data[key] = loadJSON(key, localStorage.getItem(key));
+      }
+    }
+    var blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'liberation-arc-sync.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+
+    var btn = document.getElementById('sync-btn');
+    var icon = document.getElementById('sync-btn-icon');
+    var tip = document.getElementById('sync-btn-tooltip');
+    if(btn && icon && tip){
+      var prevIcon = icon.textContent;
+      var prevTip = tip.textContent;
+      icon.textContent = 'check';
+      tip.textContent = 'Synced!';
+      btn.classList.add('synced');
+      setTimeout(function(){
+        icon.textContent = prevIcon;
+        tip.textContent = prevTip;
+        btn.classList.remove('synced');
+      }, 1600);
+    }
+  }
 
   function escapeHtml(s){
     var div = document.createElement('div');
