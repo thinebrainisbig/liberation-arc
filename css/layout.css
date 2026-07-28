@@ -68,7 +68,15 @@
     align-items:stretch;
     padding:0 8px calc(env(safe-area-inset-bottom));
     gap:0;
-    background:rgba(10,10,14,0.72);
+    /* Explicit near-opaque background-color (not just backdrop-filter
+       translucency): the same class of fix as html's status-bar
+       background-color above — iOS doesn't reliably composite this
+       fixed bar's blur/translucency all the way through its own
+       env(safe-area-inset-bottom) padding, so the home-indicator strip
+       fell back to plain black instead of the bar's actual tone. A
+       near-solid background-color here is what shows through that
+       padding regardless, so it now matches the bar above it. */
+    background-color:rgba(10,10,14,0.96);
     backdrop-filter:blur(24px) saturate(160%);
     -webkit-backdrop-filter:blur(24px) saturate(160%);
     border:none;
