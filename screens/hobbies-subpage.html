@@ -1330,13 +1330,33 @@
   }
   #hobby-modal .modal-actions-row,
   #cert-modal .modal-actions-row{
-    display:grid;
-    grid-template-columns:1fr auto 1fr;
-    align-items:center;
+    position:relative;
+    justify-content:flex-start;
+    min-height:48px;
   }
   #hobby-modal .modal-actions-row .checkmark-btn,
   #cert-modal .modal-actions-row .checkmark-btn{
-    grid-column:2;
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+  }
+  /* Edit (Delete button present) only, toggled in openHobbyModal /
+     openCertModal alongside the Delete button's own visibility: group
+     Delete + Save into one centered row instead of the grid-column
+     approach above, which left zero gap between Delete and Save (their
+     column edges landed exactly flush) and didn't center the pair as a
+     group. Add (no Delete button) keeps the plain dead-center rule
+     above unchanged. */
+  #hobby-modal .modal-actions-row.has-delete,
+  #cert-modal .modal-actions-row.has-delete{
+    justify-content:center;
+    gap:12px;
+  }
+  #hobby-modal .modal-actions-row.has-delete .checkmark-btn,
+  #cert-modal .modal-actions-row.has-delete .checkmark-btn{
+    position:static;
+    transform:none;
   }
   .danger-btn{
     background:rgba(248,113,113,0.12);
@@ -1860,7 +1880,7 @@
           <span class="sync-btn-tooltip">Import</span>
         </button>
       </div>
-      <p class="sidebar-version mono">v 2.0</p>
+      <p class="sidebar-version mono">v 2.1</p>
     </div>
     <input type="file" id="sync-import-input" accept=".json,application/json" style="display:none;" onchange="handleImportFileSelected(event)">
   </aside>
@@ -3343,6 +3363,7 @@
     currentHobbyType = type;
     currentHobbyId = id || null;
     var deleteBtn = document.getElementById('hobby-delete-btn');
+    deleteBtn.closest('.modal-actions-row').classList.toggle('has-delete', !!id);
     document.getElementById('hobby-author-group').style.display = type === 'books' ? 'block' : 'none';
     document.getElementById('hobby-episode-group').style.display = type === 'shows' ? 'block' : 'none';
     document.getElementById('hobby-sophia-group').style.display = (type === 'movies' || type === 'shows') ? 'block' : 'none';
@@ -3569,6 +3590,7 @@
   function openCertModal(id){
     currentCertId = id || null;
     var deleteBtn = document.getElementById('cert-delete-btn');
+    deleteBtn.closest('.modal-actions-row').classList.toggle('has-delete', !!id);
     if(id){
       var item = getCertifications().find(function(i){ return i.id === id; });
       document.getElementById('cert-modal-title').textContent = 'Edit Course';

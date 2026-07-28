@@ -1099,6 +1099,23 @@
   .status-overdue{ color:#f87171; font-weight:700; font-size:0.68rem; }
   .status-today{ color:#fb923c; font-weight:700; font-size:0.68rem; }
   .status-normal{ color:var(--ink-dim); font-weight:600; font-size:0.68rem; }
+
+  /* Visible validation error banner for the New/Edit Task modal —
+     shown when Save is pressed but a required field for the chosen
+     configuration (e.g. Start Date for a repeating frequency) is
+     missing, instead of silently creating a broken/dateless entry. */
+  .deadline-form-error{
+    display:none;
+    background:rgba(248,113,113,0.12);
+    border:1px solid rgba(248,113,113,0.4);
+    color:#f87171;
+    border-radius:var(--r-sm);
+    padding:8px 10px;
+    font-size:0.72rem;
+    font-weight:600;
+    line-height:1.4;
+    margin-bottom:4px;
+  }
   .area-chip{
     display:inline-block;
     padding:4px 10px;
@@ -1220,6 +1237,19 @@
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
+  }
+  /* Edit Task only (.has-delete, toggled in openDeadlineModal alongside
+     the Delete button's own visibility): group Delete + Save into one
+     centered row instead of floating Save at dead-center independently
+     of Delete. New Task has no Delete button, so it keeps the plain
+     dead-center rule above unchanged. */
+  #deadline-modal .modal-actions-row.has-delete{
+    justify-content:center;
+    gap:12px;
+  }
+  #deadline-modal .modal-actions-row.has-delete .checkmark-btn{
+    position:static;
+    transform:none;
   }
   .danger-btn{
     background:rgba(248,113,113,0.12);
@@ -1485,12 +1515,17 @@
     border-bottom:1px solid rgba(255,255,255,0.05);
     text-align:center;
     overflow:hidden;
+    /* Task names now wrap to multiple rows (see .task-cell .name
+       below); every other cell in that row should stay centered on
+       the row's full height rather than pinned to its top edge. */
+    vertical-align:middle;
   }
   td.checkbox-col{ padding-left:12px; padding-right:0; }
   /* Matches th.col-resizable's reduced padding so the Task/Areas/
      Importance/Due data cells can shrink down with their column
-     instead of flooring out well above the 10px drag minimum. */
-  td:nth-child(2), td:nth-child(3), td:nth-child(4), td:nth-child(5){
+     instead of flooring out well above the 10px drag minimum. Status
+     (nth-child 5, plain — not col-resizable) is deliberately excluded. */
+  td:nth-child(2), td:nth-child(3), td:nth-child(4), td:nth-child(6){
     padding-left:4px;
     padding-right:4px;
   }
@@ -1509,28 +1544,26 @@
   .task-cell{ display:flex; align-items:center; justify-content:center; gap:10px; min-width:0; }
   .task-cell .material-symbols-outlined{ font-size:17px; color:var(--ink-faint); }
   /* min-width:0 lets this flex item actually shrink below its content's
-     intrinsic width (the usual flexbox gotcha) so ellipsis truncation
-     below can kick in once the resizable Task column is narrowed. */
+     intrinsic width (the usual flexbox gotcha). Task names wrap to
+     multiple lines instead of truncating — overflow-wrap so a single
+     very long unbroken word/string still can't blow out the column. */
   .task-cell .name{
     font-weight:700;
     color:var(--ink);
     display:block;
     min-width:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    white-space:normal;
+    overflow-wrap:break-word;
   }
 
   /* ---------- Compact Deadlines (bottom-row slot) ----------
      Same underlying data/filters as the full table — Task, Areas,
-     Importance, and Due stay visible; Status and Type are hidden via
+     Importance, Status, and Due stay visible; Type is hidden via
      nth-child, not removed from the DOM, so nothing about the
      render/filter logic needs to change. Column order in the markup
-     is Task, Areas, Importance, Due, Status, Type — matching the
-     visible left-to-right order once Status/Type are hidden. */
+     is Task, Areas, Importance, Status, Due, Type — matching the
+     visible left-to-right order once Type is hidden. */
   .deadlines-compact .deadlines-header{ padding:14px 20px; }
-  .deadlines-compact th:nth-child(6),
-  .deadlines-compact td:nth-child(6),
   .deadlines-compact th:nth-child(7),
   .deadlines-compact td:nth-child(7){
     display:none;
@@ -1540,16 +1573,17 @@
     padding-top:10px;
     padding-bottom:10px;
   }
-  /* All four visible columns (Task/Areas/Importance/Due) truncate
-     rather than wrap, so row data stays aligned with the headers
-     regardless of how narrow a dragged column gets. Areas' chip-row
-     is itself a flex container (its own flex-wrap:wrap would ignore
-     an inherited white-space:nowrap), so it needs its own explicit
-     override to actually stay single-line. */
-  .deadlines-compact th:nth-child(2), .deadlines-compact td:nth-child(2),
+  /* Areas/Importance/Status/Due truncate rather than wrap, so row data
+     stays aligned with the headers regardless of how narrow a dragged
+     column gets — Task (nth-child 2) is deliberately excluded here
+     now, since it wraps to multiple lines instead (see .task-cell
+     .name). Areas' chip-row is itself a flex container (its own
+     flex-wrap:wrap would ignore an inherited white-space:nowrap), so
+     it needs its own explicit override to actually stay single-line. */
   .deadlines-compact th:nth-child(3), .deadlines-compact td:nth-child(3),
   .deadlines-compact th:nth-child(4), .deadlines-compact td:nth-child(4),
-  .deadlines-compact th:nth-child(5), .deadlines-compact td:nth-child(5){
+  .deadlines-compact th:nth-child(5), .deadlines-compact td:nth-child(5),
+  .deadlines-compact th:nth-child(6), .deadlines-compact td:nth-child(6){
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
@@ -2479,7 +2513,7 @@
           <span class="sync-btn-tooltip">Import</span>
         </button>
       </div>
-      <p class="sidebar-version mono">v 2.0</p>
+      <p class="sidebar-version mono">v 2.1</p>
     </div>
     <input type="file" id="sync-import-input" accept=".json,application/json" style="display:none;" onchange="handleImportFileSelected(event)">
   </aside>
@@ -2733,8 +2767,8 @@
                 <th class="col-resizable">Task<span class="col-resize-handle"></span></th>
                 <th class="col-resizable">Areas<span class="col-resize-handle"></span></th>
                 <th class="col-resizable">Importance<span class="col-resize-handle"></span></th>
+                <th style="width:84px;">Status</th>
                 <th class="col-resizable">Due<span class="col-resize-handle"></span></th>
-                <th>Status</th>
                 <th>Type</th>
               </tr>
             </thead>
@@ -2944,6 +2978,8 @@
         <option>Synch</option>
       </select>
     </div>
+
+    <div class="deadline-form-error" id="deadline-form-error"></div>
 
     <div class="modal-actions-row">
       <button type="button" class="danger-btn" id="deadline-delete-btn" onclick="deleteDeadlineCurrent()" style="display:none;">Delete</button>
@@ -3810,8 +3846,8 @@
         '<td><span class="task-cell"><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span></span></td>' +
         '<td><div class="chip-row">'+ (areaChips || '<span class="due-placeholder">—</span>') +'</div></td>' +
         '<td><span class="importance-badge imp-'+ (t.importance || 'Low').toLowerCase() +'">'+ (t.importance || 'Low') +'</span></td>' +
-        '<td>'+ formatDateHuman(t.due) +'</td>' +
         '<td><span class="'+status.cls+'">'+status.text+'</span></td>' +
+        '<td>'+ formatDateHuman(t.due) +'</td>' +
         '<td><span class="type-badge">'+ (t.type || 'Asynch') +'</span></td>' +
       '</tr>';
     }).join('');
@@ -3835,6 +3871,13 @@
   ============================================================ */
   var DEADLINES_COL_MIN = 10;
   var DEADLINES_CHECKBOX_COL_WIDTH = 32;
+  /* Status (compact mode only) isn't part of the drag-resizable ratio
+     system below — it's a plain <th>, always this fixed width — but
+     table-layout:fixed still needs its width counted in the table's
+     own total and in the resizable columns' available space, or the
+     fixed layout algorithm starves it down to near-zero since nothing
+     else accounts for it. */
+  var DEADLINES_STATUS_COL_WIDTH = 84;
   var DEADLINES_COL_RATIOS = [4, 1, 1, 2]; // Task, Areas, Importance, Due
 
   /* A <table width:auto> still fills its containing block like any
@@ -3847,7 +3890,7 @@
      width to the true sum of its column widths is what lets it
      genuinely exceed .table-scroll's width and trigger a scrollbar. */
   function updateDeadlinesTableWidth(table, resizableThs){
-    var sum = DEADLINES_CHECKBOX_COL_WIDTH;
+    var sum = DEADLINES_CHECKBOX_COL_WIDTH + DEADLINES_STATUS_COL_WIDTH;
     resizableThs.forEach(function(th){
       sum += parseFloat(th.style.width) || th.getBoundingClientRect().width;
     });
@@ -3862,7 +3905,7 @@
     var resizableThs = Array.prototype.slice.call(table.querySelectorAll('th.col-resizable'));
     if(!resizableThs.length || !scrollWrap || !card) return;
 
-    var available = scrollWrap.clientWidth - DEADLINES_CHECKBOX_COL_WIDTH;
+    var available = scrollWrap.clientWidth - DEADLINES_CHECKBOX_COL_WIDTH - DEADLINES_STATUS_COL_WIDTH;
     var ratioTotal = DEADLINES_COL_RATIOS.reduce(function(a, b){ return a + b; }, 0);
     resizableThs.forEach(function(th, i){
       var ratio = DEADLINES_COL_RATIOS[i] || 1;
@@ -3981,9 +4024,24 @@
     return instances;
   }
 
+  function showDeadlineFormError(msg){
+    var el = document.getElementById('deadline-form-error');
+    if(!el) return;
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function clearDeadlineFormError(){
+    var el = document.getElementById('deadline-form-error');
+    if(!el) return;
+    el.style.display = 'none';
+    el.textContent = '';
+  }
+
   function openDeadlineModal(id){
     currentDeadlineId = id || null;
+    clearDeadlineFormError();
     var deleteBtn = document.getElementById('deadline-delete-btn');
+    deleteBtn.closest('.modal-actions-row').classList.toggle('has-delete', !!id);
     if(id){
       var task = getDeadlines().find(function(t){ return t.id === id; });
       document.getElementById('deadline-modal-title').textContent = 'Edit Task';
@@ -4082,15 +4140,43 @@
   }
 
   function saveDeadlineForm(){
-    var name = document.getElementById('deadline-name').value.trim();
-    if(!name){ document.getElementById('deadline-name').focus(); return; }
+    var nameEl = document.getElementById('deadline-name');
+    var name = nameEl.value.trim();
     var due = document.getElementById('deadline-due').value;
     var importance = document.getElementById('deadline-importance').value;
     var type = document.getElementById('deadline-type').value;
     var frequency = document.getElementById('deadline-frequency').value;
-    var startDate = document.getElementById('deadline-start-date').value;
+    var startDateEl = document.getElementById('deadline-start-date');
+    var startDate = startDateEl.value;
     var endDate = document.getElementById('deadline-end-date').value;
     var customDays = selectedDeadlineDays.slice();
+
+    // Every field required for this configuration to actually produce a
+    // usable event is checked here up front — Save is blocked with a
+    // visible error instead of silently falling back to a broken,
+    // dateless task (the historical "Custom frequency" bug: picking
+    // Repeat On days without also filling Start Date used to silently
+    // create a single no-date entry rather than the intended series).
+    var errors = [];
+    var focusEl = null;
+    if(!name){
+      errors.push('Task Name is required.');
+      focusEl = focusEl || nameEl;
+    }
+    if(frequency !== 'none' && !startDate){
+      errors.push('Start Date is required when a repeat Frequency is selected.');
+      focusEl = focusEl || startDateEl;
+    }
+    if(frequency === 'custom' && customDays.length === 0){
+      errors.push('Pick at least one day under "Repeat On" for a Custom frequency.');
+    }
+    if(errors.length){
+      showDeadlineFormError(errors.join(' '));
+      if(focusEl) focusEl.focus();
+      return;
+    }
+    clearDeadlineFormError();
+
     var canRecur = frequency !== 'none' && !!startDate && (frequency !== 'custom' || customDays.length > 0);
     var tasks = getDeadlines();
     if(currentDeadlineId){

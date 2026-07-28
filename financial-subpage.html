@@ -1193,6 +1193,11 @@
   }
   .fin-recurring-row:hover{ background:rgba(255,255,255,0.06); }
   .fin-recurring-row.due-soon{ background:rgba(251,191,36,0.1); border-color:rgba(251,191,36,0.35); }
+  /* Amber warning tint: next unlogged occurrence falls before the next
+     paycheck date (see nextUnloggedBillingDate / getNextPaycheckDate
+     in renderRecurringCard) — a stronger glow than due-soon's plain
+     7-day window, since "before payday" can be a wider span. */
+  .fin-recurring-row.upcoming-paycheck-item{ background:rgba(251,191,36,0.14); border-color:rgba(251,191,36,0.5); box-shadow:0 0 0 1px rgba(251,191,36,0.15) inset; }
   .fin-recurring-name{ font-size:0.84rem; font-weight:600; color:var(--ink); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .fin-recurring-day{ font-size:0.7rem; color:var(--ink-faint); flex-shrink:0; }
   .fin-recurring-amount{ font-size:0.84rem; font-weight:700; color:#f87171; flex-shrink:0; }
@@ -1781,7 +1786,15 @@
     margin-bottom:14px;
   }
 
-  /* ---------- Financial exit button (works pre- and post-auth) ---------- */
+  /* ---------- Financial exit button — PIN gate only ----------
+     Lives inside #pin-gate-overlay now (was previously a body-level
+     sibling rendered before it), so it unmounts along with the rest of
+     the overlay the instant unlockFinancialPage() hides it — it no
+     longer persists/leaks on top of the authenticated dashboard.
+     The body.pin-unlocked rule below is a defensive backstop in case
+     anything ever shows the overlay without also being caught by the
+     display:none above. */
+  body.pin-unlocked .financial-exit-btn{ display:none !important; }
   .financial-exit-btn{
     position:fixed;
     top:20px;
@@ -1811,12 +1824,15 @@
 <div class="bg-layer" id="bg-layer"></div>
 <div class="bg-scrim"></div>
 
-<button type="button" class="financial-exit-btn" id="financial-exit-btn" onclick="exitFinancial()" title="Close and go back">
-  <span class="material-symbols-outlined">close</span>
-</button>
-
 <!-- ===================== PIN GATE ===================== -->
 <div class="pin-gate-overlay" id="pin-gate-overlay">
+
+  <!-- Scoped strictly to this overlay: unmounted along with the rest of
+       #pin-gate-overlay the instant unlockFinancialPage() hides it, so
+       it can never persist/leak on top of the authenticated dashboard. -->
+  <button type="button" class="financial-exit-btn" id="financial-exit-btn" onclick="exitFinancial()" title="Close and go back">
+    <span class="material-symbols-outlined">close</span>
+  </button>
 
   <!-- First-time setup -->
   <div class="pin-gate-card glass" id="pin-setup-screen">
@@ -2027,7 +2043,7 @@
           <span class="sync-btn-tooltip">Import</span>
         </button>
       </div>
-      <p class="sidebar-version mono">v 2.0</p>
+      <p class="sidebar-version mono">v 2.1</p>
     </div>
     <input type="file" id="sync-import-input" accept=".json,application/json" style="display:none;" onchange="handleImportFileSelected(event)">
   </aside>
@@ -3413,10 +3429,18 @@
     closeSpendingModal();
     renderSpendingLog();
 
-    if(isNewEntry){
+    /* Income-type entries (amount >= 0, e.g. a manual reimbursement)
+       still adjust Cash on Hand directly, same as savePaydayEntry's
+       paycheck income — Current Net's live subtraction only ever
+       accounts for expense-type (amount < 0) entries, so income needs
+       to land in the anchor itself or it wouldn't affect Current Net
+       at all. Expense entries deliberately do NOT touch cash here —
+       Current Net subtracts this cycle's passed expenses live, so
+       mutating cash directly here too would double-count them. */
+    if(isNewEntry && amount > 0){
       saveJSON('la_cash_on_hand', getCashOnHand() + amount);
-      renderCurrentNet();
     }
+    renderCurrentNet();
   }
 
   function deleteSpendingEntry(){
@@ -3444,7 +3468,13 @@
   function renderSpendingLog(){
     var all = getSpendingLog();
     var today = getAdjustedDate();
-    var list = all.filter(function(e){ return e.date <= today; }).sort(function(a,b){ return b.date.localeCompare(a.date); });
+    var cycleStart = getCurrentCycleStartDate();
+    /* Scoped to the current paycheck cycle only — this is the "clear/
+       archive on Paycheck Reset" requirement, achieved non-destructively
+       by date-filtering rather than deleting: once a new cycle starts,
+       older entries simply fall before cycleStart and stop appearing
+       here, while remaining in la_spending_log for history/audit. */
+    var list = all.filter(function(e){ return e.date <= today && e.date >= cycleStart; }).sort(function(a,b){ return b.date.localeCompare(a.date); });
 
     var wrap = document.getElementById('spending-list');
     if(!list.length){
@@ -3591,42 +3621,62 @@
   }
 
   /* ============================================================
-     Payday — fully computed, no stored/user-editable date. Paydays
-     land every 14 days starting from PAYDAY_BASE_DATE, forever.
-     Checked once per adjusted day via performDailyReset(). When
-     today lands on a scheduled payday that hasn't been processed
-     yet: la_kranker_hours/la_ballard_hours reset to 0, and the
-     payout modal opens so the user can log actual amounts received.
-  ============================================================ */
-  var PAYDAY_BASE_DATE = '2026-07-10';
-  var PAYDAY_INTERVAL_DAYS = 14;
+     Paycheck Date Engine — fully computed, no stored/user-editable
+     date. Paychecks land every 14 days starting from
+     PAYCHECK_BASE_DATE, forever. Rollover checks use true system
+     midnight (getTrueTodayISO) rather than the adjusted 5 AM
+     productivity date used everywhere else in this app — a paycheck
+     lands on the calendar day it lands on, independent of when the
+     user's "day" resets for habit/task-tracking purposes.
 
-  /* Next scheduled payday >= today (today included, if it's a payday). */
-  function getNextPaydayDate(){
-    var today = getAdjustedDate();
-    var iso = PAYDAY_BASE_DATE;
+     Checked once per real calendar day via performDailyReset(). The
+     instant today reaches/passes the next scheduled paycheck date:
+     la_kranker_hours/la_ballard_hours reset to 0, a full Paycheck
+     Cycle Reset runs (Current Net re-anchors Cash on Hand, Spending
+     Log's current-cycle window rolls forward), and the payout modal
+     opens so the user can log actual amounts received.
+  ============================================================ */
+  var PAYCHECK_BASE_DATE = '2026-07-24';
+  var PAYCHECK_INTERVAL_DAYS = 14;
+
+  /* Real calendar date at standard midnight — deliberately NOT
+     getAdjustedDate(), which shifts before-5-AM back a day for
+     productivity tracking. Paycheck timing is a hard financial fact
+     and must never be affected by that shift. */
+  function getTrueTodayISO(){
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  /* Start date of the CURRENT paycheck cycle: the most recent
+     scheduled paycheck date <= today (true midnight), or
+     PAYCHECK_BASE_DATE if today predates it entirely. Today landing
+     exactly on a scheduled paycheck date makes TODAY the new cycle's
+     start, not "next" — see getNextPaycheckDate below. */
+  function getCurrentCycleStartDate(){
+    var today = getTrueTodayISO();
+    if(today < PAYCHECK_BASE_DATE) return PAYCHECK_BASE_DATE;
+    var iso = PAYCHECK_BASE_DATE;
     var guard = 0;
-    while(iso < today && guard++ < 2000){
-      iso = addDaysISO(iso, PAYDAY_INTERVAL_DAYS);
+    while(addDaysISO(iso, PAYCHECK_INTERVAL_DAYS) <= today && guard++ < 2000){
+      iso = addDaysISO(iso, PAYCHECK_INTERVAL_DAYS);
     }
     return iso;
   }
 
-  /* Most recent scheduled payday <= dateISO, or null if dateISO predates
-     the base payday entirely (used for catch-up detection in checkPayday). */
-  function getMostRecentPaydayOnOrBefore(dateISO){
-    if(dateISO < PAYDAY_BASE_DATE) return null;
-    var iso = PAYDAY_BASE_DATE;
-    var guard = 0;
-    while(addDaysISO(iso, PAYDAY_INTERVAL_DAYS) <= dateISO && guard++ < 2000){
-      iso = addDaysISO(iso, PAYDAY_INTERVAL_DAYS);
-    }
-    return iso;
+  /* Next scheduled paycheck date — always exactly current-cycle-start
+     + 14 days, so "today" is always strictly before it by
+     construction (today landing on a paycheck date makes that date
+     the CURRENT cycle's start, per getCurrentCycleStartDate, not the
+     upcoming one). Recurring/Planned "due before next paycheck"
+     windows below all compare against this with a strict `<`. */
+  function getNextPaycheckDate(){
+    return addDaysISO(getCurrentCycleStartDate(), PAYCHECK_INTERVAL_DAYS);
   }
 
   function renderNextPaydayNote(){
     var el = document.getElementById('fin-next-payday-note');
-    if(el) el.textContent = 'Next payday: ' + formatDateHuman(getNextPaydayDate());
+    if(el) el.textContent = 'Next payday: ' + formatDateHuman(getNextPaycheckDate());
   }
 
   function openPaydayModal(){
@@ -3659,16 +3709,43 @@
     closeModal('payday-modal');
   }
 
-  function checkPayday(){
-    var today = getAdjustedDate();
-    var recentPayday = getMostRecentPaydayOnOrBefore(today);
-    if(!recentPayday) return;
-    var lastProcessed = localStorage.getItem('la_last_processed_payday') || '';
-    if(lastProcessed >= recentPayday) return;
-    localStorage.setItem('la_last_processed_payday', recentPayday);
+  /* Current Net for an arbitrary [startISO, endISO] window — used by
+     performPaycheckCycleReset to close out the JUST-ENDED cycle
+     (whose window is no longer "current" by the time the reset runs)
+     without duplicating getCurrentNetValue's live-window logic. */
+  function computeNetForWindow(startISO, endISO){
+    var cash = getCashOnHand();
+    var passedExpenses = getSpendingLog()
+      .filter(function(e){ return e.amount < 0 && e.date >= startISO && e.date <= endISO; })
+      .reduce(function(sum, e){ return sum + Math.abs(e.amount); }, 0);
+    return cash - passedExpenses;
+  }
+
+  /* Paycheck Cycle Reset: re-anchors Cash on Hand to Current Net as
+     computed over the cycle that just ended (i.e. "what's actually
+     left after that cycle's spending" becomes the new starting
+     balance), resets lab hours, and refreshes every financial module.
+     Old Spending Log entries are never deleted — they simply fall
+     before the new cycle's start date, so Current/Projected Net's
+     cycle-scoped sums naturally stop counting them ("archived" by
+     falling out of the active window, not by data loss). */
+  function performPaycheckCycleReset(oldCycleStartISO, oldCycleEndISO){
+    var preResetNet = computeNetForWindow(oldCycleStartISO, oldCycleEndISO);
+    saveJSON('la_cash_on_hand', preResetNet);
     PROJECTED_JOB_LABS.forEach(function(lab){ saveLabHoursValue(lab, 0); });
-    renderProjectedCard();
+
+    renderSpendingLog();
+    renderRecurringEverywhere();
+
     openPaydayModal();
+  }
+
+  function checkPaycheckCycleReset(){
+    var cycleStart = getCurrentCycleStartDate();
+    var lastProcessed = localStorage.getItem('la_last_processed_cycle_start') || '';
+    if(lastProcessed >= cycleStart) return;
+    localStorage.setItem('la_last_processed_cycle_start', cycleStart);
+    performPaycheckCycleReset(lastProcessed || PAYCHECK_BASE_DATE, addDaysISO(cycleStart, -1));
   }
 
   function getCashOnHand(){ return loadJSON('la_cash_on_hand', 0) || 0; }
@@ -3690,20 +3767,35 @@
     return next;
   }
 
-  /* Current Net: cash on hand minus planned expenses (recurring bills in
-     the payday-based window + future-dated spending log entries) — the
-     exact same total getPlannedExpenses() feeds into Projected Net, so
-     the two figures never disagree on what's "planned". */
+  /* Sum of expense-type (amount < 0) Spending Log entries dated within
+     the CURRENT paycheck cycle (>= cycle start) and already passed
+     (<= today) — the "Sum of Spending Log events that have already
+     passed in the current paycheck cycle" that both Current Net and
+     Projected Net subtract from Cash on Hand. Income-type entries
+     (manual deposits, logged paychecks) are excluded here since they
+     flow into Cash on Hand directly via Paycheck Cycle Reset's
+     re-anchor and manual Cash Balance edits, not through this sum. */
+  function getPassedCycleSpendingTotal(){
+    var today = getAdjustedDate();
+    var cycleStart = getCurrentCycleStartDate();
+    return getSpendingLog()
+      .filter(function(e){ return e.amount < 0 && e.date >= cycleStart && e.date <= today; })
+      .reduce(function(sum, e){ return sum + Math.abs(e.amount); }, 0);
+  }
+
+  /* Current Net = Cash on Hand (re-anchored each Paycheck Reset) minus
+     this cycle's passed spending so far. Re-anchoring happens in
+     performPaycheckCycleReset, not here — this is a pure read. */
   function getCurrentNetValue(){
     var cash = getCashOnHand();
-    var dueBefore = getPlannedExpenses().reduce(function(sum, i){ return sum + i.amount; }, 0);
-    return { cash: cash, dueBefore: dueBefore, currentNet: cash - dueBefore };
+    var passedSpending = getPassedCycleSpendingTotal();
+    return { cash: cash, passedSpending: passedSpending, currentNet: cash - passedSpending };
   }
 
   function renderCurrentNet(){
     var parts = getCurrentNetValue();
 
-    document.getElementById('fin-current-net-formula').textContent = formatCurrency(parts.cash) + ' − ' + formatCurrency(parts.dueBefore) + ' =';
+    document.getElementById('fin-current-net-formula').textContent = formatCurrency(parts.cash) + ' − ' + formatCurrency(parts.passedSpending) + ' =';
     var el = document.getElementById('fin-current-net-value');
     el.innerHTML = formatCurrency(parts.currentNet) + (parts.currentNet < 0 ? ' <span class="fin-shortfall-label">⚠</span>' : '');
     el.classList.toggle('positive', parts.currentNet >= 0);
@@ -3712,15 +3804,19 @@
     renderProjectedCard();
   }
 
-  /* ---- Silently deduct recurring payments from cash on hand once their
-     due date has passed (tracked per-item via lastDeductedDate so each
-     occurrence is only ever subtracted once) ---- */
+  /* ---- Auto-log recurring payments into the Spending Log once their
+     due date passes (tracked per-item via lastDeductedDate so each
+     occurrence is only ever logged once). Cash on Hand is NOT touched
+     here — Current Net subtracts passed-in-cycle Spending Log entries
+     from it live, so mutating cash directly here would double-count
+     the deduction. Cash on Hand only ever changes via manual edits
+     (Cash Balance modal) and Paycheck Cycle Reset's re-anchor. ---- */
   function processRecurringDeductions(){
     var list = getRecurring();
     var today = new Date(getAdjustedDate() + 'T00:00:00');
-    var cash = getCashOnHand();
+    var log = getSpendingLog();
     var listChanged = false;
-    var cashChanged = false;
+    var logChanged = false;
 
     list.forEach(function(r){
       if(!r.lastDeductedDate){ r.lastDeductedDate = r.billingDate; listChanged = true; }
@@ -3729,8 +3825,8 @@
       while(guard++ < 500){
         var next = advanceBillingDate(occ, r.frequency);
         if(next > today) break;
-        cash -= Math.abs(r.amount);
-        cashChanged = true;
+        log.push({ id: uid(), amount: -Math.abs(r.amount), category: 'Other', note: r.name, date: dateToISO(next) });
+        logChanged = true;
         occ = next;
         r.lastDeductedDate = dateToISO(occ);
         listChanged = true;
@@ -3738,8 +3834,8 @@
     });
 
     if(listChanged) saveRecurring(list);
-    if(cashChanged){
-      saveJSON('la_cash_on_hand', cash);
+    if(logChanged){
+      saveSpendingLog(log);
       renderCurrentNet();
     }
   }
@@ -3857,6 +3953,23 @@
     }
     return d;
   }
+  /* Next occurrence NOT YET logged into the Spending Log — based on
+     lastDeductedDate (the last occurrence processRecurringDeductions
+     has already logged there), not the original billingDate anchor,
+     so an occurrence already converted into a Spending Log entry is
+     never ALSO counted as "upcoming" in Projected Net or the
+     due-before-next-paycheck amber tint. Always strictly after today
+     once processRecurringDeductions has run for the day. */
+  function nextUnloggedBillingDate(r){
+    var today = new Date(getAdjustedDate() + 'T00:00:00');
+    var base = r.lastDeductedDate || r.billingDate;
+    var d = advanceBillingDate(new Date(base + 'T00:00:00'), r.frequency);
+    var guard = 0;
+    while(d <= today && guard++ < 500){
+      d = advanceBillingDate(d, r.frequency);
+    }
+    return d;
+  }
   function isDueSoon(r){
     var today = new Date(getAdjustedDate() + 'T00:00:00');
     var next = nextBillingDate(r);
@@ -3874,11 +3987,14 @@
       wrap.innerHTML = '<div class="fin-empty">No recurring payments yet</div>';
       return;
     }
+    var nextPaycheck = new Date(getNextPaycheckDate() + 'T00:00:00');
     wrap.innerHTML = list.map(function(r){
       var next = nextBillingDate(r);
       var dueSoon = isDueSoon(r);
+      var upcomingPaycheck = nextUnloggedBillingDate(r) < nextPaycheck;
       var freqLabel = RECURRING_FREQUENCY_LABELS[r.frequency] || 'Monthly';
-      return '<div class="fin-recurring-row'+(dueSoon ? ' due-soon' : '')+'" onclick="openRecurringModal(\''+r.id+'\')">' +
+      var classes = 'fin-recurring-row' + (dueSoon ? ' due-soon' : '') + (upcomingPaycheck ? ' upcoming-paycheck-item' : '');
+      return '<div class="'+classes+'" onclick="openRecurringModal(\''+r.id+'\')">' +
           '<span class="fin-recurring-name">'+escapeHtml(r.name)+'</span>' +
           '<span class="fin-recurring-day mono">'+freqLabel+' · '+formatDateHuman(dateToISO(next))+'</span>' +
           '<span class="fin-recurring-amount mono">'+formatCurrency(-Math.abs(r.amount))+'</span>' +
@@ -3891,12 +4007,13 @@
      la_cash_on_hand except read-only for display; hours/earnings
      tracking here never mutates the actual balance.
   ============================================================ */
-  /* Planned expenses window runs from today through the next payday,
-     inclusive — feeds Current Net / Projected Net / Hours Needed on the
-     Monthly Budget card. Boundary is exclusive, so +1 day makes next
-     payday itself inclusive. */
+  /* Planned expenses window runs from today up to (but not including)
+     the next paycheck date — feeds Current Net / Projected Net /
+     Hours Needed on the Monthly Budget card. Items due exactly ON the
+     next paycheck date belong to the following cycle, not this one,
+     so the boundary is a strict `<`, not inclusive. */
   function getPlannedExpensesBoundaryDate(){
-    return new Date(addDaysISO(getNextPaydayDate(), 1) + 'T00:00:00');
+    return new Date(getNextPaycheckDate() + 'T00:00:00');
   }
 
   function getEstimatedFullPaycheck(){
@@ -3909,10 +4026,15 @@
     return getJobs().reduce(function(sum, j){ return sum + jobAfterTaxRate(parseFloat(j.hourlyRate) || 0) * EXPECTED_HOURS_PER_JOB; }, 0);
   }
 
+  /* Uses nextUnloggedBillingDate (not nextBillingDate) so an occurrence
+     already converted into a Spending Log entry by
+     processRecurringDeductions is never also counted here as
+     "upcoming" — this is what requirement D calls "Upcoming Recurring
+     Payments... that have NOT YET logged". */
   function getRecurringItemsWithinBoundary(boundary){
     var items = [];
     getRecurring().forEach(function(r){
-      var occ = nextBillingDate(r);
+      var occ = nextUnloggedBillingDate(r);
       var guard = 0;
       while(occ < boundary && guard++ < 500){
         items.push({ name: r.name, amount: Math.abs(r.amount) });
@@ -3922,36 +4044,39 @@
     return items;
   }
 
-  /* Payday-based window (see getPlannedExpensesBoundaryDate) — feeds
+  /* Paycheck-cycle window (see getPlannedExpensesBoundaryDate) — feeds
      getPlannedExpenses(), which drives the Monthly Budget card's
      Current Net / Projected Net / Hours Needed. */
   function getPlannedRecurringItems(){
     return getRecurringItemsWithinBoundary(getPlannedExpensesBoundaryDate());
   }
 
-  /* Today through next payday, inclusive — feeds only the Spending Log
-     card's Planned Expenses Recurring section (a shorter, single-pay-cycle
-     view distinct from the Budget card's window above). Boundary is
-     exclusive, so +1 day makes next payday itself inclusive. */
+  /* Today up to (not including) the next paycheck date — feeds only
+     the Spending Log card's Planned Expenses Recurring section (a
+     shorter, single-cycle view distinct from the Budget card's window
+     above, which is the same boundary here since both are scoped to
+     "this paycheck cycle"). */
   function getSpendingLogRecurringItems(){
-    return getRecurringItemsWithinBoundary(new Date(addDaysISO(getNextPaydayDate(), 1) + 'T00:00:00'));
+    return getRecurringItemsWithinBoundary(getPlannedExpensesBoundaryDate());
   }
 
-  /* boundaryISO, if given, additionally excludes entries dated after it
-     (inclusive) — used to scope Current Net / Projected Net to the next
-     payday window. The Spending Log card's own "Planned" list calls this
-     with no boundary, since it intentionally shows all future entries. */
+  /* boundaryISO, if given, additionally excludes entries dated on or
+     after it (strict `<`, matching "due BEFORE next paycheck") — used
+     to scope Current Net / Projected Net to the current cycle. The
+     Spending Log card's own "Planned" list calls this with no
+     boundary, since it intentionally shows all future entries. */
   function getPlannedFutureSpendingItems(boundaryISO){
     var today = getAdjustedDate();
-    return getSpendingLog().filter(function(e){ return e.date > today && e.amount < 0 && (!boundaryISO || e.date <= boundaryISO); })
+    return getSpendingLog().filter(function(e){ return e.date > today && e.amount < 0 && (!boundaryISO || e.date < boundaryISO); })
       .sort(function(a,b){ return a.date.localeCompare(b.date); })
       .map(function(e){ return { id: e.id, name: e.note || e.category, amount: Math.abs(e.amount), date: e.date }; });
   }
 
-  /* Current Net / Projected Net window: today through the next payday,
-     inclusive, for both recurring bills and one-off planned spending. */
+  /* Projected Net window: today up to (not including) the next
+     paycheck date, for both recurring bills not yet logged and
+     one-off planned spending. */
   function getPlannedExpenses(){
-    return getPlannedRecurringItems().concat(getPlannedFutureSpendingItems(getNextPaydayDate()));
+    return getPlannedRecurringItems().concat(getPlannedFutureSpendingItems(getNextPaycheckDate()));
   }
 
   function renderProjectedCard(){
@@ -3974,6 +4099,7 @@
 
     var planned = getPlannedExpenses();
     var plannedTotal = planned.reduce(function(sum, i){ return sum + i.amount; }, 0);
+    var passedSpending = getPassedCycleSpendingTotal();
 
     var cash = getCashOnHand();
     var projectedCashAfterEarnings = cash + earned;
@@ -3984,7 +4110,7 @@
     el.classList.toggle('negative', projectedCashAfterEarnings < 0);
 
     renderPlannedExpensesCard();
-    renderBudgetProjectedNet(earned, plannedTotal);
+    renderBudgetProjectedNet(earned, plannedTotal, passedSpending);
     renderNextPaydayNote();
   }
 
@@ -4023,20 +4149,25 @@
     document.getElementById('spending-planned-expenses-total').textContent = formatCurrency(-(recurringTotal + futureTotal));
   }
 
-  /* ---- Monthly Budget card's Projected Net column: current cash minus
-     planned expenses (payday-window recurring + future spending) plus
-     earned so far. Uses raw cash rather than Current Net so the planned
-     expenses window isn't subtracted twice. ---- */
-  function renderBudgetProjectedNet(earned, plannedTotal){
+  /* ---- Monthly Budget card's Projected Net column, per spec:
+     Updated Balance − Passed Spending Log entries (this cycle) −
+     Upcoming Recurring (not yet logged) − Planned Payments (both due
+     before next paycheck, combined here as plannedTotal) + Post-tax
+     Research Earnings so far. Starts from the exact same cash/
+     passedSpending base as Current Net, so the two never disagree on
+     "what's already happened this cycle" — Projected Net just also
+     looks ahead to what's still coming. ---- */
+  function renderBudgetProjectedNet(earned, plannedTotal, passedSpending){
     var cash = getCashOnHand();
-    var projectedNet = cash - plannedTotal + earned;
-    document.getElementById('fin-budget-projected-formula').textContent = formatCurrency(cash) + ' − ' + formatCurrency(plannedTotal) + ' + ' + formatCurrency(earned) + ' =';
+    var projectedNet = cash - passedSpending - plannedTotal + earned;
+    document.getElementById('fin-budget-projected-formula').textContent =
+      formatCurrency(cash) + ' − ' + formatCurrency(passedSpending) + ' − ' + formatCurrency(plannedTotal) + ' + ' + formatCurrency(earned) + ' =';
     var el = document.getElementById('fin-budget-projected-value');
     el.innerHTML = formatCurrency(projectedNet) + (projectedNet < 0 ? ' <span class="fin-shortfall-label">⚠</span>' : '');
     el.classList.toggle('positive', projectedNet >= 0);
     el.classList.toggle('negative', projectedNet < 0);
 
-    renderHoursNeeded(plannedTotal, cash);
+    renderHoursNeeded(plannedTotal + passedSpending, cash);
   }
 
   /* ---- Monthly Budget card's Hours Needed column: how many hours each
@@ -4604,9 +4735,9 @@
     updateCheckinBadges();
     renderSidebarSocial();
     clearTodayNutritionEntry();
+    checkPaycheckCycleReset();
     processRecurringDeductions();
     renderSpendingLog();
-    checkPayday();
     accrueSavings();
     renderSavingsSection();
     if(typeof renderMoodCard === 'function'){ renderMoodCard(); }

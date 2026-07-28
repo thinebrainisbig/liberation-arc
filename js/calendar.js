@@ -145,23 +145,49 @@
     });
   }
 
-  /* Apple Calendar-style pastel palette: events are colored
-     deterministically by id so the same event keeps its color across
-     re-fetches/polls, approximating per-calendar color coding without
-     needing real category data from the API. */
+  /* Google Calendar's own official event colors (colorId 1-11, per the
+     Calendar API's fixed event-color palette) — used directly whenever
+     an event carries a colorId, so it matches what the user sees in
+     their actual Google Calendar. */
+  var GOOGLE_EVENT_COLORS = {
+    '1': '#7986cb', '2': '#33b679', '3': '#8e24aa', '4': '#e67c73',
+    '5': '#f6bf26', '6': '#f4511e', '7': '#039be5', '8': '#616161',
+    '9': '#3f51b5', '10': '#0b8043', '11': '#d50000'
+  };
+
+  /* Apple Calendar-style pastel palette: fallback for events with no
+     colorId set. Colored deterministically by a stable key — the
+     recurring series id (or title, for non-recurring events) — never
+     the per-instance event id, which Google mints fresh per occurrence
+     of a recurring event and would otherwise make the same recurring
+     event (e.g. a gym class) render a different color on every day. */
   var EVENT_PALETTE = [
     { bg: 'rgba(147,197,253,0.25)', accent: '#93c5fd' }, // pastel blue
     { bg: 'rgba(253,186,116,0.25)', accent: '#fdba74' }, // pastel orange
     { bg: 'rgba(134,239,172,0.25)', accent: '#86efac' }  // pastel green
   ];
 
-  function paletteForId(id){
+  function hexToRgba(hex, alpha){
+    var r = parseInt(hex.slice(1,3), 16);
+    var g = parseInt(hex.slice(3,5), 16);
+    var b = parseInt(hex.slice(5,7), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+  }
+
+  function paletteForKey(key){
     var hash = 0;
-    var str = String(id || '');
+    var str = String(key || '');
     for(var i = 0; i < str.length; i++){
       hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
     }
     return EVENT_PALETTE[hash % EVENT_PALETTE.length];
+  }
+
+  function paletteForEvent(event){
+    var props = event.extendedProps || {};
+    var googleHex = props.colorId && GOOGLE_EVENT_COLORS[props.colorId];
+    if(googleHex) return { bg: hexToRgba(googleHex, 0.25), accent: googleHex };
+    return paletteForKey(props.recurringEventId || event.title);
   }
 
   function renderEvents(items){
@@ -175,7 +201,11 @@
         start: startInfo.dateTime || startInfo.date,
         end: endInfo.dateTime || endInfo.date,
         allDay: !startInfo.dateTime,
-        extendedProps: { location: item.location || '' }
+        extendedProps: {
+          location: item.location || '',
+          colorId: item.colorId || null,
+          recurringEventId: item.recurringEventId || null
+        }
       };
     });
     calendar.removeAllEventSources();
@@ -294,7 +324,7 @@
         return { domNodes: nodes };
       },
       eventDidMount: function(info){
-        var palette = paletteForId(info.event.id);
+        var palette = paletteForEvent(info.event);
         info.el.style.setProperty('--event-color', palette.accent);
         info.el.style.backgroundColor = palette.bg;
       },
