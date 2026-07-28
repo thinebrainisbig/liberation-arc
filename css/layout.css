@@ -183,20 +183,30 @@
     display:flex;
     width:100%;
     justify-content:center;
-    gap:16px;
+    gap:6px;
     margin-top:16px;
     border-radius:0;
     overflow:visible;
     background:none;
     border:none;
   }
+  /* 150% bigger (font-size/icons — the main visual size cue — scaled
+     the full 1.5x from base .daycycle-btn values of 0.72rem/16px;
+     padding/gaps scaled far more conservatively so MORNING+NIGHT
+     together still fit inside the ~265px available on a 375px phone
+     (.main's own corner-safe inset already reserves 55px on each side
+     for this element, being .main's first child) — full 1.5x on every
+     dimension pushed the pair well past the viewport edge. */
   .daycycle-buttons-mobile .daycycle-btn{
     flex:0 0 auto;
     border-radius:9999px;
-    padding:8px 18px;
+    padding:10px 8px;
+    gap:4px;
+    font-size:1.08rem;
     border-left:none !important;
   }
-  .daycycle-buttons-mobile .daycycle-btn .daycycle-btn-check{ font-size:18px; }
+  .daycycle-buttons-mobile .daycycle-btn .material-symbols-outlined{ font-size:24px; }
+  .daycycle-buttons-mobile .daycycle-btn .daycycle-btn-check{ font-size:27px; }
 
   /* ---------- Page containers: room for the fixed bottom bar ---------- */
   /* .app-shell is a row flex container (sidebar + main); with the
@@ -259,10 +269,11 @@
     flex:1 !important;
     height:auto !important;
   }
-  /* 240px = 50% of this card's desktop height (~480-492px at common
-     desktop viewport heights) — mobile-only; desktop's own height
-     (flex/grid-computed, not a fixed value) is untouched. */
-  .top-section .calendar-card{ flex:none !important; height:240px !important; min-height:240px !important; }
+  /* 720px = 300% of the original 240px mobile height (which itself was
+     50% of this card's desktop height, ~480-492px) — mobile-only;
+     desktop's own height (flex/grid-computed, not a fixed value) is
+     untouched. */
+  .top-section .calendar-card{ flex:none !important; height:720px !important; min-height:720px !important; }
   .bottom-section .deadlines-card,
   .bottom-section .hobbies-card,
   .bottom-section .physical-health-card,
@@ -299,7 +310,7 @@
      Morning/Night pills (no order needed — .daycycle-buttons-mobile
      is already .main's first DOM child, and everything below has an
      explicit order, so it sorts first by default), Tasklist,
-     Deadlines, Physical Health, Kranker Lab, Ballard Lab, Pomodoro,
+     Pomodoro, Deadlines, Kranker Lab, Ballard Lab, Physical Health,
      Calendar. .top-section/.bottom-section/.research-stack normally
      each keep their own cards grouped together (see above); making
      them `display:contents` unwraps their children into direct flex
@@ -315,11 +326,11 @@
     display:contents;
   }
   body:not(.is-subpage) .tasklist-card{ order:1; }
-  body:not(.is-subpage) .deadlines-card{ order:2; }
-  body:not(.is-subpage) .physical-health-card{ order:3; }
+  body:not(.is-subpage) .pomo-card{ display:flex; order:2; }
+  body:not(.is-subpage) .deadlines-card{ order:3; }
   body:not(.is-subpage) .research-stack > .research-card:nth-child(1){ order:4; }
   body:not(.is-subpage) .research-stack > .research-card:nth-child(2){ order:5; }
-  body:not(.is-subpage) .pomo-card{ display:flex; order:6; }
+  body:not(.is-subpage) .physical-health-card{ order:6; }
   body:not(.is-subpage) #calendar-card{ order:7; }
   /* Not part of the consolidated mobile stream (only the 8 cards
      above are) — stays in the DOM (its localStorage-backed data is
