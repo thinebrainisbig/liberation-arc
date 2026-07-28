@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Liberation Arc — Academic</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet">
@@ -35,7 +37,14 @@
   }
 
   *{box-sizing:border-box;}
-  html,body{height:100%;margin:0;padding:0;}
+  /* Explicit solid fallback (not just the fixed .bg-layer/.bg-scrim
+     pseudo-layers below): iOS 26's status-bar translucency has a
+     documented bug where it falls back to opaque white instead of
+     sampling through to page content, even with black-translucent
+     set correctly. A real background-color here is what iOS actually
+     composites under the status bar, so the fallback is this dark
+     tone instead of white. */
+  html,body{height:100%;margin:0;padding:0;background-color:#06060a;}
   body{
     font-family:'Geist','Segoe UI',system-ui,sans-serif;
     color:var(--ink);
