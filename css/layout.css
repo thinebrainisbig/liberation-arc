@@ -38,6 +38,15 @@
   html{ overflow-x:hidden; }
   body{ overflow-y:auto !important; overflow-x:hidden !important; }
 
+  /* Screen-curvature corner inset (iPhone 16 Pro: ~55pt radius).
+     Used below to give the fixed bottom bar's end items, and the
+     first thing rendered at the top of the page, extra clearance
+     from the curved glass — on top of (not instead of) the existing
+     env(safe-area-inset-*) handling. */
+  :root{
+    --device-corner-radius: 55px;
+  }
+
   /* ---------- Sidebar -> fixed bottom nav ---------- */
   .sidebar{
     position:fixed;
@@ -56,6 +65,15 @@
     border:none;
     border-top:1px solid rgba(255,255,255,0.10);
     z-index:500;
+  }
+  /* Corner-safe insets: only the bar's two ends (leftmost/rightmost
+     tab items) sit near the curved bottom corners, so only the
+     container's edge padding grows — the gap between the bar's own
+     middle items is untouched. Longhand overrides win over the
+     shorthand `padding` above via source order (same specificity). */
+  .sidebar{
+    padding-left: calc(8px + max(0px, var(--device-corner-radius) - env(safe-area-inset-left, 0px)));
+    padding-right: calc(8px + max(0px, var(--device-corner-radius) - env(safe-area-inset-right, 0px)));
   }
   .sidebar::after{ display:none; }
 
@@ -95,12 +113,11 @@
     text-align:center;
   }
   .sidebar > .nav .nav-link .material-symbols-outlined{ font-size:20px; }
+  /* Icon-only tabs on mobile — the text label is dropped entirely
+     (not just truncated) to leave more width for the bar's other
+     items and the corner-safe edge padding above. */
   .sidebar > .nav .nav-link span:last-child{
-    font-size:0.56rem;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    max-width:100%;
+    display:none;
   }
   .sidebar > .nav .nav-link.active::after{ display:none; }
   /* Active subpage tab becomes a "back to Dashboard" control: show
@@ -185,10 +202,26 @@
   .main{
     height:auto !important;
     min-height:100vh;
+    /* .main is a flex:1 item of .app-shell; without this, its default
+       min-width:auto lets unshrinkable content (e.g. the daycycle
+       pills below, flex-shrink:0) push .main — and with it the whole
+       page — wider than the 100vw shell, defeating html's
+       overflow-x:hidden clip instead of just overflowing .main's own
+       box as intended. */
+    min-width:0;
     align-self:flex-start;
     overflow:visible !important;
     overflow-y:visible !important;
+    padding-top:calc(16px + env(safe-area-inset-top)) !important;
     padding-bottom:calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+  /* Corner-safe insets, top edge: whatever renders first sits at the
+     very top of the page on initial (unscrolled) load, near the
+     curved top-left/top-right corners — give just that element extra
+     edge clearance rather than padding every card down the page. */
+  .main > :first-child{
+    padding-left: calc(max(0px, var(--device-corner-radius) - env(safe-area-inset-left, 0px)));
+    padding-right: calc(max(0px, var(--device-corner-radius) - env(safe-area-inset-right, 0px)));
   }
 
   /* ---------- index.html / academic-subpage.html: top-section + bottom-section ---------- */
@@ -329,6 +362,26 @@
     grid-template-columns:minmax(0,1fr) !important;
     height:auto !important;
     min-height:0 !important;
+  }
+  /* Corner-safe insets: this page's own fixed close button sits at
+     top:20px/right:20px — well inside the curved top-right corner
+     (and, unlike everything else here, with no safe-area-inset-top
+     handling of its own) — nudge it clear on both axes. */
+  .financial-exit-btn{
+    top: calc(20px + env(safe-area-inset-top, 0px));
+    right: calc(20px + max(0px, var(--device-corner-radius) - env(safe-area-inset-right, 0px)));
+  }
+  /* Pushing the close button in from the corner puts it on a collision
+     course with Spending Log's own "+" button once the page is
+     scrolled to the top — .main's padding-top and the exit button's
+     own top both grow by the same env(safe-area-inset-top), so the
+     gap between "where .main's content starts" and "where the button
+     ends" is a fixed 40px regardless of device, independent of the
+     corner-radius/safe-area math above. Clearing it needs vertical
+     room, not a smaller horizontal offset (which would undercut the
+     corner-safety this rule exists for). */
+  .fin-spending-card{
+    margin-top:48px;
   }
   /* Custom mobile card order: Spending Log, Recurring, Monthly
      Budget, Projected, Savings and Investments. Only .fin-spending-

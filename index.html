@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Liberation Arc — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet">
@@ -869,6 +871,11 @@
     justify-content:space-between;
     gap:10px;
   }
+  .sidebar-bottom-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
   .sidebar-version{
     text-align:right;
     font-size:0.6rem;
@@ -1395,7 +1402,7 @@
     letter-spacing:0.12em;
     color:var(--ink);
   }
-  th.checkbox-col{ padding-right:0; width:20px; }
+  th.checkbox-col{ padding-left:0; padding-right:0; width:20px; }
   /* box-sizing:border-box means a cell's rendered width can never go
      below its own horizontal padding — the default 24px+24px alone
      would floor these columns at 48px, well above the 10px drag
@@ -1441,7 +1448,7 @@
     text-align:center;
     overflow:hidden;
   }
-  td.checkbox-col{ padding-right:0; }
+  td.checkbox-col{ padding-left:0; padding-right:0; }
   /* Matches th.col-resizable's reduced padding so the Task/Areas/
      Importance/Due data cells can shrink down with their column
      instead of flooring out well above the 10px drag minimum. */
@@ -2186,6 +2193,12 @@
       <button type="button" class="mobile-quick-btn" onclick="openHabitModal()" aria-label="Habits">
         <span class="material-symbols-outlined">checklist</span>
       </button>
+      <button type="button" class="mobile-quick-btn" onclick="syncData(this)" aria-label="Export data">
+        <span class="material-symbols-outlined">sync</span>
+      </button>
+      <button type="button" class="mobile-quick-btn" onclick="triggerImportData()" aria-label="Import data">
+        <span class="material-symbols-outlined">upload</span>
+      </button>
     </div>
 
     <div class="sidebar-divider"></div>
@@ -2255,12 +2268,19 @@
     <div class="sidebar-spacer"></div>
 
     <div class="sidebar-bottom">
-      <button type="button" class="sync-btn" id="sync-btn" onclick="syncData()" aria-label="Sync data">
-        <span class="material-symbols-outlined" id="sync-btn-icon">sync</span>
-        <span class="sync-btn-tooltip" id="sync-btn-tooltip">Sync</span>
-      </button>
+      <div class="sidebar-bottom-actions">
+        <button type="button" class="sync-btn" id="sync-btn" onclick="syncData(this)" aria-label="Export data">
+          <span class="material-symbols-outlined">sync</span>
+          <span class="sync-btn-tooltip">Sync</span>
+        </button>
+        <button type="button" class="sync-btn" onclick="triggerImportData()" aria-label="Import data">
+          <span class="material-symbols-outlined">upload</span>
+          <span class="sync-btn-tooltip">Import</span>
+        </button>
+      </div>
       <p class="sidebar-version mono">v 1.3</p>
     </div>
+    <input type="file" id="sync-import-input" accept=".json,application/json" style="display:none;" onchange="handleImportFileSelected(event)">
   </aside>
 
   <!-- ===================== MAIN ===================== -->
@@ -3364,7 +3384,7 @@
   function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 
-  function syncData(){
+  function syncData(triggerEl){
     var data = {};
     for(var i=0;i<localStorage.length;i++){
       var key = localStorage.key(i);
@@ -3382,21 +3402,55 @@
     document.body.removeChild(a);
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
 
-    var btn = document.getElementById('sync-btn');
-    var icon = document.getElementById('sync-btn-icon');
-    var tip = document.getElementById('sync-btn-tooltip');
-    if(btn && icon && tip){
-      var prevIcon = icon.textContent;
-      var prevTip = tip.textContent;
-      icon.textContent = 'check';
-      tip.textContent = 'Synced!';
-      btn.classList.add('synced');
-      setTimeout(function(){
-        icon.textContent = prevIcon;
-        tip.textContent = prevTip;
-        btn.classList.remove('synced');
-      }, 1600);
-    }
+    if(!triggerEl) return;
+    var icon = triggerEl.querySelector('.material-symbols-outlined');
+    var tip = triggerEl.querySelector('.sync-btn-tooltip');
+    var prevIcon = icon ? icon.textContent : null;
+    var prevTip = tip ? tip.textContent : null;
+    if(icon) icon.textContent = 'check';
+    if(tip) tip.textContent = 'Synced!';
+    triggerEl.classList.add('synced');
+    setTimeout(function(){
+      if(icon) icon.textContent = prevIcon;
+      if(tip) tip.textContent = prevTip;
+      triggerEl.classList.remove('synced');
+    }, 1600);
+  }
+
+  function triggerImportData(){
+    var input = document.getElementById('sync-import-input');
+    if(input) input.click();
+  }
+
+  function handleImportFileSelected(e){
+    var file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var parsed;
+      try{
+        parsed = JSON.parse(reader.result);
+      }catch(err){
+        alert('Import failed: the selected file is not valid JSON.');
+        return;
+      }
+      var keys = Object.keys(parsed);
+      var confirmed = confirm('Import ' + keys.length + ' key' + (keys.length === 1 ? '' : 's') + ' from this file? This will overwrite your current local data for any matching keys.');
+      if(!confirmed){
+        alert('Import cancelled.');
+        return;
+      }
+      keys.forEach(function(key){
+        var value = parsed[key];
+        localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+      });
+      location.reload();
+    };
+    reader.onerror = function(){
+      alert('Import failed: could not read the selected file.');
+    };
+    reader.readAsText(file);
   }
 
   function escapeHtml(s){
