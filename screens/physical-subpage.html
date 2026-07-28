@@ -43,8 +43,13 @@
      sampling through to page content, even with black-translucent
      set correctly. A real background-color here is what iOS actually
      composites under the status bar, so the fallback is this dark
-     tone instead of white. */
-  html,body{height:100%;margin:0;padding:0;background-color:#06060a;}
+     tone instead of white. Set on html only, not body: body is an
+     in-flow, unpositioned descendant, so it paints *after* (on top
+     of) .bg-layer/.bg-scrim's negative z-index despite them being
+     "behind" everything logically — html's background alone still
+     covers the canvas/status-bar area without hiding the photo. */
+  html{height:100%;margin:0;padding:0;background-color:#06060a;}
+  body{height:100%;margin:0;padding:0;}
   body{
     font-family:'Geist','Segoe UI',system-ui,sans-serif;
     color:var(--ink);
@@ -223,7 +228,6 @@
   .nav-link[data-section="academic"]{ --nav-color:#4ade80; }
   .nav-link[data-section="hobbies"]{ --nav-color:var(--hobbies); }
   .nav-link[data-section="financial"]{ --nav-color:var(--financial); }
-  .nav-link[data-section="secondbrain"]{ --nav-color:var(--secondbrain); }
   .nav-link:not(.active) .material-symbols-outlined{ color: var(--nav-color); opacity:0.75; }
 
   .sidebar-divider{
@@ -247,6 +251,9 @@
     padding:9px 8px;
     background:transparent;
     border:none;
+    appearance:none;
+    -webkit-appearance:none;
+    box-shadow:none;
     color:var(--ink-dim);
     font-size:0.72rem;
     font-weight:700;
@@ -271,6 +278,28 @@
   .daycycle-btn.completed .daycycle-btn-icon,
   .daycycle-btn.completed .daycycle-btn-label{ display:none; }
   .daycycle-btn.completed .daycycle-btn-check{ display:inline-flex; color:#ffffff; }
+
+  /* Desktop-only: sidebar Morning/Night toggle refinements (no divider, subtle shadow) */
+  @media (min-width: 769px){
+    .sidebar .daycycle-buttons{
+      gap:8px;
+      background:transparent !important;
+      border:none !important;
+      box-shadow:none !important;
+    }
+    .sidebar .daycycle-buttons::before,
+    .sidebar .daycycle-buttons::after{
+      display:none !important;
+      content:none !important;
+    }
+    .sidebar .daycycle-btn{
+      border-radius:var(--r-sm);
+      box-shadow:0 2px 5px -1px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .sidebar .daycycle-btn.night{
+      border-left:none;
+    }
+  }
 
   /* Late night mode (12AM-5AM): amber tint = still "yesterday" */
   body.late-night .daycycle-btn.morning,
@@ -892,6 +921,8 @@
     letter-spacing:0.12em;
     color:var(--ink-faint);
     margin:0;
+    position:relative;
+    top:8px;
   }
   .sync-btn{
     position:relative;
@@ -1671,18 +1702,16 @@
         <span class="material-symbols-outlined">payments</span>
         <span>Financial</span>
       </a>
-      <a class="nav-link" data-section="secondbrain" href="#">
-        <span class="material-symbols-outlined">psychology</span>
-        <span>Second Brain</span>
-      </a>
     </nav>
 
     <div class="mobile-quick-actions">
-      <button type="button" class="mobile-quick-btn" onclick="openSocialModal()" aria-label="Social Targets">
-        <span class="material-symbols-outlined">person</span>
-      </button>
-      <button type="button" class="mobile-quick-btn" onclick="openHabitModal()" aria-label="Habits">
+      <button type="button" class="mobile-pill-btn" onclick="openHabitModal()" aria-label="Habits">
         <span class="material-symbols-outlined">checklist</span>
+        <span>Habits</span>
+      </button>
+      <button type="button" class="mobile-pill-btn" onclick="openSocialModal()" aria-label="Social Targets">
+        <span class="material-symbols-outlined">person</span>
+        <span>Social</span>
       </button>
       <button type="button" class="mobile-quick-btn" onclick="syncData(this)" aria-label="Export data">
         <span class="material-symbols-outlined">sync</span>
@@ -1769,7 +1798,7 @@
           <span class="sync-btn-tooltip">Import</span>
         </button>
       </div>
-      <p class="sidebar-version mono">v 1.3</p>
+      <p class="sidebar-version mono">v 1.6</p>
     </div>
     <input type="file" id="sync-import-input" accept=".json,application/json" style="display:none;" onchange="handleImportFileSelected(event)">
   </aside>

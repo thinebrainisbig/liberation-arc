@@ -45,8 +45,13 @@
      sampling through to page content, even with black-translucent
      set correctly. A real background-color here is what iOS actually
      composites under the status bar, so the fallback is this dark
-     tone instead of white. */
-  html,body{height:100%;margin:0;padding:0;background-color:#06060a;}
+     tone instead of white. Set on html only, not body: body is an
+     in-flow, unpositioned descendant, so it paints *after* (on top
+     of) .bg-layer/.bg-scrim's negative z-index despite them being
+     "behind" everything logically — html's background alone still
+     covers the canvas/status-bar area without hiding the photo. */
+  html{height:100%;margin:0;padding:0;background-color:#06060a;}
+  body{height:100%;margin:0;padding:0;}
   body{
     font-family:'Geist','Segoe UI',system-ui,sans-serif;
     color:var(--ink);
@@ -218,7 +223,6 @@
   .nav-link[data-section="academic"]{ --nav-color:#4ade80; }
   .nav-link[data-section="hobbies"]{ --nav-color:var(--hobbies); }
   .nav-link[data-section="financial"]{ --nav-color:var(--financial); }
-  .nav-link[data-section="secondbrain"]{ --nav-color:var(--secondbrain); }
   .nav-link:not(.active) .material-symbols-outlined{ color: var(--nav-color); opacity:0.75; }
 
   .sidebar-divider{
@@ -242,6 +246,9 @@
     padding:9px 8px;
     background:transparent;
     border:none;
+    appearance:none;
+    -webkit-appearance:none;
+    box-shadow:none;
     color:var(--ink-dim);
     font-size:0.72rem;
     font-weight:700;
@@ -266,6 +273,28 @@
   .daycycle-btn.completed .daycycle-btn-icon,
   .daycycle-btn.completed .daycycle-btn-label{ display:none; }
   .daycycle-btn.completed .daycycle-btn-check{ display:inline-flex; color:#ffffff; }
+
+  /* Desktop-only: sidebar Morning/Night toggle refinements (no divider, subtle shadow) */
+  @media (min-width: 769px){
+    .sidebar .daycycle-buttons{
+      gap:8px;
+      background:transparent !important;
+      border:none !important;
+      box-shadow:none !important;
+    }
+    .sidebar .daycycle-buttons::before,
+    .sidebar .daycycle-buttons::after{
+      display:none !important;
+      content:none !important;
+    }
+    .sidebar .daycycle-btn{
+      border-radius:var(--r-sm);
+      box-shadow:0 2px 5px -1px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .sidebar .daycycle-btn.night{
+      border-left:none;
+    }
+  }
 
   /* Late night mode (12AM-5AM): amber tint = still "yesterday" */
   body.late-night .daycycle-btn.morning,
@@ -889,6 +918,8 @@
     letter-spacing:0.12em;
     color:var(--ink-faint);
     margin:0;
+    position:relative;
+    top:8px;
   }
   .sync-btn{
     position:relative;
@@ -1409,7 +1440,7 @@
     letter-spacing:0.12em;
     color:var(--ink);
   }
-  th.checkbox-col{ padding-left:0; padding-right:0; width:20px; }
+  th.checkbox-col{ padding-left:12px; padding-right:0; width:32px; }
   /* box-sizing:border-box means a cell's rendered width can never go
      below its own horizontal padding — the default 24px+24px alone
      would floor these columns at 48px, well above the 10px drag
@@ -1455,7 +1486,7 @@
     text-align:center;
     overflow:hidden;
   }
-  td.checkbox-col{ padding-left:0; padding-right:0; }
+  td.checkbox-col{ padding-left:12px; padding-right:0; }
   /* Matches th.col-resizable's reduced padding so the Task/Areas/
      Importance/Due data cells can shrink down with their column
      instead of flooring out well above the 10px drag minimum. */
@@ -1508,10 +1539,6 @@
   .deadlines-compact td{
     padding-top:10px;
     padding-bottom:10px;
-  }
-  .deadlines-compact th:nth-child(2),
-  .deadlines-compact td:nth-child(2){
-    text-align:left;
   }
   /* All four visible columns (Task/Areas/Importance/Due) truncate
      rather than wrap, so row data stays aligned with the headers
@@ -1814,6 +1841,175 @@
   .physical-mood-emoji{ font-size:1.9rem; line-height:1; }
   .physical-mood-name{ font-size:0.8rem; font-weight:700; }
   .physical-mood-empty-mark{ font-size:1.4rem; color:var(--ink-faint); }
+
+  /* ---------- Pomodoro Timer Card (ported from academic-subpage.html;
+     mobile-only here — hidden on desktop, where this dashboard has no
+     slot for it. Same markup/classes/localStorage keys as that page's
+     own card, so timer state and weekly hours stay in sync between
+     the two regardless of which one is used to run a session. */
+  .pomo-card{
+    display:none;
+    position:relative;
+    padding:22px 20px;
+    flex-direction:column;
+    align-items:center;
+    overflow:visible;
+    border:1px solid rgba(74,222,128,0.55);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.5);
+  }
+  .pomo-settings-anchor{ position:relative; }
+  .pomo-tabs{
+    display:flex;
+    gap:6px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:4px;
+    border-radius:999px;
+    margin-bottom:16px;
+  }
+  .pomo-tab{
+    padding:6px 14px;
+    border-radius:999px;
+    border:none;
+    background:transparent;
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.62rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .pomo-tab.active{
+    background:rgba(255,255,255,0.16);
+    color:var(--ink);
+  }
+  .pomo-display{
+    font-size:3rem;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin:2px 0 16px;
+    line-height:1;
+    color:var(--academic);
+  }
+  @keyframes pomoFlash{
+    0%,100%{ opacity:1; }
+    50%{ opacity:0.15; }
+  }
+  .pomo-display.flash{
+    animation:pomoFlash 0.3s ease-in-out 3;
+  }
+  .pomo-controls-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:14px;
+    position:relative;
+    z-index:5;
+  }
+  .pomo-start-btn{
+    padding:9px 30px;
+    border-radius:999px;
+    border:none;
+    background:var(--academic);
+    color:#0b0b10;
+    font-family:inherit;
+    font-size:0.74rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    cursor:pointer;
+    transition:transform .15s ease;
+  }
+  .pomo-start-btn:hover{ transform:translateY(-1px); }
+  .pomo-icon-btn{
+    width:32px; height:32px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.06);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .pomo-icon-btn .material-symbols-outlined{ font-size:16px; }
+  .pomo-icon-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
+  .pomo-week-row{
+    font-size:0.6rem;
+    color:var(--ink-faint);
+    margin-bottom:14px;
+  }
+  .pomo-week-row span{ color:var(--academic); font-weight:700; }
+  .pomo-card .field-label.pomo-focus-label{
+    align-self:flex-start;
+    margin-top:14px;
+  }
+  .today-focus-static{
+    display:none;
+    width:100%;
+    margin:0;
+    padding:9px 11px;
+    border-radius:var(--r-sm);
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--ink);
+    font-family:'Geist','Segoe UI',sans-serif;
+    font-size:0.8rem;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .today-focus-static:hover{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.14); }
+  .pomo-settings-popover{
+    position:absolute;
+    top:40px;
+    right:0;
+    width:190px;
+    background:#16171c;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:var(--r-md);
+    padding:14px;
+    box-shadow:0 12px 32px rgba(0,0,0,0.5);
+    display:none;
+    z-index:20;
+  }
+  .pomo-settings-popover.open{ display:block; }
+  .pomo-settings-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-size:0.64rem;
+    font-weight:600;
+    color:var(--ink-dim);
+    gap:8px;
+  }
+  .pomo-settings-row input{
+    width:48px;
+    padding:4px 6px;
+    border-radius:6px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.05);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.68rem;
+    text-align:center;
+  }
+  .pomo-settings-save{
+    width:100%;
+    padding:7px;
+    border-radius:8px;
+    border:none;
+    background:var(--academic);
+    color:#0b0b10;
+    font-weight:800;
+    font-size:0.62rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    cursor:pointer;
+    margin-top:2px;
+  }
 
   /* ---------- Modals ---------- */
   .modal-overlay{
@@ -2187,18 +2383,16 @@
         <span class="material-symbols-outlined">payments</span>
         <span>Financial</span>
       </a>
-      <a class="nav-link" data-section="secondbrain" href="#">
-        <span class="material-symbols-outlined">psychology</span>
-        <span>Second Brain</span>
-      </a>
     </nav>
 
     <div class="mobile-quick-actions">
-      <button type="button" class="mobile-quick-btn" onclick="openSocialModalMobile()" aria-label="Social Targets">
-        <span class="material-symbols-outlined">person</span>
-      </button>
-      <button type="button" class="mobile-quick-btn" onclick="openHabitModal()" aria-label="Habits">
+      <button type="button" class="mobile-pill-btn" onclick="openHabitModal()" aria-label="Habits">
         <span class="material-symbols-outlined">checklist</span>
+        <span>Habits</span>
+      </button>
+      <button type="button" class="mobile-pill-btn" onclick="openSocialModalMobile()" aria-label="Social Targets">
+        <span class="material-symbols-outlined">person</span>
+        <span>Social</span>
       </button>
       <button type="button" class="mobile-quick-btn" onclick="syncData(this)" aria-label="Export data">
         <span class="material-symbols-outlined">sync</span>
@@ -2285,7 +2479,7 @@
           <span class="sync-btn-tooltip">Import</span>
         </button>
       </div>
-      <p class="sidebar-version mono">v 1.3</p>
+      <p class="sidebar-version mono">v 1.6</p>
     </div>
     <input type="file" id="sync-import-input" accept=".json,application/json" style="display:none;" onchange="handleImportFileSelected(event)">
   </aside>
@@ -2415,6 +2609,45 @@
           Connect Calendar
         </button>
       </div>
+    </div>
+
+    <!-- Pomodoro Timer — mobile-only (see .pomo-card's display:none
+         default above); ported from academic-subpage.html so the
+         mobile card stream doesn't need to navigate to that page. -->
+    <div class="card glass pomo-card">
+      <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
+
+      <div class="pomo-tabs">
+        <button type="button" class="pomo-tab active" data-mode="pomodoro" onclick="selectPomoTab('pomodoro')">Pomodoro</button>
+        <button type="button" class="pomo-tab" data-mode="short" onclick="selectPomoTab('short')">Short Break</button>
+        <button type="button" class="pomo-tab" data-mode="long" onclick="selectPomoTab('long')">Long Break</button>
+      </div>
+
+      <div class="pomo-display mono" id="pomo-display">25:00</div>
+
+      <div class="pomo-controls-row">
+        <button type="button" class="pomo-icon-btn" onclick="resetPomo()" title="Reset">
+          <span class="material-symbols-outlined">replay</span>
+        </button>
+        <button type="button" class="pomo-start-btn" id="pomo-start-btn" onclick="togglePomoStartPause()">Start</button>
+        <div class="pomo-settings-anchor">
+          <button type="button" class="pomo-icon-btn pomo-settings-btn" onclick="togglePomoSettings()" title="Settings">
+            <span class="material-symbols-outlined">settings</span>
+          </button>
+          <div class="pomo-settings-popover" id="pomo-settings-popover">
+            <div class="pomo-settings-row"><span>Pomodoro (min)</span><input type="number" id="setting-pomodoro" min="1" max="180"></div>
+            <div class="pomo-settings-row"><span>Short Break (min)</span><input type="number" id="setting-short" min="1" max="60"></div>
+            <div class="pomo-settings-row"><span>Long Break (min)</span><input type="number" id="setting-long" min="1" max="120"></div>
+            <button type="button" class="pomo-settings-save" onclick="savePomoSettings()">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pomo-week-row mono">This week: <span id="pomo-week-total">0.0h</span></div>
+
+      <label class="field-label pomo-focus-label">Current Focus</label>
+      <input class="field-text" id="today-focus-input" type="text" placeholder="What are you working on today?" oninput="saveTodayFocus(this.value)" onblur="renderTodayFocusMode()" onkeydown="if(event.key==='Enter'){ this.blur(); }">
+      <p class="today-focus-static" id="today-focus-static" onclick="editTodayFocus()"></p>
     </div>
 
     <!-- Bottom: three cards, full width -->
@@ -3601,7 +3834,7 @@
      than split evenly; dragging still works freely from there.
   ============================================================ */
   var DEADLINES_COL_MIN = 10;
-  var DEADLINES_CHECKBOX_COL_WIDTH = 20;
+  var DEADLINES_CHECKBOX_COL_WIDTH = 32;
   var DEADLINES_COL_RATIOS = [4, 1, 1, 2]; // Task, Areas, Importance, Due
 
   /* A <table width:auto> still fills its containing block like any
@@ -4046,6 +4279,246 @@
     fill.style.width = pct + '%';
     fill.classList.toggle('met', goal > 0 && hours >= goal);
     document.getElementById('sidebar-goal-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs';
+  }
+
+  /* ============================================================
+     Pomodoro Timer Card (mobile-only UI; ported from
+     academic-subpage.html — same la_pomo_ / la_study_streak_academic /
+     la_today_focus_academic keys, so this and that page's own card
+     read/write the identical timer, weekly hours, and streak state).
+
+     academic-subpage.html's version also drives a full Study Streak
+     card (streak-current/streak-best/goal-progress-*) that doesn't
+     exist here — recordPomodoroCompletion() below only writes the
+     streak data (not academic's renderStreak()/renderWeeklyGoal(),
+     which target those missing elements), and tickPomo() refreshes
+     this page's own sidebar mini streak widget via the
+     renderSidebarStreak() already defined above instead.
+  ============================================================ */
+  var pomoInterval = null;
+  var pomoAudioCtx = null;
+
+  function getPomoAudioCtx(){
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    if(!pomoAudioCtx) pomoAudioCtx = new AC();
+    if(pomoAudioCtx.state === 'suspended') pomoAudioCtx.resume();
+    return pomoAudioCtx;
+  }
+
+  function playPomoChime(){
+    var ctx = getPomoAudioCtx();
+    if(!ctx) return;
+    var now = ctx.currentTime;
+    var notes = [
+      { freq:880.00, start:0,    dur:0.4 },
+      { freq:1174.66, start:0.16, dur:0.45 },
+      { freq:1567.98, start:0.32, dur:0.6 }
+    ];
+    notes.forEach(function(n){
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = n.freq;
+      var t0 = now + n.start;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.22, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + n.dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + n.dur + 0.05);
+    });
+  }
+
+  function flashPomoDisplay(){
+    var el = document.getElementById('pomo-display');
+    el.classList.remove('flash');
+    void el.offsetWidth;
+    el.classList.add('flash');
+    setTimeout(function(){ el.classList.remove('flash'); }, 900);
+  }
+
+  function getPomoSettings(){ return loadJSON('la_pomo_settings', {pomodoro:25, short:5, long:15}); }
+  function savePomoSettingsToStorage(s){ saveJSON('la_pomo_settings', s); }
+
+  function getPomoState(){
+    var settings = getPomoSettings();
+    return loadJSON('la_pomo_state', null) || { mode:'pomodoro', remaining: settings.pomodoro*60, running:false };
+  }
+  function savePomoState(state){ saveJSON('la_pomo_state', state); }
+
+  function getPomoWeek(){
+    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
+    if(w.weekStart !== getMondayKey()){ w.weekStart = getMondayKey(); w.weekSeconds = 0; }
+    return w;
+  }
+  function savePomoWeek(w){ saveJSON('la_pomo_week', w); }
+
+  function formatMMSSGeneric(sec){
+    sec = Math.max(0, Math.round(sec));
+    var m = Math.floor(sec/60), s = sec%60;
+    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  }
+
+  function renderPomo(){
+    var state = getPomoState();
+    document.getElementById('pomo-display').textContent = formatMMSSGeneric(state.remaining);
+    document.querySelectorAll('.pomo-tab').forEach(function(btn){
+      btn.classList.toggle('active', btn.dataset.mode === state.mode);
+    });
+    document.getElementById('pomo-start-btn').textContent = state.running ? 'Pause' : 'Start';
+    var week = getPomoWeek();
+    document.getElementById('pomo-week-total').textContent = (week.weekSeconds/3600).toFixed(1) + 'h';
+  }
+
+  function selectPomoTab(mode){
+    stopPomoInterval();
+    var settings = getPomoSettings();
+    savePomoState({ mode: mode, remaining: settings[mode]*60, running:false });
+    renderPomo();
+  }
+
+  function togglePomoStartPause(){
+    var state = getPomoState();
+    if(state.running){ pausePomoInternal(); } else { startPomoInternal(); }
+  }
+
+  function startPomoInternal(){
+    getPomoAudioCtx();
+    var state = getPomoState();
+    state.running = true;
+    savePomoState(state);
+    stopPomoInterval();
+    pomoInterval = setInterval(tickPomo, 1000);
+    renderPomo();
+  }
+
+  function pausePomoInternal(){
+    var state = getPomoState();
+    state.running = false;
+    savePomoState(state);
+    stopPomoInterval();
+    renderPomo();
+  }
+
+  function stopPomoInterval(){
+    if(pomoInterval){ clearInterval(pomoInterval); pomoInterval = null; }
+  }
+
+  function resetPomo(){
+    var settings = getPomoSettings();
+    var state = getPomoState();
+    state.remaining = settings[state.mode]*60;
+    state.running = false;
+    savePomoState(state);
+    stopPomoInterval();
+    renderPomo();
+  }
+
+  function tickPomo(){
+    var state = getPomoState();
+    if(!state.running) return;
+    state.remaining -= 1;
+    if(state.mode === 'pomodoro'){
+      var week = getPomoWeek();
+      week.weekSeconds += 1;
+      savePomoWeek(week);
+    }
+    if(state.remaining <= 0){
+      var settings = getPomoSettings();
+      state.remaining = settings[state.mode]*60;
+      state.running = false;
+      stopPomoInterval();
+      playPomoChime();
+      flashPomoDisplay();
+      if(state.mode === 'pomodoro'){
+        recordPomodoroCompletion();
+      }
+    }
+    savePomoState(state);
+    renderPomo();
+    renderSidebarStreak();
+  }
+
+  function togglePomoSettings(){
+    var pop = document.getElementById('pomo-settings-popover');
+    pop.classList.toggle('open');
+    if(pop.classList.contains('open')){
+      var s = getPomoSettings();
+      document.getElementById('setting-pomodoro').value = s.pomodoro;
+      document.getElementById('setting-short').value = s.short;
+      document.getElementById('setting-long').value = s.long;
+    }
+  }
+
+  function savePomoSettings(){
+    var s = {
+      pomodoro: parseInt(document.getElementById('setting-pomodoro').value, 10) || 25,
+      short: parseInt(document.getElementById('setting-short').value, 10) || 5,
+      long: parseInt(document.getElementById('setting-long').value, 10) || 15
+    };
+    savePomoSettingsToStorage(s);
+    var state = getPomoState();
+    if(!state.running){
+      state.remaining = s[state.mode]*60;
+      savePomoState(state);
+    }
+    document.getElementById('pomo-settings-popover').classList.remove('open');
+    renderPomo();
+  }
+
+  function initPomoOnLoad(){
+    var state = getPomoState();
+    savePomoState(state);
+    renderPomo();
+    if(state.running){
+      pomoInterval = setInterval(tickPomo, 1000);
+    }
+  }
+
+  function recordPomodoroCompletion(){
+    var today = getAdjustedDate();
+    var s = loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null });
+    var gap = s.lastCompletedDate ? diffDaysISO(s.lastCompletedDate, today) : null;
+    if(gap === 0){
+      /* already logged a completion today */
+    } else if(gap === 1){
+      s.current += 1;
+    } else {
+      s.current = 1;
+    }
+    s.lastCompletedDate = today;
+    if(s.current > s.best) s.best = s.current;
+    saveJSON('la_study_streak_academic', s);
+  }
+
+  function saveTodayFocus(value){ saveJSON('la_today_focus_academic', value); }
+  function loadTodayFocus(){
+    document.getElementById('today-focus-input').value = loadJSON('la_today_focus_academic', '');
+    renderTodayFocusMode();
+  }
+  function renderTodayFocusMode(){
+    var value = loadJSON('la_today_focus_academic', '');
+    var input = document.getElementById('today-focus-input');
+    var staticEl = document.getElementById('today-focus-static');
+    if(value){
+      input.style.display = 'none';
+      staticEl.style.display = 'block';
+      staticEl.textContent = value;
+    } else {
+      input.style.display = '';
+      staticEl.style.display = 'none';
+    }
+  }
+  function editTodayFocus(){
+    var input = document.getElementById('today-focus-input');
+    var staticEl = document.getElementById('today-focus-static');
+    staticEl.style.display = 'none';
+    input.style.display = '';
+    input.value = loadJSON('la_today_focus_academic', '');
+    input.focus();
+    input.select();
   }
 
   /* ============================================================
@@ -4614,6 +5087,7 @@
     else if(e.key === 'la_study_streak_academic' || e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){
       renderSidebarStreak();
     }
+    else if(e.key === 'la_pomo_state'){ renderPomo(); }
     else if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){
       renderHobbiesSummary();
       renderSidebarCurrently();
@@ -4991,6 +5465,8 @@
   renderSidebarCurrently();
   renderSidebarHabits();
   renderSidebarSocial();
+  initPomoOnLoad();
+  loadTodayFocus();
   updateSidebarDateTime();
   setInterval(updateSidebarDateTime, 1000);
   runClockTick();

@@ -99,69 +99,54 @@
     display:none !important;
   }
 
-  /* Primary nav: left/main portion of the bar (~2/3 width) */
+  /* Subpage tabs are gone entirely on mobile — subpages are no longer
+     part of the mobile navigation flow at all (unreliable to navigate
+     to from an iOS standalone web app; see index.html's consolidated
+     card stream above), so there's nothing left for these 5 icons to
+     link to. The bar is now just .mobile-quick-actions, full width. */
   .sidebar > .nav{
-    display:flex;
-    flex:2 1 0;
-    flex-direction:row;
-    align-items:stretch;
-    justify-content:space-around;
-    gap:2px;
-    min-width:0;
-  }
-  .sidebar > .nav .nav-row{ display:contents; }
-  .sidebar > .nav .import-btn{ display:none !important; }
-  .sidebar > .nav .nav-link{
-    flex:1 1 0;
-    min-width:0;
-    flex-direction:column;
-    justify-content:center;
-    gap:2px;
-    /* Vertical centering is now .nav-link's own stretched height +
-       justify-content:center (see .sidebar's align-items above), not
-       this padding — free to shrink it so the (now-larger) icon
-       fills more of the tab, without shrinking the actual tap area. */
-    padding:2px 0;
-    border:none !important;
-    text-align:center;
-  }
-  /* +10% (not the full +20-25%): at ~18px-wide tab cells, testing
-     showed icons above ~22px visibly overlapping their neighbors —
-     this is the largest size that still keeps 5 icons legibly
-     distinct within the space the corner-safe edge padding leaves. */
-  .sidebar > .nav .nav-link .material-symbols-outlined{ font-size:22px; }
-  /* Icon-only tabs on mobile — the text label is dropped entirely
-     (not just truncated) to leave more width for the bar's other
-     items and the corner-safe edge padding above. */
-  .sidebar > .nav .nav-link span:last-child{
-    display:none;
-  }
-  .sidebar > .nav .nav-link.active::after{ display:none; }
-  /* Active subpage tab becomes a "back to Dashboard" control: show
-     only the back-arrow (already wired to href="index.html"/
-     "../index.html" on the .active link itself, so tapping it just
-     navigates like any other link — no extra click handler needed)
-     and hide the section's own icon so the tab still shows a single
-     icon instead of two stacked ones. */
-  .sidebar > .nav .nav-link.active .back-arrow{
-    display:inline-flex !important;
-    opacity:1 !important;
-  }
-  .sidebar > .nav .nav-link.active > .material-symbols-outlined:not(.back-arrow){
     display:none !important;
   }
 
-  /* Quick actions: right portion of the bar (~1/3 width) — open the
-     existing Social Targets / Habits modals (same modals + JS the
-     desktop mini-cards already use, just triggered from here). */
+  /* Quick actions now fill the bar's entire width (previously ~1/3,
+     sharing it with the 5-icon .nav above) — two big pill buttons
+     (Habits / Social, unchanged trigger functions, same modals the
+     desktop mini-cards already use) plus the existing Import/Export
+     icon buttons, evenly spaced. */
   .mobile-quick-actions{
     display:flex;
-    flex:1 1 0;
+    flex:1 1 auto;
+    width:100%;
     align-items:center;
-    justify-content:flex-end;
-    gap:6px;
-    padding-left:4px;
+    justify-content:space-around;
+    gap:10px;
+    padding-left:0;
   }
+  .mobile-pill-btn{
+    flex:1 1 0;
+    min-width:0;
+    height:44px;
+    padding:0 12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.68rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    cursor:pointer;
+  }
+  .mobile-pill-btn .material-symbols-outlined{ font-size:19px; flex-shrink:0; }
+  .mobile-pill-btn:active{ background:rgba(255,255,255,0.14); }
+  /* Import/Export: unchanged size (still the original 40x40 icon
+     buttons) — only their surroundings changed (full-width bar,
+     bigger pill siblings) via .mobile-quick-actions above. */
   .mobile-quick-btn{
     width:40px;
     height:40px;
@@ -175,9 +160,6 @@
     color:var(--ink-dim);
     cursor:pointer;
   }
-  /* +16%: box only grew 38->40 (there isn't horizontal room in this
-     bar for full 44pt-wide buttons alongside the 5 nav tabs), so most
-     of "fill the button better" comes from the glyph, not the box. */
   .mobile-quick-btn .material-symbols-outlined{ font-size:22px; }
   .mobile-quick-btn:active{ background:rgba(255,255,255,0.14); }
 
@@ -269,7 +251,10 @@
     flex:1 !important;
     height:auto !important;
   }
-  .top-section .calendar-card{ flex:none !important; height:480px !important; min-height:480px !important; }
+  /* 240px = 50% of this card's desktop height (~480-492px at common
+     desktop viewport heights) — mobile-only; desktop's own height
+     (flex/grid-computed, not a fixed value) is untouched. */
+  .top-section .calendar-card{ flex:none !important; height:240px !important; min-height:240px !important; }
   .bottom-section .deadlines-card,
   .bottom-section .hobbies-card,
   .bottom-section .physical-health-card,
@@ -298,25 +283,40 @@
      .card-pad's flex column — carries over here now that the taller
      card leaves visible room below the task list for it to drop into. */
 
-  /* ---------- index.html only: custom mobile card order ----------
-     Desired stream: Tasklist, Calendar, Deadlines, Research Cards,
-     Hobbies, Physical Health. .top-section/.bottom-section normally
+  /* ---------- index.html only: consolidated mobile card stream ----------
+     Subpages are unreliable to navigate to from an iOS standalone web
+     app, so mobile never links to them at all (see the bottom-nav
+     restructure below) — instead, every card mobile needs lives in
+     this page's own DOM and is shown/reordered here. Desired stream:
+     Morning/Night pills (no order needed — .daycycle-buttons-mobile
+     is already .main's first DOM child, and everything below has an
+     explicit order, so it sorts first by default), Tasklist,
+     Deadlines, Physical Health, Kranker Lab, Ballard Lab, Pomodoro,
+     Calendar. .top-section/.bottom-section/.research-stack normally
      each keep their own cards grouped together (see above); making
      them `display:contents` unwraps their children into direct flex
      items of .main (which is already flex-direction:column) so
-     `order` can freely interleave cards that used to live in two
-     separate containers. Scoped to `:not(.is-subpage)` so this never
-     touches academic-subpage.html's own .top-section. */
+     `order` can freely interleave cards that used to live in three
+     separate containers — including splitting Kranker/Ballard out of
+     .research-stack into their own independent positions. Scoped to
+     `:not(.is-subpage)` so this never touches academic-subpage.html's
+     own .top-section (still used there, unchanged, for desktop). */
   body:not(.is-subpage) .top-section,
-  body:not(.is-subpage) .bottom-section{
+  body:not(.is-subpage) .bottom-section,
+  body:not(.is-subpage) .research-stack{
     display:contents;
   }
   body:not(.is-subpage) .tasklist-card{ order:1; }
-  body:not(.is-subpage) #calendar-card{ order:2; }
-  body:not(.is-subpage) .deadlines-card{ order:3; }
-  body:not(.is-subpage) .research-stack{ order:4; }
-  body:not(.is-subpage) .hobbies-card{ order:5; }
-  body:not(.is-subpage) .physical-health-card{ order:6; }
+  body:not(.is-subpage) .deadlines-card{ order:2; }
+  body:not(.is-subpage) .physical-health-card{ order:3; }
+  body:not(.is-subpage) .research-stack > .research-card:nth-child(1){ order:4; }
+  body:not(.is-subpage) .research-stack > .research-card:nth-child(2){ order:5; }
+  body:not(.is-subpage) .pomo-card{ display:flex; order:6; }
+  body:not(.is-subpage) #calendar-card{ order:7; }
+  /* Not part of the consolidated mobile stream (only the 8 cards
+     above are) — stays in the DOM (its localStorage-backed data is
+     unaffected) but doesn't render on mobile. */
+  body:not(.is-subpage) .hobbies-card{ display:none; }
 
   /* ---------- Deadlines table: scroll + column reduction ---------- */
   .table-scroll{
@@ -343,13 +343,17 @@
      its left never wraps or clips it in the narrower mobile column. */
   .task-cell .name{ font-size:0.9em; }
   /* Give the row checkbox more breathing room — the JS resize init
-     only reserves DEADLINES_CHECKBOX_COL_WIDTH (20px) for math, so
+     only reserves DEADLINES_CHECKBOX_COL_WIDTH (32px) for math, so
      table-layout:fixed's own width redistribution (once the hidden
      Areas/Importance/Status/Type columns above are factored in) can
      otherwise render this column too narrow to show the checkbox
-     without it looking clipped against the Task text next to it. */
+     without it looking clipped against the Task text next to it.
+     padding-left:0 overrides the desktop rule's 12px inset — this
+     column is already widened to a comfortably tappable 44px here,
+     so the desktop-only left margin isn't needed on top of that. */
   th.checkbox-col, td.checkbox-col{
     width:44px;
+    padding-left:0;
   }
 
   /* ---------- physical-subpage.html: three side-by-side columns ---------- */
