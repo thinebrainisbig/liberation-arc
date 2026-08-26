@@ -1154,10 +1154,13 @@
     border-radius:6px;
     font-size:0.7rem;
     font-weight:700;
-    background:rgba(74,222,128,0.14);
-    color:#86efac;
     font-family:'JetBrains Mono',monospace;
   }
+  /* Complementary (opposite-hue) pair for strong at-a-glance contrast
+     between the two task types — warm amber for Synch (live/real-time),
+     cool blue for Asynch (anytime), rather than sharing one color. */
+  .type-badge.type-synch{ background:rgba(251,146,60,0.16); color:#fdba74; }
+  .type-badge.type-asynch{ background:rgba(56,189,248,0.16); color:#7dd3fc; }
 
   /* ---------- Filter bar ---------- */
   .filter-bar{
@@ -1240,6 +1243,17 @@
     color:var(--ink-dim);
   }
   .manage-area-row .del-x{ cursor:pointer; color:#f87171; font-size:14px; }
+  .manage-area-actions{ display:flex; align-items:center; gap:10px; }
+  .manage-area-color-input{
+    width:18px; height:18px;
+    padding:0;
+    border:none;
+    border-radius:4px;
+    background:none;
+    cursor:pointer;
+  }
+  .manage-area-color-input::-webkit-color-swatch-wrapper{ padding:0; }
+  .manage-area-color-input::-webkit-color-swatch{ border:1px solid rgba(255,255,255,0.2); border-radius:4px; }
   .modal-actions-row{
     display:flex;
     align-items:center;
@@ -1543,7 +1557,7 @@
        the row's full height rather than pinned to its top edge. */
     vertical-align:middle;
   }
-  td.checkbox-col{ padding-left:12px; padding-right:0; }
+  td.checkbox-col{ padding-left:12px; padding-right:0; text-align:left; }
   td:nth-child(2), td:nth-child(3), td:nth-child(4),
   td:nth-child(5), td:nth-child(6), td:nth-child(7){
     padding-left:4px;
@@ -1561,7 +1575,7 @@
     font-size:26px;
     opacity:0.5;
   }
-  .task-cell{ display:flex; align-items:center; justify-content:center; gap:10px; min-width:0; }
+  .task-cell{ display:flex; align-items:center; justify-content:flex-start; gap:10px; min-width:0; }
   .task-cell .material-symbols-outlined{ font-size:17px; color:var(--ink-faint); }
   /* min-width:0 lets this flex item shrink below its content's
      intrinsic width (the usual flexbox gotcha). Task names wrap to
@@ -1574,6 +1588,7 @@
     min-width:0;
     white-space:normal;
     overflow-wrap:break-word;
+    text-align:left;
   }
 
   /* ---------- Second bottom row: Important Tasks + Streak/Goal + Pomodoro ---------- */
@@ -2454,6 +2469,12 @@
               <option value="All">All</option>
               <option value="Asynch">Asynch</option>
               <option value="Synch">Synch</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Area</label>
+            <select id="filter-area" onchange="applyDeadlineFilters()">
+              <option value="All">All</option>
             </select>
           </div>
         </div>
@@ -3546,7 +3567,16 @@
     {bg:'rgba(248,113,113,0.16)', fg:'#fca5a5'},
     {bg:'rgba(250,204,21,0.16)', fg:'#fde047'}
   ];
+  function getAreaColors(){ return loadJSON('la_area_colors', {}); }
+  function saveAreaColors(map){ saveJSON('la_area_colors', map); }
+  function setAreaColor(name, hex){
+    var map = getAreaColors();
+    if(hex){ map[name] = hex; } else { delete map[name]; }
+    saveAreaColors(map);
+  }
   function areaColor(name){
+    var custom = getAreaColors()[name];
+    if(custom){ return { bg: habitColorRgba(custom, 0.16), fg: custom }; }
     var hash = 0;
     for(var i=0;i<name.length;i++){ hash = (hash*31 + name.charCodeAt(i)) >>> 0; }
     return AREA_PALETTE[hash % AREA_PALETTE.length];
@@ -3561,6 +3591,7 @@
   }
   function removeArea(name){
     saveAreas(getAreas().filter(function(a){ return a !== name; }));
+    setAreaColor(name, null);
   }
 
   /* ============================================================
@@ -3569,7 +3600,7 @@
   var currentDeadlineId = null;
   var currentDeadlineArea = null;
   var selectedDeadlineDays = [];
-  var deadlineFilters = { dueSort:'asc', importance:'All', type:'All' };
+  var deadlineFilters = { dueSort:'asc', importance:'All', type:'All', area:'All' };
 
   function getDeadlines(){ return loadJSON('la_deadlines', []); }
   function saveDeadlines(list){ saveJSON('la_deadlines', list); }
@@ -3578,11 +3609,22 @@
     deadlineFilters.dueSort = document.getElementById('filter-due-sort').value;
     deadlineFilters.importance = document.getElementById('filter-importance').value;
     deadlineFilters.type = document.getElementById('filter-type').value;
+    deadlineFilters.area = document.getElementById('filter-area').value;
     renderDeadlinesTable();
   }
 
   function toggleDeadlineFilters(){
     document.getElementById('deadline-filter-bar').classList.toggle('open');
+  }
+
+  function renderDeadlineAreaFilterOptions(){
+    var select = document.getElementById('filter-area');
+    if(!select) return;
+    var current = deadlineFilters.area || 'All';
+    var areas = getAreas();
+    if(current !== 'All' && areas.indexOf(current) === -1){ current = deadlineFilters.area = 'All'; }
+    select.innerHTML = '<option value="All">All</option>' +
+      areas.map(function(a){ return '<option value="'+escapeAttr(a)+'"'+(a === current ? ' selected' : '')+'>'+escapeHtml(a)+'</option>'; }).join('');
   }
 
   function renderDeadlinesTable(){
@@ -3594,12 +3636,19 @@
     if(deadlineFilters.type !== 'All'){
       tasks = tasks.filter(function(t){ return (t.type || 'Asynch') === deadlineFilters.type; });
     }
+    if(deadlineFilters.area !== 'All'){
+      tasks = tasks.filter(function(t){
+        var areaVal = Array.isArray(t.areas) ? (t.areas[0] || '') : (t.areas || '');
+        return areaVal === deadlineFilters.area;
+      });
+    }
     tasks.sort(function(a,b){
       var da = a.due || '9999-99-99', db = b.due || '9999-99-99';
       if(deadlineFilters.dueSort === 'desc') return da < db ? 1 : -1;
       return da < db ? -1 : 1;
     });
     var tbody = document.getElementById('deadlines-tbody');
+    renderDeadlineAreaFilterOptions();
     if(tasks.length === 0){
       var msg = all.length === 0 ? 'No deadlines yet' : 'No matching tasks';
       tbody.innerHTML = '<tr class="empty-row"><td colspan="7"><span class="material-symbols-outlined">event_available</span>'+msg+'</td></tr>';
@@ -3616,7 +3665,7 @@
         '<td>'+ formatDateHuman(t.due) +'</td>' +
         '<td><span class="'+status.cls+'">'+status.text+'</span></td>' +
         '<td><span class="importance-badge imp-'+ (t.importance || 'Low').toLowerCase() +'">'+ (t.importance || 'Low') +'</span></td>' +
-        '<td><span class="type-badge">'+ (t.type || 'Asynch') +'</span></td>' +
+        '<td><span class="type-badge type-'+ (t.type || 'Asynch').toLowerCase() +'">'+ (t.type || 'Asynch') +'</span></td>' +
       '</tr>';
     }).join('');
   }
@@ -3636,10 +3685,16 @@
      up a horizontal scrollbar instead of anything wrapping/breaking.
      Initial widths are seeded proportionally per DEADLINES_COL_RATIOS
      rather than split evenly; dragging still works freely from there.
-  ============================================================ */
+     Status previously got a disproportionate 3/12 share (it doesn't
+     need nearly that much once its own reduced .col-resizable padding
+     is factored in) while Importance — the longest header label, with
+     a badge that has its own internal padding on top — was squeezed
+     to the same 1/12 share as short columns like Type, truncating
+     into an ellipsis at typical widths. Rebalanced so Status gives up
+     some of that share to Importance. */
   var DEADLINES_COL_MIN = 10;
   var DEADLINES_CHECKBOX_COL_WIDTH = 32;
-  var DEADLINES_COL_RATIOS = [4, 1, 2, 3, 1, 1]; // Task, Areas, Due, Status, Importance, Type
+  var DEADLINES_COL_RATIOS = [4, 1, 1, 2, 2, 1]; // Task, Areas, Due, Status, Importance, Type
 
   /* A <table width:auto> still fills its containing block like any
      other auto-width block box — table-layout:fixed does NOT make it
@@ -3814,6 +3869,7 @@
         currentDeadlineArea = name;
         input.value = '';
         renderDeadlineAreaChips();
+        renderDeadlineAreaFilterOptions();
       }
     }
   }
@@ -3829,8 +3885,22 @@
     if(panel.style.display === 'none') return;
     var areas = getAreas();
     panel.innerHTML = areas.length ? areas.map(function(a){
-      return '<div class="manage-area-row"><span>'+escapeHtml(a)+'</span><span class="del-x" onclick="deleteAreaTag(\''+encodeURIComponent(a)+'\')">&times;</span></div>';
+      var c = areaColor(a);
+      return '<div class="manage-area-row">' +
+          '<span style="color:'+c.fg+';">'+escapeHtml(a)+'</span>' +
+          '<span class="manage-area-actions">' +
+            '<input type="color" class="manage-area-color-input" value="'+c.fg+'" onchange="changeAreaColor(\''+encodeURIComponent(a)+'\', this.value)" title="Change color for '+escapeAttr(a)+'">' +
+            '<span class="del-x" onclick="deleteAreaTag(\''+encodeURIComponent(a)+'\')">&times;</span>' +
+          '</span>' +
+        '</div>';
     }).join('') : '<div class="manage-area-row"><span style="color:var(--ink-faint);">No saved areas</span></div>';
+  }
+
+  function changeAreaColor(encoded, hex){
+    var name = decodeURIComponent(encoded);
+    setAreaColor(name, hex);
+    renderDeadlineAreaChips();
+    renderDeadlinesTable();
   }
 
   function deleteAreaTag(encoded){
@@ -3838,6 +3908,7 @@
     removeArea(name);
     if(currentDeadlineArea === name) currentDeadlineArea = null;
     renderDeadlineAreaChips();
+    renderDeadlinesTable();
   }
 
   function nextOccurrenceDate(dueISO, frequency){
