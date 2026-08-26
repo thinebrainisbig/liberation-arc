@@ -394,6 +394,111 @@
   border:none;
 }
 
+/* ---------- Month (dayGridMonth) view ----------
+   Same Apple-Calendar treatment as the timeGrid views above: hairline
+   grid, transparent cells so the card's glass shows through, and a
+   fixed dayMaxEventRows (set in calendar.js) so a busy day never grows
+   its row past the others — the card's own height/overflow rules stay
+   intact regardless of event count. */
+#calendar-body .fc-daygrid-day{
+  background:transparent;
+}
+#calendar-body .fc-daygrid-day.fc-day-today{
+  background:var(--fc-today-bg-color);
+}
+#calendar-body .fc-daygrid-day-frame{
+  min-height:0;
+}
+#calendar-body .fc-daygrid-day-top{
+  justify-content:flex-end;
+}
+#calendar-body .fc-daygrid-day-number{
+  padding:3px 5px;
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  font-size:0.66rem;
+  font-weight:600;
+  color:rgba(235,235,245,0.7);
+}
+#calendar-body .fc-daygrid-day.fc-day-today .fc-daygrid-day-number{
+  color:#f5f5f7;
+  font-weight:700;
+}
+#calendar-body .fc-daygrid-day-events{
+  min-height:0;
+  margin-top:0;
+}
+#calendar-body .fc-daygrid-event{
+  border:none;
+  border-left:3px solid var(--event-color, #93c5fd);
+  border-radius:5px;
+  margin:1px 3px 0;
+  box-shadow:none;
+  overflow:hidden;
+}
+#calendar-body .fc-daygrid-event:hover{
+  box-shadow:none;
+  filter:brightness(1.08);
+}
+#calendar-body .fc-daygrid-event .fc-event-main-frame,
+#calendar-body .fc-daygrid-event .fc-event-title{
+  padding:1px 4px;
+  font-size:0.62rem !important;
+  font-weight:600;
+  color:#f5f5f7;
+}
+#calendar-body .fc-daygrid-more-link{
+  padding:1px 5px;
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  font-size:0.58rem;
+  font-weight:700;
+  color:var(--calendar);
+}
+#calendar-body .fc-daygrid-day-bottom{
+  padding:0 4px 2px;
+}
+
+/* "+N more" popover — FullCalendar's own floating panel, themed to
+   match the custom-range popover elsewhere in this card. */
+#calendar-body .fc-popover{
+  background:rgba(10,12,18,0.96);
+  border:1px solid rgba(56,189,248,0.35);
+  border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4), 0 0 16px 0 rgba(56,189,248,0.15);
+  overflow:hidden;
+}
+#calendar-body .fc-popover-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:6px 10px;
+  background:rgba(255,255,255,0.05);
+  color:var(--ink);
+  font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+  font-size:0.66rem;
+  font-weight:700;
+}
+#calendar-body .fc-popover-close{
+  color:var(--ink-faint);
+  cursor:pointer;
+  opacity:0.8;
+}
+#calendar-body .fc-popover-close:hover{ opacity:1; }
+#calendar-body .fc-popover-body{
+  padding:4px;
+  max-height:220px;
+  overflow-y:auto;
+}
+#calendar-body .fc-popover-body .fc-daygrid-event{
+  margin:2px 3px;
+}
+
+/* Time-range (24h / 8a-5p / Custom) presets only mean anything against
+   a slotted time axis, which dayGridMonth doesn't have — hide them
+   while the month view is active instead of leaving dead controls. */
+.calendar-card.is-month-view .calendar-range-toggles{
+  display:none;
+}
+
 /* Sleek dark scrollbars for the internal FullCalendar scroller */
 #calendar-body .fc-scroller::-webkit-scrollbar{
   width:5px;
@@ -416,7 +521,8 @@
    and 1D is the sole visible option. */
 @media (max-width: 768px){
   .calendar-tab[data-view="timeGridThreeDay"],
-  .calendar-tab[data-view="timeGridFiveDay"]{
+  .calendar-tab[data-view="timeGridFiveDay"],
+  .calendar-tab[data-view="dayGridMonth"]{
     display:none;
   }
 }

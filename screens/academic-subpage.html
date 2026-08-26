@@ -354,46 +354,50 @@
     box-shadow:0 0 8px currentColor;
   }
 
-  /* Study Streak mini card (sidebar, read-only summary of the Study Streak card below) */
-  .streak-mini-card{
-    padding:14px;
+  /* Sidebar mood mini card (condensed morning/night check-in summary,
+     replaces the old Study Streak mini card in this sidebar slot) */
+  .mood-mini-card{
+    padding:12px 14px;
     border-radius:var(--r-md);
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:8px;
     background:#1a3c36;
     border:1px solid rgba(74,222,128,0.55);
   }
-  .streak-mini-flame{
-    font-size:0.78rem;
+  .mood-mini-title{
+    margin:0;
+    font-size:0.6rem;
     font-weight:700;
-    color:var(--ink);
-    text-align:center;
-  }
-  .streak-mini-goal{
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-  }
-  .streak-mini-track{
-    height:6px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.08);
-    overflow:hidden;
-  }
-  .streak-mini-fill{
-    height:100%;
-    border-radius:999px;
-    background:var(--secondbrain);
-    width:0%;
-    transition:width .3s ease, background .3s ease;
-  }
-  .streak-mini-fill.met{ background:#4ade80; }
-  .streak-mini-label{
-    font-size:0.609rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
     color:var(--ink-faint);
     text-align:center;
   }
+  .mood-mini-row{
+    display:flex;
+    gap:8px;
+  }
+  .mood-mini-block{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    padding:6px 4px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);
+  }
+  .mood-mini-label{
+    font-size:0.52rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+  }
+  .mood-mini-emoji{ font-size:1.15rem; line-height:1; }
+  .mood-mini-empty-mark{ font-size:0.85rem; color:var(--ink-faint); }
 
   /* Currently mini card (read-only, sourced from hobbies-subpage.html) */
   .currently-mini-card{
@@ -1284,8 +1288,9 @@
     margin-bottom:12px;
   }
   .lab-due-soonest{ font-size:0.6rem; color:var(--ink-faint); }
-  .lab-task-row{ display:flex; align-items:center; gap:8px; }
+  .lab-task-row{ display:flex; align-items:flex-start; gap:8px; }
   .lab-task-row.due-soon{ background:rgba(74,222,128,0.14); border-left:3px solid #4ade80; padding-left:5px; border-radius:4px; }
+  .lab-task-row .task-checkbox{ margin-top:3px; }
   .task-text-input{
     flex:1;
     background:transparent;
@@ -1298,6 +1303,11 @@
     outline:none;
     min-width:0;
     transition:border-color .15s ease;
+    resize:none;
+    overflow:hidden;
+    white-space:pre-wrap;
+    word-break:break-word;
+    line-height:1.35;
   }
   .task-text-input:focus{ border-bottom-color:rgba(255,255,255,0.32); color:var(--ink); }
   .task-date-input{
@@ -1311,6 +1321,7 @@
     color-scheme:dark;
     outline:none;
     flex-shrink:0;
+    margin-top:2px;
     transition:background .15s ease, border-color .15s ease;
   }
   .task-date-input:focus{
@@ -2268,14 +2279,9 @@
       </button>
     </div>
 
-    <div class="streak-mini-card glass">
-      <div class="streak-mini-flame mono" id="sidebar-streak-flame">🔥 0 day streak</div>
-      <div class="streak-mini-goal">
-        <div class="streak-mini-track">
-          <div class="streak-mini-fill" id="sidebar-goal-fill"></div>
-        </div>
-        <div class="streak-mini-label mono" id="sidebar-goal-label">0.0 hrs / 10 hrs</div>
-      </div>
+    <div class="mood-mini-card glass">
+      <p class="mood-mini-title mono">Today's Mood</p>
+      <div class="mood-mini-row" id="sidebar-mood-row"></div>
     </div>
 
     <div class="currently-mini-card glass">
@@ -3984,17 +3990,34 @@
   function getLabTasks(lab){ return loadJSON('la_' + lab + '_tasks', []); }
   function saveLabTasks(lab, list){ saveJSON('la_' + lab + '_tasks', list); }
 
-  function renderLabTasks(lab){
+  function rolloverOverdueLabTasks(lab){
     var list = getLabTasks(lab);
+    var today = getAdjustedDate();
+    var changed = false;
+    list.forEach(function(task){
+      if(task.due && task.due < today){ task.due = today; changed = true; }
+    });
+    if(changed) saveLabTasks(lab, list);
+    return list;
+  }
+
+  function autoGrowTaskInput(el){
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  function renderLabTasks(lab){
+    var list = rolloverOverdueLabTasks(lab);
     var ul = document.getElementById(lab + '-task-list');
     ul.innerHTML = list.map(function(task){
       var dueSoon = task.due && daysBetweenAdjusted(task.due) >= 0 && daysBetweenAdjusted(task.due) <= 1;
       return '<li class="lab-task-row'+ (dueSoon ? ' due-soon' : '') +'">' +
         '<input type="checkbox" class="task-checkbox" onclick="deleteLabTask(\''+lab+'\',\''+task.id+'\')">' +
-        '<input type="text" class="task-text-input" value="'+ escapeAttr(task.text) +'" placeholder="Task description" oninput="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">' +
+        '<textarea class="task-text-input" rows="1" placeholder="Task description" oninput="autoGrowTaskInput(this); updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">'+ escapeHtml(task.text) +'</textarea>' +
         '<input type="date" class="task-date-input" value="'+ (task.due || '') +'" onchange="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'due\',this.value)">' +
       '</li>';
     }).join('');
+    document.querySelectorAll('#'+lab+'-task-list .task-text-input').forEach(autoGrowTaskInput);
     renderLabDueSoonest(lab);
   }
 
@@ -4341,20 +4364,6 @@
     var eff = getEffectiveStreak();
     document.getElementById('streak-current').textContent = '🔥 ' + eff.current + ' day streak';
     document.getElementById('streak-best').textContent = 'Best: ' + eff.best + ' day' + (eff.best === 1 ? '' : 's');
-    renderSidebarStreak();
-  }
-
-  /* ---- Sidebar mini Study Streak card (read-only summary of the card above) ---- */
-  function renderSidebarStreak(){
-    var current = getEffectiveStreak().current;
-    var goal = getWeeklyGoal();
-    var hours = getPomoWeek().weekSeconds / 3600;
-    var pct = goal > 0 ? Math.min(100, (hours / goal) * 100) : 0;
-    document.getElementById('sidebar-streak-flame').textContent = '🔥 ' + current + ' day streak';
-    var fill = document.getElementById('sidebar-goal-fill');
-    fill.style.width = pct + '%';
-    fill.classList.toggle('met', goal > 0 && hours >= goal);
-    document.getElementById('sidebar-goal-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs';
   }
 
   function getWeeklyGoal(){ return loadJSON('la_weekly_goal_academic', 10); }
@@ -4378,7 +4387,6 @@
     var staticEl = document.getElementById('goal-target-static');
     if(staticEl) staticEl.textContent = goal + ' hrs';
     if(document.activeElement !== input) renderGoalTargetMode();
-    renderSidebarStreak();
   }
 
   function renderGoalTargetMode(){
@@ -4588,7 +4596,7 @@
       return '<div class="habit-mini-row" style="background:'+habitColorRgba(h.color, 0.12)+';">' +
           '<span class="habit-mini-dot" style="background:'+h.color+'; color:'+h.color+';"></span>' +
           '<span class="habit-mini-name">'+escapeHtml(h.name)+'</span>' +
-          '<span class="habit-mini-streak mono">🔥 '+streak+'</span>' +
+          '<span class="habit-mini-streak mono">'+(streak > 1 ? '🔥 ' : '')+streak+'</span>' +
           '<input type="checkbox" class="habit-checkbox"'+(completed ? ' checked' : '')+' onclick="event.stopPropagation(); toggleHabitToday(\''+h.id+'\')">' +
         '</div>';
     }).join('');
@@ -4790,6 +4798,7 @@
     else if(e.key === 'la_study_streak_academic'){ renderStreak(); }
     else if(e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){ renderWeeklyGoal(); }
     else if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){ renderSidebarCurrently(); }
+    else if(e.key && e.key.indexOf('la_checkin_') === 0){ renderSidebarMood(); }
     else if(e.key === 'la_habits'){
       renderSidebarHabits();
       if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
@@ -4806,6 +4815,53 @@
   window.addEventListener('state-change', function(e){ handleStorageSync({ key: e.detail.key }); });
   function notifyStateChange(key){
     window.dispatchEvent(new CustomEvent('state-change', { detail: { key: key } }));
+  }
+
+  /* ============================================================
+     Sidebar mood mini card — condensed morning/night check-in summary
+     (la_checkin_morning_/night_). Replaces the old sidebar Study
+     Streak widget in this slot (the full Study Streak card above
+     is untouched).
+  ============================================================ */
+  var SIDEBAR_MOOD_MORNING_VALUES = { Energized:1.0, Calm:0.6, Content:0.3, Lethargic:-0.3, Anxious:-0.6, Stressed:-0.8 };
+  var SIDEBAR_MOOD_NIGHT_VALUES = { Excited:1.0, Content:0.6, Calm:0.3, Drained:-0.3, Anxious:-0.6, Sad:-0.8, Depressed:-1.0 };
+  var SIDEBAR_MOOD_EMOJI = { Energized:'⚡', Excited:'✨', Content:'😌', Calm:'🌊', Lethargic:'😴', Drained:'🪫', Anxious:'😰', Stressed:'🔥', Sad:'🌧️', Depressed:'🌑' };
+
+  function sidebarMoodValue(period, mood){
+    var map = period === 'morning' ? SIDEBAR_MOOD_MORNING_VALUES : SIDEBAR_MOOD_NIGHT_VALUES;
+    return mood && map.hasOwnProperty(mood) ? map[mood] : null;
+  }
+
+  function sidebarMoodBlockHtml(period, mood){
+    var label = period === 'morning' ? 'AM' : 'PM';
+    if(!mood){
+      return '<div class="mood-mini-block">' +
+          '<span class="mood-mini-label mono">' + label + '</span>' +
+          '<span class="mood-mini-empty-mark">—</span>' +
+        '</div>';
+    }
+    var v = sidebarMoodValue(period, mood);
+    var hue = v == null || v >= 0 ? 142 : 4;
+    var mag = v == null ? 0 : Math.min(1, Math.abs(v));
+    var sat = 60 + mag * 10;
+    var bg = 'hsla(' + hue + ', ' + sat + '%, 50%, 0.14)';
+    var border = 'hsla(' + hue + ', ' + sat + '%, 55%, 0.35)';
+    var emoji = SIDEBAR_MOOD_EMOJI[mood] || '❔';
+    return '<div class="mood-mini-block" style="background:' + bg + '; border-color:' + border + ';" title="' + escapeAttr(mood) + '">' +
+        '<span class="mood-mini-label mono">' + label + '</span>' +
+        '<span class="mood-mini-emoji">' + emoji + '</span>' +
+      '</div>';
+  }
+
+  function renderSidebarMood(){
+    var row = document.getElementById('sidebar-mood-row');
+    if(!row) return;
+    var today = getAdjustedDate();
+    var mData = loadJSON('la_checkin_morning_' + today, null);
+    var nData = loadJSON('la_checkin_night_' + today, null);
+    row.innerHTML =
+      sidebarMoodBlockHtml('morning', mData ? mData.mood : null) +
+      sidebarMoodBlockHtml('night', nData ? nData.mood : null);
   }
 
   /* ============================================================
@@ -4872,7 +4928,7 @@
     if(typeof renderSplitPlanner === 'function'){ renderSplitPlanner(); }
     if(typeof renderSplitCalendar === 'function'){ renderSplitCalendar(); }
     if(typeof renderNutritionCard === 'function'){ renderNutritionCard(); }
-    if(typeof renderPhysicalHealthCard === 'function'){ renderPhysicalHealthCard(); }
+    if(typeof renderSidebarMood === 'function'){ renderSidebarMood(); }
   }
 
   function checkDailyReset(){
@@ -5180,6 +5236,7 @@
   loadTodayFocus();
   renderStreak();
   renderWeeklyGoal();
+  renderSidebarMood();
   renderSidebarCurrently();
   renderSidebarHabits();
   renderSidebarSocial();

@@ -349,46 +349,50 @@
     box-shadow:0 0 8px currentColor;
   }
 
-  /* Study Streak mini card (read-only, sourced from academic-subpage.html) */
-  .streak-mini-card{
-    padding:14px;
+  /* Sidebar mood mini card (condensed morning/night check-in summary,
+     replaces the old Study Streak mini card in this sidebar slot) */
+  .mood-mini-card{
+    padding:12px 14px;
     border-radius:var(--r-md);
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:8px;
     background:#1a3c36;
     border:1px solid rgba(74,222,128,0.55);
   }
-  .streak-mini-flame{
-    font-size:0.78rem;
+  .mood-mini-title{
+    margin:0;
+    font-size:0.6rem;
     font-weight:700;
-    color:var(--ink);
-    text-align:center;
-  }
-  .streak-mini-goal{
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-  }
-  .streak-mini-track{
-    height:6px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.08);
-    overflow:hidden;
-  }
-  .streak-mini-fill{
-    height:100%;
-    border-radius:999px;
-    background:var(--secondbrain);
-    width:0%;
-    transition:width .3s ease, background .3s ease;
-  }
-  .streak-mini-fill.met{ background:#4ade80; }
-  .streak-mini-label{
-    font-size:0.609rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
     color:var(--ink-faint);
     text-align:center;
   }
+  .mood-mini-row{
+    display:flex;
+    gap:8px;
+  }
+  .mood-mini-block{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    padding:6px 4px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.03);
+  }
+  .mood-mini-label{
+    font-size:0.52rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+  }
+  .mood-mini-emoji{ font-size:1.15rem; line-height:1; }
+  .mood-mini-empty-mark{ font-size:0.85rem; color:var(--ink-faint); }
 
   /* Currently mini card (read-only, sourced from hobbies-subpage.html) */
   .currently-mini-card{
@@ -1273,8 +1277,9 @@
     margin-bottom:12px;
   }
   .lab-due-soonest{ font-size:0.6rem; color:var(--ink-faint); }
-  .lab-task-row{ display:flex; align-items:center; gap:8px; }
+  .lab-task-row{ display:flex; align-items:flex-start; gap:8px; }
   .lab-task-row.due-soon{ background:rgba(74,222,128,0.14); border-left:3px solid #4ade80; padding-left:5px; border-radius:4px; }
+  .lab-task-row .task-checkbox{ margin-top:3px; }
   .task-text-input{
     flex:1;
     background:transparent;
@@ -1287,6 +1292,11 @@
     outline:none;
     min-width:0;
     transition:border-color .15s ease;
+    resize:none;
+    overflow:hidden;
+    white-space:pre-wrap;
+    word-break:break-word;
+    line-height:1.35;
   }
   .task-text-input:focus{ border-bottom-color:rgba(255,255,255,0.32); color:var(--ink); }
   .task-date-input{
@@ -1300,6 +1310,7 @@
     color-scheme:dark;
     outline:none;
     flex-shrink:0;
+    margin-top:2px;
     transition:background .15s ease, border-color .15s ease;
   }
   .task-date-input:focus{
@@ -1593,12 +1604,14 @@
     overflow:hidden;
   }
   /* ---------- Bottom section ----------
-     5-column grid, 2 rows. Deadlines spans columns 1-3 (left, next
-     to the sidebar, wide), hobbies/physical stack in column 4, and
-     tasklist takes column 4 on the far right, matching the same
-     single-column width as hobbies/physical (Calendar moved up into
-     the top-section, replacing Deadlines there — see .top-section /
-     .calendar-card rules). */
+     4-column grid, 2 rows. Deadlines spans columns 1-2 (left, next
+     to the sidebar, wide), the Notepad (formerly Tasklist) takes
+     column 3, and Hobbies now fills the entire column 4 on the far
+     right (the Physical Health / mood card that used to share that
+     column was removed — its mood readout lives in the sidebar mini
+     card now — so Hobbies expands to take the full height it freed
+     up; Calendar moved up into the top-section, replacing Deadlines
+     there — see .top-section / .calendar-card rules). */
   .bottom-section{
     display:grid;
     grid-template-columns:repeat(4, 1fr);
@@ -1608,9 +1621,8 @@
     min-height:220px;
   }
   .bottom-section .deadlines-card{ grid-column:1 / 3; grid-row:1 / 3; }
-  .hobbies-card{ grid-column:3; grid-row:1; }
-  .physical-health-card{ grid-column:3; grid-row:2; }
-  .tasklist-card{ grid-column:4; grid-row:1 / 3; }
+  .tasklist-card{ grid-column:3; grid-row:1 / 3; }
+  .hobbies-card{ grid-column:4; grid-row:1 / 3; }
   .bottom-card{ padding:20px; }
   .bottom-card .card-eyebrow{ font-size:0.8rem; margin-bottom:14px; }
   .bottom-card .card-eyebrow .material-symbols-outlined{ font-size:19px; }
@@ -1745,136 +1757,244 @@
     padding:12px 0;
   }
 
-  /* ---------- Tasklist card (index.html) ---------- */
+  /* ---------- Notepad card (index.html) ----------
+     Freeform Apple-Notes-style surface, replacing the old single-line
+     Tasklist. Binder-tab dividers on the left (.notepad-dividers)
+     each hold an independent contenteditable note; a small formatting
+     toolbar sits above the writing surface (.notepad-surface). */
   .tasklist-card{
     border:1px solid rgba(220,38,38,0.55);
     box-shadow:0 0 18px 0 rgba(220,38,38,0.125), inset 0 1px 0 rgba(252,165,165,0.5);
+    padding:0 !important;
+    overflow:hidden;
   }
-  .tasklist-header{
-    margin:0 0 12px;
-    font-size:0.8rem;
-    font-weight:700;
-    text-align:left;
-    text-transform:uppercase;
-    color:#dc2626;
-    letter-spacing:0.14em;
-  }
-  .tasklist-items{
+  .notepad-shell{
+    display:flex;
     flex:1;
     min-height:0;
+    width:100%;
+    background:#1c1c1e;
+  }
+  .notepad-dividers{
+    width:112px;
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    border-right:1px solid rgba(255,255,255,0.08);
+    background:rgba(0,0,0,0.22);
+    padding:14px 0;
+    gap:2px;
     overflow-y:auto;
+    transition:width .18s ease, opacity .18s ease;
+  }
+  .notepad-dividers.collapsed{
+    width:0;
+    padding-left:0;
+    padding-right:0;
+    opacity:0;
+    pointer-events:none;
+    border-right-color:transparent;
+  }
+  .notepad-tabs{
     display:flex;
     flex-direction:column;
     gap:2px;
-    padding-right:2px;
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
   }
-  .tasklist-row{
+  .notepad-tab{
     display:flex;
     align-items:center;
-    gap:7px;
-    padding:5px 2px;
+    justify-content:space-between;
+    gap:6px;
+    padding:9px 10px 9px 14px;
+    border:none;
+    border-left:3px solid transparent;
+    background:transparent;
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.66rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    text-align:left;
+    cursor:pointer;
+    border-radius:0 var(--r-sm) var(--r-sm) 0;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
   }
-  .tasklist-num{
-    font-size:0.95rem;
-    font-weight:800;
-    color:rgba(220,38,38,0.85);
-    width:22px;
-    flex-shrink:0;
-    text-align:right;
+  .notepad-tab:hover{ background:rgba(255,255,255,0.05); color:var(--ink); }
+  .notepad-tab.active{
+    background:rgba(220,38,38,0.14);
+    border-left-color:#dc2626;
+    color:var(--ink);
   }
-  .tasklist-del{
-    width:16px; height:16px;
+  .notepad-tab-label{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    min-width:0;
+    flex:1;
+  }
+  .notepad-tab-remove{
     flex-shrink:0;
+    opacity:0;
+    font-size:0.85rem;
+    line-height:1;
+    color:var(--ink-faint);
+    transition:opacity .15s ease, color .15s ease;
+  }
+  .notepad-tab:hover .notepad-tab-remove{ opacity:0.7; }
+  .notepad-tab-remove:hover{ opacity:1 !important; color:#f87171; }
+  .notepad-add-tab-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:8px 10px 0;
+    padding:6px;
+    border:1px dashed rgba(255,255,255,0.16);
+    border-radius:var(--r-sm);
+    background:none;
+    color:var(--ink-faint);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .notepad-add-tab-btn:hover{ background:rgba(255,255,255,0.05); color:var(--ink); }
+  .notepad-add-tab-btn .material-symbols-outlined{ font-size:15px; }
+  .notepad-tab-add-input{
+    margin:8px 10px 0;
+    padding:6px 8px;
+    border:1px solid rgba(220,38,38,0.45);
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.04);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.66rem;
+    font-weight:700;
+    outline:none;
+    flex-shrink:0;
+    width:calc(100% - 20px);
+    box-sizing:border-box;
+  }
+  .notepad-tab-rename-input{
+    flex:1;
+    min-width:0;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(220,38,38,0.45);
+    border-radius:4px;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.66rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    padding:2px 4px;
+    outline:none;
+  }
+
+  .notepad-main{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+  }
+  .notepad-toolbar{
+    display:flex;
+    align-items:center;
+    gap:2px;
+    padding:9px 10px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    flex-shrink:0;
+  }
+  .notepad-toolbar-divider{
+    width:1px;
+    height:16px;
+    background:rgba(255,255,255,0.1);
+    margin:0 6px;
+    flex-shrink:0;
+  }
+  .notepad-collapse-btn,
+  .notepad-tool-btn{
+    width:26px; height:26px;
+    border-radius:7px;
+    border:none;
+    background:transparent;
+    color:var(--ink-dim);
     display:flex;
     align-items:center;
     justify-content:center;
     cursor:pointer;
-    color:var(--ink-faint);
-    font-size:13px !important;
-    opacity:0.6;
-    transition:opacity .15s ease, color .15s ease;
-  }
-  .tasklist-del:hover{ opacity:1; color:#f87171; }
-  .tasklist-checkbox{
-    appearance:none;
-    -webkit-appearance:none;
-    width:14px; height:14px;
-    border-radius:4px;
-    border:1.5px solid rgba(220,38,38,0.45);
-    background:transparent;
-    cursor:pointer;
     flex-shrink:0;
+    transition:background .15s ease, color .15s ease;
+  }
+  .notepad-collapse-btn:hover,
+  .notepad-tool-btn:hover{ background:rgba(255,255,255,0.07); color:var(--ink); }
+  .notepad-tool-btn.active{ background:rgba(220,38,38,0.18); color:#f87171; }
+  .notepad-collapse-btn .material-symbols-outlined,
+  .notepad-tool-btn .material-symbols-outlined{ font-size:16px; }
+
+  .notepad-surface{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:16px 20px 20px;
+    font-size:0.8rem;
+    line-height:1.6;
+    color:var(--ink);
+    outline:none;
+    overflow-wrap:break-word;
+    word-break:break-word;
+  }
+  .notepad-surface > *:first-child{
+    font-size:0.95rem;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .notepad-surface.is-empty{ position:relative; }
+  .notepad-surface.is-empty::before{
+    content:attr(data-placeholder);
+    position:absolute;
+    color:var(--ink-faint);
+    font-style:italic;
+    pointer-events:none;
+  }
+  .notepad-surface div,
+  .notepad-surface p{ margin:0 0 2px; }
+  .notepad-surface ol,
+  .notepad-surface ul{ margin:2px 0 2px 20px; padding:0; }
+  .notepad-surface li{ margin-bottom:2px; }
+  .notepad-surface blockquote{
+    margin:2px 0 2px 20px;
+    padding-left:10px;
+    border-left:2px solid rgba(220,38,38,0.35);
+  }
+  .note-checklist-item{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .note-checkbox{
+    width:14px; height:14px;
+    margin-top:3px;
+    border-radius:4px;
+    border:1.5px solid rgba(220,38,38,0.5);
+    flex-shrink:0;
+    cursor:pointer;
     position:relative;
     transition:background .15s ease, border-color .15s ease;
   }
-  .tasklist-checkbox:hover{ border-color:rgba(220,38,38,0.85); }
-  .tasklist-checkbox:disabled{ cursor:default; opacity:0.4; }
-  .tasklist-checkbox:checked{ background:#dc2626; border-color:#dc2626; }
-  .tasklist-checkbox:checked::after{
+  .note-checkbox:hover{ border-color:rgba(220,38,38,0.85); }
+  .note-checklist-item.done .note-checkbox{ background:#dc2626; border-color:#dc2626; }
+  .note-checklist-item.done .note-checkbox::after{
     content:'';
     position:absolute;
-    left:4px; top:1px;
+    left:3px; top:0;
     width:3px; height:7px;
     border:solid #fff;
     border-width:0 2px 2px 0;
     transform:rotate(45deg);
   }
-  .tasklist-text{
-    flex:1;
-    min-width:0;
-    background:transparent;
-    border:none;
-    border-bottom:1px solid transparent;
-    color:var(--ink);
-    font-family:inherit;
-    font-size:0.76rem;
-    padding:3px 2px;
-    outline:none;
-  }
-  .tasklist-text:focus{ border-bottom-color:rgba(220,38,38,0.35); }
-  .tasklist-text.completed{ text-decoration:line-through; color:var(--ink-faint); }
-  .tasklist-text::placeholder{ color:var(--ink-faint); }
+  .note-checklist-item .note-text{ flex:1; min-width:0; outline:none; }
+  .note-checklist-item.done .note-text{ text-decoration:line-through; color:var(--ink-faint); }
 
-  /* ---------- Physical Health card (index.html) ---------- */
-  .physical-health-card{
-    border:1px solid rgba(167,139,250,0.55);
-    box-shadow:0 0 18px 0 rgba(167,139,250,0.125), inset 0 1px 0 rgba(221,214,254,0.5);
-  }
-  .physical-divider{
-    height:1px;
-    background:rgba(255,255,255,0.08);
-    margin:14px 0;
-    flex-shrink:0;
-  }
-  .physical-mood-row{
-    display:flex;
-    gap:12px;
-    flex:1;
-    min-height:96px;
-  }
-  .physical-mood-block{
-    flex:1;
-    min-width:0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-    padding:14px 10px;
-    border-radius:var(--r-md);
-    border:1px solid rgba(255,255,255,0.08);
-    background:rgba(255,255,255,0.03);
-  }
-  .physical-mood-label{
-    font-size:0.6rem;
-    font-weight:700;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--ink-faint);
-  }
-  .physical-mood-emoji{ font-size:1.9rem; line-height:1; }
-  .physical-mood-name{ font-size:0.8rem; font-weight:700; }
-  .physical-mood-empty-mark{ font-size:1.4rem; color:var(--ink-faint); }
 
   /* ---------- Pomodoro Timer Card (ported from academic-subpage.html;
      mobile-only here — hidden on desktop, where this dashboard has no
@@ -2451,14 +2571,9 @@
       </button>
     </div>
 
-    <div class="streak-mini-card glass">
-      <div class="streak-mini-flame mono" id="sidebar-streak-flame">🔥 0 day streak</div>
-      <div class="streak-mini-goal">
-        <div class="streak-mini-track">
-          <div class="streak-mini-fill" id="sidebar-goal-fill"></div>
-        </div>
-        <div class="streak-mini-label mono" id="sidebar-goal-label">0.0 hrs / 10 hrs</div>
-      </div>
+    <div class="mood-mini-card glass">
+      <p class="mood-mini-title mono">Today's Mood</p>
+      <div class="mood-mini-row" id="sidebar-mood-row"></div>
     </div>
 
     <div class="currently-mini-card glass">
@@ -2617,6 +2732,7 @@
             <button type="button" class="calendar-tab" data-view="timeGridDay">1D</button>
             <button type="button" class="calendar-tab active" data-view="timeGridThreeDay">3D</button>
             <button type="button" class="calendar-tab" data-view="timeGridFiveDay">5D</button>
+            <button type="button" class="calendar-tab" data-view="dayGridMonth" title="Month">M</button>
           </div>
           <div class="calendar-range-toggles" id="calendar-range-toggles">
             <button type="button" class="calendar-range-btn" data-min="00:00:00" data-max="24:00:00">24h</button>
@@ -2687,10 +2803,38 @@
     <!-- Bottom: three cards, full width -->
     <div class="bottom-section">
 
-      <div class="card glass bottom-card tasklist-card">
+      <div class="card glass bottom-card tasklist-card notepad-card">
         <div class="accent-blob" style="background:rgba(220,38,38,0.14);"></div>
-        <p class="tasklist-header">Tasklist</p>
-        <div class="tasklist-items" id="tasklist-items"></div>
+        <div class="notepad-shell">
+          <div class="notepad-dividers" id="notepad-dividers">
+            <div class="notepad-tabs" id="notepad-tabs"></div>
+            <input type="text" class="notepad-tab-add-input" id="notepad-tab-add-input" placeholder="Divider name…" style="display:none;" onkeydown="handleNotepadAddTabKeydown(event)" onblur="commitNotepadAddTab()">
+            <button type="button" class="notepad-add-tab-btn" id="notepad-add-tab-btn" onclick="startAddNotepadTab()" title="Add divider">
+              <span class="material-symbols-outlined">add</span>
+            </button>
+          </div>
+          <div class="notepad-main">
+            <div class="notepad-toolbar">
+              <button type="button" class="notepad-collapse-btn" onclick="toggleNotepadSidebar()" title="Toggle dividers">
+                <span class="material-symbols-outlined">left_panel_close</span>
+              </button>
+              <div class="notepad-toolbar-divider"></div>
+              <button type="button" class="notepad-tool-btn" data-tool="plain" onclick="notepadSetPlain()" title="Plain Text">
+                <span class="material-symbols-outlined">notes</span>
+              </button>
+              <button type="button" class="notepad-tool-btn" data-tool="checklist" onclick="notepadToggleChecklist()" title="Checklist">
+                <span class="material-symbols-outlined">checklist</span>
+              </button>
+              <button type="button" class="notepad-tool-btn" data-tool="numbered" onclick="notepadExec('insertOrderedList')" title="Numbered List">
+                <span class="material-symbols-outlined">format_list_numbered</span>
+              </button>
+              <button type="button" class="notepad-tool-btn" data-tool="indent" onclick="notepadExec('indent')" title="Indent / Sub-item">
+                <span class="material-symbols-outlined">format_indent_increase</span>
+              </button>
+            </div>
+            <div class="notepad-surface" id="notepad-surface" contenteditable="true" data-placeholder="Start typing…" oninput="notepadOnInput()" onkeydown="handleNotepadKeydown(event)"></div>
+          </div>
+        </div>
       </div>
 
       <div class="card glass bottom-card hobbies-card">
@@ -2709,15 +2853,6 @@
           <p class="hobbies-col-label mono" style="margin-bottom:8px;">All Courses</p>
           <div class="hobbies-courses-grid" id="hobbies-courses-grid"></div>
         </div>
-      </div>
-
-      <div class="card glass bottom-card physical-health-card">
-        <div class="accent-blob" style="background:rgba(167,139,250,0.14);"></div>
-        <div class="card-eyebrow" style="color:var(--physical-nav);">
-          Physical Health
-        </div>
-
-        <div class="physical-mood-row" id="physical-mood-row"></div>
       </div>
 
       <div class="card glass deadlines-card deadlines-compact">
@@ -4222,17 +4357,34 @@
   function getLabTasks(lab){ return loadJSON('la_' + lab + '_tasks', []); }
   function saveLabTasks(lab, list){ saveJSON('la_' + lab + '_tasks', list); }
 
-  function renderLabTasks(lab){
+  function rolloverOverdueLabTasks(lab){
     var list = getLabTasks(lab);
+    var today = getAdjustedDate();
+    var changed = false;
+    list.forEach(function(task){
+      if(task.due && task.due < today){ task.due = today; changed = true; }
+    });
+    if(changed) saveLabTasks(lab, list);
+    return list;
+  }
+
+  function autoGrowTaskInput(el){
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  function renderLabTasks(lab){
+    var list = rolloverOverdueLabTasks(lab);
     var ul = document.getElementById(lab + '-task-list');
     ul.innerHTML = list.map(function(task){
       var dueSoon = task.due && daysBetweenAdjusted(task.due) >= 0 && daysBetweenAdjusted(task.due) <= 1;
       return '<li class="lab-task-row'+ (dueSoon ? ' due-soon' : '') +'">' +
         '<input type="checkbox" class="task-checkbox" onclick="deleteLabTask(\''+lab+'\',\''+task.id+'\')">' +
-        '<input type="text" class="task-text-input" value="'+ escapeAttr(task.text) +'" placeholder="Task description" oninput="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">' +
+        '<textarea class="task-text-input" rows="1" placeholder="Task description" oninput="autoGrowTaskInput(this); updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'text\',this.value)">'+ escapeHtml(task.text) +'</textarea>' +
         '<input type="date" class="task-date-input" value="'+ (task.due || '') +'" onchange="updateLabTaskField(\''+lab+'\',\''+task.id+'\',\'due\',this.value)">' +
       '</li>';
     }).join('');
+    document.querySelectorAll('#'+lab+'-task-list .task-text-input').forEach(autoGrowTaskInput);
     renderLabDueSoonest(lab);
   }
 
@@ -4342,30 +4494,6 @@
     return Math.round((b - a) / 86400000);
   }
 
-  function getEffectiveSidebarStreak(){
-    var s = loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null });
-    if(!s.lastCompletedDate) return 0;
-    var gap = diffDaysISO(s.lastCompletedDate, getAdjustedDate());
-    return gap > 1 ? 0 : s.current;
-  }
-
-  function getSidebarWeeklyHours(){
-    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
-    if(w.weekStart !== getMondayKey()) return 0;
-    return w.weekSeconds / 3600;
-  }
-
-  function renderSidebarStreak(){
-    var current = getEffectiveSidebarStreak();
-    var goal = loadJSON('la_weekly_goal_academic', 10);
-    var hours = getSidebarWeeklyHours();
-    var pct = goal > 0 ? Math.min(100, (hours / goal) * 100) : 0;
-    document.getElementById('sidebar-streak-flame').textContent = '🔥 ' + current + ' day streak';
-    var fill = document.getElementById('sidebar-goal-fill');
-    fill.style.width = pct + '%';
-    fill.classList.toggle('met', goal > 0 && hours >= goal);
-    document.getElementById('sidebar-goal-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs';
-  }
 
   /* ============================================================
      Pomodoro Timer Card (mobile-only UI; ported from
@@ -4377,9 +4505,10 @@
      card (streak-current/streak-best/goal-progress-*) that doesn't
      exist here — recordPomodoroCompletion() below only writes the
      streak data (not academic's renderStreak()/renderWeeklyGoal(),
-     which target those missing elements), and tickPomo() refreshes
-     this page's own sidebar mini streak widget via the
-     renderSidebarStreak() already defined above instead.
+     which target those missing elements). This page no longer shows
+     a streak widget of its own at all (see the sidebar mood mini
+     card below instead), so tickPomo() doesn't need to refresh
+     anything streak-related after a completion.
   ============================================================ */
   var pomoInterval = null;
   var pomoAudioCtx = null;
@@ -4524,7 +4653,6 @@
     }
     savePomoState(state);
     renderPomo();
-    renderSidebarStreak();
   }
 
   function togglePomoSettings(){
@@ -4623,167 +4751,353 @@
   }
 
   /* ============================================================
-     Physical Health card — mood (la_checkin_morning_/night_)
+     Sidebar mood mini card — condensed morning/night check-in summary
+     (la_checkin_morning_/night_). Replaces the old sidebar Study
+     Streak widget and the standalone Physical Health/Mood card that
+     used to live in the bottom-section grid.
   ============================================================ */
-  var PHYSICAL_MORNING_MOOD_VALUES = { Energized:1.0, Calm:0.6, Content:0.3, Lethargic:-0.3, Anxious:-0.6, Stressed:-0.8 };
-  var PHYSICAL_NIGHT_MOOD_VALUES = { Excited:1.0, Content:0.6, Calm:0.3, Drained:-0.3, Anxious:-0.6, Sad:-0.8, Depressed:-1.0 };
-  var PHYSICAL_MOOD_EMOJI = { Energized:'⚡', Excited:'✨', Content:'😌', Calm:'🌊', Lethargic:'😴', Drained:'🪫', Anxious:'😰', Stressed:'🔥', Sad:'🌧️', Depressed:'🌑' };
+  var SIDEBAR_MOOD_MORNING_VALUES = { Energized:1.0, Calm:0.6, Content:0.3, Lethargic:-0.3, Anxious:-0.6, Stressed:-0.8 };
+  var SIDEBAR_MOOD_NIGHT_VALUES = { Excited:1.0, Content:0.6, Calm:0.3, Drained:-0.3, Anxious:-0.6, Sad:-0.8, Depressed:-1.0 };
+  var SIDEBAR_MOOD_EMOJI = { Energized:'⚡', Excited:'✨', Content:'😌', Calm:'🌊', Lethargic:'😴', Drained:'🪫', Anxious:'😰', Stressed:'🔥', Sad:'🌧️', Depressed:'🌑' };
 
-  function physicalMoodValue(period, mood){
-    var map = period === 'morning' ? PHYSICAL_MORNING_MOOD_VALUES : PHYSICAL_NIGHT_MOOD_VALUES;
+  function sidebarMoodValue(period, mood){
+    var map = period === 'morning' ? SIDEBAR_MOOD_MORNING_VALUES : SIDEBAR_MOOD_NIGHT_VALUES;
     return mood && map.hasOwnProperty(mood) ? map[mood] : null;
   }
 
-  function physicalMoodBlockHtml(period, mood){
-    var label = period === 'morning' ? 'MORNING' : 'NIGHT';
+  function sidebarMoodBlockHtml(period, mood){
+    var label = period === 'morning' ? 'AM' : 'PM';
     if(!mood){
-      return '<div class="physical-mood-block empty">' +
-          '<span class="physical-mood-label mono">' + label + '</span>' +
-          '<span class="physical-mood-empty-mark">—</span>' +
+      return '<div class="mood-mini-block">' +
+          '<span class="mood-mini-label mono">' + label + '</span>' +
+          '<span class="mood-mini-empty-mark">—</span>' +
         '</div>';
     }
-    var v = physicalMoodValue(period, mood);
+    var v = sidebarMoodValue(period, mood);
     var hue = v == null || v >= 0 ? 142 : 4;
     var mag = v == null ? 0 : Math.min(1, Math.abs(v));
     var sat = 60 + mag * 10;
-    var textColor = 'hsl(' + hue + ', ' + sat + '%, ' + (68 - mag * 14) + '%)';
-    var bg = 'hsla(' + hue + ', ' + sat + '%, 50%, 0.12)';
-    var border = 'hsla(' + hue + ', ' + sat + '%, 55%, 0.32)';
-    var emoji = PHYSICAL_MOOD_EMOJI[mood] || '❔';
-    return '<div class="physical-mood-block" style="background:' + bg + '; border-color:' + border + ';">' +
-        '<span class="physical-mood-label mono">' + label + '</span>' +
-        '<span class="physical-mood-emoji">' + emoji + '</span>' +
-        '<span class="physical-mood-name" style="color:' + textColor + ';">' + escapeHtml(mood) + '</span>' +
+    var bg = 'hsla(' + hue + ', ' + sat + '%, 50%, 0.14)';
+    var border = 'hsla(' + hue + ', ' + sat + '%, 55%, 0.35)';
+    var emoji = SIDEBAR_MOOD_EMOJI[mood] || '❔';
+    return '<div class="mood-mini-block" style="background:' + bg + '; border-color:' + border + ';" title="' + escapeAttr(mood) + '">' +
+        '<span class="mood-mini-label mono">' + label + '</span>' +
+        '<span class="mood-mini-emoji">' + emoji + '</span>' +
       '</div>';
   }
 
-  function renderPhysicalMood(){
+  function renderSidebarMood(){
+    var row = document.getElementById('sidebar-mood-row');
+    if(!row) return;
     var today = getAdjustedDate();
     var mData = loadJSON('la_checkin_morning_' + today, null);
     var nData = loadJSON('la_checkin_night_' + today, null);
-    document.getElementById('physical-mood-row').innerHTML =
-      physicalMoodBlockHtml('morning', mData ? mData.mood : null) +
-      physicalMoodBlockHtml('night', nData ? nData.mood : null);
-  }
-
-  function renderPhysicalHealthCard(){
-    renderPhysicalMood();
+    row.innerHTML =
+      sidebarMoodBlockHtml('morning', mData ? mData.mood : null) +
+      sidebarMoodBlockHtml('night', nData ? nData.mood : null);
   }
 
   /* ============================================================
-     Tasklist card — la_tasklist
-     Stored array is always kept in display order (incomplete
-     tasks first, completed tasks at the bottom) so Enter/Backspace
-     can splice directly at the row's index. A trailing unsaved
-     placeholder row is always rendered for adding the next task.
+     Notepad card — la_notepad_tabs / la_notepad_active_tab /
+     la_notepad_note_<tabId>
+     Freeform Apple-Notes-style surface (replaces the old single-line
+     Tasklist). Each binder divider tab is an independent note; its
+     contenteditable HTML is stored under its own la_notepad_note_
+     key so switching tabs swaps the whole editor surface.
   ============================================================ */
-  var TASKLIST_PLACEHOLDER_ID = '__placeholder__';
-
-  function getTasklist(){ return loadJSON('la_tasklist', []); }
-  function saveTasklistData(list){ saveJSON('la_tasklist', list); }
-
-  function buildTasklistRowHtml(t, num){
-    var isPlaceholder = t.id === TASKLIST_PLACEHOLDER_ID;
-    return '<div class="tasklist-row" data-id="' + t.id + '">' +
-        '<span class="tasklist-num mono">' + num + '.</span>' +
-        '<input type="checkbox" class="tasklist-checkbox"' + (t.completed ? ' checked' : '') + (isPlaceholder ? ' disabled' : '') + ' onclick="toggleTasklistItem(\'' + t.id + '\')">' +
-        '<input type="text" class="tasklist-text' + (t.completed ? ' completed' : '') + '" value="' + escapeAttr(t.text) + '" placeholder="Type a task…" ' +
-          'oninput="updateTasklistText(\'' + t.id + '\', this.value)" ' +
-          'onkeydown="handleTasklistKeydown(event, \'' + t.id + '\')">' +
-        (isPlaceholder ? '' : '<span class="material-symbols-outlined tasklist-del" onclick="deleteTasklistItem(\'' + t.id + '\')" title="Delete task">close</span>') +
-      '</div>';
+  function getNotepadTabs(){
+    return loadJSON('la_notepad_tabs', [
+      { id:'quick-tasks', name:'Quick Tasks' },
+      { id:'projects', name:'Projects' },
+      { id:'scratchpad', name:'Scratchpad' }
+    ]);
   }
+  function saveNotepadTabs(list){ saveJSON('la_notepad_tabs', list); }
 
-  function renderTasklist(){
-    var wrap = document.getElementById('tasklist-items');
+  function getActiveNotepadTabId(){
+    var tabs = getNotepadTabs();
+    var id = loadJSON('la_notepad_active_tab', tabs[0].id);
+    return tabs.some(function(t){ return t.id === id; }) ? id : tabs[0].id;
+  }
+  function setActiveNotepadTabId(id){ saveJSON('la_notepad_active_tab', id); }
+
+  function getNoteContent(id){ return loadJSON('la_notepad_note_' + id, ''); }
+  function saveNoteContent(id, html){ saveJSON('la_notepad_note_' + id, html); }
+
+  function notepadSurface(){ return document.getElementById('notepad-surface'); }
+
+  function renderNotepadTabs(){
+    var tabs = getNotepadTabs();
+    var activeId = getActiveNotepadTabId();
+    var wrap = document.getElementById('notepad-tabs');
     if(!wrap) return;
-    var tasks = getTasklist();
-    var html = tasks.map(function(t, i){ return buildTasklistRowHtml(t, i + 1); }).join('');
-    html += buildTasklistRowHtml({ id: TASKLIST_PLACEHOLDER_ID, text:'', completed:false }, tasks.length + 1);
-    wrap.innerHTML = html;
+    wrap.innerHTML = tabs.map(function(t){
+      return '<button type="button" class="notepad-tab' + (t.id === activeId ? ' active' : '') + '" onclick="switchNotepadTab(\'' + t.id + '\')" ondblclick="event.stopPropagation(); startRenameNotepadTab(\'' + t.id + '\', this)" title="Double-click to rename">' +
+          '<span class="notepad-tab-label">' + escapeHtml(t.name) + '</span>' +
+          (tabs.length > 1 ? '<span class="notepad-tab-remove" onclick="event.stopPropagation(); deleteNotepadTab(\'' + t.id + '\')" title="Delete divider">&times;</span>' : '') +
+        '</button>';
+    }).join('');
   }
 
-  function focusTasklistInput(id, caretPos){
-    var row = document.querySelector('.tasklist-row[data-id="' + id + '"]');
-    if(!row) return;
-    var input = row.querySelector('.tasklist-text');
-    if(!input) return;
+  function updateNotepadPlaceholder(){
+    var surface = notepadSurface();
+    if(!surface) return;
+    var empty = surface.textContent.replace(/\u200B/g, '').trim() === '';
+    surface.classList.toggle('is-empty', empty);
+  }
+
+  function loadActiveNote(){
+    var surface = notepadSurface();
+    if(!surface) return;
+    surface.innerHTML = getNoteContent(getActiveNotepadTabId());
+    updateNotepadPlaceholder();
+  }
+
+  function saveActiveNote(){
+    var surface = notepadSurface();
+    if(!surface) return;
+    saveNoteContent(getActiveNotepadTabId(), surface.innerHTML);
+  }
+
+  function notepadOnInput(){
+    saveActiveNote();
+    updateNotepadPlaceholder();
+  }
+
+  function switchNotepadTab(id){
+    if(id === getActiveNotepadTabId()) return;
+    saveActiveNote();
+    setActiveNotepadTabId(id);
+    renderNotepadTabs();
+    loadActiveNote();
+  }
+
+  /* Inline add/rename instead of window.prompt() — prompt() is a
+     no-op (silently returns null) in the sandboxed/embedded webviews
+     this app sometimes runs in, which made "+" look completely dead
+     there even though the handler itself was firing correctly. */
+  function startAddNotepadTab(){
+    var input = document.getElementById('notepad-tab-add-input');
+    var btn = document.getElementById('notepad-add-tab-btn');
+    if(!input || !btn) return;
+    btn.style.display = 'none';
+    input.style.display = '';
+    input.value = '';
     input.focus();
-    if(caretPos != null) input.setSelectionRange(caretPos, caretPos);
   }
 
-  function updateTasklistText(id, value){
-    var tasks = getTasklist();
-    if(id === TASKLIST_PLACEHOLDER_ID){
-      if(value === '') return;
-      var newTask = { id: uid(), text: value, completed:false };
-      tasks.push(newTask);
-      saveTasklistData(tasks);
-      renderTasklist();
-      focusTasklistInput(newTask.id, value.length);
-      return;
-    }
-    var t = tasks.find(function(x){ return x.id === id; });
-    if(t){ t.text = value; saveTasklistData(tasks); }
+  function commitNotepadAddTab(){
+    var input = document.getElementById('notepad-tab-add-input');
+    var btn = document.getElementById('notepad-add-tab-btn');
+    if(!input || !btn || input.style.display === 'none') return;
+    var name = input.value.trim();
+    input.style.display = 'none';
+    btn.style.display = '';
+    if(!name) return;
+    saveActiveNote();
+    var tabs = getNotepadTabs();
+    var id = uid();
+    tabs.push({ id: id, name: name });
+    saveNotepadTabs(tabs);
+    setActiveNotepadTabId(id);
+    renderNotepadTabs();
+    loadActiveNote();
   }
 
-  function toggleTasklistItem(id){
-    if(id === TASKLIST_PLACEHOLDER_ID) return;
-    var tasks = getTasklist();
-    var idx = tasks.findIndex(function(x){ return x.id === id; });
-    if(idx === -1) return;
-    var task = tasks[idx];
-    task.completed = !task.completed;
-    tasks.splice(idx, 1);
-    if(task.completed){
-      tasks.push(task);
-    } else {
-      var firstCompletedIdx = tasks.findIndex(function(x){ return x.completed; });
-      if(firstCompletedIdx === -1) tasks.push(task);
-      else tasks.splice(firstCompletedIdx, 0, task);
-    }
-    saveTasklistData(tasks);
-    renderTasklist();
-  }
-
-  function deleteTasklistItem(id){
-    if(id === TASKLIST_PLACEHOLDER_ID) return;
-    var tasks = getTasklist();
-    var idx = tasks.findIndex(function(x){ return x.id === id; });
-    if(idx === -1) return;
-    tasks.splice(idx, 1);
-    saveTasklistData(tasks);
-    renderTasklist();
-  }
-
-  function handleTasklistKeydown(e, id){
+  function handleNotepadAddTabKeydown(e){
     if(e.key === 'Enter'){
       e.preventDefault();
-      if(id === TASKLIST_PLACEHOLDER_ID) return;
-      var tasks = getTasklist();
-      var idx = tasks.findIndex(function(x){ return x.id === id; });
-      if(idx === -1) return;
-      var newTask = { id: uid(), text:'', completed:false };
-      tasks.splice(idx + 1, 0, newTask);
-      saveTasklistData(tasks);
-      renderTasklist();
-      focusTasklistInput(newTask.id, 0);
-    } else if(e.key === 'Backspace'){
-      if(e.target.value !== '') return;
-      if(id === TASKLIST_PLACEHOLDER_ID) return;
+      commitNotepadAddTab();
+    } else if(e.key === 'Escape'){
       e.preventDefault();
-      var tasks2 = getTasklist();
-      var idx2 = tasks2.findIndex(function(x){ return x.id === id; });
-      if(idx2 === -1) return;
-      tasks2.splice(idx2, 1);
-      saveTasklistData(tasks2);
-      renderTasklist();
-      if(idx2 > 0){
-        var prev = tasks2[idx2 - 1];
-        focusTasklistInput(prev.id, prev.text.length);
-      } else {
-        focusTasklistInput(TASKLIST_PLACEHOLDER_ID, 0);
+      var input = document.getElementById('notepad-tab-add-input');
+      var btn = document.getElementById('notepad-add-tab-btn');
+      input.value = '';
+      input.style.display = 'none';
+      btn.style.display = '';
+    }
+  }
+
+  function startRenameNotepadTab(id, tabEl){
+    var tabs = getNotepadTabs();
+    var tab = tabs.find(function(t){ return t.id === id; });
+    var labelEl = tabEl.querySelector('.notepad-tab-label');
+    if(!tab || !labelEl) return;
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'notepad-tab-rename-input';
+    input.value = tab.name;
+    input.onclick = function(e){ e.stopPropagation(); };
+    input.onkeydown = function(e){
+      if(e.key === 'Enter'){ e.preventDefault(); input.blur(); }
+      else if(e.key === 'Escape'){ e.preventDefault(); input.dataset.cancelled = '1'; input.blur(); }
+    };
+    input.onblur = function(){
+      if(input.dataset.cancelled !== '1'){
+        var name = input.value.trim();
+        if(name){
+          var tabsNow = getNotepadTabs();
+          var t = tabsNow.find(function(x){ return x.id === id; });
+          if(t){ t.name = name; saveNotepadTabs(tabsNow); }
+        }
       }
+      renderNotepadTabs();
+    };
+    labelEl.replaceWith(input);
+    input.focus();
+    input.select();
+  }
+
+  function deleteNotepadTab(id){
+    var tabs = getNotepadTabs();
+    if(tabs.length <= 1) return;
+    if(!confirm('Delete this divider and its note? This cannot be undone.')) return;
+    tabs = tabs.filter(function(t){ return t.id !== id; });
+    saveNotepadTabs(tabs);
+    localStorage.removeItem('la_notepad_note_' + id);
+    if(!tabs.some(function(t){ return t.id === getActiveNotepadTabId(); })){
+      setActiveNotepadTabId(tabs[0].id);
+    }
+    renderNotepadTabs();
+    loadActiveNote();
+  }
+
+  function toggleNotepadSidebar(){
+    var el = document.getElementById('notepad-dividers');
+    if(!el) return;
+    el.classList.toggle('collapsed');
+    saveJSON('la_notepad_sidebar_collapsed', el.classList.contains('collapsed'));
+  }
+
+  /* ---------- Formatting toolbar ---------- */
+  function getCurrentBlock(){
+    var surface = notepadSurface();
+    var sel = window.getSelection();
+    if(!surface || !sel.rangeCount) return null;
+    var node = sel.getRangeAt(0).startContainer;
+    if(node.nodeType === 3) node = node.parentNode;
+    while(node && node.parentNode !== surface && node !== surface){ node = node.parentNode; }
+    return (node === surface || !node) ? null : node;
+  }
+
+  function placeCaretAtEnd(el){
+    if(!el) return;
+    el.focus();
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function ensureBlock(){
+    var surface = notepadSurface();
+    var block = getCurrentBlock();
+    if(block) return block;
+    block = document.createElement('div');
+    block.className = 'note-line';
+    block.innerHTML = '<br>';
+    surface.appendChild(block);
+    placeCaretAtEnd(block);
+    return block;
+  }
+
+  function notepadExec(cmd, val){
+    notepadSurface().focus();
+    document.execCommand(cmd, false, val || null);
+    saveActiveNote();
+    updateNotepadToolbarState();
+  }
+
+  function convertChecklistLineToPlain(block){
+    var textEl = block.querySelector('.note-text');
+    var html = textEl ? textEl.innerHTML : '';
+    block.classList.remove('note-checklist-item', 'done');
+    block.innerHTML = (html && html !== '<br>') ? html : '<br>';
+  }
+
+  function notepadSetPlain(){
+    var surface = notepadSurface();
+    surface.focus();
+    try{
+      if(document.queryCommandState('insertUnorderedList')) document.execCommand('insertUnorderedList');
+      if(document.queryCommandState('insertOrderedList')) document.execCommand('insertOrderedList');
+    }catch(e){}
+    var block = getCurrentBlock();
+    if(block && block.classList.contains('note-checklist-item')){
+      convertChecklistLineToPlain(block);
+      placeCaretAtEnd(block);
+    }
+    saveActiveNote();
+    updateNotepadToolbarState();
+  }
+
+  function notepadToggleChecklist(){
+    var surface = notepadSurface();
+    surface.focus();
+    var block = ensureBlock();
+    if(block.classList.contains('note-checklist-item')){
+      convertChecklistLineToPlain(block);
+      placeCaretAtEnd(block);
+    } else {
+      var html = block.innerHTML === '<br>' ? '' : block.innerHTML;
+      block.classList.add('note-checklist-item');
+      block.innerHTML = '<span class="note-checkbox" contenteditable="false" onmousedown="event.preventDefault();" onclick="notepadToggleCheckboxState(this)"></span><span class="note-text" contenteditable="true">' + (html || '<br>') + '</span>';
+      placeCaretAtEnd(block.querySelector('.note-text'));
+    }
+    saveActiveNote();
+    updateNotepadToolbarState();
+  }
+
+  function notepadToggleCheckboxState(el){
+    var line = el.closest('.note-checklist-item');
+    if(!line) return;
+    line.classList.toggle('done');
+    saveActiveNote();
+  }
+
+  function handleNotepadKeydown(e){
+    if(e.key !== 'Enter') return;
+    var block = getCurrentBlock();
+    if(!block || !block.classList.contains('note-checklist-item')) return;
+    var textEl = block.querySelector('.note-text');
+    var isEmpty = !textEl || textEl.textContent.trim() === '';
+    e.preventDefault();
+    if(isEmpty){
+      convertChecklistLineToPlain(block);
+      placeCaretAtEnd(block);
+    } else {
+      var newBlock = document.createElement('div');
+      newBlock.className = 'note-line note-checklist-item';
+      newBlock.innerHTML = '<span class="note-checkbox" contenteditable="false" onmousedown="event.preventDefault();" onclick="notepadToggleCheckboxState(this)"></span><span class="note-text" contenteditable="true"><br></span>';
+      block.parentNode.insertBefore(newBlock, block.nextSibling);
+      placeCaretAtEnd(newBlock.querySelector('.note-text'));
+    }
+    saveActiveNote();
+  }
+
+  function updateNotepadToolbarState(){
+    var checklistBtn = document.querySelector('.notepad-tool-btn[data-tool="checklist"]');
+    var numberedBtn = document.querySelector('.notepad-tool-btn[data-tool="numbered"]');
+    var block = getCurrentBlock();
+    if(checklistBtn) checklistBtn.classList.toggle('active', !!(block && block.classList.contains('note-checklist-item')));
+    if(numberedBtn){
+      var isOL = false;
+      try{ isOL = document.queryCommandState('insertOrderedList'); }catch(e){}
+      numberedBtn.classList.toggle('active', isOL);
+    }
+  }
+
+  function initNotepad(){
+    var dividersEl = document.getElementById('notepad-dividers');
+    if(dividersEl && loadJSON('la_notepad_sidebar_collapsed', false)) dividersEl.classList.add('collapsed');
+    renderNotepadTabs();
+    loadActiveNote();
+    var surface = notepadSurface();
+    if(surface){
+      surface.addEventListener('mouseup', updateNotepadToolbarState);
+      surface.addEventListener('keyup', updateNotepadToolbarState);
     }
   }
 
@@ -4971,7 +5285,7 @@
       return '<div class="habit-mini-row" style="background:'+habitColorRgba(h.color, 0.12)+';">' +
           '<span class="habit-mini-dot" style="background:'+h.color+'; color:'+h.color+';"></span>' +
           '<span class="habit-mini-name">'+escapeHtml(h.name)+'</span>' +
-          '<span class="habit-mini-streak mono">🔥 '+streak+'</span>' +
+          '<span class="habit-mini-streak mono">'+(streak > 1 ? '🔥 ' : '')+streak+'</span>' +
           '<input type="checkbox" class="habit-checkbox"'+(completed ? ' checked' : '')+' onclick="event.stopPropagation(); toggleHabitToday(\''+h.id+'\')">' +
         '</div>';
     }).join('');
@@ -5170,17 +5484,15 @@
     else if(e.key === 'la_areas'){
       if(document.getElementById('deadline-modal').classList.contains('open')){ renderDeadlineAreaChips(); }
     }
-    else if(e.key === 'la_study_streak_academic' || e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){
-      renderSidebarStreak();
-    }
     else if(e.key === 'la_pomo_state'){ renderPomo(); }
     else if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){
       renderHobbiesSummary();
       renderSidebarCurrently();
     }
     else if(e.key === 'la_certifications'){ renderHobbiesSummary(); }
-    else if(e.key === 'la_tasklist'){ renderTasklist(); }
-    else if(e.key && e.key.indexOf('la_checkin_') === 0){ renderPhysicalMood(); }
+    else if(e.key === 'la_notepad_tabs' || e.key === 'la_notepad_active_tab'){ renderNotepadTabs(); loadActiveNote(); }
+    else if(e.key && e.key.indexOf('la_notepad_note_') === 0){ loadActiveNote(); }
+    else if(e.key && e.key.indexOf('la_checkin_') === 0){ renderSidebarMood(); }
     else if(e.key === 'la_habits'){
       renderSidebarHabits();
       if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
@@ -5217,7 +5529,7 @@
     renderSidebarSocial();
     clearTodayNutritionEntry();
     if(typeof renderNutritionCard === 'function'){ renderNutritionCard(); }
-    if(typeof renderPhysicalHealthCard === 'function'){ renderPhysicalHealthCard(); }
+    if(typeof renderSidebarMood === 'function'){ renderSidebarMood(); }
   }
 
   function checkDailyReset(){
@@ -5544,10 +5856,9 @@
     loadLabStatus(lab);
     renderLabHours(lab);
   });
-  renderSidebarStreak();
+  renderSidebarMood();
   renderHobbiesSummary();
-  renderPhysicalHealthCard();
-  renderTasklist();
+  initNotepad();
   renderSidebarCurrently();
   renderSidebarHabits();
   renderSidebarSocial();

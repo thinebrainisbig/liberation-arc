@@ -98,7 +98,7 @@
      just unavailable on mobile. */
   .sidebar > .brand,
   .sidebar > .sidebar-divider,
-  .sidebar > .streak-mini-card,
+  .sidebar > .mood-mini-card,
   .sidebar > .currently-mini-card,
   .sidebar > .social-card,
   .sidebar > .habit-mini-card,
@@ -276,21 +276,34 @@
   .top-section .calendar-card{ flex:none !important; height:720px !important; min-height:720px !important; }
   .bottom-section .deadlines-card,
   .bottom-section .hobbies-card,
-  .bottom-section .physical-health-card,
   .bottom-section .tasklist-card{
     grid-column:auto !important;
     grid-row:auto !important;
   }
   .bottom-section .hobbies-card,
-  .bottom-section .physical-health-card,
   .bottom-section .tasklist-card{
     min-height:220px;
   }
-  /* Tasklist: +40% over the 220px baseline above. Needs !important to
-     beat `.bottom-section .tasklist-card` on specificity (two classes
-     vs. one), same issue hit with the Deadlines card earlier. */
+  /* Notepad (formerly Tasklist, class kept for compat): +70% over the
+     220px baseline above — the binder-tab row, toolbar, and freeform
+     surface need more room than the old single-line rows did. Needs
+     !important to beat `.bottom-section .tasklist-card` on specificity
+     (two classes vs. one), same issue hit with the Deadlines card
+     earlier. */
   .tasklist-card{
-    min-height:308px !important;
+    min-height:374px !important;
+  }
+  /* Divider sidebar: narrower on mobile so the writing surface still
+     gets most of the card's width at 375px viewports. */
+  .notepad-dividers{
+    width:76px;
+  }
+  .notepad-tab{
+    font-size:0.58rem;
+    padding:8px 6px 8px 8px;
+  }
+  .notepad-surface{
+    padding:12px 14px 14px;
   }
   .right-column{ min-width:0; }
   /* Deadlines card: +50% over the original 280px. Needs to beat the
@@ -310,8 +323,11 @@
      Morning/Night pills (no order needed — .daycycle-buttons-mobile
      is already .main's first DOM child, and everything below has an
      explicit order, so it sorts first by default), Tasklist,
-     Pomodoro, Deadlines, Kranker Lab, Ballard Lab, Physical Health,
-     Calendar. .top-section/.bottom-section/.research-stack normally
+     Pomodoro, Deadlines, Kranker Lab, Ballard Lab, Calendar (the
+     Physical Health / mood card that used to follow Ballard Lab here
+     was removed from index.html entirely — its mood readout now
+     lives in the sidebar mood mini card instead).
+     .top-section/.bottom-section/.research-stack normally
      each keep their own cards grouped together (see above); making
      them `display:contents` unwraps their children into direct flex
      items of .main (which is already flex-direction:column) so
@@ -330,9 +346,8 @@
   body:not(.is-subpage) .deadlines-card{ order:3; }
   body:not(.is-subpage) .research-stack > .research-card:nth-child(1){ order:4; }
   body:not(.is-subpage) .research-stack > .research-card:nth-child(2){ order:5; }
-  body:not(.is-subpage) .physical-health-card{ order:6; }
-  body:not(.is-subpage) #calendar-card{ order:7; }
-  /* Not part of the consolidated mobile stream (only the 8 cards
+  body:not(.is-subpage) #calendar-card{ order:6; }
+  /* Not part of the consolidated mobile stream (only the cards
      above are) — stays in the DOM (its localStorage-backed data is
      unaffected) but doesn't render on mobile. */
   body:not(.is-subpage) .hobbies-card{ display:none; }
@@ -387,6 +402,16 @@
   .physical-card{
     flex:none !important;
     min-height:260px !important;
+  }
+  /* Mood: the shared 260px baseline above is sized for Sleep's single
+     chart row, but Mood's card also carries a legend row, day-label
+     row, and summary row above/below the chart — splitting the same
+     260px five ways left the line chart (and its y-axis gridlines)
+     squeezed to ~111px. ~60% over the baseline, a touch past the
+     +50% bump given to other content-heavy cards below, gives the
+     chart a bit more headroom for its y-axis. */
+  .mood-card{
+    min-height:420px !important;
   }
 
   /* ---------- hobbies-subpage.html: 4-column grid ---------- */

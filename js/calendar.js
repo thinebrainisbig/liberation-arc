@@ -114,16 +114,22 @@
       showConnectPill();
       return;
     }
+    // Window covers a rolling ~6 weeks (1 week back, 5 weeks forward)
+    // rather than just the next 7 days — the timeGrid views only ever
+    // display a handful of days so the wider range costs nothing there,
+    // but dayGridMonth needs events across a full month (plus its
+    // leading/trailing padding days) to not render mostly empty.
     var startOfDay = new Date();
     startOfDay.setHours(0,0,0,0);
-    var endOfWindow = new Date(startOfDay.getTime() + 7 * 24 * 60 * 60 * 1000);
+    startOfDay.setDate(startOfDay.getDate() - 7);
+    var endOfWindow = new Date(startOfDay.getTime() + 42 * 24 * 60 * 60 * 1000);
 
     var params = new URLSearchParams({
       timeMin: startOfDay.toISOString(),
       timeMax: endOfWindow.toISOString(),
       singleEvents: 'true',
       orderBy: 'startTime',
-      maxResults: '50'
+      maxResults: '150'
     });
 
     fetch(EVENTS_URL + '?' + params.toString(), {
@@ -328,6 +334,10 @@
         info.el.style.setProperty('--event-color', palette.accent);
         info.el.style.backgroundColor = palette.bg;
       },
+      datesSet: function(arg){
+        var card = document.getElementById('calendar-card');
+        if(card) card.classList.toggle('is-month-view', arg.view.type === 'dayGridMonth');
+      },
       views: {
         timeGridThreeDay: {
           type: 'timeGrid',
@@ -338,6 +348,22 @@
           type: 'timeGrid',
           duration: { days: 5 },
           buttonText: '5 days'
+        },
+        dayGridMonth: {
+          // Cell height stays bounded regardless of how many events land
+          // on a given day — anything past 3 collapses into a "+N more"
+          // popover instead of growing the row (and breaking the card's
+          // fixed height / overflow rules).
+          dayMaxEventRows: 3,
+          // The timeGrid eventContent above ("Title • time") is sized
+          // for wide slots; month cells are far narrower, so this view
+          // gets its own compact title-only content.
+          eventContent: function(arg){
+            var titleEl = document.createElement('span');
+            titleEl.className = 'fc-event-title';
+            titleEl.textContent = arg.event.title;
+            return { domNodes: [titleEl] };
+          }
         }
       }
     });
