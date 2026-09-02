@@ -16,8 +16,14 @@
 
   var TOKEN_STORAGE_KEY = 'la_gcal_token';
   var TIME_FILTER_STORAGE_KEY = 'la_calendar_time_filter';
-  var DEFAULT_MIN_TIME = '00:00:00';
-  var DEFAULT_MAX_TIME = '24:00:00';
+  /* User's day runs ~6am-1am, not midnight-to-midnight — default the
+     visible slot range to that window so the mostly-dead 1am-6am
+     hours don't eat vertical space in the now-full-height single-day
+     card. 25:00:00 is FullCalendar's documented way to represent
+     1am *the next day* (slotMaxTime accepts >24:00:00 to span past
+     midnight) rather than wrapping back to 1am today. */
+  var DEFAULT_MIN_TIME = '06:00:00';
+  var DEFAULT_MAX_TIME = '25:00:00';
   var SILENT_REFRESH_MS = 50 * 60 * 1000;   // 50 minutes
   var POLL_MS = 30 * 60 * 1000;             // 30 minutes
   var GIS_WAIT_INTERVAL_MS = 200;
@@ -279,7 +285,7 @@
     var scrollTimeString = String(centeredHour).padStart(2, '0') + ':' + String(centeredMinute).padStart(2, '0') + ':00';
 
     calendar = new FullCalendar.Calendar(el, {
-      initialView: 'timeGridThreeDay',
+      initialView: 'timeGridDay',
       headerToolbar: false,
       allDaySlot: false,
       nowIndicator: true,

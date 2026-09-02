@@ -2230,6 +2230,7 @@
 <div class="app-shell">
 
   <!-- ===================== SIDEBAR ===================== -->
+  <!-- TODO: strip to match index.html sidebar once index is finalized -->
   <aside class="sidebar glass">
     <div class="brand">
       <h1>Liberation Arc</h1>
@@ -2503,92 +2504,6 @@
         </div>
       </div>
 
-      <!-- Second bottom row: Pomodoro Timer + Study Streak/Weekly Goal + Important Tasks -->
-      <div class="second-row">
-
-      <div class="card glass pomo-card">
-        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
-
-        <div class="pomo-tabs">
-          <button type="button" class="pomo-tab active" data-mode="pomodoro" onclick="selectPomoTab('pomodoro')">Pomodoro</button>
-          <button type="button" class="pomo-tab" data-mode="short" onclick="selectPomoTab('short')">Short Break</button>
-          <button type="button" class="pomo-tab" data-mode="long" onclick="selectPomoTab('long')">Long Break</button>
-        </div>
-
-        <div class="pomo-display mono" id="pomo-display">25:00</div>
-
-        <div class="pomo-controls-row">
-          <button type="button" class="pomo-icon-btn" onclick="resetPomo()" title="Reset">
-            <span class="material-symbols-outlined">replay</span>
-          </button>
-          <button type="button" class="pomo-start-btn" id="pomo-start-btn" onclick="togglePomoStartPause()">Start</button>
-          <div class="pomo-settings-anchor">
-            <button type="button" class="pomo-icon-btn pomo-settings-btn" onclick="togglePomoSettings()" title="Settings">
-              <span class="material-symbols-outlined">settings</span>
-            </button>
-            <div class="pomo-settings-popover" id="pomo-settings-popover">
-              <div class="pomo-settings-row"><span>Pomodoro (min)</span><input type="number" id="setting-pomodoro" min="1" max="180"></div>
-              <div class="pomo-settings-row"><span>Short Break (min)</span><input type="number" id="setting-short" min="1" max="60"></div>
-              <div class="pomo-settings-row"><span>Long Break (min)</span><input type="number" id="setting-long" min="1" max="120"></div>
-              <button type="button" class="pomo-settings-save" onclick="savePomoSettings()">Save</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="pomo-week-row mono">This week: <span id="pomo-week-total">0.0h</span></div>
-
-        <label class="field-label pomo-focus-label">Current Focus</label>
-        <input class="field-text" id="today-focus-input" type="text" placeholder="What are you working on today?" oninput="saveTodayFocus(this.value)" onblur="renderTodayFocusMode()" onkeydown="if(event.key==='Enter'){ this.blur(); }">
-        <p class="today-focus-static" id="today-focus-static" onclick="editTodayFocus()"></p>
-      </div>
-
-      <div class="card glass streak-card">
-        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
-        <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
-          <div class="card-eyebrow" style="color:var(--academic);">
-            <span class="material-symbols-outlined">local_fire_department</span>
-            Study Streak
-          </div>
-
-          <div class="streak-display">
-            <div class="streak-current mono" id="streak-current">🔥 0 day streak</div>
-            <div class="streak-best mono" id="streak-best">Best: 0 days</div>
-          </div>
-
-          <div class="streak-divider"></div>
-
-          <div class="weekly-goal-section">
-            <div class="weekly-goal-header">
-              <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
-                <span class="material-symbols-outlined">flag</span>
-                Weekly Goal
-              </div>
-              <div class="goal-target-input-wrap" id="goal-target-input-wrap">
-                <input type="number" class="goal-target-input" id="weekly-goal-input" min="0.5" max="100" step="0.5" onchange="saveWeeklyGoal(this.value)" onblur="renderGoalTargetMode()" onkeydown="if(event.key==='Enter'){ this.blur(); }">
-                <span class="goal-target-unit" id="goal-target-unit">hrs</span>
-                <p class="goal-target-static" id="goal-target-static" onclick="editGoalTarget()"></p>
-              </div>
-            </div>
-            <div class="goal-progress-track">
-              <div class="goal-progress-fill" id="goal-progress-fill"></div>
-            </div>
-            <div class="goal-progress-label mono" id="goal-progress-label">0.0 hrs / 10 hrs this week</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card glass countdown-card">
-        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
-        <div class="panel-header-alt">
-          <div class="card-eyebrow" style="color:var(--academic); margin-bottom:0;">
-            <span class="material-symbols-outlined">timer</span>
-            Important Tasks
-          </div>
-        </div>
-        <div class="countdown-list" id="countdown-list"></div>
-      </div>
-
-      </div>
       </div>
     </div>
   </main>
@@ -3521,8 +3436,12 @@
   }
 
   function todayISO(){
-    var d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    /* Aliases the 5AM-adjusted "today" (getAdjustedDate()) so
+       Deadlines' "Due Today" status agrees with Habits/Lab Tasks/
+       Social Targets instead of flipping at real midnight. Kept in
+       sync with the same fix in index.html — see that file's
+       todayISO() comment for the full rationale. */
+    return getAdjustedDate();
   }
   function daysBetween(dueISO){
     var due = new Date(dueISO + 'T00:00:00');
@@ -3546,13 +3465,6 @@
     if(diff < 0) return { text:'Overdue', cls:'status-overdue' };
     if(diff === 0) return { text:'Due Today', cls:'status-today' };
     return { text: diff + (diff === 1 ? ' day' : ' days'), cls:'status-normal' };
-  }
-  function getMondayKey(){
-    var d = new Date(getAdjustedDate() + 'T00:00:00');
-    var day = d.getDay();
-    var diff = (day === 0 ? -6 : 1 - day);
-    var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
-    return monday.getFullYear() + '-' + String(monday.getMonth()+1).padStart(2,'0') + '-' + String(monday.getDate()).padStart(2,'0');
   }
 
   /* ============================================================
@@ -3673,7 +3585,6 @@
   function deleteDeadlineImmediate(id){
     saveDeadlines(getDeadlines().filter(function(t){ return t.id !== id; }));
     renderDeadlinesTable();
-    renderCountdownList();
   }
 
   /* ============================================================
@@ -4043,7 +3954,6 @@
     }
     saveDeadlines(tasks);
     renderDeadlinesTable();
-    renderCountdownList();
     closeModal('deadline-modal');
   }
 
@@ -4051,7 +3961,6 @@
     if(!currentDeadlineId) return;
     saveDeadlines(getDeadlines().filter(function(t){ return t.id !== currentDeadlineId; }));
     renderDeadlinesTable();
-    renderCountdownList();
     closeModal('deadline-modal');
   }
 
@@ -4062,14 +3971,12 @@
   function saveLabTasks(lab, list){ saveJSON('la_' + lab + '_tasks', list); }
 
   function rolloverOverdueLabTasks(lab){
-    var list = getLabTasks(lab);
-    var today = getAdjustedDate();
-    var changed = false;
-    list.forEach(function(task){
-      if(task.due && task.due < today){ task.due = today; changed = true; }
-    });
-    if(changed) saveLabTasks(lab, list);
-    return list;
+    /* No longer bumps overdue tasks' `due` to today — la_kranker_tasks/
+       la_ballard_tasks are shared with index.html's wheel (research
+       slice needs real due dates to compute an accurate backlog), so
+       this file must not silently rewrite them either. See the
+       matching fix + comment in index.html for the full rationale. */
+    return getLabTasks(lab);
   }
 
   function autoGrowTaskInput(el){
@@ -4179,368 +4086,15 @@
     renderLabHours(lab);
   }
 
-  function saveTodayFocus(value){ saveJSON('la_today_focus_academic', value); }
-  function loadTodayFocus(){
-    document.getElementById('today-focus-input').value = loadJSON('la_today_focus_academic', '');
-    renderTodayFocusMode();
-  }
-  function renderTodayFocusMode(){
-    var value = loadJSON('la_today_focus_academic', '');
-    var input = document.getElementById('today-focus-input');
-    var staticEl = document.getElementById('today-focus-static');
-    if(value){
-      input.style.display = 'none';
-      staticEl.style.display = 'block';
-      staticEl.textContent = value;
-    } else {
-      input.style.display = '';
-      staticEl.style.display = 'none';
-    }
-  }
-  function editTodayFocus(){
-    var input = document.getElementById('today-focus-input');
-    var staticEl = document.getElementById('today-focus-static');
-    staticEl.style.display = 'none';
-    input.style.display = '';
-    input.value = loadJSON('la_today_focus_academic', '');
-    input.focus();
-    input.select();
-  }
-
-  /* ============================================================
-     Pomodoro Timer Card (standalone, tabs + settings popover)
-  ============================================================ */
-  var pomoInterval = null;
-  var pomoAudioCtx = null;
-
-  function getPomoAudioCtx(){
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if(!AC) return null;
-    if(!pomoAudioCtx) pomoAudioCtx = new AC();
-    if(pomoAudioCtx.state === 'suspended') pomoAudioCtx.resume();
-    return pomoAudioCtx;
-  }
-
-  function playPomoChime(){
-    var ctx = getPomoAudioCtx();
-    if(!ctx) return;
-    var now = ctx.currentTime;
-    var notes = [
-      { freq:880.00, start:0,    dur:0.4 },
-      { freq:1174.66, start:0.16, dur:0.45 },
-      { freq:1567.98, start:0.32, dur:0.6 }
-    ];
-    notes.forEach(function(n){
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = n.freq;
-      var t0 = now + n.start;
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.22, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + n.dur);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + n.dur + 0.05);
-    });
-  }
-
-  function flashPomoDisplay(){
-    var el = document.getElementById('pomo-display');
-    el.classList.remove('flash');
-    void el.offsetWidth;
-    el.classList.add('flash');
-    setTimeout(function(){ el.classList.remove('flash'); }, 900);
-  }
-
-  function getPomoSettings(){ return loadJSON('la_pomo_settings', {pomodoro:25, short:5, long:15}); }
-  function savePomoSettingsToStorage(s){ saveJSON('la_pomo_settings', s); }
-
-  function getPomoState(){
-    var settings = getPomoSettings();
-    return loadJSON('la_pomo_state', null) || { mode:'pomodoro', remaining: settings.pomodoro*60, running:false };
-  }
-  function savePomoState(state){ saveJSON('la_pomo_state', state); }
-
-  function getPomoWeek(){
-    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
-    if(w.weekStart !== getMondayKey()){ w.weekStart = getMondayKey(); w.weekSeconds = 0; }
-    return w;
-  }
-  function savePomoWeek(w){ saveJSON('la_pomo_week', w); }
-
-  function formatMMSSGeneric(sec){
-    sec = Math.max(0, Math.round(sec));
-    var m = Math.floor(sec/60), s = sec%60;
-    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  }
-
-  function renderPomo(){
-    var state = getPomoState();
-    document.getElementById('pomo-display').textContent = formatMMSSGeneric(state.remaining);
-    document.querySelectorAll('.pomo-tab').forEach(function(btn){
-      btn.classList.toggle('active', btn.dataset.mode === state.mode);
-    });
-    document.getElementById('pomo-start-btn').textContent = state.running ? 'Pause' : 'Start';
-    var week = getPomoWeek();
-    document.getElementById('pomo-week-total').textContent = (week.weekSeconds/3600).toFixed(1) + 'h';
-  }
-
-  function selectPomoTab(mode){
-    stopPomoInterval();
-    var settings = getPomoSettings();
-    savePomoState({ mode: mode, remaining: settings[mode]*60, running:false });
-    renderPomo();
-  }
-
-  function togglePomoStartPause(){
-    var state = getPomoState();
-    if(state.running){ pausePomoInternal(); } else { startPomoInternal(); }
-  }
-
-  function startPomoInternal(){
-    getPomoAudioCtx();
-    var state = getPomoState();
-    state.running = true;
-    savePomoState(state);
-    stopPomoInterval();
-    pomoInterval = setInterval(tickPomo, 1000);
-    renderPomo();
-  }
-
-  function pausePomoInternal(){
-    var state = getPomoState();
-    state.running = false;
-    savePomoState(state);
-    stopPomoInterval();
-    renderPomo();
-  }
-
-  function stopPomoInterval(){
-    if(pomoInterval){ clearInterval(pomoInterval); pomoInterval = null; }
-  }
-
-  function resetPomo(){
-    var settings = getPomoSettings();
-    var state = getPomoState();
-    state.remaining = settings[state.mode]*60;
-    state.running = false;
-    savePomoState(state);
-    stopPomoInterval();
-    renderPomo();
-  }
-
-  function tickPomo(){
-    var state = getPomoState();
-    if(!state.running) return;
-    state.remaining -= 1;
-    if(state.mode === 'pomodoro'){
-      var week = getPomoWeek();
-      week.weekSeconds += 1;
-      savePomoWeek(week);
-    }
-    if(state.remaining <= 0){
-      var settings = getPomoSettings();
-      state.remaining = settings[state.mode]*60;
-      state.running = false;
-      stopPomoInterval();
-      playPomoChime();
-      flashPomoDisplay();
-      if(state.mode === 'pomodoro'){
-        recordPomodoroCompletion();
-      }
-    }
-    savePomoState(state);
-    renderPomo();
-    renderWeeklyGoal();
-  }
-
-  function togglePomoSettings(){
-    var pop = document.getElementById('pomo-settings-popover');
-    pop.classList.toggle('open');
-    if(pop.classList.contains('open')){
-      var s = getPomoSettings();
-      document.getElementById('setting-pomodoro').value = s.pomodoro;
-      document.getElementById('setting-short').value = s.short;
-      document.getElementById('setting-long').value = s.long;
-    }
-  }
-
-  function savePomoSettings(){
-    var s = {
-      pomodoro: parseInt(document.getElementById('setting-pomodoro').value, 10) || 25,
-      short: parseInt(document.getElementById('setting-short').value, 10) || 5,
-      long: parseInt(document.getElementById('setting-long').value, 10) || 15
-    };
-    savePomoSettingsToStorage(s);
-    var state = getPomoState();
-    if(!state.running){
-      state.remaining = s[state.mode]*60;
-      savePomoState(state);
-    }
-    document.getElementById('pomo-settings-popover').classList.remove('open');
-    renderPomo();
-  }
-
-  function initPomoOnLoad(){
-    var state = getPomoState();
-    savePomoState(state);
-    renderPomo();
-    if(state.running){
-      pomoInterval = setInterval(tickPomo, 1000);
-    }
-  }
-
-  /* ============================================================
-     Study Streak & Weekly Goal (page-local, driven by Pomodoro data)
-  ============================================================ */
+  /* Pomodoro/Study-Streak/Important-Tasks/Today-Focus removed from
+     academic-subpage.html (see the Phase 2 rebuild) — those cards no
+     longer render here, and index.html has its own separate wheel-
+     based system now. */
   function diffDaysISO(aISO, bISO){
     var a = new Date(aISO + 'T00:00:00');
     var b = new Date(bISO + 'T00:00:00');
     return Math.round((b - a) / 86400000);
   }
-
-  function getStreakData(){ return loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null }); }
-  function saveStreakData(s){ saveJSON('la_study_streak_academic', s); }
-
-  /* Non-destructive read: a streak with no completion yesterday/today
-     displays as broken (0) without needing a background job to reset it. */
-  function getEffectiveStreak(){
-    var s = getStreakData();
-    if(!s.lastCompletedDate) return { current:0, best:s.best };
-    var gap = diffDaysISO(s.lastCompletedDate, getAdjustedDate());
-    if(gap > 1) return { current:0, best:s.best };
-    return { current:s.current, best:s.best };
-  }
-
-  function recordPomodoroCompletion(){
-    var today = getAdjustedDate();
-    var s = getStreakData();
-    var gap = s.lastCompletedDate ? diffDaysISO(s.lastCompletedDate, today) : null;
-    if(gap === 0){
-      /* already logged a completion today */
-    } else if(gap === 1){
-      s.current += 1;
-    } else {
-      s.current = 1;
-    }
-    s.lastCompletedDate = today;
-    if(s.current > s.best) s.best = s.current;
-    saveStreakData(s);
-    renderStreak();
-  }
-
-  function renderStreak(){
-    var eff = getEffectiveStreak();
-    document.getElementById('streak-current').textContent = '🔥 ' + eff.current + ' day streak';
-    document.getElementById('streak-best').textContent = 'Best: ' + eff.best + ' day' + (eff.best === 1 ? '' : 's');
-  }
-
-  function getWeeklyGoal(){ return loadJSON('la_weekly_goal_academic', 10); }
-  function saveWeeklyGoal(value){
-    var v = parseFloat(value);
-    if(isNaN(v) || v <= 0) v = 10;
-    saveJSON('la_weekly_goal_academic', v);
-    renderWeeklyGoal();
-  }
-
-  function renderWeeklyGoal(){
-    var goal = getWeeklyGoal();
-    var hours = getPomoWeek().weekSeconds / 3600;
-    var pct = goal > 0 ? Math.min(100, (hours / goal) * 100) : 0;
-    var fill = document.getElementById('goal-progress-fill');
-    fill.style.width = pct + '%';
-    fill.classList.toggle('met', goal > 0 && hours >= goal);
-    document.getElementById('goal-progress-label').textContent = hours.toFixed(1) + ' hrs / ' + goal + ' hrs this week';
-    var input = document.getElementById('weekly-goal-input');
-    if(document.activeElement !== input) input.value = goal;
-    var staticEl = document.getElementById('goal-target-static');
-    if(staticEl) staticEl.textContent = goal + ' hrs';
-    if(document.activeElement !== input) renderGoalTargetMode();
-  }
-
-  function renderGoalTargetMode(){
-    var input = document.getElementById('weekly-goal-input');
-    var unit = document.getElementById('goal-target-unit');
-    var staticEl = document.getElementById('goal-target-static');
-    input.style.display = 'none';
-    unit.style.display = 'none';
-    staticEl.style.display = 'inline-block';
-  }
-  function editGoalTarget(){
-    var input = document.getElementById('weekly-goal-input');
-    var unit = document.getElementById('goal-target-unit');
-    var staticEl = document.getElementById('goal-target-static');
-    staticEl.style.display = 'none';
-    input.style.display = '';
-    unit.style.display = '';
-    input.value = getWeeklyGoal();
-    input.focus();
-    input.select();
-  }
-
-  /* ============================================================
-     Important Tasks (auto-synced, read-only — sourced entirely from
-     Critical-importance deadlines; add/edit those from the Deadlines card)
-  ============================================================ */
-  function getCombinedCountdownItems(){
-    return getDeadlines().filter(function(t){
-      return (t.importance || 'Low') === 'Critical' && t.due;
-    }).map(function(t){
-      return { id:'crit-'+t.id, name:t.name || 'Untitled', date:t.due, time:'23:59' };
-    }).sort(function(a,b){
-      var ta = new Date(a.date + 'T' + (a.time || '23:59') + ':00').getTime();
-      var tb = new Date(b.date + 'T' + (b.time || '23:59') + ':00').getTime();
-      return ta - tb;
-    });
-  }
-
-  function renderCountdownList(){
-    var list = getCombinedCountdownItems();
-    var wrap = document.getElementById('countdown-list');
-    if(!list.length){
-      wrap.innerHTML = '<div class="countdown-empty">No important tasks yet</div>';
-      return;
-    }
-    wrap.innerHTML = list.map(function(item){
-      return '<div class="countdown-item">' +
-        '<div><div class="name">'+ escapeHtml(item.name) +'</div><div class="target-date">'+ formatDateHuman(item.date) + ' ' + item.time +'</div></div>' +
-        '<div style="display:flex; align-items:center; gap:8px;">' +
-          '<span class="time-left mono" id="countdown-left-'+item.id+'">—</span>' +
-          '<span class="material-symbols-outlined" id="countdown-warn-'+item.id+'" style="font-size:14px; color:#fca5a5; display:none;" title="Due soon">priority_high</span>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-    updateCountdownTimers();
-  }
-
-  function updateCountdownTimers(){
-    var list = getCombinedCountdownItems();
-    var now = new Date();
-    list.forEach(function(item){
-      var el = document.getElementById('countdown-left-' + item.id);
-      var warnIcon = document.getElementById('countdown-warn-' + item.id);
-      if(!el) return;
-      var target = new Date(item.date + 'T' + (item.time || '23:59') + ':00');
-      var diffMs = target - now;
-      el.classList.remove('warn','urgent');
-      if(warnIcon) warnIcon.style.display = (diffMs < 3*24*60*60*1000) ? '' : 'none';
-      if(diffMs <= 0){
-        el.textContent = 'Overdue';
-        el.classList.add('urgent');
-        return;
-      }
-      if(diffMs < 24*60*60*1000){
-        el.textContent = 'Due Today';
-        el.classList.add('warn');
-        return;
-      }
-      var days = Math.floor(diffMs / 86400000);
-      el.textContent = days + 'd';
-    });
-  }
-  setInterval(updateCountdownTimers, 1000);
 
   /* ============================================================
      Habit Tracker — la_habits
@@ -4856,7 +4410,9 @@
      instantly, without waiting for a refresh.
   ============================================================ */
   function handleStorageSync(e){
-    if(e.key === 'la_deadlines'){ renderDeadlinesTable(); renderCountdownList(); }
+    /* Study-Streak/Weekly-Goal/Pomodoro/Important-Tasks branches
+       removed along with those cards (see the Phase 2 rebuild). */
+    if(e.key === 'la_deadlines'){ renderDeadlinesTable(); }
     else if(e.key === 'la_kranker_tasks'){ renderLabTasks('kranker'); }
     else if(e.key === 'la_ballard_tasks'){ renderLabTasks('ballard'); }
     else if(e.key === 'la_kranker_hours'){ renderLabHours('kranker'); }
@@ -4866,8 +4422,6 @@
     else if(e.key === 'la_areas'){
       if(document.getElementById('deadline-modal').classList.contains('open')){ renderDeadlineAreaChips(); }
     }
-    else if(e.key === 'la_study_streak_academic'){ renderStreak(); }
-    else if(e.key === 'la_weekly_goal_academic' || e.key === 'la_pomo_week'){ renderWeeklyGoal(); }
     else if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){ renderSidebarCurrently(); }
     else if(e.key && e.key.indexOf('la_checkin_') === 0){ renderSidebarMood(); }
     else if(e.key === 'la_habits'){
@@ -5302,11 +4856,6 @@
     loadLabStatus(lab);
     renderLabHours(lab);
   });
-  initPomoOnLoad();
-  renderCountdownList();
-  loadTodayFocus();
-  renderStreak();
-  renderWeeklyGoal();
   renderSidebarMood();
   renderSidebarCurrently();
   renderSidebarHabits();

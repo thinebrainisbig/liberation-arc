@@ -349,30 +349,8 @@
     box-shadow:0 0 8px currentColor;
   }
 
-  /* Sidebar mood mini card (condensed morning/night check-in summary,
-     replaces the old Study Streak mini card in this sidebar slot) */
-  .mood-mini-card{
-    padding:12px 14px;
-    border-radius:var(--r-md);
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    background:#1a3c36;
-    border:1px solid rgba(74,222,128,0.55);
-  }
-  .mood-mini-title{
-    margin:0;
-    font-size:0.6rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.1em;
-    color:var(--ink-faint);
-    text-align:center;
-  }
-  .mood-mini-row{
-    display:flex;
-    gap:8px;
-  }
+  /* Morning/night mood block — used inside the Day/Night spoke panels
+     (moved from the old sidebar Today's Mood card, which is removed). */
   .mood-mini-block{
     flex:1;
     min-width:0;
@@ -393,6 +371,10 @@
   }
   .mood-mini-emoji{ font-size:1.15rem; line-height:1; }
   .mood-mini-empty-mark{ font-size:0.85rem; color:var(--ink-faint); }
+  /* Day/Night spoke panels reuse .mood-mini-block inside a column
+     list rather than the sidebar's row layout — cancel the flex:1
+     (meant to divide a row's width) so it doesn't stretch vertically. */
+  .spoke-panel-list .mood-mini-block{ flex:0 0 auto; }
 
   /* Currently mini card (read-only, sourced from hobbies-subpage.html) */
   .currently-mini-card{
@@ -985,19 +967,25 @@
     overflow-y:auto;
   }
 
-  .top-section{
+  /* Left two-thirds: progress wheel + spoke panels (see .wheel-stage
+     below). Right third: single-day calendar, full main-area height.
+     Replaces the old research-cards+calendar .top-section. */
+  .dashboard-grid{
     display:grid;
-    grid-template-columns:minmax(240px, 320px) 1fr;
+    grid-template-columns:2fr minmax(300px, 1fr);
     gap:22px;
-    flex:1 1 56%;
-    min-height:340px;
-  }
-
-  .research-stack{
+    flex:1;
     min-height:0;
+  }
+  .day-calendar-card{ min-height:0; flex:5 1 0; }
+  /* Right grid column stacks the calendar (5/8 height) over the
+     notepad (3/8 height) instead of the calendar filling the whole
+     column alone. */
+  .right-column{
     display:flex;
     flex-direction:column;
-    gap:18px;
+    gap:22px;
+    min-height:0;
   }
 
   .card{
@@ -1624,170 +1612,149 @@
     flex-wrap:nowrap;
     overflow:hidden;
   }
-  /* ---------- Bottom section ----------
-     4-column grid, 2 rows. Deadlines spans columns 1-2 (left, next
-     to the sidebar, wide), the Notepad (formerly Tasklist) takes
-     column 3, and Hobbies now fills the entire column 4 on the far
-     right (the Physical Health / mood card that used to share that
-     column was removed — its mood readout lives in the sidebar mini
-     card now — so Hobbies expands to take the full height it freed
-     up; Calendar moved up into the top-section, replacing Deadlines
-     there — see .top-section / .calendar-card rules). */
-  .bottom-section{
-    display:grid;
-    grid-template-columns:repeat(4, 1fr);
-    grid-template-rows:1fr 1fr;
-    gap:22px;
-    flex:1 1 40%;
-    min-height:220px;
-  }
-  .bottom-section .deadlines-card{ grid-column:1 / 3; grid-row:1 / 3; }
-  .tasklist-card{ grid-column:3; grid-row:1 / 3; }
-  .hobbies-card{ grid-column:4; grid-row:1 / 3; }
-  .bottom-card{ padding:20px; }
-  .bottom-card .card-eyebrow{ font-size:0.8rem; margin-bottom:14px; }
-  .bottom-card .card-eyebrow .material-symbols-outlined{ font-size:19px; }
-  .bottom-card-body{
-    flex:1;
+  /* ---------- Progress wheel + spoke panels ----------
+     .wheel-stage is a square box sized off the smaller of a fixed
+     max and the available width; every child (ring + 5 panels + the
+     SVG leader lines) is positioned in percentage units of that same
+     box (SVG viewBox 0 0 100 100), so ring/panels/lines all agree
+     regardless of the stage's actual rendered pixel size. */
+  .wheel-panel{
+    min-height:0;
+    overflow:hidden;
     display:flex;
-    flex-direction:column;
     align-items:center;
     justify-content:center;
-    text-align:center;
-    gap:6px;
-    color:var(--ink-faint);
+    padding:12px;
   }
-  .bottom-card-body .material-symbols-outlined{
-    font-size:26px;
-    opacity:0.45;
+  .wheel-stage{
+    position:relative;
+    width:min(1845px, 96%, 96vh);
+    aspect-ratio:1;
+    margin:0 auto;
+    transform:translateX(25px);
   }
-  .bottom-card-body .empty-label{
-    font-size:0.72rem;
-    color:var(--ink-dim);
-    font-weight:500;
-  }
-  .bottom-card-body .empty-sub{
-    font-size:0.62rem;
-    color:var(--ink-faint);
-  }
-
-  /* ---------- Hobbies card (synced from la_books / la_movies / la_shows / la_certifications) ---------- */
-  .hobbies-card{
-    border:1px solid rgba(251,146,60,0.55);
-    box-shadow:0 0 18px 0 rgba(251,146,60,0.125), inset 0 1px 0 rgba(254,215,170,0.5);
-  }
-  .hobbies-top-row{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    margin-top:2px;
-  }
-  .hobbies-col{
-    padding:0 0 8px;
-    border-bottom:1px solid rgba(255,255,255,0.08);
-    display:flex;
-    align-items:baseline;
-    justify-content:space-between;
-    gap:8px;
-    min-width:0;
-  }
-  .hobbies-col:last-child{ border-bottom:none; padding-bottom:0; }
-  .hobbies-col-label{
-    font-size:0.68rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.12em;
-    color:var(--ink-faint);
-    margin:0;
-    flex-shrink:0;
-  }
-  .hobbies-col-value{
-    font-size:0.86rem;
-    font-weight:700;
-    color:var(--ink);
-    margin:0;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    min-width:0;
-    text-align:right;
-  }
-  .hobbies-col-value.empty{
-    color:var(--ink-faint);
-    font-weight:500;
-    font-style:italic;
-    font-size:0.72rem;
-  }
-  .hobbies-divider{
-    height:1px;
-    background:rgba(255,255,255,0.08);
-    margin:16px 0 14px;
-  }
-  .hobbies-courses-section{
-    flex:1;
-    min-height:0;
-    display:flex;
-    flex-direction:column;
-  }
-  .hobbies-courses-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    flex:1;
-    min-height:0;
-    overflow-y:auto;
-    padding-right:2px;
-  }
-  .hobbies-course-item{
-    padding:8px 10px;
-    border-radius:var(--r-sm);
-    background:rgba(255,255,255,0.04);
-    min-width:0;
-  }
-  .hobbies-course-name{
-    font-size:0.68rem;
-    font-weight:700;
-    color:var(--ink);
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-  .hobbies-course-provider{
-    font-size:0.58rem;
-    color:var(--ink-faint);
-    margin-top:1px;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-  .hobbies-course-track{
+  .spoke-lines-svg{
+    position:absolute;
+    inset:0;
     width:100%;
-    height:4px;
-    border-radius:4px;
-    background:rgba(255,255,255,0.08);
-    overflow:hidden;
-    margin-top:6px;
+    height:100%;
+    overflow:visible;
+    pointer-events:none;
   }
-  .hobbies-course-fill{ height:100%; background:var(--hobbies); }
-  .hobbies-courses-empty{
-    grid-column:1/-1;
-    font-size:0.68rem;
-    color:var(--ink-faint);
-    font-style:italic;
-    text-align:center;
-    padding:12px 0;
+  .spoke-line{
+    stroke:rgba(255,255,255,0.38);
+    stroke-width:2;
+    vector-effect:non-scaling-stroke;
   }
+  .progress-wheel{
+    --pct:0%;
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:80%;
+    aspect-ratio:1;
+    border-radius:50%;
+    background:conic-gradient(from 0deg, #4ade80 0% var(--pct), rgba(255,255,255,0.10) var(--pct) 100%);
+    -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 100px), #000 calc(100% - 100px));
+            mask:radial-gradient(farthest-side, transparent calc(100% - 100px), #000 calc(100% - 100px));
+    box-shadow:0 0 44px rgba(74,222,128,0.14);
+  }
+  .spoke-panel{
+    position:absolute;
+    top:50%; left:50%;
+    /* transform (translate(-50%,-50%) + this spoke's dx/dy offset) is
+       applied and kept up to date entirely by JS (see SPOKE_OFFSETS /
+       applySpokeTransform) so the same code path handles both each
+       card's initial nudge AND live dragging. */
+    width:152px;
+    display:flex;
+    flex-direction:column;
+    background:var(--glass);
+    border:3px solid #38bdf8;
+    border-radius:var(--r-md);
+    backdrop-filter:blur(22px) saturate(180%);
+    -webkit-backdrop-filter:blur(22px) saturate(180%);
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+    padding:8px 10px;
+    z-index:3;
+    cursor:grab;
+    touch-action:none;
+  }
+  .spoke-panel.spoke-dragging{ cursor:grabbing; z-index:5; transition:none !important; }
+  .spoke-panel-wide{ width:259px; }
+  /* Academic/Research spoke cards are much wider than the others and
+     sit anchored close to the ring itself (small panelR in
+     SPOKE_LAYOUT) so their bulk overlaps the wheel rather than
+     spilling into the calendar column on the right. Filled (not
+     outlined) in the same tinted-glass green used by the academic
+     subpage's own .research-card/.deadlines-card. */
+  #spoke-panel-academic{
+    width:460px;
+    border-color:transparent;
+    background:rgba(74,222,128,0.16);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.35);
+  }
+  #spoke-panel-research{
+    border-color:transparent;
+    background:rgba(74,222,128,0.16);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.35);
+  }
+  #spoke-panel-social{
+    width:198px;
+    border-color:transparent;
+    background:rgba(168,85,247,0.16);
+    box-shadow:0 0 18px 0 rgba(168,85,247,0.125), inset 0 1px 0 rgba(216,180,254,0.35);
+  }
+  /* Habits/Day/Night use the same borderless tinted-glass fill
+     formula as Research/Social/Academic, each in their own theme
+     color, instead of a one-off solid-color treatment. */
+  #spoke-panel-habits{
+    width:198px;
+    border-color:transparent;
+    background:rgba(248,113,113,0.16);
+    box-shadow:0 0 18px 0 rgba(248,113,113,0.125), inset 0 1px 0 rgba(254,202,202,0.35);
+  }
+  #spoke-panel-day{
+    border-color:transparent;
+    background:rgba(96,165,250,0.16);
+    box-shadow:0 0 18px 0 rgba(96,165,250,0.125), inset 0 1px 0 rgba(191,219,254,0.35);
+  }
+  #spoke-panel-night{
+    border-color:transparent;
+    background:rgba(250,204,21,0.16);
+    box-shadow:0 0 18px 0 rgba(250,204,21,0.125), inset 0 1px 0 rgba(254,240,138,0.35);
+  }
+  .spoke-panel-daycycle{ padding:0; overflow:hidden; }
+  .spoke-panel-daycycle .daycycle-btn{
+    flex:0 0 auto;
+    width:100%;
+    border-radius:0;
+    box-shadow:none;
+    background:transparent;
+  }
+  .spoke-panel-daycycle #spoke-day-mood,
+  .spoke-panel-daycycle #spoke-night-mood{
+    padding:8px 10px;
+  }
+  .spoke-academic-row{ gap:8px; }
+  .spoke-academic-row .task-cell{ flex:1; min-width:0; }
+  .spoke-academic-row .chip-row,
+  .spoke-academic-row .importance-badge{ flex-shrink:0; }
 
   /* ---------- Notepad card (index.html) ----------
-     Freeform Apple-Notes-style surface, replacing the old single-line
-     Tasklist. Binder-tab dividers on the left (.notepad-dividers)
-     each hold an independent contenteditable note; a small formatting
-     toolbar sits above the writing surface (.notepad-surface). */
-  .tasklist-card{
+     Freeform Apple-Notes-style surface. Binder-tab dividers on the
+     left (.notepad-dividers) each hold an independent contenteditable
+     note; a small formatting toolbar sits above the writing surface
+     (.notepad-surface). Restored from the pre-Phase-2 build (see
+     b37df01) and slotted into the new .right-column under the
+     calendar instead of the old bottom-section card row. */
+  .notepad-card{
     border:1px solid rgba(220,38,38,0.55);
     box-shadow:0 0 18px 0 rgba(220,38,38,0.125), inset 0 1px 0 rgba(252,165,165,0.5);
     padding:0 !important;
     overflow:hidden;
+    flex:3 1 0;
+    min-height:0;
   }
   .notepad-shell{
     display:flex;
@@ -1828,8 +1795,8 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:6px;
-    padding:9px 10px 9px 14px;
+    gap:4px;
+    padding:9px 8px 9px 14px;
     border:none;
     border-left:3px solid transparent;
     background:transparent;
@@ -1856,16 +1823,32 @@
     min-width:0;
     flex:1;
   }
-  .notepad-tab-remove{
+  .notepad-tab-actions{
+    display:flex;
+    align-items:center;
+    gap:2px;
     flex-shrink:0;
     opacity:0;
+    transition:opacity .15s ease;
+  }
+  .notepad-tab:hover .notepad-tab-actions{ opacity:1; }
+  .notepad-tab-move{
+    font-size:11px;
+    line-height:1;
+    color:var(--ink-faint);
+    padding:2px;
+    border-radius:3px;
+  }
+  .notepad-tab-move:hover{ color:var(--ink); background:rgba(255,255,255,0.08); }
+  .notepad-tab-move.disabled{ opacity:0.25; pointer-events:none; }
+  .notepad-tab-remove{
+    flex-shrink:0;
     font-size:0.85rem;
     line-height:1;
     color:var(--ink-faint);
-    transition:opacity .15s ease, color .15s ease;
+    transition:color .15s ease;
   }
-  .notepad-tab:hover .notepad-tab-remove{ opacity:0.7; }
-  .notepad-tab-remove:hover{ opacity:1 !important; color:#f87171; }
+  .notepad-tab-remove:hover{ color:#f87171; }
   .notepad-add-tab-btn{
     display:flex;
     align-items:center;
@@ -2015,6 +1998,185 @@
   }
   .note-checklist-item .note-text{ flex:1; min-width:0; outline:none; }
   .note-checklist-item.done .note-text{ text-decoration:line-through; color:var(--ink-faint); }
+  .spoke-panel-header{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:6px;
+    cursor:pointer;
+  }
+  .spoke-panel-title{
+    font-size:0.64rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink);
+    flex:1;
+    min-width:0;
+  }
+  .spoke-panel-count{ font-size:0.72rem; font-weight:800; color:var(--ink); flex-shrink:0; }
+  .spoke-add-btn{
+    width:18px; height:18px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    font-size:0.56rem;
+    font-weight:700;
+    cursor:pointer;
+    padding:0;
+  }
+  .spoke-add-btn .material-symbols-outlined{ font-size:13px; }
+  .spoke-panel-list{
+    max-height:112px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .spoke-empty{ font-size:0.64rem; color:var(--ink-faint); font-style:italic; padding:4px 0; }
+  .spoke-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:0.68rem;
+    color:var(--ink-dim);
+  }
+  .spoke-row-name{
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:var(--ink);
+  }
+  .spoke-row-lab{
+    flex-shrink:0;
+    width:14px; height:14px;
+    border-radius:4px;
+    background:rgba(74,222,128,0.18);
+    color:var(--academic);
+    font-size:0.56rem;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .spoke-row-clickable{ cursor:pointer; }
+  .spoke-row-status{ font-size:16px; color:var(--ink-dim); flex-shrink:0; }
+  .spoke-row-lab-task .task-text-input{ font-size:0.68rem; }
+  .spoke-row-lab-task .task-date-input{ width:88px; font-size:0.58rem; }
+
+  /* ---------- Hobbies card (synced from la_books / la_movies / la_shows / la_certifications) ---------- */
+  .hobbies-card{
+    border:1px solid rgba(251,146,60,0.55);
+    box-shadow:0 0 18px 0 rgba(251,146,60,0.125), inset 0 1px 0 rgba(254,215,170,0.5);
+  }
+  .hobbies-top-row{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:2px;
+  }
+  .hobbies-col{
+    padding:0 0 8px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:8px;
+    min-width:0;
+  }
+  .hobbies-col:last-child{ border-bottom:none; padding-bottom:0; }
+  .hobbies-col-label{
+    font-size:0.68rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:var(--ink-faint);
+    margin:0;
+    flex-shrink:0;
+  }
+  .hobbies-col-value{
+    font-size:0.86rem;
+    font-weight:700;
+    color:var(--ink);
+    margin:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    min-width:0;
+    text-align:right;
+  }
+  .hobbies-col-value.empty{
+    color:var(--ink-faint);
+    font-weight:500;
+    font-style:italic;
+    font-size:0.72rem;
+  }
+  .hobbies-divider{
+    height:1px;
+    background:rgba(255,255,255,0.08);
+    margin:16px 0 14px;
+  }
+  .hobbies-courses-section{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+  }
+  .hobbies-courses-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding-right:2px;
+  }
+  .hobbies-course-item{
+    padding:8px 10px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.04);
+    min-width:0;
+  }
+  .hobbies-course-name{
+    font-size:0.68rem;
+    font-weight:700;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .hobbies-course-provider{
+    font-size:0.58rem;
+    color:var(--ink-faint);
+    margin-top:1px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .hobbies-course-track{
+    width:100%;
+    height:4px;
+    border-radius:4px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+    margin-top:6px;
+  }
+  .hobbies-course-fill{ height:100%; background:var(--hobbies); }
+  .hobbies-courses-empty{
+    grid-column:1/-1;
+    font-size:0.68rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    text-align:center;
+    padding:12px 0;
+  }
 
 
   /* ---------- Pomodoro Timer Card (ported from academic-subpage.html;
@@ -2579,63 +2741,6 @@
 
     <div class="sidebar-divider"></div>
 
-    <div class="daycycle-buttons">
-      <button type="button" class="daycycle-btn morning" id="morning-btn" onclick="openMorningModal()">
-        <span class="daycycle-btn-icon material-symbols-outlined">light_mode</span>
-        <span class="daycycle-btn-label">Morning</span>
-        <span class="daycycle-btn-check material-symbols-outlined">check</span>
-      </button>
-      <button type="button" class="daycycle-btn night" id="night-btn" onclick="openNightModal()">
-        <span class="daycycle-btn-icon material-symbols-outlined">dark_mode</span>
-        <span class="daycycle-btn-label">Night</span>
-        <span class="daycycle-btn-check material-symbols-outlined">check</span>
-      </button>
-    </div>
-
-    <div class="mood-mini-card glass">
-      <p class="mood-mini-title mono">Today's Mood</p>
-      <div class="mood-mini-row" id="sidebar-mood-row"></div>
-    </div>
-
-    <div class="currently-mini-card glass">
-      <p class="currently-mini-title mono">Current Media</p>
-      <div class="currently-mini-row" id="sidebar-currently-book-row">
-        <span class="currently-mini-icon">📖</span>
-        <span class="currently-mini-text" id="sidebar-currently-book">Nothing yet</span>
-      </div>
-      <div class="currently-mini-row" id="sidebar-currently-movie-row">
-        <span class="currently-mini-icon">🎬</span>
-        <span class="currently-mini-text" id="sidebar-currently-movie">Nothing yet</span>
-      </div>
-      <div class="currently-mini-row" id="sidebar-currently-show-row">
-        <span class="currently-mini-icon">📺</span>
-        <span class="currently-mini-text" id="sidebar-currently-show">Nothing yet</span>
-      </div>
-    </div>
-
-    <div class="social-card glass">
-      <div class="social-card-header">
-        <p class="heading mono">Social Targets</p>
-        <div class="habit-mini-add-btn" onclick="openSocialModal()" title="Open Social Targets pyramid">
-          <span class="material-symbols-outlined">change_history</span>
-        </div>
-      </div>
-      <div id="social-widget-rows"></div>
-    </div>
-
-    <div class="habit-mini-card glass">
-      <div class="habit-mini-header" onclick="openHabitModal()">
-        <div class="habit-mini-header-left">
-          <p class="currently-mini-title mono">Habits</p>
-          <span class="habit-mini-counter mono" id="habit-mini-counter"></span>
-        </div>
-        <div class="habit-mini-add-btn" onclick="event.stopPropagation(); openHabitModal();" title="Add habit">
-          <span class="material-symbols-outlined">add</span>
-        </div>
-      </div>
-      <div class="habit-mini-list" id="habit-mini-list"></div>
-    </div>
-
     <div class="sidebar-spacer"></div>
 
     <div class="sidebar-bottom">
@@ -2672,278 +2777,146 @@
       </button>
     </div>
 
-    <!-- Top: research cards + deadlines -->
-    <div class="top-section">
-      <div class="research-stack">
-        <div class="card glass research-card">
-          <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
-          <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
-            <div class="lab-header-row">
-              <h3 class="card-title" style="margin:0;">Kranker Lab</h3>
-              <span class="lab-due-soonest mono" id="kranker-due-soonest">—</span>
-            </div>
+    <!-- Left two-thirds: weighted progress wheel + spoke panels. Right
+         third: single-day calendar (full height). Replaces the old
+         research-card / deadlines-table / pomo / notepad / hobbies
+         card stream entirely (see Phase 2 rebuild). -->
+    <div class="dashboard-grid">
 
-            <ul class="subtask-list" id="kranker-task-list"></ul>
-            <button type="button" class="add-task-btn" onclick="addLabTask('kranker')">
-              <span class="material-symbols-outlined">add</span> Add Task
+      <div class="wheel-panel">
+        <div class="wheel-stage" id="wheel-stage">
+          <svg class="spoke-lines-svg" id="spoke-lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+          <div class="progress-wheel" id="progress-wheel"></div>
+
+          <div class="spoke-panel habit-mini-card" id="spoke-panel-habits">
+            <div class="spoke-panel-header" onclick="openHabitModal()">
+              <span class="spoke-panel-title">Habits</span>
+              <span class="spoke-panel-count mono" id="habit-mini-counter"></span>
+              <button type="button" class="spoke-add-btn" onclick="event.stopPropagation(); openHabitModal();" title="Habit Tracker">
+                <span class="material-symbols-outlined">add</span>
+              </button>
+            </div>
+            <div class="spoke-panel-list habit-mini-list" id="habit-mini-list"></div>
+          </div>
+
+          <div class="spoke-panel" id="spoke-panel-academic">
+            <div class="spoke-panel-header">
+              <span class="spoke-panel-title">Academic</span>
+              <span class="spoke-panel-count mono" id="spoke-academic-count"></span>
+              <button type="button" class="spoke-add-btn" onclick="openDeadlineModal()" title="Add deadline">
+                <span class="material-symbols-outlined">add</span>
+              </button>
+            </div>
+            <div class="spoke-panel-list" id="spoke-academic-list"></div>
+          </div>
+
+          <div class="spoke-panel spoke-panel-wide" id="spoke-panel-research">
+            <div class="spoke-panel-header">
+              <span class="spoke-panel-title">Research</span>
+              <button type="button" class="spoke-add-btn" onclick="addLabTask('kranker')" title="Add Kranker Lab task">K+</button>
+              <button type="button" class="spoke-add-btn" onclick="addLabTask('ballard')" title="Add Ballard Lab task">B+</button>
+            </div>
+            <div class="spoke-panel-list" id="spoke-research-list"></div>
+          </div>
+
+          <div class="spoke-panel" id="spoke-panel-social">
+            <div class="spoke-panel-header" onclick="openSocialModal()">
+              <span class="spoke-panel-title">Social</span>
+              <span class="spoke-panel-count mono" id="spoke-social-count"></span>
+            </div>
+            <div class="spoke-panel-list" id="social-widget-rows"></div>
+          </div>
+
+          <div class="spoke-panel spoke-panel-daycycle" id="spoke-panel-day">
+            <button type="button" class="daycycle-btn morning" id="morning-btn" onclick="openMorningModal()">
+              <span class="daycycle-btn-icon material-symbols-outlined">light_mode</span>
+              <span class="daycycle-btn-label">Morning</span>
+              <span class="daycycle-btn-check material-symbols-outlined">check</span>
             </button>
-
-            <div class="status-hours-row">
-              <div class="status-row-inline">
-                <span class="status-label" style="color:var(--academic);">Status</span>
-                <select class="status-select" id="kranker-status" onchange="saveLabStatus('kranker', this.value)">
-                  <option value="ahead">Ahead</option>
-                  <option value="on-track">On Track</option>
-                  <option value="behind">Behind</option>
-                </select>
-              </div>
-              <div class="hours-counter-inline">
-                <span class="hours-counter-value mono" id="kranker-hours-value" onclick="editLabHours('kranker')">0.0 hrs</span>
-                <input type="text" inputmode="decimal" class="hours-counter-input mono" id="kranker-hours-input" style="display:none;" onblur="saveLabHoursText('kranker', this.value)" onkeydown="if(event.key==='Enter'){ this.blur(); }">
-                <button type="button" class="hours-counter-mini-btn" onclick="adjustLabHours('kranker', -0.5)" title="-0.5 hr">−</button>
-                <button type="button" class="hours-counter-mini-btn" onclick="adjustLabHours('kranker', 0.5)" title="+0.5 hr">+</button>
-                <button type="button" class="hours-reset-btn" onclick="resetLabHours('kranker')" title="Reset hours">
-                  <span class="material-symbols-outlined">restart_alt</span>
-                </button>
-              </div>
-            </div>
+            <div id="spoke-day-mood"></div>
           </div>
-        </div>
 
-        <div class="card glass research-card">
-          <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
-          <div class="card-pad" style="display:flex; flex-direction:column; height:100%;">
-            <div class="lab-header-row">
-              <h3 class="card-title" style="margin:0;">Ballard Lab</h3>
-              <span class="lab-due-soonest mono" id="ballard-due-soonest">—</span>
-            </div>
-
-            <ul class="subtask-list" id="ballard-task-list"></ul>
-            <button type="button" class="add-task-btn" onclick="addLabTask('ballard')">
-              <span class="material-symbols-outlined">add</span> Add Task
+          <div class="spoke-panel spoke-panel-daycycle" id="spoke-panel-night">
+            <button type="button" class="daycycle-btn night" id="night-btn" onclick="openNightModal()">
+              <span class="daycycle-btn-icon material-symbols-outlined">dark_mode</span>
+              <span class="daycycle-btn-label">Night</span>
+              <span class="daycycle-btn-check material-symbols-outlined">check</span>
             </button>
-
-            <div class="status-hours-row">
-              <div class="status-row-inline">
-                <span class="status-label" style="color:var(--academic);">Status</span>
-                <select class="status-select" id="ballard-status" onchange="saveLabStatus('ballard', this.value)">
-                  <option value="ahead">Ahead</option>
-                  <option value="on-track">On Track</option>
-                  <option value="behind">Behind</option>
-                </select>
-              </div>
-              <div class="hours-counter-inline">
-                <span class="hours-counter-value mono" id="ballard-hours-value" onclick="editLabHours('ballard')">0.0 hrs</span>
-                <input type="text" inputmode="decimal" class="hours-counter-input mono" id="ballard-hours-input" style="display:none;" onblur="saveLabHoursText('ballard', this.value)" onkeydown="if(event.key==='Enter'){ this.blur(); }">
-                <button type="button" class="hours-counter-mini-btn" onclick="adjustLabHours('ballard', -0.5)" title="-0.5 hr">−</button>
-                <button type="button" class="hours-counter-mini-btn" onclick="adjustLabHours('ballard', 0.5)" title="+0.5 hr">+</button>
-                <button type="button" class="hours-reset-btn" onclick="resetLabHours('ballard')" title="Reset hours">
-                  <span class="material-symbols-outlined">restart_alt</span>
-                </button>
-              </div>
-            </div>
+            <div id="spoke-night-mood"></div>
           </div>
         </div>
       </div>
 
-      <div class="card glass bottom-card calendar-card" id="calendar-card">
-        <div class="accent-blob" style="background:rgba(56,189,248,0.14);"></div>
-        <div class="calendar-header">
-          <div class="calendar-tabs" id="calendar-tabs">
-            <button type="button" class="calendar-tab" data-view="timeGridDay">1D</button>
-            <button type="button" class="calendar-tab active" data-view="timeGridThreeDay">3D</button>
-            <button type="button" class="calendar-tab" data-view="timeGridFiveDay">5D</button>
-            <button type="button" class="calendar-tab" data-view="dayGridMonth" title="Month">M</button>
-          </div>
-          <div class="calendar-range-toggles" id="calendar-range-toggles">
-            <button type="button" class="calendar-range-btn" data-min="00:00:00" data-max="24:00:00">24h</button>
-            <button type="button" class="calendar-range-btn" data-min="08:00:00" data-max="17:00:00">8a&ndash;5p</button>
-            <div class="calendar-range-custom">
-              <button type="button" class="calendar-range-btn calendar-range-custom-btn" id="calendar-range-custom-btn">Custom</button>
-              <div class="calendar-range-popover" id="calendar-range-popover">
-                <label>
-                  Start
-                  <input type="time" id="calendar-range-start" step="3600">
-                </label>
-                <label>
-                  End
-                  <input type="time" id="calendar-range-end" step="3600">
-                </label>
-                <button type="button" class="calendar-range-apply" id="calendar-range-apply">Apply</button>
+      <div class="right-column">
+
+        <div class="card glass calendar-card day-calendar-card" id="calendar-card">
+          <div class="accent-blob" style="background:rgba(56,189,248,0.14);"></div>
+          <div class="calendar-header">
+            <div class="calendar-tabs" id="calendar-tabs">
+              <button type="button" class="calendar-tab active" data-view="timeGridDay">1D</button>
+              <button type="button" class="calendar-tab" data-view="timeGridThreeDay">3D</button>
+            </div>
+            <div class="calendar-range-toggles" id="calendar-range-toggles">
+              <button type="button" class="calendar-range-btn active" data-min="06:00:00" data-max="25:00:00">6a&ndash;1a</button>
+              <button type="button" class="calendar-range-btn" data-min="00:00:00" data-max="24:00:00">24h</button>
+              <button type="button" class="calendar-range-btn" data-min="08:00:00" data-max="17:00:00">8a&ndash;5p</button>
+              <div class="calendar-range-custom">
+                <button type="button" class="calendar-range-btn calendar-range-custom-btn" id="calendar-range-custom-btn">Custom</button>
+                <div class="calendar-range-popover" id="calendar-range-popover">
+                  <label>
+                    Start
+                    <input type="time" id="calendar-range-start" step="3600">
+                  </label>
+                  <label>
+                    End
+                    <input type="time" id="calendar-range-end" step="3600">
+                  </label>
+                  <button type="button" class="calendar-range-apply" id="calendar-range-apply">Apply</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div id="calendar-body"></div>
-        <button type="button" class="calendar-connect-pill" id="calendar-connect-pill">
-          <span class="material-symbols-outlined">link</span>
-          Connect Calendar
-        </button>
-      </div>
-    </div>
-
-    <!-- Pomodoro Timer — mobile-only (see .pomo-card's display:none
-         default above); ported from academic-subpage.html so the
-         mobile card stream doesn't need to navigate to that page. -->
-    <div class="card glass pomo-card">
-      <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
-
-      <div class="pomo-tabs">
-        <button type="button" class="pomo-tab active" data-mode="pomodoro" onclick="selectPomoTab('pomodoro')">Pomodoro</button>
-        <button type="button" class="pomo-tab" data-mode="short" onclick="selectPomoTab('short')">Short Break</button>
-        <button type="button" class="pomo-tab" data-mode="long" onclick="selectPomoTab('long')">Long Break</button>
-      </div>
-
-      <div class="pomo-display mono" id="pomo-display">25:00</div>
-
-      <div class="pomo-controls-row">
-        <button type="button" class="pomo-icon-btn" onclick="resetPomo()" title="Reset">
-          <span class="material-symbols-outlined">replay</span>
-        </button>
-        <button type="button" class="pomo-start-btn" id="pomo-start-btn" onclick="togglePomoStartPause()">Start</button>
-        <div class="pomo-settings-anchor">
-          <button type="button" class="pomo-icon-btn pomo-settings-btn" onclick="togglePomoSettings()" title="Settings">
-            <span class="material-symbols-outlined">settings</span>
+          <div id="calendar-body"></div>
+          <button type="button" class="calendar-connect-pill" id="calendar-connect-pill">
+            <span class="material-symbols-outlined">link</span>
+            Connect Calendar
           </button>
-          <div class="pomo-settings-popover" id="pomo-settings-popover">
-            <div class="pomo-settings-row"><span>Pomodoro (min)</span><input type="number" id="setting-pomodoro" min="1" max="180"></div>
-            <div class="pomo-settings-row"><span>Short Break (min)</span><input type="number" id="setting-short" min="1" max="60"></div>
-            <div class="pomo-settings-row"><span>Long Break (min)</span><input type="number" id="setting-long" min="1" max="120"></div>
-            <button type="button" class="pomo-settings-save" onclick="savePomoSettings()">Save</button>
-          </div>
         </div>
-      </div>
 
-      <div class="pomo-week-row mono">This week: <span id="pomo-week-total">0.0h</span></div>
-
-      <label class="field-label pomo-focus-label">Current Focus</label>
-      <input class="field-text" id="today-focus-input" type="text" placeholder="What are you working on today?" oninput="saveTodayFocus(this.value)" onblur="renderTodayFocusMode()" onkeydown="if(event.key==='Enter'){ this.blur(); }">
-      <p class="today-focus-static" id="today-focus-static" onclick="editTodayFocus()"></p>
-    </div>
-
-    <!-- Bottom: three cards, full width -->
-    <div class="bottom-section">
-
-      <div class="card glass bottom-card tasklist-card notepad-card">
-        <div class="accent-blob" style="background:rgba(220,38,38,0.14);"></div>
-        <div class="notepad-shell">
-          <div class="notepad-dividers" id="notepad-dividers">
-            <div class="notepad-tabs" id="notepad-tabs"></div>
-            <input type="text" class="notepad-tab-add-input" id="notepad-tab-add-input" placeholder="Divider name…" style="display:none;" onkeydown="handleNotepadAddTabKeydown(event)" onblur="commitNotepadAddTab()">
-            <button type="button" class="notepad-add-tab-btn" id="notepad-add-tab-btn" onclick="startAddNotepadTab()" title="Add divider">
-              <span class="material-symbols-outlined">add</span>
-            </button>
-          </div>
-          <div class="notepad-main">
-            <div class="notepad-toolbar">
-              <button type="button" class="notepad-collapse-btn" onclick="toggleNotepadSidebar()" title="Toggle dividers">
-                <span class="material-symbols-outlined">left_panel_close</span>
-              </button>
-              <div class="notepad-toolbar-divider"></div>
-              <button type="button" class="notepad-tool-btn" data-tool="plain" onclick="notepadSetPlain()" title="Plain Text">
-                <span class="material-symbols-outlined">notes</span>
-              </button>
-              <button type="button" class="notepad-tool-btn" data-tool="checklist" onclick="notepadToggleChecklist()" title="Checklist">
-                <span class="material-symbols-outlined">checklist</span>
-              </button>
-              <button type="button" class="notepad-tool-btn" data-tool="numbered" onclick="notepadExec('insertOrderedList')" title="Numbered List">
-                <span class="material-symbols-outlined">format_list_numbered</span>
-              </button>
-              <button type="button" class="notepad-tool-btn" data-tool="indent" onclick="notepadExec('indent')" title="Indent / Sub-item">
-                <span class="material-symbols-outlined">format_indent_increase</span>
+        <div class="card glass notepad-card">
+          <div class="accent-blob" style="background:rgba(220,38,38,0.14);"></div>
+          <div class="notepad-shell">
+            <div class="notepad-dividers" id="notepad-dividers">
+              <div class="notepad-tabs" id="notepad-tabs"></div>
+              <input type="text" class="notepad-tab-add-input" id="notepad-tab-add-input" placeholder="Page name…" style="display:none;" onkeydown="handleNotepadAddTabKeydown(event)" onblur="commitNotepadAddTab()">
+              <button type="button" class="notepad-add-tab-btn" id="notepad-add-tab-btn" onclick="startAddNotepadTab()" title="Add page">
+                <span class="material-symbols-outlined">add</span>
               </button>
             </div>
-            <div class="notepad-surface" id="notepad-surface" contenteditable="true" data-placeholder="Start typing…" oninput="notepadOnInput()" onkeydown="handleNotepadKeydown(event)"></div>
+            <div class="notepad-main">
+              <div class="notepad-toolbar">
+                <button type="button" class="notepad-collapse-btn" onclick="toggleNotepadSidebar()" title="Toggle pages">
+                  <span class="material-symbols-outlined">left_panel_close</span>
+                </button>
+                <div class="notepad-toolbar-divider"></div>
+                <button type="button" class="notepad-tool-btn" data-tool="plain" onclick="notepadSetPlain()" title="Plain Text">
+                  <span class="material-symbols-outlined">notes</span>
+                </button>
+                <button type="button" class="notepad-tool-btn" data-tool="checklist" onclick="notepadToggleChecklist()" title="Checklist">
+                  <span class="material-symbols-outlined">checklist</span>
+                </button>
+                <button type="button" class="notepad-tool-btn" data-tool="numbered" onclick="notepadExec('insertOrderedList')" title="Numbered List">
+                  <span class="material-symbols-outlined">format_list_numbered</span>
+                </button>
+                <button type="button" class="notepad-tool-btn" data-tool="indent" onclick="notepadExec('indent')" title="Indent / Sub-item">
+                  <span class="material-symbols-outlined">format_indent_increase</span>
+                </button>
+              </div>
+              <div class="notepad-surface" id="notepad-surface" contenteditable="true" data-placeholder="Start typing…" oninput="notepadOnInput()" onkeydown="handleNotepadKeydown(event)"></div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="card glass bottom-card hobbies-card">
-        <div class="accent-blob" style="background:rgba(251,146,60,0.14);"></div>
-        <div class="card-eyebrow" style="color:var(--hobbies);">
-          Hobbies
-        </div>
-        <div class="hobbies-top-row">
-          <div class="hobbies-col">
-            <p class="hobbies-col-label mono">Reading</p>
-            <p class="hobbies-col-value empty" id="hobbies-reading-value">Nothing yet</p>
-          </div>
-        </div>
-        <div class="hobbies-divider"></div>
-        <div class="hobbies-courses-section">
-          <p class="hobbies-col-label mono" style="margin-bottom:8px;">All Courses</p>
-          <div class="hobbies-courses-grid" id="hobbies-courses-grid"></div>
-        </div>
-      </div>
-
-      <div class="card glass deadlines-card deadlines-compact">
-        <div class="accent-blob" style="background:rgba(74,222,128,0.14);"></div>
-        <div class="deadlines-header">
-          <h3>Deadlines</h3>
-          <div class="deadlines-header-actions">
-            <button type="button" class="icon-btn" onclick="toggleDeadlineFilters()" title="Filters">
-              <span class="material-symbols-outlined">filter_list</span>
-            </button>
-            <button type="button" class="icon-btn" onclick="openDeadlineModal()" title="Add task">
-              <span class="material-symbols-outlined">add</span>
-            </button>
-          </div>
-        </div>
-        <div class="filter-bar" id="deadline-filter-bar">
-          <div class="filter-group">
-            <label>Due Date</label>
-            <select id="filter-due-sort" onchange="applyDeadlineFilters()">
-              <option value="asc">Soonest First</option>
-              <option value="desc">Latest First</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Importance</label>
-            <select id="filter-importance" onchange="applyDeadlineFilters()">
-              <option value="All">All</option>
-              <option value="Low">Low</option>
-              <option value="Moderate">Moderate</option>
-              <option value="Critical">Critical</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Type</label>
-            <select id="filter-type" onchange="applyDeadlineFilters()">
-              <option value="All">All</option>
-              <option value="Asynch">Asynch</option>
-              <option value="Synch">Synch</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Area</label>
-            <select id="filter-area" onchange="applyDeadlineFilters()">
-              <option value="All">All</option>
-            </select>
-          </div>
-        </div>
-        <div class="table-scroll">
-          <table class="deadlines-table" id="deadlines-table">
-            <thead>
-              <tr>
-                <th class="checkbox-col"></th>
-                <th class="col-resizable">Task<span class="col-resize-handle"></span></th>
-                <th class="col-resizable">Areas<span class="col-resize-handle"></span></th>
-                <th class="col-resizable">Importance<span class="col-resize-handle"></span></th>
-                <th style="width:84px;">Status</th>
-                <th class="col-resizable">Due<span class="col-resize-handle"></span></th>
-                <th>Type</th>
-              </tr>
-            </thead>
-            <tbody id="deadlines-tbody">
-              <tr class="empty-row">
-                <td colspan="7">
-                  <span class="material-symbols-outlined">event_available</span>
-                  No deadlines yet
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </div>
 
     </div>
@@ -3901,8 +3874,11 @@
   }
 
   function todayISO(){
-    var d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    /* Aliases the 5AM-adjusted "today" (getAdjustedDate(), defined
+       further below but hoisted) so Deadlines' "Due Today" status
+       agrees with Habits/Lab Tasks/Social Targets instead of flipping
+       at real midnight while everything else flips at 5AM. */
+    return getAdjustedDate();
   }
   function daysBetween(dueISO){
     var due = new Date(dueISO + 'T00:00:00');
@@ -4001,6 +3977,13 @@
   }
 
   function renderDeadlinesTable(){
+    /* The Deadlines table card no longer renders on index.html (see
+       the Phase 2 rebuild) — this table only lives on
+       academic-subpage.html now. Guarded rather than deleted since
+       deleteDeadlineImmediate()/saveDeadlineForm() (used by the
+       Academic spoke panel + Add Deadline modal, both still present
+       here) call it unconditionally. */
+    if(!document.getElementById('deadlines-tbody')) return;
     var all = getDeadlines();
     var tasks = all.slice();
     if(deadlineFilters.importance !== 'All'){
@@ -4432,14 +4415,12 @@
   function saveLabTasks(lab, list){ saveJSON('la_' + lab + '_tasks', list); }
 
   function rolloverOverdueLabTasks(lab){
-    var list = getLabTasks(lab);
-    var today = getAdjustedDate();
-    var changed = false;
-    list.forEach(function(task){
-      if(task.due && task.due < today){ task.due = today; changed = true; }
-    });
-    if(changed) saveLabTasks(lab, list);
-    return list;
+    /* Previously bumped every overdue task's `due` to today on each
+       render, which erased how overdue it actually was and made a
+       persistent backlog impossible to compute. Original due dates
+       now persist untouched — the wheel's research slice reads the
+       live open count directly (see computeWheelFill()). */
+    return getLabTasks(lab);
   }
 
   function autoGrowTaskInput(el){
@@ -4448,8 +4429,13 @@
   }
 
   function renderLabTasks(lab){
+    /* Kranker/Ballard Lab cards no longer render on index.html (see
+       the Phase 2 rebuild) — guarded since addLabTask/updateLabTaskField/
+       deleteLabTask still call this unconditionally, and the Research
+       spoke panel calls those same mutators. */
     var list = rolloverOverdueLabTasks(lab);
     var ul = document.getElementById(lab + '-task-list');
+    if(!ul) return;
     ul.innerHTML = list.map(function(task){
       var dueSoon = task.due && daysBetweenAdjusted(task.due) >= 0 && daysBetweenAdjusted(task.due) <= 1;
       return '<li class="lab-task-row'+ (dueSoon ? ' due-soon' : '') +'">' +
@@ -4467,7 +4453,8 @@
     list.push({ id: uid(), text:'', due:'' });
     saveLabTasks(lab, list);
     renderLabTasks(lab);
-    var inputs = document.querySelectorAll('#'+lab+'-task-list .task-text-input');
+    if(typeof renderSpokeResearch === 'function') renderSpokeResearch();
+    var inputs = document.querySelectorAll('#'+lab+'-task-list .task-text-input, #spoke-research-list .task-text-input[data-lab="'+lab+'"]');
     if(inputs.length) inputs[inputs.length-1].focus();
   }
 
@@ -4483,8 +4470,16 @@
          unlike the text field's oninput, a full rebuild won't steal
          keystroke focus). Text edits keep the lighter due-soonest-only
          update to avoid disrupting typing. */
-      if(field === 'due'){ renderLabTasks(lab); }
-      else { renderLabDueSoonest(lab); }
+      if(field === 'due'){
+        /* Full re-render only on due-date commit (like renderLabTasks
+           below) — never on text-field oninput, which would wipe out
+           the textarea's focus/caret on every keystroke. */
+        renderLabTasks(lab);
+        if(typeof renderSpokeResearch === 'function') renderSpokeResearch();
+        if(typeof renderWheel === 'function') renderWheel();
+      } else {
+        renderLabDueSoonest(lab);
+      }
     }
   }
 
@@ -4496,6 +4491,7 @@
   function renderLabDueSoonest(lab){
     var list = getLabTasks(lab).filter(function(t){ return t.due; });
     var el = document.getElementById(lab + '-due-soonest');
+    if(!el) return;
     if(!list.length){ el.textContent = '—'; return; }
     list.sort(function(a,b){ return a.due < b.due ? -1 : 1; });
     el.textContent = 'Due ' + formatDateHuman(list[0].due);
@@ -4503,7 +4499,8 @@
 
   function saveLabStatus(lab, value){ saveJSON('la_' + lab + '_status', value); }
   function loadLabStatus(lab){
-    document.getElementById(lab + '-status').value = loadJSON('la_' + lab + '_status', 'on-track');
+    var el = document.getElementById(lab + '-status');
+    if(el) el.value = loadJSON('la_' + lab + '_status', 'on-track');
   }
 
   /* ============================================================
@@ -4524,7 +4521,8 @@
   }
   function renderLabHours(lab){
     var val = getLabHours(lab);
-    document.getElementById(lab + '-hours-value').textContent = val.toFixed(1) + ' hrs';
+    var valueEl = document.getElementById(lab + '-hours-value');
+    if(valueEl) valueEl.textContent = val.toFixed(1) + ' hrs';
     var input = document.getElementById(lab + '-hours-input');
     if(input) input.value = val.toFixed(1);
   }
@@ -4549,280 +4547,16 @@
     renderLabHours(lab);
   }
 
-  /* ============================================================
-     Sidebar Study Streak mini card — read-only, sourced from the
-     same localStorage keys academic-subpage.html's Study Streak
-     card writes to. Never writes back (display only).
-  ============================================================ */
-  function getMondayKey(){
-    var d = new Date(getAdjustedDate() + 'T00:00:00');
-    var day = d.getDay();
-    var diff = (day === 0 ? -6 : 1 - day);
-    var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
-    return monday.getFullYear() + '-' + String(monday.getMonth()+1).padStart(2,'0') + '-' + String(monday.getDate()).padStart(2,'0');
-  }
-
   function diffDaysISO(aISO, bISO){
     var a = new Date(aISO + 'T00:00:00');
     var b = new Date(bISO + 'T00:00:00');
     return Math.round((b - a) / 86400000);
   }
 
-
-  /* ============================================================
-     Pomodoro Timer Card (mobile-only UI; ported from
-     academic-subpage.html — same la_pomo_ / la_study_streak_academic /
-     la_today_focus_academic keys, so this and that page's own card
-     read/write the identical timer, weekly hours, and streak state).
-
-     academic-subpage.html's version also drives a full Study Streak
-     card (streak-current/streak-best/goal-progress-*) that doesn't
-     exist here — recordPomodoroCompletion() below only writes the
-     streak data (not academic's renderStreak()/renderWeeklyGoal(),
-     which target those missing elements). This page no longer shows
-     a streak widget of its own at all (see the sidebar mood mini
-     card below instead), so tickPomo() doesn't need to refresh
-     anything streak-related after a completion.
-  ============================================================ */
-  var pomoInterval = null;
-  var pomoAudioCtx = null;
-
-  function getPomoAudioCtx(){
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if(!AC) return null;
-    if(!pomoAudioCtx) pomoAudioCtx = new AC();
-    if(pomoAudioCtx.state === 'suspended') pomoAudioCtx.resume();
-    return pomoAudioCtx;
-  }
-
-  function playPomoChime(){
-    var ctx = getPomoAudioCtx();
-    if(!ctx) return;
-    var now = ctx.currentTime;
-    var notes = [
-      { freq:880.00, start:0,    dur:0.4 },
-      { freq:1174.66, start:0.16, dur:0.45 },
-      { freq:1567.98, start:0.32, dur:0.6 }
-    ];
-    notes.forEach(function(n){
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = n.freq;
-      var t0 = now + n.start;
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.22, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + n.dur);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + n.dur + 0.05);
-    });
-  }
-
-  function flashPomoDisplay(){
-    var el = document.getElementById('pomo-display');
-    el.classList.remove('flash');
-    void el.offsetWidth;
-    el.classList.add('flash');
-    setTimeout(function(){ el.classList.remove('flash'); }, 900);
-  }
-
-  function getPomoSettings(){ return loadJSON('la_pomo_settings', {pomodoro:25, short:5, long:15}); }
-  function savePomoSettingsToStorage(s){ saveJSON('la_pomo_settings', s); }
-
-  function getPomoState(){
-    var settings = getPomoSettings();
-    return loadJSON('la_pomo_state', null) || { mode:'pomodoro', remaining: settings.pomodoro*60, running:false };
-  }
-  function savePomoState(state){ saveJSON('la_pomo_state', state); }
-
-  function getPomoWeek(){
-    var w = loadJSON('la_pomo_week', null) || { weekStart:getMondayKey(), weekSeconds:0 };
-    if(w.weekStart !== getMondayKey()){ w.weekStart = getMondayKey(); w.weekSeconds = 0; }
-    return w;
-  }
-  function savePomoWeek(w){ saveJSON('la_pomo_week', w); }
-
-  function formatMMSSGeneric(sec){
-    sec = Math.max(0, Math.round(sec));
-    var m = Math.floor(sec/60), s = sec%60;
-    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-  }
-
-  function renderPomo(){
-    var state = getPomoState();
-    document.getElementById('pomo-display').textContent = formatMMSSGeneric(state.remaining);
-    document.querySelectorAll('.pomo-tab').forEach(function(btn){
-      btn.classList.toggle('active', btn.dataset.mode === state.mode);
-    });
-    document.getElementById('pomo-start-btn').textContent = state.running ? 'Pause' : 'Start';
-    var week = getPomoWeek();
-    document.getElementById('pomo-week-total').textContent = (week.weekSeconds/3600).toFixed(1) + 'h';
-  }
-
-  function selectPomoTab(mode){
-    stopPomoInterval();
-    var settings = getPomoSettings();
-    savePomoState({ mode: mode, remaining: settings[mode]*60, running:false });
-    renderPomo();
-  }
-
-  function togglePomoStartPause(){
-    var state = getPomoState();
-    if(state.running){ pausePomoInternal(); } else { startPomoInternal(); }
-  }
-
-  function startPomoInternal(){
-    getPomoAudioCtx();
-    var state = getPomoState();
-    state.running = true;
-    savePomoState(state);
-    stopPomoInterval();
-    pomoInterval = setInterval(tickPomo, 1000);
-    renderPomo();
-  }
-
-  function pausePomoInternal(){
-    var state = getPomoState();
-    state.running = false;
-    savePomoState(state);
-    stopPomoInterval();
-    renderPomo();
-  }
-
-  function stopPomoInterval(){
-    if(pomoInterval){ clearInterval(pomoInterval); pomoInterval = null; }
-  }
-
-  function resetPomo(){
-    var settings = getPomoSettings();
-    var state = getPomoState();
-    state.remaining = settings[state.mode]*60;
-    state.running = false;
-    savePomoState(state);
-    stopPomoInterval();
-    renderPomo();
-  }
-
-  function tickPomo(){
-    var state = getPomoState();
-    if(!state.running) return;
-    state.remaining -= 1;
-    if(state.mode === 'pomodoro'){
-      var week = getPomoWeek();
-      week.weekSeconds += 1;
-      savePomoWeek(week);
-    }
-    if(state.remaining <= 0){
-      var settings = getPomoSettings();
-      state.remaining = settings[state.mode]*60;
-      state.running = false;
-      stopPomoInterval();
-      playPomoChime();
-      flashPomoDisplay();
-      if(state.mode === 'pomodoro'){
-        recordPomodoroCompletion();
-      }
-    }
-    savePomoState(state);
-    renderPomo();
-  }
-
-  function togglePomoSettings(){
-    var pop = document.getElementById('pomo-settings-popover');
-    pop.classList.toggle('open');
-    if(pop.classList.contains('open')){
-      var s = getPomoSettings();
-      document.getElementById('setting-pomodoro').value = s.pomodoro;
-      document.getElementById('setting-short').value = s.short;
-      document.getElementById('setting-long').value = s.long;
-    }
-  }
-
-  function savePomoSettings(){
-    var s = {
-      pomodoro: parseInt(document.getElementById('setting-pomodoro').value, 10) || 25,
-      short: parseInt(document.getElementById('setting-short').value, 10) || 5,
-      long: parseInt(document.getElementById('setting-long').value, 10) || 15
-    };
-    savePomoSettingsToStorage(s);
-    var state = getPomoState();
-    if(!state.running){
-      state.remaining = s[state.mode]*60;
-      savePomoState(state);
-    }
-    document.getElementById('pomo-settings-popover').classList.remove('open');
-    renderPomo();
-  }
-
-  function initPomoOnLoad(){
-    var state = getPomoState();
-    savePomoState(state);
-    renderPomo();
-    if(state.running){
-      pomoInterval = setInterval(tickPomo, 1000);
-    }
-  }
-
-  function recordPomodoroCompletion(){
-    var today = getAdjustedDate();
-    var s = loadJSON('la_study_streak_academic', { current:0, best:0, lastCompletedDate:null });
-    var gap = s.lastCompletedDate ? diffDaysISO(s.lastCompletedDate, today) : null;
-    if(gap === 0){
-      /* already logged a completion today */
-    } else if(gap === 1){
-      s.current += 1;
-    } else {
-      s.current = 1;
-    }
-    s.lastCompletedDate = today;
-    if(s.current > s.best) s.best = s.current;
-    saveJSON('la_study_streak_academic', s);
-  }
-
-  function saveTodayFocus(value){ saveJSON('la_today_focus_academic', value); }
-  function loadTodayFocus(){
-    document.getElementById('today-focus-input').value = loadJSON('la_today_focus_academic', '');
-    renderTodayFocusMode();
-  }
-  function renderTodayFocusMode(){
-    var value = loadJSON('la_today_focus_academic', '');
-    var input = document.getElementById('today-focus-input');
-    var staticEl = document.getElementById('today-focus-static');
-    if(value){
-      input.style.display = 'none';
-      staticEl.style.display = 'block';
-      staticEl.textContent = value;
-    } else {
-      input.style.display = '';
-      staticEl.style.display = 'none';
-    }
-  }
-  function editTodayFocus(){
-    var input = document.getElementById('today-focus-input');
-    var staticEl = document.getElementById('today-focus-static');
-    staticEl.style.display = 'none';
-    input.style.display = '';
-    input.value = loadJSON('la_today_focus_academic', '');
-    input.focus();
-    input.select();
-  }
-
-  /* ============================================================
-     Hobbies summary — la_books / la_movies / la_shows
-     (same keys hobbies-subpage.html's Books/Movies/Shows cards write to)
-  ============================================================ */
-  function setHobbiesColValue(id, text){
-    var el = document.getElementById(id);
-    if(text){
-      el.textContent = text;
-      el.classList.remove('empty');
-    } else {
-      el.textContent = 'Nothing yet';
-      el.classList.add('empty');
-    }
-  }
+  /* Pomodoro/Study-Streak/Notepad/Hobbies-summary/Currently-media
+     removed from index.html — those cards no longer render here (see
+     the Phase 2 rebuild), and academic-subpage.html keeps its own
+     independent copies of the Pomodoro/Study Streak logic. */
 
   /* ============================================================
      Sidebar mood mini card — condensed morning/night check-in summary
@@ -4860,379 +4594,8 @@
       '</div>';
   }
 
-  function renderSidebarMood(){
-    var row = document.getElementById('sidebar-mood-row');
-    if(!row) return;
-    var today = getAdjustedDate();
-    var mData = loadJSON('la_checkin_morning_' + today, null);
-    var nData = loadJSON('la_checkin_night_' + today, null);
-    row.innerHTML =
-      sidebarMoodBlockHtml('morning', mData ? mData.mood : null) +
-      sidebarMoodBlockHtml('night', nData ? nData.mood : null);
-  }
-
-  /* ============================================================
-     Notepad card — la_notepad_tabs / la_notepad_active_tab /
-     la_notepad_note_<tabId>
-     Freeform Apple-Notes-style surface (replaces the old single-line
-     Tasklist). Each binder divider tab is an independent note; its
-     contenteditable HTML is stored under its own la_notepad_note_
-     key so switching tabs swaps the whole editor surface.
-  ============================================================ */
-  function getNotepadTabs(){
-    return loadJSON('la_notepad_tabs', [
-      { id:'quick-tasks', name:'Quick Tasks' },
-      { id:'projects', name:'Projects' },
-      { id:'scratchpad', name:'Scratchpad' }
-    ]);
-  }
-  function saveNotepadTabs(list){ saveJSON('la_notepad_tabs', list); }
-
-  function getActiveNotepadTabId(){
-    var tabs = getNotepadTabs();
-    var id = loadJSON('la_notepad_active_tab', tabs[0].id);
-    return tabs.some(function(t){ return t.id === id; }) ? id : tabs[0].id;
-  }
-  function setActiveNotepadTabId(id){ saveJSON('la_notepad_active_tab', id); }
-
-  function getNoteContent(id){ return loadJSON('la_notepad_note_' + id, ''); }
-  function saveNoteContent(id, html){ saveJSON('la_notepad_note_' + id, html); }
-
-  function notepadSurface(){ return document.getElementById('notepad-surface'); }
-
-  function renderNotepadTabs(){
-    var tabs = getNotepadTabs();
-    var activeId = getActiveNotepadTabId();
-    var wrap = document.getElementById('notepad-tabs');
-    if(!wrap) return;
-    wrap.innerHTML = tabs.map(function(t){
-      return '<button type="button" class="notepad-tab' + (t.id === activeId ? ' active' : '') + '" onclick="switchNotepadTab(\'' + t.id + '\')" ondblclick="event.stopPropagation(); startRenameNotepadTab(\'' + t.id + '\', this)" title="Double-click to rename">' +
-          '<span class="notepad-tab-label">' + escapeHtml(t.name) + '</span>' +
-          (tabs.length > 1 ? '<span class="notepad-tab-remove" onclick="event.stopPropagation(); deleteNotepadTab(\'' + t.id + '\')" title="Delete divider">&times;</span>' : '') +
-        '</button>';
-    }).join('');
-  }
-
-  function updateNotepadPlaceholder(){
-    var surface = notepadSurface();
-    if(!surface) return;
-    var empty = surface.textContent.replace(/\u200B/g, '').trim() === '';
-    surface.classList.toggle('is-empty', empty);
-  }
-
-  function loadActiveNote(){
-    var surface = notepadSurface();
-    if(!surface) return;
-    surface.innerHTML = getNoteContent(getActiveNotepadTabId());
-    updateNotepadPlaceholder();
-  }
-
-  function saveActiveNote(){
-    var surface = notepadSurface();
-    if(!surface) return;
-    saveNoteContent(getActiveNotepadTabId(), surface.innerHTML);
-  }
-
-  function notepadOnInput(){
-    saveActiveNote();
-    updateNotepadPlaceholder();
-  }
-
-  function switchNotepadTab(id){
-    if(id === getActiveNotepadTabId()) return;
-    saveActiveNote();
-    setActiveNotepadTabId(id);
-    renderNotepadTabs();
-    loadActiveNote();
-  }
-
-  /* Inline add/rename instead of window.prompt() — prompt() is a
-     no-op (silently returns null) in the sandboxed/embedded webviews
-     this app sometimes runs in, which made "+" look completely dead
-     there even though the handler itself was firing correctly. */
-  function startAddNotepadTab(){
-    var input = document.getElementById('notepad-tab-add-input');
-    var btn = document.getElementById('notepad-add-tab-btn');
-    if(!input || !btn) return;
-    btn.style.display = 'none';
-    input.style.display = '';
-    input.value = '';
-    input.focus();
-  }
-
-  function commitNotepadAddTab(){
-    var input = document.getElementById('notepad-tab-add-input');
-    var btn = document.getElementById('notepad-add-tab-btn');
-    if(!input || !btn || input.style.display === 'none') return;
-    var name = input.value.trim();
-    input.style.display = 'none';
-    btn.style.display = '';
-    if(!name) return;
-    saveActiveNote();
-    var tabs = getNotepadTabs();
-    var id = uid();
-    tabs.push({ id: id, name: name });
-    saveNotepadTabs(tabs);
-    setActiveNotepadTabId(id);
-    renderNotepadTabs();
-    loadActiveNote();
-  }
-
-  function handleNotepadAddTabKeydown(e){
-    if(e.key === 'Enter'){
-      e.preventDefault();
-      commitNotepadAddTab();
-    } else if(e.key === 'Escape'){
-      e.preventDefault();
-      var input = document.getElementById('notepad-tab-add-input');
-      var btn = document.getElementById('notepad-add-tab-btn');
-      input.value = '';
-      input.style.display = 'none';
-      btn.style.display = '';
-    }
-  }
-
-  function startRenameNotepadTab(id, tabEl){
-    var tabs = getNotepadTabs();
-    var tab = tabs.find(function(t){ return t.id === id; });
-    var labelEl = tabEl.querySelector('.notepad-tab-label');
-    if(!tab || !labelEl) return;
-    var input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'notepad-tab-rename-input';
-    input.value = tab.name;
-    input.onclick = function(e){ e.stopPropagation(); };
-    input.onkeydown = function(e){
-      if(e.key === 'Enter'){ e.preventDefault(); input.blur(); }
-      else if(e.key === 'Escape'){ e.preventDefault(); input.dataset.cancelled = '1'; input.blur(); }
-    };
-    input.onblur = function(){
-      if(input.dataset.cancelled !== '1'){
-        var name = input.value.trim();
-        if(name){
-          var tabsNow = getNotepadTabs();
-          var t = tabsNow.find(function(x){ return x.id === id; });
-          if(t){ t.name = name; saveNotepadTabs(tabsNow); }
-        }
-      }
-      renderNotepadTabs();
-    };
-    labelEl.replaceWith(input);
-    input.focus();
-    input.select();
-  }
-
-  function deleteNotepadTab(id){
-    var tabs = getNotepadTabs();
-    if(tabs.length <= 1) return;
-    if(!confirm('Delete this divider and its note? This cannot be undone.')) return;
-    tabs = tabs.filter(function(t){ return t.id !== id; });
-    saveNotepadTabs(tabs);
-    localStorage.removeItem('la_notepad_note_' + id);
-    if(!tabs.some(function(t){ return t.id === getActiveNotepadTabId(); })){
-      setActiveNotepadTabId(tabs[0].id);
-    }
-    renderNotepadTabs();
-    loadActiveNote();
-  }
-
-  function toggleNotepadSidebar(){
-    var el = document.getElementById('notepad-dividers');
-    if(!el) return;
-    el.classList.toggle('collapsed');
-    saveJSON('la_notepad_sidebar_collapsed', el.classList.contains('collapsed'));
-  }
-
-  /* ---------- Formatting toolbar ---------- */
-  function getCurrentBlock(){
-    var surface = notepadSurface();
-    var sel = window.getSelection();
-    if(!surface || !sel.rangeCount) return null;
-    var node = sel.getRangeAt(0).startContainer;
-    if(node.nodeType === 3) node = node.parentNode;
-    while(node && node.parentNode !== surface && node !== surface){ node = node.parentNode; }
-    return (node === surface || !node) ? null : node;
-  }
-
-  function placeCaretAtEnd(el){
-    if(!el) return;
-    el.focus();
-    var range = document.createRange();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    var sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-
-  function ensureBlock(){
-    var surface = notepadSurface();
-    var block = getCurrentBlock();
-    if(block) return block;
-    block = document.createElement('div');
-    block.className = 'note-line';
-    block.innerHTML = '<br>';
-    surface.appendChild(block);
-    placeCaretAtEnd(block);
-    return block;
-  }
-
-  function notepadExec(cmd, val){
-    notepadSurface().focus();
-    document.execCommand(cmd, false, val || null);
-    saveActiveNote();
-    updateNotepadToolbarState();
-  }
-
-  function convertChecklistLineToPlain(block){
-    var textEl = block.querySelector('.note-text');
-    var html = textEl ? textEl.innerHTML : '';
-    block.classList.remove('note-checklist-item', 'done');
-    block.innerHTML = (html && html !== '<br>') ? html : '<br>';
-  }
-
-  function notepadSetPlain(){
-    var surface = notepadSurface();
-    surface.focus();
-    try{
-      if(document.queryCommandState('insertUnorderedList')) document.execCommand('insertUnorderedList');
-      if(document.queryCommandState('insertOrderedList')) document.execCommand('insertOrderedList');
-    }catch(e){}
-    var block = getCurrentBlock();
-    if(block && block.classList.contains('note-checklist-item')){
-      convertChecklistLineToPlain(block);
-      placeCaretAtEnd(block);
-    }
-    saveActiveNote();
-    updateNotepadToolbarState();
-  }
-
-  function notepadToggleChecklist(){
-    var surface = notepadSurface();
-    surface.focus();
-    var block = ensureBlock();
-    if(block.classList.contains('note-checklist-item')){
-      convertChecklistLineToPlain(block);
-      placeCaretAtEnd(block);
-    } else {
-      var html = block.innerHTML === '<br>' ? '' : block.innerHTML;
-      block.classList.add('note-checklist-item');
-      block.innerHTML = '<span class="note-checkbox" contenteditable="false" onmousedown="event.preventDefault();" onclick="notepadToggleCheckboxState(this)"></span><span class="note-text" contenteditable="true">' + (html || '<br>') + '</span>';
-      placeCaretAtEnd(block.querySelector('.note-text'));
-    }
-    saveActiveNote();
-    updateNotepadToolbarState();
-  }
-
-  function notepadToggleCheckboxState(el){
-    var line = el.closest('.note-checklist-item');
-    if(!line) return;
-    line.classList.toggle('done');
-    saveActiveNote();
-  }
-
-  function handleNotepadKeydown(e){
-    if(e.key !== 'Enter') return;
-    var block = getCurrentBlock();
-    if(!block || !block.classList.contains('note-checklist-item')) return;
-    var textEl = block.querySelector('.note-text');
-    var isEmpty = !textEl || textEl.textContent.trim() === '';
-    e.preventDefault();
-    if(isEmpty){
-      convertChecklistLineToPlain(block);
-      placeCaretAtEnd(block);
-    } else {
-      var newBlock = document.createElement('div');
-      newBlock.className = 'note-line note-checklist-item';
-      newBlock.innerHTML = '<span class="note-checkbox" contenteditable="false" onmousedown="event.preventDefault();" onclick="notepadToggleCheckboxState(this)"></span><span class="note-text" contenteditable="true"><br></span>';
-      block.parentNode.insertBefore(newBlock, block.nextSibling);
-      placeCaretAtEnd(newBlock.querySelector('.note-text'));
-    }
-    saveActiveNote();
-  }
-
-  function updateNotepadToolbarState(){
-    var checklistBtn = document.querySelector('.notepad-tool-btn[data-tool="checklist"]');
-    var numberedBtn = document.querySelector('.notepad-tool-btn[data-tool="numbered"]');
-    var block = getCurrentBlock();
-    if(checklistBtn) checklistBtn.classList.toggle('active', !!(block && block.classList.contains('note-checklist-item')));
-    if(numberedBtn){
-      var isOL = false;
-      try{ isOL = document.queryCommandState('insertOrderedList'); }catch(e){}
-      numberedBtn.classList.toggle('active', isOL);
-    }
-  }
-
-  function initNotepad(){
-    var dividersEl = document.getElementById('notepad-dividers');
-    if(dividersEl && loadJSON('la_notepad_sidebar_collapsed', false)) dividersEl.classList.add('collapsed');
-    renderNotepadTabs();
-    loadActiveNote();
-    var surface = notepadSurface();
-    if(surface){
-      surface.addEventListener('mouseup', updateNotepadToolbarState);
-      surface.addEventListener('keyup', updateNotepadToolbarState);
-    }
-  }
-
-  function renderHobbiesSummary(){
-    var books = loadJSON('la_books', []);
-    var certs = loadJSON('la_certifications', []);
-
-    var book = books.find(function(i){ return i.status === 'currently'; });
-
-    setHobbiesColValue('hobbies-reading-value', book ? book.title : null);
-
-    var statusOrder = { in_progress: 0, queued: 1 };
-    var activeCourses = certs.filter(function(c){ return c.status === 'in_progress' || c.status === 'queued'; })
-      .sort(function(a,b){ return statusOrder[a.status] - statusOrder[b.status]; });
-    var grid = document.getElementById('hobbies-courses-grid');
-    if(!activeCourses.length){
-      grid.innerHTML = '<div class="hobbies-courses-empty">No courses yet</div>';
-      return;
-    }
-    grid.innerHTML = activeCourses.map(function(c){
-      var bar = c.status === 'in_progress'
-        ? '<div class="hobbies-course-track"><div class="hobbies-course-fill" style="width:'+(c.progress||0)+'%;"></div></div>'
-        : '';
-      return '<div class="hobbies-course-item">' +
-          '<div class="hobbies-course-name">'+escapeHtml(c.name)+'</div>' +
-          '<div class="hobbies-course-provider">'+escapeHtml(c.provider||'')+'</div>' +
-          bar +
-        '</div>';
-    }).join('');
-  }
-
-  /* ============================================================
-     Sidebar "Currently" mini card — la_books / la_movies / la_shows
-     Read-only, updates live via storage event. No editing here.
-  ============================================================ */
-  function setSidebarCurrentlyRow(rowId, textId, title){
-    var row = document.getElementById(rowId);
-    var el = document.getElementById(textId);
-    if(title){
-      el.textContent = title;
-      row.classList.remove('empty');
-    } else {
-      el.textContent = 'Nothing yet';
-      row.classList.add('empty');
-    }
-  }
-
-  function renderSidebarCurrently(){
-    var books = loadJSON('la_books', []);
-    var movies = loadJSON('la_movies', []);
-    var shows = loadJSON('la_shows', []);
-
-    var book = books.find(function(i){ return i.status === 'currently'; });
-    var movie = movies.filter(function(i){ return i.status === 'queue'; })
-      .sort(function(a,b){ return (a.order||0)-(b.order||0); })[0];
-    var show = shows.find(function(i){ return i.status === 'currently'; });
-
-    setSidebarCurrentlyRow('sidebar-currently-book-row', 'sidebar-currently-book', book ? book.title : null);
-    setSidebarCurrentlyRow('sidebar-currently-movie-row', 'sidebar-currently-movie', movie ? movie.title : null);
-    setSidebarCurrentlyRow('sidebar-currently-show-row', 'sidebar-currently-show', show ? show.title : null);
-  }
+  /* Notepad/Hobbies-summary/Currently-media removed from index.html
+     (see the Pomodoro removal comment above — same rationale). */
 
   /* ============================================================
      Habit Tracker — la_habits
@@ -5363,6 +4726,7 @@
           '<input type="checkbox" class="habit-checkbox"'+(completed ? ' checked' : '')+' onclick="event.stopPropagation(); toggleHabitToday(\''+h.id+'\')">' +
         '</div>';
     }).join('');
+    renderWheel();
   }
 
   function renderHabitGrid(){
@@ -5548,9 +4912,12 @@
      instantly, without waiting for a refresh.
   ============================================================ */
   function handleStorageSync(e){
-    if(e.key === 'la_deadlines'){ renderDeadlinesTable(); }
-    else if(e.key === 'la_kranker_tasks'){ renderLabTasks('kranker'); }
-    else if(e.key === 'la_ballard_tasks'){ renderLabTasks('ballard'); }
+    /* Pomodoro/Hobbies/Notepad/Currently-media branches removed along
+       with those cards (see the Phase 2 rebuild) — their storage keys
+       are no longer rendered anywhere on this page. */
+    if(e.key === 'la_deadlines'){ renderDeadlinesTable(); renderSpokeAcademic(); }
+    else if(e.key === 'la_kranker_tasks'){ renderLabTasks('kranker'); renderSpokeResearch(); }
+    else if(e.key === 'la_ballard_tasks'){ renderLabTasks('ballard'); renderSpokeResearch(); }
     else if(e.key === 'la_kranker_hours'){ renderLabHours('kranker'); }
     else if(e.key === 'la_ballard_hours'){ renderLabHours('ballard'); }
     else if(e.key === 'la_kranker_status'){ loadLabStatus('kranker'); }
@@ -5558,15 +4925,7 @@
     else if(e.key === 'la_areas'){
       if(document.getElementById('deadline-modal').classList.contains('open')){ renderDeadlineAreaChips(); }
     }
-    else if(e.key === 'la_pomo_state'){ renderPomo(); }
-    else if(e.key === 'la_books' || e.key === 'la_movies' || e.key === 'la_shows'){
-      renderHobbiesSummary();
-      renderSidebarCurrently();
-    }
-    else if(e.key === 'la_certifications'){ renderHobbiesSummary(); }
-    else if(e.key === 'la_notepad_tabs' || e.key === 'la_notepad_active_tab'){ renderNotepadTabs(); loadActiveNote(); }
-    else if(e.key && e.key.indexOf('la_notepad_note_') === 0){ loadActiveNote(); }
-    else if(e.key && e.key.indexOf('la_checkin_') === 0){ renderSidebarMood(); }
+    else if(e.key && e.key.indexOf('la_checkin_') === 0){ renderSpokeDay(); renderSpokeNight(); }
     else if(e.key === 'la_habits'){
       renderSidebarHabits();
       if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
@@ -5578,6 +4937,7 @@
         renderTriangleTiers();
       }
     }
+    else if(e.key && e.key.indexOf('la_wheel_done_') === 0){ renderWheel(); }
   }
   window.addEventListener('storage', handleStorageSync);
   window.addEventListener('state-change', function(e){ handleStorageSync({ key: e.detail.key }); });
@@ -5603,7 +4963,8 @@
     renderSidebarSocial();
     clearTodayNutritionEntry();
     if(typeof renderNutritionCard === 'function'){ renderNutritionCard(); }
-    if(typeof renderSidebarMood === 'function'){ renderSidebarMood(); }
+    if(typeof renderSpokeDay === 'function'){ renderSpokeDay(); }
+    if(typeof renderSpokeNight === 'function'){ renderSpokeNight(); }
   }
 
   function checkDailyReset(){
@@ -5758,6 +5119,7 @@
 
     if(wrap) wrap.innerHTML = html;
     if(wrapMobile) wrapMobile.innerHTML = html;
+    renderWheel();
   }
 
   function renderPersonChipHtml(p, checkedOff, tierKey){
@@ -5921,23 +5283,702 @@
   }
 
   /* ============================================================
+     Progress Wheel — weighted composition of today's five
+     categories. Habits/Checkins compute live off existing storage
+     (nothing is ever deleted, so a fresh count each render is
+     accurate). Academic deadlines and Lab tasks both get *deleted*
+     when checked off (existing app behavior, unchanged here), which
+     would erase them from a live "due today" count the instant
+     they're completed — so those two categories track a small
+     per-adjusted-date "completed today" counter (la_wheel_done_*)
+     alongside the live remaining-count, and total = remaining + done.
+     This keeps each category's fraction monotonic and bounded in
+     [0,1] across a single day regardless of when items get checked
+     off, while the *live* remaining count (not a frozen morning
+     snapshot) is what lets yesterday's uncompleted backlog silently
+     inflate tomorrow's starting total — satisfying "grows
+     indefinitely, no cap" for the Research slice without the ratio
+     ever exceeding 100%.
+  ============================================================ */
+  var WHEEL_WEIGHTS = { habits:20, academic:40, research:20, social:10, checkins:10 };
+
+  function getWheelDoneCount(cat){
+    return parseInt(loadJSON('la_wheel_done_' + cat + '_' + getAdjustedDate(), 0), 10) || 0;
+  }
+  function incrWheelDone(cat){
+    saveJSON('la_wheel_done_' + cat + '_' + getAdjustedDate(), getWheelDoneCount(cat) + 1);
+  }
+  function computeCategoryFraction(done, total){
+    if(total <= 0) return 1; // nothing due today => full credit for this slice
+    return Math.max(0, Math.min(1, done / total));
+  }
+
+  function countSocialDueToday(){
+    var state = getSocialState();
+    ensureDailyReset(state);
+    var people = getSocialPeople();
+    var count = 0;
+    state.tiers.daily.forEach(function(pid){
+      if(state.daily.talkedIds.indexOf(pid) !== -1) return;
+      if(people.some(function(p){ return p.id === pid; })) count++;
+    });
+    ['semiDaily','weekly','monthly'].forEach(function(tier){
+      if(resolveTierPerson(state, tier)) count++;
+    });
+    saveSocialState(state);
+    return count;
+  }
+
+  function computeWheelFill(){
+    var today = getAdjustedDate();
+
+    var habitsToday = getHabits().filter(function(h){ return isScheduledDay(h, today); });
+    var habitsDone = habitsToday.filter(function(h){ return (h.completedDates||[]).indexOf(today) !== -1; }).length;
+    var habitsFrac = computeCategoryFraction(habitsDone, habitsToday.length);
+
+    var academicOpenToday = getDeadlines().filter(function(t){ return t.due === today; }).length;
+    var academicDone = getWheelDoneCount('academic');
+    var academicFrac = computeCategoryFraction(academicDone, academicOpenToday + academicDone);
+
+    var researchOpen = getLabTasks('kranker').concat(getLabTasks('ballard'))
+      .filter(function(t){ return t.due && t.due <= today; }).length;
+    var researchDone = getWheelDoneCount('research');
+    var researchFrac = computeCategoryFraction(researchDone, researchOpen + researchDone);
+
+    var socialOpenToday = countSocialDueToday();
+    var socialDone = getWheelDoneCount('social');
+    var socialFrac = computeCategoryFraction(socialDone, socialOpenToday + socialDone);
+
+    var morningDone = !!localStorage.getItem('la_checkin_morning_' + today);
+    var nightDone = !!localStorage.getItem('la_checkin_night_' + today);
+    var checkinsDone = (morningDone ? 1 : 0) + (nightDone ? 1 : 0);
+    var checkinsFrac = computeCategoryFraction(checkinsDone, 2);
+
+    var totalPct =
+      habitsFrac * WHEEL_WEIGHTS.habits +
+      academicFrac * WHEEL_WEIGHTS.academic +
+      researchFrac * WHEEL_WEIGHTS.research +
+      socialFrac * WHEEL_WEIGHTS.social +
+      checkinsFrac * WHEEL_WEIGHTS.checkins;
+
+    return {
+      totalPct: totalPct,
+      habits: { frac:habitsFrac, done:habitsDone, total:habitsToday.length },
+      academic: { frac:academicFrac, done:academicDone, total:academicOpenToday + academicDone, open:academicOpenToday },
+      research: { frac:researchFrac, done:researchDone, total:researchOpen + researchDone, open:researchOpen },
+      social: { frac:socialFrac, done:socialDone, total:socialOpenToday + socialDone, open:socialOpenToday },
+      checkins: { frac:checkinsFrac, done:checkinsDone, total:2, morningDone:morningDone, nightDone:nightDone }
+    };
+  }
+
+  /* Green->blue interpolation along the filled arc: each generated stop's
+     hue is a function of its OWN position on the ring (0% => hue 120/green,
+     100% => hue 240/blue), not of the current total fill — so the color
+     at a given point on the ring stays consistent as the wheel fills. */
+  function wheelGradientCss(pct){
+    if(pct <= 0){
+      return 'conic-gradient(from 0deg, rgba(255,255,255,0.10) 0% 100%)';
+    }
+    var steps = Math.max(2, Math.round(pct / 4));
+    var stops = [];
+    for(var i = 0; i <= steps; i++){
+      var p = (pct * i) / steps;
+      var hue = 120 + (p / 100) * 120;
+      stops.push('hsl(' + hue.toFixed(1) + ',42%,42%) ' + p.toFixed(2) + '%');
+    }
+    stops.push('rgba(255,255,255,0.10) ' + pct.toFixed(2) + '%');
+    stops.push('rgba(255,255,255,0.10) 100%');
+    return 'conic-gradient(from 0deg, ' + stops.join(', ') + ')';
+  }
+
+  function renderWheel(){
+    var ring = document.getElementById('progress-wheel');
+    if(!ring) return;
+    var fill = computeWheelFill();
+    var pct = Math.max(0, Math.min(100, fill.totalPct));
+    ring.style.setProperty('--pct', pct + '%');
+    ring.style.background = wheelGradientCss(pct);
+
+    var habitsCounter = document.getElementById('habit-mini-counter');
+    if(habitsCounter) habitsCounter.textContent = fill.habits.done + ' / ' + fill.habits.total;
+    var academicCounter = document.getElementById('spoke-academic-count');
+    if(academicCounter) academicCounter.textContent = fill.academic.done + ' / ' + fill.academic.total;
+    var socialCounter = document.getElementById('spoke-social-count');
+    if(socialCounter) socialCounter.textContent = fill.social.done + ' / ' + fill.social.total;
+  }
+
+  function completeAcademicDeadline(id){
+    var d = getDeadlines().find(function(t){ return t.id === id; });
+    if(d && d.due === getAdjustedDate()){ incrWheelDone('academic'); }
+    deleteDeadlineImmediate(id);
+    renderSpokeAcademic();
+    renderWheel();
+  }
+
+  function renderSpokeAcademic(){
+    var list = document.getElementById('spoke-academic-list');
+    if(!list) return;
+    var today = getAdjustedDate();
+    var items = getDeadlines().filter(function(t){ return t.due === today; })
+      .sort(function(a,b){ return (a.importance === 'Critical' ? -1 : 0) - (b.importance === 'Critical' ? -1 : 0); });
+    list.innerHTML = !items.length
+      ? '<div class="spoke-empty">Nothing due today</div>'
+      : items.map(function(t){
+          var areaVal = Array.isArray(t.areas) ? (t.areas[0] || '') : (t.areas || '');
+          var areaChip = areaVal ? '<span class="area-chip" style="background:'+areaColor(areaVal).bg+'; color:'+areaColor(areaVal).fg+';">'+escapeHtml(areaVal)+'</span>' : '';
+          return '<div class="spoke-row spoke-academic-row">' +
+              '<span class="task-cell"><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span></span>' +
+              '<div class="chip-row">'+areaChip+'</div>' +
+              '<span class="importance-badge imp-'+(t.importance || 'Low').toLowerCase()+'">'+(t.importance || 'Low')+'</span>' +
+              '<input type="checkbox" class="habit-checkbox" onclick="completeAcademicDeadline(\''+t.id+'\')">' +
+            '</div>';
+        }).join('');
+    renderWheel();
+  }
+
+  function completeLabTask(lab, id){
+    var today = getAdjustedDate();
+    var task = getLabTasks(lab).find(function(t){ return t.id === id; });
+    if(task && task.due && task.due <= today){ incrWheelDone('research'); }
+    deleteLabTask(lab, id);
+    renderSpokeResearch();
+    renderWheel();
+  }
+
+  function renderSpokeResearch(){
+    /* Shows every open Kranker/Ballard task (not just today's
+       backlog) so newly-added undated tasks stay visible/editable —
+       the wheel's denominator (computeWheelFill) still only counts
+       due &lt;= today, independently of what's shown here. */
+    var list = document.getElementById('spoke-research-list');
+    if(!list) return;
+    var today = getAdjustedDate();
+    var items = ['kranker','ballard'].reduce(function(acc, lab){
+      return acc.concat(getLabTasks(lab).map(function(t){ return { lab:lab, task:t }; }));
+    }, []);
+    list.innerHTML = !items.length
+      ? '<div class="spoke-empty">No tasks</div>'
+      : items.map(function(entry){
+          var lab = entry.lab, t = entry.task;
+          var isBacklog = t.due && t.due <= today;
+          return '<div class="spoke-row spoke-row-lab-task'+(isBacklog ? ' is-backlog' : '')+'">' +
+              '<span class="spoke-row-lab">'+(lab === 'kranker' ? 'K' : 'B')+'</span>' +
+              '<textarea class="task-text-input" data-lab="'+lab+'" rows="1" placeholder="Task" oninput="autoGrowTaskInput(this); updateLabTaskField(\''+lab+'\',\''+t.id+'\',\'text\',this.value)">'+escapeHtml(t.text)+'</textarea>' +
+              '<input type="date" class="task-date-input" value="'+(t.due || '')+'" onchange="updateLabTaskField(\''+lab+'\',\''+t.id+'\',\'due\',this.value)">' +
+              '<input type="checkbox" class="habit-checkbox" onclick="completeLabTask(\''+lab+'\',\''+t.id+'\')">' +
+            '</div>';
+        }).join('');
+    document.querySelectorAll('#spoke-research-list .task-text-input').forEach(autoGrowTaskInput);
+    renderWheel();
+  }
+
+  /* Day/Night spoke cards embed the actual Morning/Night buttons (moved
+     from the sidebar, see the removed .daycycle-buttons block) as
+     static markup — only the mood block underneath is JS-managed, so
+     re-rendering never clobbers the live button. Mood icon carries over
+     from the old sidebar Today's Mood card (shared helper, not
+     duplicated). */
+  function renderSpokeDay(){
+    var moodEl = document.getElementById('spoke-day-mood');
+    if(!moodEl) return;
+    var mData = loadJSON('la_checkin_morning_' + getAdjustedDate(), null);
+    moodEl.innerHTML = sidebarMoodBlockHtml('morning', mData ? mData.mood : null);
+    renderWheel();
+  }
+
+  function renderSpokeNight(){
+    var moodEl = document.getElementById('spoke-night-mood');
+    if(!moodEl) return;
+    var nData = loadJSON('la_checkin_night_' + getAdjustedDate(), null);
+    moodEl.innerHTML = sidebarMoodBlockHtml('night', nData ? nData.mood : null);
+    renderWheel();
+  }
+
+  /* Spoke panels branch off the wheel at irregular angles/radii (not
+     an even 72° apart) so the layout reads as organic rather than a
+     mechanical star — matches the ask for "semi-random" placement.
+     Day/Night flank angle 0 (the wheel's 12-o'clock seam, where the
+     ring both starts at 0% and completes at 100%), one on each side.
+     All coordinates are percentages of the square .wheel-stage box,
+     so the SVG leader lines (viewBox 0 0 100 100) and the panels'
+     left/top positioning always agree regardless of the stage's
+     actual pixel size. */
+  var SPOKE_LAYOUT = [
+    { id:'day',      angle:339, panelR:43 },
+    { id:'night',    angle:21,  panelR:43 },
+    { id:'social',   angle:78,  panelR:16 },
+    { id:'research', angle:133, panelR:28 },
+    { id:'academic', angle:180, panelR:45 },
+    { id:'habits',   angle:262, panelR:40 }
+  ];
+  function spokePoint(angleDeg, r){
+    var rad = (angleDeg - 0) * Math.PI / 180;
+    return { x: 50 + r * Math.sin(rad), y: 50 - r * Math.cos(rad) };
+  }
+
+  /* Per-card pixel offset from its plotted spoke point — starts out as
+     each card's hand-tuned nudge (previously baked into CSS transforms)
+     and is overwritten in place once the user drags a card, then
+     persisted so the custom layout survives a reload. */
+  var SPOKE_OFFSETS = Object.assign({
+    day:      { dx:12,   dy:-18 },
+    night:    { dx:16,   dy:-11 },
+    social:   { dx:0,    dy:-28 },
+    research: { dx:0,    dy:0 },
+    academic: { dx:-145, dy:0 },
+    habits:   { dx:0,    dy:-220 }
+  }, loadJSON('la_spoke_offsets', {}));
+
+  function applySpokeTransform(spokeId){
+    var panelEl = document.getElementById('spoke-panel-' + spokeId);
+    if(!panelEl) return;
+    var off = SPOKE_OFFSETS[spokeId] || { dx:0, dy:0 };
+    panelEl.style.transform = 'translate(calc(-50% + ' + off.dx + 'px), calc(-50% + ' + off.dy + 'px))';
+  }
+
+  /* Recomputes one spoke's leader line from the panel's actual
+     rendered center (post-transform), so the line always reaches the
+     card it's connected to — whether that's its default nudge or
+     wherever the user has since dragged it. */
+  function updateSpokeLine(spokeId){
+    var stage = document.getElementById('wheel-stage');
+    var svg = document.getElementById('spoke-lines');
+    var panelEl = document.getElementById('spoke-panel-' + spokeId);
+    var line = svg && svg.querySelector('[data-spoke="' + spokeId + '"]');
+    if(!stage || !panelEl || !line) return;
+    var stageRect = stage.getBoundingClientRect();
+    if(!stageRect.width) return;
+    var r = panelEl.getBoundingClientRect();
+    var cx = ((r.left + r.width / 2) - stageRect.left) / stageRect.width * 100;
+    var cy = ((r.top + r.height / 2) - stageRect.top) / stageRect.height * 100;
+    line.setAttribute('x2', cx);
+    line.setAttribute('y2', cy);
+  }
+
+  function layoutSpokes(){
+    var svg = document.getElementById('spoke-lines');
+    var stage = document.getElementById('wheel-stage');
+    if(!svg || !stage) return;
+    var linesHtml = '';
+    SPOKE_LAYOUT.forEach(function(spoke){
+      var panelEl = document.getElementById('spoke-panel-' + spoke.id);
+      var inner = spokePoint(spoke.angle, 38);
+      var outer = spokePoint(spoke.angle, spoke.panelR);
+      if(panelEl){
+        panelEl.style.left = outer.x + '%';
+        panelEl.style.top = outer.y + '%';
+      }
+      applySpokeTransform(spoke.id);
+      linesHtml += '<line x1="'+inner.x+'" y1="'+inner.y+'" x2="'+outer.x+'" y2="'+outer.y+'" class="spoke-line" data-spoke="'+spoke.id+'" />';
+    });
+    svg.innerHTML = linesHtml;
+    requestAnimationFrame(function(){
+      SPOKE_LAYOUT.forEach(function(spoke){ updateSpokeLine(spoke.id); });
+    });
+  }
+
+  /* Dragging: pointerdown starts tracking (unless it landed on an
+     interactive child — buttons, inputs, checkboxes — which should
+     keep working normally, not initiate a drag). Movement past a small
+     threshold marks it a real drag, live-updates the card's transform
+     and tether line, and — since the browser still fires a `click`
+     right after the drag's pointerup — flags the panel so a single
+     capturing click listener can swallow that one synthetic click
+     without touching any other click on the card (e.g. a checkbox
+     toggle, or a header click that opens a modal, both still work
+     normally when there was no drag). */
+  function makeSpokeDraggable(spokeId){
+    var panelEl = document.getElementById('spoke-panel-' + spokeId);
+    if(!panelEl) return;
+    var dragging = false, moved = false, startX = 0, startY = 0, startOff = { dx:0, dy:0 };
+    var THRESH = 4;
+
+    var pointerId = null;
+
+    panelEl.addEventListener('pointerdown', function(e){
+      if(e.target.closest('button, input, select, textarea, a')) return;
+      dragging = true;
+      moved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      pointerId = e.pointerId;
+      var off = SPOKE_OFFSETS[spokeId] || { dx:0, dy:0 };
+      startOff = { dx: off.dx, dy: off.dy };
+      /* Pointer capture is deferred until movement is confirmed (below)
+         — capturing immediately on pointerdown causes the browser to
+         retarget the trailing `click` event to panelEl itself, which
+         silently breaks onclick handlers on header/child elements even
+         for plain, non-drag clicks. */
+    });
+
+    panelEl.addEventListener('pointermove', function(e){
+      if(!dragging) return;
+      var dx = e.clientX - startX, dy = e.clientY - startY;
+      if(!moved && Math.hypot(dx, dy) < THRESH) return;
+      if(!moved) panelEl.setPointerCapture(pointerId);
+      moved = true;
+      panelEl.classList.add('spoke-dragging');
+      SPOKE_OFFSETS[spokeId] = { dx: startOff.dx + dx, dy: startOff.dy + dy };
+      applySpokeTransform(spokeId);
+      updateSpokeLine(spokeId);
+    });
+
+    function endDrag(e){
+      if(!dragging) return;
+      dragging = false;
+      panelEl.classList.remove('spoke-dragging');
+      if(moved){
+        panelEl._wasDragged = true;
+        saveJSON('la_spoke_offsets', SPOKE_OFFSETS);
+      }
+    }
+    panelEl.addEventListener('pointerup', endDrag);
+    panelEl.addEventListener('pointercancel', endDrag);
+
+    panelEl.addEventListener('click', function(e){
+      if(panelEl._wasDragged){
+        e.preventDefault();
+        e.stopPropagation();
+        panelEl._wasDragged = false;
+      }
+    }, true);
+  }
+
+  /* ============================================================
+     Notepad card — la_notepad_tabs / la_notepad_active_tab /
+     la_notepad_note_<tabId>
+     Freeform Apple-Notes-style surface: binder-tab "pages" on the
+     left, each an independent contenteditable note; a small
+     formatting toolbar (plain text / checklist / numbered list /
+     indent) sits above the writing surface. Restored from the
+     pre-Phase-2 build (see git history b37df01) with page reordering
+     added on top.
+  ============================================================ */
+  function getNotepadTabs(){
+    return loadJSON('la_notepad_tabs', [
+      { id:'quick-tasks', name:'Quick Tasks' },
+      { id:'projects', name:'Projects' },
+      { id:'scratchpad', name:'Scratchpad' }
+    ]);
+  }
+  function saveNotepadTabs(list){ saveJSON('la_notepad_tabs', list); }
+
+  function getActiveNotepadTabId(){
+    var tabs = getNotepadTabs();
+    var id = loadJSON('la_notepad_active_tab', tabs[0].id);
+    return tabs.some(function(t){ return t.id === id; }) ? id : tabs[0].id;
+  }
+  function setActiveNotepadTabId(id){ saveJSON('la_notepad_active_tab', id); }
+
+  function getNoteContent(id){ return loadJSON('la_notepad_note_' + id, ''); }
+  function saveNoteContent(id, html){ saveJSON('la_notepad_note_' + id, html); }
+
+  function notepadSurface(){ return document.getElementById('notepad-surface'); }
+
+  function renderNotepadTabs(){
+    var tabs = getNotepadTabs();
+    var activeId = getActiveNotepadTabId();
+    var wrap = document.getElementById('notepad-tabs');
+    if(!wrap) return;
+    wrap.innerHTML = tabs.map(function(t, i){
+      var upDisabled = i === 0 ? ' disabled' : '';
+      var downDisabled = i === tabs.length - 1 ? ' disabled' : '';
+      return '<button type="button" class="notepad-tab' + (t.id === activeId ? ' active' : '') + '" onclick="switchNotepadTab(\'' + t.id + '\')" ondblclick="event.stopPropagation(); startRenameNotepadTab(\'' + t.id + '\', this)" title="Double-click to rename">' +
+          '<span class="notepad-tab-label">' + escapeHtml(t.name) + '</span>' +
+          '<span class="notepad-tab-actions">' +
+            '<span class="notepad-tab-move' + upDisabled + '" onclick="event.stopPropagation(); moveNotepadTab(\'' + t.id + '\', -1)" title="Move up">&#9650;</span>' +
+            '<span class="notepad-tab-move' + downDisabled + '" onclick="event.stopPropagation(); moveNotepadTab(\'' + t.id + '\', 1)" title="Move down">&#9660;</span>' +
+            (tabs.length > 1 ? '<span class="notepad-tab-remove" onclick="event.stopPropagation(); deleteNotepadTab(\'' + t.id + '\')" title="Delete page">&times;</span>' : '') +
+          '</span>' +
+        '</button>';
+    }).join('');
+  }
+
+  function moveNotepadTab(id, dir){
+    var tabs = getNotepadTabs();
+    var i = tabs.findIndex(function(t){ return t.id === id; });
+    var j = i + dir;
+    if(i < 0 || j < 0 || j >= tabs.length) return;
+    var tmp = tabs[i]; tabs[i] = tabs[j]; tabs[j] = tmp;
+    saveNotepadTabs(tabs);
+    renderNotepadTabs();
+  }
+
+  function updateNotepadPlaceholder(){
+    var surface = notepadSurface();
+    if(!surface) return;
+    var empty = surface.textContent.replace(/​/g, '').trim() === '';
+    surface.classList.toggle('is-empty', empty);
+  }
+
+  function loadActiveNote(){
+    var surface = notepadSurface();
+    if(!surface) return;
+    surface.innerHTML = getNoteContent(getActiveNotepadTabId());
+    updateNotepadPlaceholder();
+  }
+
+  function saveActiveNote(){
+    var surface = notepadSurface();
+    if(!surface) return;
+    saveNoteContent(getActiveNotepadTabId(), surface.innerHTML);
+  }
+
+  function notepadOnInput(){
+    saveActiveNote();
+    updateNotepadPlaceholder();
+  }
+
+  function switchNotepadTab(id){
+    if(id === getActiveNotepadTabId()) return;
+    saveActiveNote();
+    setActiveNotepadTabId(id);
+    renderNotepadTabs();
+    loadActiveNote();
+  }
+
+  /* Inline add/rename instead of window.prompt() — prompt() is a
+     no-op (silently returns null) in the sandboxed/embedded webviews
+     this app sometimes runs in, which made "+" look completely dead
+     there even though the handler itself was firing correctly. */
+  function startAddNotepadTab(){
+    var input = document.getElementById('notepad-tab-add-input');
+    var btn = document.getElementById('notepad-add-tab-btn');
+    if(!input || !btn) return;
+    btn.style.display = 'none';
+    input.style.display = '';
+    input.value = '';
+    input.focus();
+  }
+
+  function commitNotepadAddTab(){
+    var input = document.getElementById('notepad-tab-add-input');
+    var btn = document.getElementById('notepad-add-tab-btn');
+    if(!input || !btn || input.style.display === 'none') return;
+    var name = input.value.trim();
+    input.style.display = 'none';
+    btn.style.display = '';
+    if(!name) return;
+    saveActiveNote();
+    var tabs = getNotepadTabs();
+    var id = uid();
+    tabs.push({ id: id, name: name });
+    saveNotepadTabs(tabs);
+    setActiveNotepadTabId(id);
+    renderNotepadTabs();
+    loadActiveNote();
+  }
+
+  function handleNotepadAddTabKeydown(e){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      commitNotepadAddTab();
+    } else if(e.key === 'Escape'){
+      e.preventDefault();
+      var input = document.getElementById('notepad-tab-add-input');
+      var btn = document.getElementById('notepad-add-tab-btn');
+      input.value = '';
+      input.style.display = 'none';
+      btn.style.display = '';
+    }
+  }
+
+  function startRenameNotepadTab(id, tabEl){
+    var tabs = getNotepadTabs();
+    var tab = tabs.find(function(t){ return t.id === id; });
+    var labelEl = tabEl.querySelector('.notepad-tab-label');
+    if(!tab || !labelEl) return;
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'notepad-tab-rename-input';
+    input.value = tab.name;
+    input.onclick = function(e){ e.stopPropagation(); };
+    input.onkeydown = function(e){
+      if(e.key === 'Enter'){ e.preventDefault(); input.blur(); }
+      else if(e.key === 'Escape'){ e.preventDefault(); input.dataset.cancelled = '1'; input.blur(); }
+    };
+    input.onblur = function(){
+      if(input.dataset.cancelled !== '1'){
+        var name = input.value.trim();
+        if(name){
+          var tabsNow = getNotepadTabs();
+          var t = tabsNow.find(function(x){ return x.id === id; });
+          if(t){ t.name = name; saveNotepadTabs(tabsNow); }
+        }
+      }
+      renderNotepadTabs();
+    };
+    labelEl.replaceWith(input);
+    input.focus();
+    input.select();
+  }
+
+  function deleteNotepadTab(id){
+    var tabs = getNotepadTabs();
+    if(tabs.length <= 1) return;
+    if(!confirm('Delete this page and its note? This cannot be undone.')) return;
+    tabs = tabs.filter(function(t){ return t.id !== id; });
+    saveNotepadTabs(tabs);
+    localStorage.removeItem('la_notepad_note_' + id);
+    if(!tabs.some(function(t){ return t.id === getActiveNotepadTabId(); })){
+      setActiveNotepadTabId(tabs[0].id);
+    }
+    renderNotepadTabs();
+    loadActiveNote();
+  }
+
+  function toggleNotepadSidebar(){
+    var el = document.getElementById('notepad-dividers');
+    if(!el) return;
+    el.classList.toggle('collapsed');
+    saveJSON('la_notepad_sidebar_collapsed', el.classList.contains('collapsed'));
+  }
+
+  /* ---------- Formatting toolbar ---------- */
+  function getCurrentBlock(){
+    var surface = notepadSurface();
+    var sel = window.getSelection();
+    if(!surface || !sel.rangeCount) return null;
+    var node = sel.getRangeAt(0).startContainer;
+    if(node.nodeType === 3) node = node.parentNode;
+    while(node && node.parentNode !== surface && node !== surface){ node = node.parentNode; }
+    return (node === surface || !node) ? null : node;
+  }
+
+  function placeCaretAtEnd(el){
+    if(!el) return;
+    el.focus();
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function ensureBlock(){
+    var surface = notepadSurface();
+    var block = getCurrentBlock();
+    if(block) return block;
+    block = document.createElement('div');
+    block.className = 'note-line';
+    block.innerHTML = '<br>';
+    surface.appendChild(block);
+    placeCaretAtEnd(block);
+    return block;
+  }
+
+  function notepadExec(cmd, val){
+    notepadSurface().focus();
+    document.execCommand(cmd, false, val || null);
+    saveActiveNote();
+    updateNotepadToolbarState();
+  }
+
+  function convertChecklistLineToPlain(block){
+    var textEl = block.querySelector('.note-text');
+    var html = textEl ? textEl.innerHTML : '';
+    block.classList.remove('note-checklist-item', 'done');
+    block.innerHTML = (html && html !== '<br>') ? html : '<br>';
+  }
+
+  function notepadSetPlain(){
+    var surface = notepadSurface();
+    surface.focus();
+    try{
+      if(document.queryCommandState('insertUnorderedList')) document.execCommand('insertUnorderedList');
+      if(document.queryCommandState('insertOrderedList')) document.execCommand('insertOrderedList');
+    }catch(e){}
+    var block = getCurrentBlock();
+    if(block && block.classList.contains('note-checklist-item')){
+      convertChecklistLineToPlain(block);
+      placeCaretAtEnd(block);
+    }
+    saveActiveNote();
+    updateNotepadToolbarState();
+  }
+
+  function notepadToggleChecklist(){
+    var surface = notepadSurface();
+    surface.focus();
+    var block = ensureBlock();
+    if(block.classList.contains('note-checklist-item')){
+      convertChecklistLineToPlain(block);
+      placeCaretAtEnd(block);
+    } else {
+      var html = block.innerHTML === '<br>' ? '' : block.innerHTML;
+      block.classList.add('note-checklist-item');
+      block.innerHTML = '<span class="note-checkbox" contenteditable="false" onmousedown="event.preventDefault();" onclick="notepadToggleCheckboxState(this)"></span><span class="note-text" contenteditable="true">' + (html || '<br>') + '</span>';
+      placeCaretAtEnd(block.querySelector('.note-text'));
+    }
+    saveActiveNote();
+    updateNotepadToolbarState();
+  }
+
+  function notepadToggleCheckboxState(el){
+    var line = el.closest('.note-checklist-item');
+    if(!line) return;
+    line.classList.toggle('done');
+    saveActiveNote();
+  }
+
+  function handleNotepadKeydown(e){
+    if(e.key !== 'Enter') return;
+    var block = getCurrentBlock();
+    if(!block || !block.classList.contains('note-checklist-item')) return;
+    var textEl = block.querySelector('.note-text');
+    var isEmpty = !textEl || textEl.textContent.trim() === '';
+    e.preventDefault();
+    if(isEmpty){
+      convertChecklistLineToPlain(block);
+      placeCaretAtEnd(block);
+    } else {
+      var newBlock = document.createElement('div');
+      newBlock.className = 'note-line note-checklist-item';
+      newBlock.innerHTML = '<span class="note-checkbox" contenteditable="false" onmousedown="event.preventDefault();" onclick="notepadToggleCheckboxState(this)"></span><span class="note-text" contenteditable="true"><br></span>';
+      block.parentNode.insertBefore(newBlock, block.nextSibling);
+      placeCaretAtEnd(newBlock.querySelector('.note-text'));
+    }
+    saveActiveNote();
+  }
+
+  function updateNotepadToolbarState(){
+    var checklistBtn = document.querySelector('.notepad-tool-btn[data-tool="checklist"]');
+    var numberedBtn = document.querySelector('.notepad-tool-btn[data-tool="numbered"]');
+    var block = getCurrentBlock();
+    if(checklistBtn) checklistBtn.classList.toggle('active', !!(block && block.classList.contains('note-checklist-item')));
+    if(numberedBtn){
+      var isOL = false;
+      try{ isOL = document.queryCommandState('insertOrderedList'); }catch(e){}
+      numberedBtn.classList.toggle('active', isOL);
+    }
+  }
+
+  function initNotepad(){
+    var dividersEl = document.getElementById('notepad-dividers');
+    if(dividersEl && loadJSON('la_notepad_sidebar_collapsed', false)) dividersEl.classList.add('collapsed');
+    renderNotepadTabs();
+    loadActiveNote();
+    var surface = notepadSurface();
+    if(surface){
+      surface.addEventListener('mouseup', updateNotepadToolbarState);
+      surface.addEventListener('keyup', updateNotepadToolbarState);
+    }
+  }
+
+  /* ============================================================
      Init
   ============================================================ */
-  renderDeadlinesTable();
-  initDeadlinesColumnResize();
-  ['kranker','ballard'].forEach(function(lab){
-    renderLabTasks(lab);
-    loadLabStatus(lab);
-    renderLabHours(lab);
-  });
-  renderSidebarMood();
-  renderHobbiesSummary();
-  initNotepad();
-  renderSidebarCurrently();
   renderSidebarHabits();
   renderSidebarSocial();
-  initPomoOnLoad();
-  loadTodayFocus();
+  renderSpokeAcademic();
+  renderSpokeResearch();
+  renderSpokeDay();
+  renderSpokeNight();
+  layoutSpokes();
+  SPOKE_LAYOUT.forEach(function(spoke){ makeSpokeDraggable(spoke.id); });
+  renderWheel();
+  initNotepad();
   updateSidebarDateTime();
   setInterval(updateSidebarDateTime, 1000);
   runClockTick();
