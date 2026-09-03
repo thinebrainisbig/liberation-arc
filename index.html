@@ -139,6 +139,8 @@
     -webkit-backdrop-filter:blur(20px) saturate(160%);
     border:1px solid transparent;
     gap:8px;
+    overflow-y:auto;
+    overflow-x:hidden;
   }
   .sidebar::after{
     content:'';
@@ -264,7 +266,8 @@
   .daycycle-btn.morning .material-symbols-outlined{ color:#60a5fa; }
   .daycycle-btn.morning:hover{ background:rgba(48,83,125,0.8); color:#eaf2ff; }
   .daycycle-btn.morning.completed{ background:#1e3a5f; }
-  .daycycle-btn.night{ color:#f5e3a8; background:#4c4518; border-left:1px solid rgba(255,255,255,0.85); }
+  .daycycle-btn.night{ color:#f5e3a8; background:#4c4518; }
+  .daycycle-buttons .daycycle-btn.night{ border-left:1px solid rgba(255,255,255,0.85); }
   .daycycle-btn.night .material-symbols-outlined{ color:#facc15; }
   .daycycle-btn.night:hover{ background:rgba(125,102,11,0.8); color:#fff8dc; }
   .daycycle-btn.night.completed{ background:#d4af37; }
@@ -426,8 +429,8 @@
     display:flex;
     flex-direction:column;
     gap:12px;
-    background:#0f2436;
-    border:1px solid rgba(56,189,248,0.55);
+    background:#10233a;
+    border:1px solid rgba(147,197,253,0.55);
   }
   .weather-mini-header{
     display:flex;
@@ -439,12 +442,18 @@
     font-size:0.68rem;
     font-weight:700;
     letter-spacing:0.06em;
-    color:var(--ink);
+    color:#bfdbfe;
     flex:1;
     min-width:0;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
+  }
+  .weather-mini-date{
+    font-size:0.62rem;
+    font-weight:700;
+    color:#93c5fd;
+    flex-shrink:0;
   }
   .weather-mini-edit-btn{
     width:22px; height:22px;
@@ -492,9 +501,10 @@
     gap:10px;
   }
   .weather-mini-icon{
-    font-size:22px;
-    width:38px;
-    height:38px;
+    font-size:26px;
+    line-height:1;
+    width:42px;
+    height:42px;
     border-radius:10px;
     display:flex;
     align-items:center;
@@ -511,7 +521,15 @@
   .weather-mini-day{
     font-size:0.76rem;
     font-weight:700;
-    color:var(--ink);
+    color:#bfdbfe;
+    display:flex;
+    align-items:baseline;
+    gap:5px;
+  }
+  .weather-mini-day-date{
+    font-size:0.6rem;
+    font-weight:600;
+    color:var(--ink-faint);
   }
   .weather-mini-cond{
     font-size:0.68rem;
@@ -574,6 +592,7 @@
     gap:10px;
     background:#0f1f14;
     border:1px solid rgba(30,215,96,0.5);
+    flex-shrink:0;
   }
   .spotify-mini-header{
     display:flex;
@@ -628,15 +647,26 @@
   }
   .spotify-connect-btn:hover{ background:rgba(30,215,96,0.24); }
   .spotify-connect-btn .material-symbols-outlined{ font-size:16px; color:#1ed760; }
+
+  /* Now-playing: art+meta on top, transport controls and shuffle modes
+     stacked BELOW so the track name gets the card's full width instead
+     of being squeezed next to a row of buttons. */
   .spotify-now-playing{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding-bottom:10px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .spotify-now-playing-top{
     display:flex;
     align-items:center;
     gap:10px;
   }
   .spotify-art{
-    width:42px; height:42px;
+    width:56px; height:56px;
     flex-shrink:0;
-    border-radius:6px;
+    border-radius:8px;
     background:rgba(255,255,255,0.08) center/cover no-repeat;
   }
   .spotify-track-meta{
@@ -644,32 +674,29 @@
     min-width:0;
     display:flex;
     flex-direction:column;
-    gap:1px;
+    gap:2px;
   }
   .spotify-track-title{
-    font-size:0.72rem;
+    font-size:0.78rem;
     font-weight:700;
     color:var(--ink);
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    line-height:1.3;
+    overflow-wrap:break-word;
   }
   .spotify-track-artist{
-    font-size:0.66rem;
+    font-size:0.68rem;
     color:var(--ink-dim);
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    line-height:1.3;
+    overflow-wrap:break-word;
   }
   .spotify-controls{
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:6px;
-    flex-shrink:0;
+    gap:10px;
   }
   .spotify-controls button{
-    width:26px; height:26px;
+    width:32px; height:32px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -681,38 +708,85 @@
     padding:0;
   }
   .spotify-controls button:hover{ background:rgba(30,215,96,0.24); border-color:rgba(30,215,96,0.55); }
-  .spotify-controls button .material-symbols-outlined{ font-size:16px; }
-  .spotify-controls .spotify-play-btn{ width:30px; height:30px; background:rgba(30,215,96,0.2); border-color:rgba(30,215,96,0.55); }
-  .spotify-controls .spotify-play-btn .material-symbols-outlined{ font-size:18px; color:#1ed760; }
-  .spotify-playlists{
+  .spotify-controls button .material-symbols-outlined{ font-size:18px; }
+  .spotify-controls .spotify-play-btn{ width:38px; height:38px; background:rgba(30,215,96,0.2); border-color:rgba(30,215,96,0.55); }
+  .spotify-controls .spotify-play-btn .material-symbols-outlined{ font-size:22px; color:#1ed760; }
+
+  .spotify-shuffle-row{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    background:rgba(255,255,255,0.05);
+    border-radius:8px;
+    padding:3px;
+  }
+  .spotify-shuffle-btn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    padding:6px 4px;
+    border-radius:6px;
+    border:none;
+    background:transparent;
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.6rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    cursor:pointer;
+  }
+  .spotify-shuffle-btn .material-symbols-outlined{ font-size:14px; }
+  .spotify-shuffle-btn:hover{ color:var(--ink); }
+  .spotify-shuffle-btn.active{ background:rgba(30,215,96,0.22); color:#1ed760; }
+
+  .spotify-section-label{
+    font-size:0.62rem;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:0;
+  }
+  .spotify-playlists,
+  .spotify-tracks{
     display:flex;
     flex-direction:column;
     gap:2px;
-    max-height:150px;
+    max-height:420px;
     overflow-y:auto;
-    border-top:1px solid rgba(255,255,255,0.06);
-    padding-top:8px;
   }
-  .spotify-playlist-row{
+  .spotify-playlist-row,
+  .spotify-track-row{
     display:flex;
     align-items:center;
     gap:8px;
-    padding:5px 4px;
+    padding:6px 4px;
     border-radius:6px;
     cursor:pointer;
   }
-  .spotify-playlist-row:hover{ background:rgba(30,215,96,0.12); }
-  .spotify-playlist-row.playing{ background:rgba(30,215,96,0.18); }
+  .spotify-playlist-row:hover,
+  .spotify-track-row:hover{ background:rgba(30,215,96,0.12); }
+  .spotify-playlist-row.playing,
+  .spotify-track-row.playing{ background:rgba(30,215,96,0.18); }
   .spotify-playlist-art{
-    width:26px; height:26px;
+    width:32px; height:32px;
     flex-shrink:0;
-    border-radius:4px;
+    border-radius:5px;
     background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .spotify-track-index{
+    width:20px;
+    flex-shrink:0;
+    text-align:center;
+    font-size:0.64rem;
+    color:var(--ink-faint);
   }
   .spotify-playlist-name{
     flex:1;
     min-width:0;
-    font-size:0.68rem;
+    font-size:0.7rem;
     color:var(--ink-dim);
     overflow:hidden;
     text-overflow:ellipsis;
@@ -720,6 +794,58 @@
   }
   .spotify-playlist-row.playing .spotify-playlist-name{ color:#1ed760; font-weight:700; }
   .spotify-playlist-row .material-symbols-outlined{ font-size:14px; color:#1ed760; flex-shrink:0; }
+  .spotify-track-meta-row{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .spotify-track-row-name{
+    font-size:0.7rem;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .spotify-track-row-artist{
+    font-size:0.62rem;
+    color:var(--ink-faint);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .spotify-track-row.playing .spotify-track-row-name{ color:#1ed760; font-weight:700; }
+  .spotify-back-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .spotify-back-btn{
+    flex-shrink:0;
+    width:24px; height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    cursor:pointer;
+    padding:0;
+  }
+  .spotify-back-btn:hover{ background:rgba(30,215,96,0.24); border-color:rgba(30,215,96,0.55); }
+  .spotify-back-btn .material-symbols-outlined{ font-size:16px; }
+  .spotify-back-title{
+    flex:1;
+    min-width:0;
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
 
   /* ---------- Habit Tracker mini card (green tint) ---------- */
   .habit-mini-card{
@@ -2006,18 +2132,18 @@
   #spoke-panel-academic{
     width:460px;
     border-color:transparent;
-    background:rgba(74,222,128,0.5);
+    background:#2a3d39;
     box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.35);
   }
   #spoke-panel-research{
     border-color:transparent;
-    background:rgba(74,222,128,0.5);
+    background:#2a3d39;
     box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.35);
   }
   #spoke-panel-social{
     width:198px;
     border-color:transparent;
-    background:rgba(168,85,247,0.5);
+    background:#292f4a;
     box-shadow:0 0 18px 0 rgba(168,85,247,0.125), inset 0 1px 0 rgba(216,180,254,0.35);
   }
   /* Habits/Day/Night use the same borderless tinted-glass fill
@@ -2026,7 +2152,7 @@
   #spoke-panel-habits{
     width:198px;
     border-color:transparent;
-    background:rgba(248,113,113,0.5);
+    background:#3f242b;
     box-shadow:0 0 18px 0 rgba(248,113,113,0.125), inset 0 1px 0 rgba(254,202,202,0.35);
   }
   #spoke-panel-day{
@@ -3045,6 +3171,17 @@
       </a>
     </nav>
 
+    <div class="spotify-mini-card glass">
+      <div class="spotify-mini-header">
+        <span class="material-symbols-outlined">graphic_eq</span>
+        <p class="spotify-mini-title mono">Spotify</p>
+        <button type="button" class="spotify-mini-disconnect" id="spotify-disconnect-btn" onclick="disconnectSpotify()" title="Disconnect" style="display:none;">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+      <div class="spotify-mini-body" id="spotify-mini-body"></div>
+    </div>
+
     <div class="weather-mini-card glass">
       <div class="weather-mini-header">
         <p class="weather-mini-title mono" id="weather-location-label">Weather</p>
@@ -3057,17 +3194,6 @@
         <button type="button" onclick="commitWeatherLocation()">Save</button>
       </div>
       <div class="weather-mini-body" id="weather-mini-body"></div>
-    </div>
-
-    <div class="spotify-mini-card glass">
-      <div class="spotify-mini-header">
-        <span class="material-symbols-outlined">graphic_eq</span>
-        <p class="spotify-mini-title mono">Spotify</p>
-        <button type="button" class="spotify-mini-disconnect" id="spotify-disconnect-btn" onclick="disconnectSpotify()" title="Disconnect" style="display:none;">
-          <span class="material-symbols-outlined">logout</span>
-        </button>
-      </div>
-      <div class="spotify-mini-body" id="spotify-mini-body"></div>
     </div>
 
     <div class="mobile-quick-actions">
@@ -3161,6 +3287,7 @@
           <div class="spoke-panel spoke-panel-wide" id="spoke-panel-research">
             <div class="spoke-panel-header">
               <span class="spoke-panel-title">Research</span>
+              <span class="spoke-panel-count mono" id="spoke-research-count"></span>
               <button type="button" class="spoke-add-btn" onclick="addLabTask('kranker')" title="Add Kranker Lab task">K+</button>
               <button type="button" class="spoke-add-btn" onclick="addLabTask('ballard')" title="Add Ballard Lab task">B+</button>
             </div>
@@ -5067,7 +5194,7 @@
     list.innerHTML = habits.map(function(h){
       var completed = (h.completedDates || []).indexOf(today) !== -1;
       var streak = computeHabitStreak(h);
-      return '<div class="habit-mini-row" style="background:'+habitColorRgba(h.color, 0.12)+';">' +
+      return '<div class="habit-mini-row" style="background:'+habitColorRgba(h.color, 0.38)+';">' +
           '<span class="habit-mini-dot" style="background:'+h.color+'; color:'+h.color+';"></span>' +
           '<span class="habit-mini-name">'+escapeHtml(h.name)+'</span>' +
           '<span class="habit-mini-streak mono">'+(streak > 1 ? '🔥 ' : '')+streak+'</span>' +
@@ -5406,10 +5533,14 @@
     var state = getSocialState();
     if(tierKey === 'daily'){
       ensureDailyReset(state);
-      if(state.daily.talkedIds.indexOf(personId) === -1){ state.daily.talkedIds.push(personId); }
-    } else {
+      if(state.daily.talkedIds.indexOf(personId) === -1){
+        state.daily.talkedIds.push(personId);
+        incrWheelDone('social');
+      }
+    } else if(!state.rotation[tierKey].clearedUntil){
       var today = getAdjustedDate();
       state.rotation[tierKey].clearedUntil = addDaysISO(today, SOCIAL_TIER_INTERVAL_DAYS[tierKey]);
+      incrWheelDone('social');
     }
     saveSocialState(state);
     renderSidebarSocial();
@@ -5420,9 +5551,10 @@
     if(tierKey === 'daily'){
       ensureDailyReset(state);
       var idx = state.daily.talkedIds.indexOf(personId);
-      if(idx !== -1) state.daily.talkedIds.splice(idx, 1);
-    } else if(state.rotation[tierKey]){
+      if(idx !== -1){ state.daily.talkedIds.splice(idx, 1); decrWheelDone('social'); }
+    } else if(state.rotation[tierKey] && state.rotation[tierKey].clearedUntil){
       state.rotation[tierKey].clearedUntil = null;
+      decrWheelDone('social');
     }
     saveSocialState(state);
     renderTriangleTiers();
@@ -5656,6 +5788,9 @@
   function incrWheelDone(cat){
     saveJSON('la_wheel_done_' + cat + '_' + getAdjustedDate(), getWheelDoneCount(cat) + 1);
   }
+  function decrWheelDone(cat){
+    saveJSON('la_wheel_done_' + cat + '_' + getAdjustedDate(), Math.max(0, getWheelDoneCount(cat) - 1));
+  }
   function computeCategoryFraction(done, total){
     if(total <= 0) return 1; // nothing due today => full credit for this slice
     return Math.max(0, Math.min(1, done / total));
@@ -5684,7 +5819,7 @@
     var habitsDone = habitsToday.filter(function(h){ return (h.completedDates||[]).indexOf(today) !== -1; }).length;
     var habitsFrac = computeCategoryFraction(habitsDone, habitsToday.length);
 
-    var academicOpenToday = getDeadlines().filter(function(t){ return t.due === today; }).length;
+    var academicOpenToday = getDeadlines().filter(function(t){ return t.due && t.due <= today; }).length;
     var academicDone = getWheelDoneCount('academic');
     var academicFrac = computeCategoryFraction(academicDone, academicOpenToday + academicDone);
 
@@ -5753,13 +5888,15 @@
     if(habitsCounter) habitsCounter.textContent = fill.habits.done + ' / ' + fill.habits.total;
     var academicCounter = document.getElementById('spoke-academic-count');
     if(academicCounter) academicCounter.textContent = fill.academic.done + ' / ' + fill.academic.total;
+    var researchCounter = document.getElementById('spoke-research-count');
+    if(researchCounter) researchCounter.textContent = fill.research.done + ' / ' + fill.research.total;
     var socialCounter = document.getElementById('spoke-social-count');
     if(socialCounter) socialCounter.textContent = fill.social.done + ' / ' + fill.social.total;
   }
 
   function completeAcademicDeadline(id){
     var d = getDeadlines().find(function(t){ return t.id === id; });
-    if(d && d.due === getAdjustedDate()){ incrWheelDone('academic'); }
+    if(d && d.due && d.due <= getAdjustedDate()){ incrWheelDone('academic'); }
     deleteDeadlineImmediate(id);
     renderSpokeAcademic();
     renderWheel();
@@ -5782,14 +5919,10 @@
     list.innerHTML = !items.length
       ? '<div class="spoke-empty">Nothing due soon</div>'
       : items.map(function(t){
-          var areaVal = Array.isArray(t.areas) ? (t.areas[0] || '') : (t.areas || '');
-          var areaChip = areaVal ? '<span class="area-chip" style="background:'+areaColor(areaVal).bg+'; color:'+areaColor(areaVal).fg+';">'+escapeHtml(areaVal)+'</span>' : '';
           var status = computeStatus(t.due);
           return '<div class="spoke-row spoke-academic-row">' +
               '<span class="task-cell"><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span></span>' +
               '<span class="'+status.cls+'">'+status.text+'</span>' +
-              '<div class="chip-row">'+areaChip+'</div>' +
-              '<span class="importance-badge imp-'+(t.importance || 'Low').toLowerCase()+'">'+(t.importance || 'Low')+'</span>' +
               '<input type="checkbox" class="habit-checkbox" onclick="completeAcademicDeadline(\''+t.id+'\')">' +
             '</div>';
         }).join('');
@@ -6358,43 +6491,46 @@
      of re-hitting the network on every page load.
   ============================================================ */
   var WEATHER_FRESH_MS = 20 * 60 * 1000;
-  // [icon, label, accent color, icon-chip background, description clause]
+  // [emoji, label, accent color, icon-chip background, description clause]
   var WEATHER_ICONS = {
-    0:['sunny','Clear','#fbbf24','rgba(251,191,36,0.16)','clear skies'],
-    1:['sunny','Mainly Clear','#fbbf24','rgba(251,191,36,0.16)','mostly clear skies'],
-    2:['partly_cloudy_day','Partly Cloudy','#7dd3fc','rgba(125,211,252,0.16)','a mix of sun and clouds'],
-    3:['cloud','Overcast','#94a3b8','rgba(148,163,184,0.16)','overcast skies'],
-    45:['foggy','Fog','#cbd5e1','rgba(203,213,225,0.14)','foggy conditions'],
-    48:['foggy','Fog','#cbd5e1','rgba(203,213,225,0.14)','freezing fog'],
-    51:['rainy','Drizzle','#38bdf8','rgba(56,189,248,0.16)','light drizzle'],
-    53:['rainy','Drizzle','#38bdf8','rgba(56,189,248,0.16)','drizzle'],
-    55:['rainy','Drizzle','#38bdf8','rgba(56,189,248,0.16)','steady drizzle'],
-    56:['rainy','Freezing Drizzle','#38bdf8','rgba(56,189,248,0.16)','freezing drizzle'],
-    57:['rainy','Freezing Drizzle','#38bdf8','rgba(56,189,248,0.16)','freezing drizzle'],
-    61:['rainy','Rain','#38bdf8','rgba(56,189,248,0.16)','light rain'],
-    63:['rainy','Rain','#38bdf8','rgba(56,189,248,0.16)','rain'],
-    65:['rainy','Heavy Rain','#0ea5e9','rgba(14,165,233,0.18)','heavy rain'],
-    66:['rainy','Freezing Rain','#38bdf8','rgba(56,189,248,0.16)','freezing rain'],
-    67:['rainy','Freezing Rain','#38bdf8','rgba(56,189,248,0.16)','freezing rain'],
-    80:['rainy','Showers','#38bdf8','rgba(56,189,248,0.16)','scattered showers'],
-    81:['rainy','Showers','#38bdf8','rgba(56,189,248,0.16)','showers'],
-    82:['rainy','Heavy Showers','#0ea5e9','rgba(14,165,233,0.18)','heavy showers'],
-    71:['weather_snowy','Snow','#a5f3fc','rgba(165,243,252,0.16)','light snow'],
-    73:['weather_snowy','Snow','#a5f3fc','rgba(165,243,252,0.16)','snow'],
-    75:['weather_snowy','Heavy Snow','#67e8f9','rgba(103,232,249,0.18)','heavy snow'],
-    77:['weather_snowy','Snow Grains','#a5f3fc','rgba(165,243,252,0.16)','snow grains'],
-    85:['weather_snowy','Snow Showers','#a5f3fc','rgba(165,243,252,0.16)','snow showers'],
-    86:['weather_snowy','Snow Showers','#a5f3fc','rgba(165,243,252,0.16)','heavy snow showers'],
-    95:['thunderstorm','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','thunderstorms'],
-    96:['thunderstorm','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','thunderstorms with hail'],
-    99:['thunderstorm','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','severe thunderstorms']
+    0:['☀️','Clear','#fbbf24','rgba(251,191,36,0.16)','clear skies'],
+    1:['🌤️','Mainly Clear','#fbbf24','rgba(251,191,36,0.16)','mostly clear skies'],
+    2:['⛅','Partly Cloudy','#7dd3fc','rgba(125,211,252,0.16)','a mix of sun and clouds'],
+    3:['☁️','Overcast','#94a3b8','rgba(148,163,184,0.16)','overcast skies'],
+    45:['🌫️','Fog','#cbd5e1','rgba(203,213,225,0.14)','foggy conditions'],
+    48:['🌫️','Fog','#cbd5e1','rgba(203,213,225,0.14)','freezing fog'],
+    51:['🌦️','Drizzle','#38bdf8','rgba(56,189,248,0.16)','light drizzle'],
+    53:['🌦️','Drizzle','#38bdf8','rgba(56,189,248,0.16)','drizzle'],
+    55:['🌦️','Drizzle','#38bdf8','rgba(56,189,248,0.16)','steady drizzle'],
+    56:['🌧️','Freezing Drizzle','#38bdf8','rgba(56,189,248,0.16)','freezing drizzle'],
+    57:['🌧️','Freezing Drizzle','#38bdf8','rgba(56,189,248,0.16)','freezing drizzle'],
+    61:['🌧️','Rain','#38bdf8','rgba(56,189,248,0.16)','light rain'],
+    63:['🌧️','Rain','#38bdf8','rgba(56,189,248,0.16)','rain'],
+    65:['⛈️','Heavy Rain','#0ea5e9','rgba(14,165,233,0.18)','heavy rain'],
+    66:['🌧️','Freezing Rain','#38bdf8','rgba(56,189,248,0.16)','freezing rain'],
+    67:['🌧️','Freezing Rain','#38bdf8','rgba(56,189,248,0.16)','freezing rain'],
+    80:['🌦️','Showers','#38bdf8','rgba(56,189,248,0.16)','scattered showers'],
+    81:['🌦️','Showers','#38bdf8','rgba(56,189,248,0.16)','showers'],
+    82:['⛈️','Heavy Showers','#0ea5e9','rgba(14,165,233,0.18)','heavy showers'],
+    71:['🌨️','Snow','#a5f3fc','rgba(165,243,252,0.16)','light snow'],
+    73:['🌨️','Snow','#a5f3fc','rgba(165,243,252,0.16)','snow'],
+    75:['❄️','Heavy Snow','#67e8f9','rgba(103,232,249,0.18)','heavy snow'],
+    77:['🌨️','Snow Grains','#a5f3fc','rgba(165,243,252,0.16)','snow grains'],
+    85:['🌨️','Snow Showers','#a5f3fc','rgba(165,243,252,0.16)','snow showers'],
+    86:['❄️','Snow Showers','#a5f3fc','rgba(165,243,252,0.16)','heavy snow showers'],
+    95:['⛈️','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','thunderstorms'],
+    96:['⛈️','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','thunderstorms with hail'],
+    99:['⛈️','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','severe thunderstorms']
   };
-  function weatherIconFor(code){ return WEATHER_ICONS[code] || ['cloud','—','#94a3b8','rgba(148,163,184,0.16)','changing conditions']; }
+  function weatherIconFor(code){ return WEATHER_ICONS[code] || ['🌡️','—','#94a3b8','rgba(148,163,184,0.16)','changing conditions']; }
   function weatherDayLabel(iso, idx){
     if(idx === 0) return 'Today';
-    if(idx === 1) return 'Tomorrow';
     var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     return days[new Date(iso + 'T00:00:00').getDay()];
+  }
+  function weatherDateLabel(iso){
+    var d = new Date(iso + 'T00:00:00');
+    return (d.getMonth() + 1) + '/' + d.getDate();
   }
   function weatherSentence(d, clause){
     var s = clause.charAt(0).toUpperCase() + clause.slice(1) + ' expected, with a high of ' +
@@ -6422,9 +6558,9 @@
       var meta = weatherIconFor(d.code);
       return '<div class="weather-mini-row">' +
           '<div class="weather-mini-row-top">' +
-            '<span class="material-symbols-outlined weather-mini-icon" style="color:' + meta[2] + ';background:' + meta[3] + ';">' + meta[0] + '</span>' +
+            '<span class="weather-mini-icon" style="background:' + meta[3] + ';">' + meta[0] + '</span>' +
             '<div class="weather-mini-daycond">' +
-              '<span class="weather-mini-day">' + weatherDayLabel(d.date, i) + '</span>' +
+              '<span class="weather-mini-day">' + weatherDayLabel(d.date, i) + '<span class="weather-mini-day-date">' + weatherDateLabel(d.date) + '</span></span>' +
               '<span class="weather-mini-cond" style="color:' + meta[2] + ';">' + meta[1] + '</span>' +
             '</div>' +
             '<span class="weather-mini-temps"><span class="hi">' + Math.round(d.hi) + '&deg;</span><span class="lo">' + Math.round(d.lo) + '&deg;</span></span>' +
@@ -6438,6 +6574,7 @@
     renderWeatherBody('<div class="weather-mini-empty">Loading forecast…</div>');
     var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + encodeURIComponent(loc.lat) +
       '&longitude=' + encodeURIComponent(loc.lon) +
+      '&current=weather_code' +
       '&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max' +
       '&temperature_unit=fahrenheit&windspeed_unit=mph&timezone=auto&forecast_days=3';
     fetch(url).then(function(res){
@@ -6446,9 +6583,16 @@
     }).then(function(data){
       var daily = data.daily;
       if(!daily || !daily.time){ throw new Error('Malformed weather response'); }
+      // Today's daily weathercode is a whole-day aggregate and can read
+      // "overcast" even while it's currently clear outside — the live
+      // `current` reading is what's actually true right now, so it wins
+      // for day 0. Future days have no "current" data, so the daily
+      // aggregate is the best available signal for them.
+      var currentCode = data.current ? data.current.weather_code : null;
       var days = daily.time.map(function(date, i){
         return {
-          date: date, code: daily.weathercode[i], hi: daily.temperature_2m_max[i], lo: daily.temperature_2m_min[i],
+          date: date, code: (i === 0 && currentCode != null) ? currentCode : daily.weathercode[i],
+          hi: daily.temperature_2m_max[i], lo: daily.temperature_2m_min[i],
           precipProb: daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : null,
           windMax: daily.windspeed_10m_max ? daily.windspeed_10m_max[i] : null
         };
@@ -6548,6 +6692,10 @@
   var spotifyDeviceId = null;
   var spotifyPlaylists = [];
   var spotifyPlayingContext = null;
+  var spotifyPlayingTrackUri = null;
+  var spotifyView = 'playlists'; // 'playlists' | 'tracks'
+  var spotifyActivePlaylist = null; // { id, uri, name }
+  var spotifyTracks = [];
 
   function getSpotifyAuth(){ return loadJSON('la_spotify_auth', null); }
   function saveSpotifyAuth(auth){ saveJSON('la_spotify_auth', auth); }
@@ -6604,6 +6752,11 @@
     if(spotifyPlayer){ spotifyPlayer.disconnect(); spotifyPlayer = null; }
     spotifyDeviceId = null;
     spotifyPlaylists = [];
+    spotifyTracks = [];
+    spotifyActivePlaylist = null;
+    spotifyView = 'playlists';
+    spotifyPlayingContext = null;
+    spotifyPlayingTrackUri = null;
     var disconnectBtn = document.getElementById('spotify-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'none';
     renderSpotifyConnectPrompt();
@@ -6612,6 +6765,17 @@
   function renderSpotifyConnectPrompt(){
     renderSpotifyBody('<button type="button" class="spotify-connect-btn" onclick="startSpotifyLogin()">' +
       '<span class="material-symbols-outlined">graphic_eq</span>Connect Spotify</button>');
+  }
+
+  function getSpotifyShuffleMode(){ return localStorage.getItem('la_spotify_shuffle_mode') || 'off'; }
+  function setSpotifyShuffleMode(mode){
+    localStorage.setItem('la_spotify_shuffle_mode', mode);
+    var wantsShuffleOn = mode !== 'off';
+    var q = '?state=' + wantsShuffleOn + (spotifyDeviceId ? '&device_id=' + spotifyDeviceId : '');
+    spotifyApiFetch('/me/player/shuffle' + q, { method: 'PUT' }).catch(function(){});
+    if(spotifyPlayer){
+      spotifyPlayer.getCurrentState().then(function(state){ if(state) renderSpotifyNowPlaying(state); });
+    }
   }
 
   function handleSpotifyRedirect(){
@@ -6707,73 +6871,157 @@
       return;
     }
     var track = state.track_window.current_track;
+    spotifyPlayingTrackUri = track.uri;
+    if(state.context && state.context.uri) spotifyPlayingContext = state.context.uri;
     var art = track.album && track.album.images && track.album.images[0] ? track.album.images[0].url : '';
     var artists = track.artists.map(function(a){ return a.name; }).join(', ');
+    var shuffleMode = getSpotifyShuffleMode();
     wrap.innerHTML =
       '<div class="spotify-now-playing">' +
-        '<div class="spotify-art" style="background-image:url(\'' + art + '\')"></div>' +
-        '<div class="spotify-track-meta">' +
-          '<span class="spotify-track-title">' + escapeHtml(track.name) + '</span>' +
-          '<span class="spotify-track-artist">' + escapeHtml(artists) + '</span>' +
+        '<div class="spotify-now-playing-top">' +
+          '<div class="spotify-art" style="background-image:url(\'' + art + '\')"></div>' +
+          '<div class="spotify-track-meta">' +
+            '<span class="spotify-track-title">' + escapeHtml(track.name) + '</span>' +
+            '<span class="spotify-track-artist">' + escapeHtml(artists) + '</span>' +
+          '</div>' +
         '</div>' +
         '<div class="spotify-controls">' +
           '<button type="button" onclick="spotifyPlayer.previousTrack()" title="Previous"><span class="material-symbols-outlined">skip_previous</span></button>' +
           '<button type="button" class="spotify-play-btn" onclick="spotifyPlayer.togglePlay()" title="Play/Pause"><span class="material-symbols-outlined">' + (state.paused ? 'play_arrow' : 'pause') + '</span></button>' +
           '<button type="button" onclick="spotifyPlayer.nextTrack()" title="Next"><span class="material-symbols-outlined">skip_next</span></button>' +
         '</div>' +
+        '<div class="spotify-shuffle-row">' +
+          '<button type="button" class="spotify-shuffle-btn' + (shuffleMode === 'off' ? ' active' : '') + '" onclick="setSpotifyShuffleMode(\'off\')" title="No shuffle">' +
+            '<span class="material-symbols-outlined">trending_flat</span>No Shuffle</button>' +
+          '<button type="button" class="spotify-shuffle-btn' + (shuffleMode === 'shuffle' ? ' active' : '') + '" onclick="setSpotifyShuffleMode(\'shuffle\')" title="Shuffle">' +
+            '<span class="material-symbols-outlined">shuffle</span>Shuffle</button>' +
+        '</div>' +
       '</div>';
+    renderSpotifyList();
   }
 
   function loadSpotifyPlaylists(){
-    spotifyApiFetch('/me/playlists?limit=15').then(function(res){
+    spotifyApiFetch('/me/playlists?limit=50').then(function(res){
       if(!res.ok) throw new Error('Failed to load playlists');
       return res.json();
     }).then(function(data){
       spotifyPlaylists = data.items || [];
-      renderSpotifyPlaylists();
+      renderSpotifyList();
     }).catch(function(){
-      var list = document.getElementById('spotify-playlists-wrap');
-      if(list) list.innerHTML = '<div class="spotify-mini-empty">Couldn&rsquo;t load playlists.</div>';
+      var wrap = document.getElementById('spotify-list-wrap');
+      if(wrap) wrap.innerHTML = '<div class="spotify-mini-empty">Couldn&rsquo;t load playlists.</div>';
     });
   }
 
-  function renderSpotifyPlaylists(){
-    var list = document.getElementById('spotify-playlists-wrap');
-    if(!list) return;
-    if(!spotifyPlaylists.length){
-      list.innerHTML = '<div class="spotify-mini-empty">No playlists found.</div>';
-      return;
+  function renderSpotifyList(){
+    if(spotifyView === 'tracks' && spotifyActivePlaylist){
+      renderSpotifyTracksView();
+    } else {
+      renderSpotifyPlaylistsView();
     }
-    list.innerHTML = spotifyPlaylists.map(function(pl){
-      var art = pl.images && pl.images[0] ? pl.images[0].url : '';
-      var isPlaying = spotifyPlayingContext === pl.uri;
-      return '<div class="spotify-playlist-row' + (isPlaying ? ' playing' : '') + '" onclick="playSpotifyPlaylist(\'' + pl.uri + '\')">' +
-          '<div class="spotify-playlist-art" style="background-image:url(\'' + art + '\')"></div>' +
-          '<span class="spotify-playlist-name">' + escapeHtml(pl.name) + '</span>' +
-          (isPlaying ? '<span class="material-symbols-outlined">volume_up</span>' : '') +
-        '</div>';
-    }).join('');
   }
 
-  function playSpotifyPlaylist(contextUri){
+  function renderSpotifyPlaylistsView(){
+    var wrap = document.getElementById('spotify-list-wrap');
+    if(!wrap) return;
+    if(!spotifyPlaylists.length){
+      wrap.innerHTML = '<div class="spotify-mini-empty">No playlists found.</div>';
+      return;
+    }
+    wrap.innerHTML =
+      '<p class="spotify-section-label">Your Playlists</p>' +
+      '<div class="spotify-playlists">' +
+        spotifyPlaylists.map(function(pl){
+          var art = pl.images && pl.images[0] ? pl.images[0].url : '';
+          var isPlayingContext = spotifyPlayingContext === pl.uri;
+          return '<div class="spotify-playlist-row' + (isPlayingContext ? ' playing' : '') + '" onclick="openSpotifyPlaylist(\'' + pl.id + '\')">' +
+              '<div class="spotify-playlist-art" style="background-image:url(\'' + art + '\')"></div>' +
+              '<span class="spotify-playlist-name">' + escapeHtml(pl.name) + '</span>' +
+              (isPlayingContext ? '<span class="material-symbols-outlined">volume_up</span>' : '') +
+            '</div>';
+        }).join('') +
+      '</div>';
+  }
+
+  function openSpotifyPlaylist(playlistId){
+    var pl = spotifyPlaylists.find(function(p){ return p.id === playlistId; });
+    if(!pl) return;
+    spotifyActivePlaylist = { id: pl.id, uri: pl.uri, name: pl.name };
+    spotifyView = 'tracks';
+    spotifyTracks = [];
+    renderSpotifyTracksView();
+    loadSpotifyTracks(playlistId);
+  }
+
+  function backToSpotifyPlaylists(){
+    spotifyView = 'playlists';
+    spotifyActivePlaylist = null;
+    spotifyTracks = [];
+    renderSpotifyPlaylistsView();
+  }
+
+  function loadSpotifyTracks(playlistId){
+    spotifyApiFetch('/playlists/' + playlistId + '/tracks?limit=50&fields=items(track(id,uri,name,artists(name),album(images)))')
+      .then(function(res){
+        if(!res.ok) throw new Error('Failed to load tracks');
+        return res.json();
+      })
+      .then(function(data){
+        spotifyTracks = (data.items || []).map(function(it){ return it.track; }).filter(function(t){ return t; });
+        renderSpotifyTracksView();
+      })
+      .catch(function(){
+        var tracksList = document.querySelector('#spotify-list-wrap .spotify-tracks');
+        if(tracksList) tracksList.innerHTML = '<div class="spotify-mini-empty">Couldn&rsquo;t load songs.</div>';
+      });
+  }
+
+  function renderSpotifyTracksView(){
+    var wrap = document.getElementById('spotify-list-wrap');
+    if(!wrap || !spotifyActivePlaylist) return;
+    var body = !spotifyTracks.length
+      ? '<div class="spotify-mini-empty">Loading songs&hellip;</div>'
+      : spotifyTracks.map(function(t, i){
+          var isPlaying = spotifyPlayingTrackUri === t.uri;
+          var artists = (t.artists || []).map(function(a){ return a.name; }).join(', ');
+          return '<div class="spotify-track-row' + (isPlaying ? ' playing' : '') + '" onclick="playSpotifyTrack(\'' + t.uri + '\')">' +
+              '<span class="spotify-track-index">' + (isPlaying ? '<span class="material-symbols-outlined" style="font-size:14px;color:#1ed760;">volume_up</span>' : (i + 1)) + '</span>' +
+              '<div class="spotify-track-meta-row">' +
+                '<span class="spotify-track-row-name">' + escapeHtml(t.name) + '</span>' +
+                '<span class="spotify-track-row-artist">' + escapeHtml(artists) + '</span>' +
+              '</div>' +
+            '</div>';
+        }).join('');
+    wrap.innerHTML =
+      '<div class="spotify-back-row">' +
+        '<button type="button" class="spotify-back-btn" onclick="backToSpotifyPlaylists()" title="Back to playlists"><span class="material-symbols-outlined">arrow_back</span></button>' +
+        '<span class="spotify-back-title">' + escapeHtml(spotifyActivePlaylist.name) + '</span>' +
+      '</div>' +
+      '<div class="spotify-tracks">' + body + '</div>';
+  }
+
+  function playSpotifyTrack(trackUri){
     if(!spotifyDeviceId){
       renderSpotifyBody('<div class="spotify-mini-empty">Player still connecting&hellip; try again in a moment.</div>');
       setTimeout(renderSpotifyWidget, 1500);
       return;
     }
-    spotifyPlayingContext = contextUri;
-    renderSpotifyPlaylists();
+    spotifyPlayingContext = spotifyActivePlaylist.uri;
+    spotifyPlayingTrackUri = trackUri;
+    renderSpotifyTracksView();
     spotifyApiFetch('/me/player/play?device_id=' + spotifyDeviceId, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ context_uri: contextUri })
+      body: JSON.stringify({ context_uri: spotifyActivePlaylist.uri, offset: { uri: trackUri } })
     }).catch(function(){});
   }
 
   function renderSpotifyWidget(){
+    spotifyView = 'playlists';
+    spotifyActivePlaylist = null;
     renderSpotifyBody(
       '<div id="spotify-now-playing-wrap"><div class="spotify-mini-empty">Connecting to your player&hellip;</div></div>' +
-      '<div class="spotify-playlists" id="spotify-playlists-wrap"><div class="spotify-mini-empty">Loading playlists&hellip;</div></div>'
+      '<div id="spotify-list-wrap"><div class="spotify-mini-empty">Loading playlists&hellip;</div></div>'
     );
     var disconnectBtn = document.getElementById('spotify-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'flex';
