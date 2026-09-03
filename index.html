@@ -689,6 +689,33 @@
     line-height:1.3;
     overflow-wrap:break-word;
   }
+  .spotify-progress-row{
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .spotify-progress-time{
+    flex-shrink:0;
+    width:30px;
+    font-size:0.6rem;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+  .spotify-progress-track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.14);
+    position:relative;
+    cursor:pointer;
+  }
+  .spotify-progress-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:0%;
+    border-radius:2px;
+    background:#1ed760;
+  }
   .spotify-controls{
     display:flex;
     align-items:center;
@@ -741,24 +768,14 @@
   .spotify-shuffle-btn:hover{ color:var(--ink); }
   .spotify-shuffle-btn.active{ background:rgba(30,215,96,0.22); color:#1ed760; }
 
-  .spotify-section-label{
-    font-size:0.62rem;
-    font-weight:700;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color:var(--ink-faint);
-    margin:0;
-  }
-  .spotify-playlists,
-  .spotify-tracks{
+  .spotify-playlists{
     display:flex;
     flex-direction:column;
     gap:2px;
     max-height:420px;
     overflow-y:auto;
   }
-  .spotify-playlist-row,
-  .spotify-track-row{
+  .spotify-playlist-row{
     display:flex;
     align-items:center;
     gap:8px;
@@ -766,22 +783,13 @@
     border-radius:6px;
     cursor:pointer;
   }
-  .spotify-playlist-row:hover,
-  .spotify-track-row:hover{ background:rgba(30,215,96,0.12); }
-  .spotify-playlist-row.playing,
-  .spotify-track-row.playing{ background:rgba(30,215,96,0.18); }
+  .spotify-playlist-row:hover{ background:rgba(30,215,96,0.12); }
+  .spotify-playlist-row.playing{ background:rgba(30,215,96,0.18); }
   .spotify-playlist-art{
     width:32px; height:32px;
     flex-shrink:0;
     border-radius:5px;
     background:rgba(255,255,255,0.08) center/cover no-repeat;
-  }
-  .spotify-track-index{
-    width:20px;
-    flex-shrink:0;
-    text-align:center;
-    font-size:0.64rem;
-    color:var(--ink-faint);
   }
   .spotify-playlist-name{
     flex:1;
@@ -794,58 +802,6 @@
   }
   .spotify-playlist-row.playing .spotify-playlist-name{ color:#1ed760; font-weight:700; }
   .spotify-playlist-row .material-symbols-outlined{ font-size:14px; color:#1ed760; flex-shrink:0; }
-  .spotify-track-meta-row{
-    flex:1;
-    min-width:0;
-    display:flex;
-    flex-direction:column;
-    gap:0;
-  }
-  .spotify-track-row-name{
-    font-size:0.7rem;
-    color:var(--ink);
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-  .spotify-track-row-artist{
-    font-size:0.62rem;
-    color:var(--ink-faint);
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-  .spotify-track-row.playing .spotify-track-row-name{ color:#1ed760; font-weight:700; }
-  .spotify-back-row{
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  .spotify-back-btn{
-    flex-shrink:0;
-    width:24px; height:24px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:6px;
-    background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.14);
-    color:var(--ink);
-    cursor:pointer;
-    padding:0;
-  }
-  .spotify-back-btn:hover{ background:rgba(30,215,96,0.24); border-color:rgba(30,215,96,0.55); }
-  .spotify-back-btn .material-symbols-outlined{ font-size:16px; }
-  .spotify-back-title{
-    flex:1;
-    min-width:0;
-    font-size:0.72rem;
-    font-weight:700;
-    color:var(--ink);
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
 
   /* ---------- Habit Tracker mini card (green tint) ---------- */
   .habit-mini-card{
@@ -6692,10 +6648,8 @@
   var spotifyDeviceId = null;
   var spotifyPlaylists = [];
   var spotifyPlayingContext = null;
-  var spotifyPlayingTrackUri = null;
-  var spotifyView = 'playlists'; // 'playlists' | 'tracks'
-  var spotifyActivePlaylist = null; // { id, uri, name }
-  var spotifyTracks = [];
+  var spotifyProgressState = null; // { position, duration, paused, updatedAt }
+  var spotifyProgressTimer = null;
 
   function getSpotifyAuth(){ return loadJSON('la_spotify_auth', null); }
   function saveSpotifyAuth(auth){ saveJSON('la_spotify_auth', auth); }
@@ -6752,11 +6706,9 @@
     if(spotifyPlayer){ spotifyPlayer.disconnect(); spotifyPlayer = null; }
     spotifyDeviceId = null;
     spotifyPlaylists = [];
-    spotifyTracks = [];
-    spotifyActivePlaylist = null;
-    spotifyView = 'playlists';
     spotifyPlayingContext = null;
-    spotifyPlayingTrackUri = null;
+    stopSpotifyProgressTimer();
+    spotifyProgressState = null;
     var disconnectBtn = document.getElementById('spotify-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'none';
     renderSpotifyConnectPrompt();
@@ -6867,15 +6819,18 @@
     var wrap = document.getElementById('spotify-now-playing-wrap');
     if(!wrap) return;
     if(!state || !state.track_window || !state.track_window.current_track){
+      stopSpotifyProgressTimer();
+      spotifyProgressState = null;
       wrap.innerHTML = '<div class="spotify-mini-empty">Nothing playing. Pick a playlist below.</div>';
       return;
     }
     var track = state.track_window.current_track;
-    spotifyPlayingTrackUri = track.uri;
     if(state.context && state.context.uri) spotifyPlayingContext = state.context.uri;
     var art = track.album && track.album.images && track.album.images[0] ? track.album.images[0].url : '';
     var artists = track.artists.map(function(a){ return a.name; }).join(', ');
     var shuffleMode = getSpotifyShuffleMode();
+    spotifyProgressState = { position: state.position, duration: state.duration, paused: state.paused, updatedAt: Date.now() };
+    var initialPct = state.duration ? Math.min(100, (state.position / state.duration) * 100) : 0;
     wrap.innerHTML =
       '<div class="spotify-now-playing">' +
         '<div class="spotify-now-playing-top">' +
@@ -6884,6 +6839,13 @@
             '<span class="spotify-track-title">' + escapeHtml(track.name) + '</span>' +
             '<span class="spotify-track-artist">' + escapeHtml(artists) + '</span>' +
           '</div>' +
+        '</div>' +
+        '<div class="spotify-progress-row">' +
+          '<span class="spotify-progress-time" id="spotify-progress-elapsed">' + spotifyFormatTime(state.position) + '</span>' +
+          '<div class="spotify-progress-track" id="spotify-progress-track" onclick="seekSpotifyProgress(event)">' +
+            '<div class="spotify-progress-fill" id="spotify-progress-fill" style="width:' + initialPct + '%"></div>' +
+          '</div>' +
+          '<span class="spotify-progress-time" id="spotify-progress-duration">' + spotifyFormatTime(state.duration) + '</span>' +
         '</div>' +
         '<div class="spotify-controls">' +
           '<button type="button" onclick="spotifyPlayer.previousTrack()" title="Previous"><span class="material-symbols-outlined">skip_previous</span></button>' +
@@ -6897,7 +6859,51 @@
             '<span class="material-symbols-outlined">shuffle</span>Shuffle</button>' +
         '</div>' +
       '</div>';
-    renderSpotifyList();
+    startSpotifyProgressTimer();
+    renderSpotifyPlaylists();
+  }
+
+  function spotifyFormatTime(ms){
+    if(ms == null || isNaN(ms)) return '0:00';
+    var totalSec = Math.floor(ms / 1000);
+    var m = Math.floor(totalSec / 60);
+    var s = totalSec % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function startSpotifyProgressTimer(){
+    if(spotifyProgressTimer) return;
+    spotifyProgressTimer = setInterval(tickSpotifyProgress, 500);
+  }
+
+  function stopSpotifyProgressTimer(){
+    if(spotifyProgressTimer){ clearInterval(spotifyProgressTimer); spotifyProgressTimer = null; }
+  }
+
+  function tickSpotifyProgress(){
+    if(!spotifyProgressState){ stopSpotifyProgressTimer(); return; }
+    var fill = document.getElementById('spotify-progress-fill');
+    var elapsedEl = document.getElementById('spotify-progress-elapsed');
+    if(!fill || !elapsedEl) return;
+    var pos = spotifyProgressState.position;
+    if(!spotifyProgressState.paused){ pos += (Date.now() - spotifyProgressState.updatedAt); }
+    if(spotifyProgressState.duration){ pos = Math.min(pos, spotifyProgressState.duration); }
+    var pct = spotifyProgressState.duration ? (pos / spotifyProgressState.duration) * 100 : 0;
+    fill.style.width = pct + '%';
+    elapsedEl.textContent = spotifyFormatTime(pos);
+  }
+
+  function seekSpotifyProgress(e){
+    if(!spotifyPlayer || !spotifyProgressState || !spotifyProgressState.duration) return;
+    var track = document.getElementById('spotify-progress-track');
+    if(!track) return;
+    var rect = track.getBoundingClientRect();
+    var ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    var seekMs = Math.round(ratio * spotifyProgressState.duration);
+    spotifyPlayer.seek(seekMs);
+    spotifyProgressState.position = seekMs;
+    spotifyProgressState.updatedAt = Date.now();
+    tickSpotifyProgress();
   }
 
   function loadSpotifyPlaylists(){
@@ -6906,119 +6912,49 @@
       return res.json();
     }).then(function(data){
       spotifyPlaylists = data.items || [];
-      renderSpotifyList();
+      renderSpotifyPlaylists();
     }).catch(function(){
       var wrap = document.getElementById('spotify-list-wrap');
       if(wrap) wrap.innerHTML = '<div class="spotify-mini-empty">Couldn&rsquo;t load playlists.</div>';
     });
   }
 
-  function renderSpotifyList(){
-    if(spotifyView === 'tracks' && spotifyActivePlaylist){
-      renderSpotifyTracksView();
-    } else {
-      renderSpotifyPlaylistsView();
-    }
-  }
-
-  function renderSpotifyPlaylistsView(){
+  function renderSpotifyPlaylists(){
     var wrap = document.getElementById('spotify-list-wrap');
     if(!wrap) return;
     if(!spotifyPlaylists.length){
       wrap.innerHTML = '<div class="spotify-mini-empty">No playlists found.</div>';
       return;
     }
-    wrap.innerHTML =
-      '<p class="spotify-section-label">Your Playlists</p>' +
-      '<div class="spotify-playlists">' +
+    wrap.innerHTML = '<div class="spotify-playlists">' +
         spotifyPlaylists.map(function(pl){
           var art = pl.images && pl.images[0] ? pl.images[0].url : '';
-          var isPlayingContext = spotifyPlayingContext === pl.uri;
-          return '<div class="spotify-playlist-row' + (isPlayingContext ? ' playing' : '') + '" onclick="openSpotifyPlaylist(\'' + pl.id + '\')">' +
+          var isPlaying = spotifyPlayingContext === pl.uri;
+          return '<div class="spotify-playlist-row' + (isPlaying ? ' playing' : '') + '" onclick="playSpotifyPlaylist(\'' + pl.uri + '\')">' +
               '<div class="spotify-playlist-art" style="background-image:url(\'' + art + '\')"></div>' +
               '<span class="spotify-playlist-name">' + escapeHtml(pl.name) + '</span>' +
-              (isPlayingContext ? '<span class="material-symbols-outlined">volume_up</span>' : '') +
+              (isPlaying ? '<span class="material-symbols-outlined">volume_up</span>' : '') +
             '</div>';
         }).join('') +
       '</div>';
   }
 
-  function openSpotifyPlaylist(playlistId){
-    var pl = spotifyPlaylists.find(function(p){ return p.id === playlistId; });
-    if(!pl) return;
-    spotifyActivePlaylist = { id: pl.id, uri: pl.uri, name: pl.name };
-    spotifyView = 'tracks';
-    spotifyTracks = [];
-    renderSpotifyTracksView();
-    loadSpotifyTracks(playlistId);
-  }
-
-  function backToSpotifyPlaylists(){
-    spotifyView = 'playlists';
-    spotifyActivePlaylist = null;
-    spotifyTracks = [];
-    renderSpotifyPlaylistsView();
-  }
-
-  function loadSpotifyTracks(playlistId){
-    spotifyApiFetch('/playlists/' + playlistId + '/tracks?limit=50&fields=items(track(id,uri,name,artists(name),album(images)))')
-      .then(function(res){
-        if(!res.ok) throw new Error('Failed to load tracks');
-        return res.json();
-      })
-      .then(function(data){
-        spotifyTracks = (data.items || []).map(function(it){ return it.track; }).filter(function(t){ return t; });
-        renderSpotifyTracksView();
-      })
-      .catch(function(){
-        var tracksList = document.querySelector('#spotify-list-wrap .spotify-tracks');
-        if(tracksList) tracksList.innerHTML = '<div class="spotify-mini-empty">Couldn&rsquo;t load songs.</div>';
-      });
-  }
-
-  function renderSpotifyTracksView(){
-    var wrap = document.getElementById('spotify-list-wrap');
-    if(!wrap || !spotifyActivePlaylist) return;
-    var body = !spotifyTracks.length
-      ? '<div class="spotify-mini-empty">Loading songs&hellip;</div>'
-      : spotifyTracks.map(function(t, i){
-          var isPlaying = spotifyPlayingTrackUri === t.uri;
-          var artists = (t.artists || []).map(function(a){ return a.name; }).join(', ');
-          return '<div class="spotify-track-row' + (isPlaying ? ' playing' : '') + '" onclick="playSpotifyTrack(\'' + t.uri + '\')">' +
-              '<span class="spotify-track-index">' + (isPlaying ? '<span class="material-symbols-outlined" style="font-size:14px;color:#1ed760;">volume_up</span>' : (i + 1)) + '</span>' +
-              '<div class="spotify-track-meta-row">' +
-                '<span class="spotify-track-row-name">' + escapeHtml(t.name) + '</span>' +
-                '<span class="spotify-track-row-artist">' + escapeHtml(artists) + '</span>' +
-              '</div>' +
-            '</div>';
-        }).join('');
-    wrap.innerHTML =
-      '<div class="spotify-back-row">' +
-        '<button type="button" class="spotify-back-btn" onclick="backToSpotifyPlaylists()" title="Back to playlists"><span class="material-symbols-outlined">arrow_back</span></button>' +
-        '<span class="spotify-back-title">' + escapeHtml(spotifyActivePlaylist.name) + '</span>' +
-      '</div>' +
-      '<div class="spotify-tracks">' + body + '</div>';
-  }
-
-  function playSpotifyTrack(trackUri){
+  function playSpotifyPlaylist(contextUri){
     if(!spotifyDeviceId){
       renderSpotifyBody('<div class="spotify-mini-empty">Player still connecting&hellip; try again in a moment.</div>');
       setTimeout(renderSpotifyWidget, 1500);
       return;
     }
-    spotifyPlayingContext = spotifyActivePlaylist.uri;
-    spotifyPlayingTrackUri = trackUri;
-    renderSpotifyTracksView();
+    spotifyPlayingContext = contextUri;
+    renderSpotifyPlaylists();
     spotifyApiFetch('/me/player/play?device_id=' + spotifyDeviceId, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ context_uri: spotifyActivePlaylist.uri, offset: { uri: trackUri } })
+      body: JSON.stringify({ context_uri: contextUri })
     }).catch(function(){});
   }
 
   function renderSpotifyWidget(){
-    spotifyView = 'playlists';
-    spotifyActivePlaylist = null;
     renderSpotifyBody(
       '<div id="spotify-now-playing-wrap"><div class="spotify-mini-empty">Connecting to your player&hellip;</div></div>' +
       '<div id="spotify-list-wrap"><div class="spotify-mini-empty">Loading playlists&hellip;</div></div>'
