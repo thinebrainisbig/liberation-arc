@@ -18,10 +18,10 @@
     --ink-dim: rgba(242,242,245,0.62);
     --ink-faint: rgba(242,242,245,0.36);
 
-    --glass: rgba(255,255,255,0.06);
-    --glass-strong: rgba(255,255,255,0.09);
-    --glass-border: rgba(255,255,255,0.14);
-    --glass-sheen: rgba(255,255,255,0.10);
+    --glass: rgba(255,255,255,0.11);
+    --glass-strong: rgba(255,255,255,0.16);
+    --glass-border: rgba(255,255,255,0.22);
+    --glass-sheen: rgba(255,255,255,0.12);
 
     --sidebar-bg: color-mix(in srgb, #1e3a5f 14%, rgba(21,29,40,0.55));
 
@@ -414,6 +414,312 @@
     font-weight:500;
     font-style:italic;
   }
+
+  /* ---------- Weather mini card (sidebar, under nav) ----------
+     3-day forecast for a user-set location (Open-Meteo — free,
+     keyless geocoding + forecast APIs, so there's no API key to
+     mismanage). Sized to read as one deliberate block under the nav
+     rather than a single thin row. */
+  .weather-mini-card{
+    padding:16px;
+    border-radius:var(--r-md);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    background:#0f2436;
+    border:1px solid rgba(56,189,248,0.55);
+  }
+  .weather-mini-header{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .weather-mini-title{
+    margin:0;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink);
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .weather-mini-edit-btn{
+    width:22px; height:22px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .weather-mini-edit-btn:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .weather-mini-edit-btn .material-symbols-outlined{ font-size:14px; }
+  .weather-mini-body{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .weather-mini-empty{
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    line-height:1.5;
+  }
+  .weather-mini-retry{
+    color:#38bdf8;
+    font-style:normal;
+    cursor:pointer;
+    text-decoration:underline;
+  }
+  .weather-mini-row{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .weather-mini-row:last-child{ border-bottom:none; padding-bottom:0; }
+  .weather-mini-row-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .weather-mini-icon{
+    font-size:22px;
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .weather-mini-daycond{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    flex:1;
+    min-width:0;
+  }
+  .weather-mini-day{
+    font-size:0.76rem;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .weather-mini-cond{
+    font-size:0.68rem;
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .weather-mini-temps{
+    font-size:0.74rem;
+    flex-shrink:0;
+    display:flex;
+    gap:6px;
+  }
+  .weather-mini-temps .hi{ color:var(--ink); font-weight:700; }
+  .weather-mini-temps .lo{ color:var(--ink-faint); }
+  .weather-mini-sentence{
+    margin:0;
+    padding-left:48px;
+    font-size:0.68rem;
+    line-height:1.5;
+    color:var(--ink-dim);
+  }
+  .weather-location-editor{
+    display:none;
+    gap:6px;
+  }
+  .weather-location-editor input{
+    flex:1;
+    min-width:0;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(56,189,248,0.45);
+    border-radius:6px;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.7rem;
+    padding:6px 8px;
+    outline:none;
+  }
+  .weather-location-editor button{
+    flex-shrink:0;
+    padding:6px 10px;
+    border-radius:6px;
+    border:1px solid rgba(56,189,248,0.5);
+    background:rgba(56,189,248,0.16);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.68rem;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .weather-location-editor button:hover{ background:rgba(56,189,248,0.28); }
+
+  /* ---------- Spotify mini card ---------- */
+  .spotify-mini-card{
+    padding:16px;
+    border-radius:var(--r-md);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    background:#0f1f14;
+    border:1px solid rgba(30,215,96,0.5);
+  }
+  .spotify-mini-header{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .spotify-mini-header .material-symbols-outlined{ font-size:16px; color:#1ed760; }
+  .spotify-mini-title{
+    margin:0;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink);
+    flex:1;
+    min-width:0;
+  }
+  .spotify-mini-disconnect{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .spotify-mini-disconnect:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .spotify-mini-disconnect .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .spotify-mini-empty{
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    line-height:1.5;
+  }
+  .spotify-connect-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:8px 10px;
+    border-radius:8px;
+    border:1px solid rgba(30,215,96,0.55);
+    background:rgba(30,215,96,0.14);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.7rem;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .spotify-connect-btn:hover{ background:rgba(30,215,96,0.24); }
+  .spotify-connect-btn .material-symbols-outlined{ font-size:16px; color:#1ed760; }
+  .spotify-now-playing{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .spotify-art{
+    width:42px; height:42px;
+    flex-shrink:0;
+    border-radius:6px;
+    background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .spotify-track-meta{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .spotify-track-title{
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .spotify-track-artist{
+    font-size:0.66rem;
+    color:var(--ink-dim);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .spotify-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    flex-shrink:0;
+  }
+  .spotify-controls button{
+    width:26px; height:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    cursor:pointer;
+    padding:0;
+  }
+  .spotify-controls button:hover{ background:rgba(30,215,96,0.24); border-color:rgba(30,215,96,0.55); }
+  .spotify-controls button .material-symbols-outlined{ font-size:16px; }
+  .spotify-controls .spotify-play-btn{ width:30px; height:30px; background:rgba(30,215,96,0.2); border-color:rgba(30,215,96,0.55); }
+  .spotify-controls .spotify-play-btn .material-symbols-outlined{ font-size:18px; color:#1ed760; }
+  .spotify-playlists{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    max-height:150px;
+    overflow-y:auto;
+    border-top:1px solid rgba(255,255,255,0.06);
+    padding-top:8px;
+  }
+  .spotify-playlist-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:5px 4px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .spotify-playlist-row:hover{ background:rgba(30,215,96,0.12); }
+  .spotify-playlist-row.playing{ background:rgba(30,215,96,0.18); }
+  .spotify-playlist-art{
+    width:26px; height:26px;
+    flex-shrink:0;
+    border-radius:4px;
+    background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .spotify-playlist-name{
+    flex:1;
+    min-width:0;
+    font-size:0.68rem;
+    color:var(--ink-dim);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .spotify-playlist-row.playing .spotify-playlist-name{ color:#1ed760; font-weight:700; }
+  .spotify-playlist-row .material-symbols-outlined{ font-size:14px; color:#1ed760; flex-shrink:0; }
 
   /* ---------- Habit Tracker mini card (green tint) ---------- */
   .habit-mini-card{
@@ -1633,19 +1939,6 @@
     margin:0 auto;
     transform:translateX(25px);
   }
-  .spoke-lines-svg{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    overflow:visible;
-    pointer-events:none;
-  }
-  .spoke-line{
-    stroke:rgba(255,255,255,0.38);
-    stroke-width:2;
-    vector-effect:non-scaling-stroke;
-  }
   .progress-wheel{
     --pct:0%;
     position:absolute;
@@ -1658,6 +1951,18 @@
     -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 100px), #000 calc(100% - 100px));
             mask:radial-gradient(farthest-side, transparent calc(100% - 100px), #000 calc(100% - 100px));
     box-shadow:0 0 44px rgba(74,222,128,0.14);
+  }
+  .wheel-pct{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:3rem;
+    font-weight:800;
+    color:var(--ink);
+    letter-spacing:-0.02em;
+    pointer-events:none;
+    z-index:2;
+    font-family:'JetBrains Mono',monospace;
   }
   .spoke-panel{
     position:absolute;
@@ -1679,6 +1984,16 @@
     z-index:3;
     cursor:grab;
     touch-action:none;
+    /* Native browser resize handle (bottom-right corner drag) — lets
+       each card's width/height be customized independently; overflow
+       must be non-visible for `resize` to take effect at all. Sizes
+       are persisted in SPOKE_SIZES (see makeSpokeResizable). */
+    resize:both;
+    overflow:hidden;
+    min-width:130px;
+    min-height:64px;
+    max-width:640px;
+    max-height:520px;
   }
   .spoke-panel.spoke-dragging{ cursor:grabbing; z-index:5; transition:none !important; }
   .spoke-panel-wide{ width:259px; }
@@ -1691,18 +2006,18 @@
   #spoke-panel-academic{
     width:460px;
     border-color:transparent;
-    background:rgba(74,222,128,0.16);
+    background:rgba(74,222,128,0.5);
     box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.35);
   }
   #spoke-panel-research{
     border-color:transparent;
-    background:rgba(74,222,128,0.16);
+    background:rgba(74,222,128,0.5);
     box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.35);
   }
   #spoke-panel-social{
     width:198px;
     border-color:transparent;
-    background:rgba(168,85,247,0.16);
+    background:rgba(168,85,247,0.5);
     box-shadow:0 0 18px 0 rgba(168,85,247,0.125), inset 0 1px 0 rgba(216,180,254,0.35);
   }
   /* Habits/Day/Night use the same borderless tinted-glass fill
@@ -1711,17 +2026,17 @@
   #spoke-panel-habits{
     width:198px;
     border-color:transparent;
-    background:rgba(248,113,113,0.16);
+    background:rgba(248,113,113,0.5);
     box-shadow:0 0 18px 0 rgba(248,113,113,0.125), inset 0 1px 0 rgba(254,202,202,0.35);
   }
   #spoke-panel-day{
     border-color:transparent;
-    background:rgba(96,165,250,0.16);
+    background:rgba(96,165,250,0.5);
     box-shadow:0 0 18px 0 rgba(96,165,250,0.125), inset 0 1px 0 rgba(191,219,254,0.35);
   }
   #spoke-panel-night{
     border-color:transparent;
-    background:rgba(250,204,21,0.16);
+    background:rgba(250,204,21,0.5);
     box-shadow:0 0 18px 0 rgba(250,204,21,0.125), inset 0 1px 0 rgba(254,240,138,0.35);
   }
   .spoke-panel-daycycle{ padding:0; overflow:hidden; }
@@ -1739,7 +2054,10 @@
   .spoke-academic-row{ gap:8px; }
   .spoke-academic-row .task-cell{ flex:1; min-width:0; }
   .spoke-academic-row .chip-row,
-  .spoke-academic-row .importance-badge{ flex-shrink:0; }
+  .spoke-academic-row .importance-badge,
+  .spoke-academic-row .status-overdue,
+  .spoke-academic-row .status-today,
+  .spoke-academic-row .status-normal{ flex-shrink:0; }
 
   /* ---------- Notepad card (index.html) ----------
      Freeform Apple-Notes-style surface. Binder-tab dividers on the
@@ -2032,12 +2350,17 @@
   }
   .spoke-add-btn .material-symbols-outlined{ font-size:13px; }
   .spoke-panel-list{
+    flex:1;
+    min-height:0;
     max-height:112px;
     overflow-y:auto;
     display:flex;
     flex-direction:column;
     gap:4px;
   }
+  /* Once a card has been resized taller, let its list actually use the
+     extra room instead of staying capped at the original 112px. */
+  .spoke-panel[style*="height"] .spoke-panel-list{ max-height:none; }
   .spoke-empty{ font-size:0.64rem; color:var(--ink-faint); font-style:italic; padding:4px 0; }
   .spoke-row{
     display:flex;
@@ -2722,6 +3045,31 @@
       </a>
     </nav>
 
+    <div class="weather-mini-card glass">
+      <div class="weather-mini-header">
+        <p class="weather-mini-title mono" id="weather-location-label">Weather</p>
+        <button type="button" class="weather-mini-edit-btn" onclick="openWeatherLocationEditor()" title="Set location">
+          <span class="material-symbols-outlined">edit_location_alt</span>
+        </button>
+      </div>
+      <div class="weather-location-editor" id="weather-location-editor">
+        <input type="text" id="weather-location-input" placeholder="City name…" onkeydown="handleWeatherLocationKeydown(event)">
+        <button type="button" onclick="commitWeatherLocation()">Save</button>
+      </div>
+      <div class="weather-mini-body" id="weather-mini-body"></div>
+    </div>
+
+    <div class="spotify-mini-card glass">
+      <div class="spotify-mini-header">
+        <span class="material-symbols-outlined">graphic_eq</span>
+        <p class="spotify-mini-title mono">Spotify</p>
+        <button type="button" class="spotify-mini-disconnect" id="spotify-disconnect-btn" onclick="disconnectSpotify()" title="Disconnect" style="display:none;">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+      <div class="spotify-mini-body" id="spotify-mini-body"></div>
+    </div>
+
     <div class="mobile-quick-actions">
       <button type="button" class="mobile-pill-btn" onclick="openHabitModal()" aria-label="Habits">
         <span class="material-symbols-outlined">checklist</span>
@@ -2785,8 +3133,8 @@
 
       <div class="wheel-panel">
         <div class="wheel-stage" id="wheel-stage">
-          <svg class="spoke-lines-svg" id="spoke-lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
           <div class="progress-wheel" id="progress-wheel"></div>
+          <div class="wheel-pct" id="wheel-pct"></div>
 
           <div class="spoke-panel habit-mini-card" id="spoke-panel-habits">
             <div class="spoke-panel-header" onclick="openHabitModal()">
@@ -5398,6 +5746,8 @@
     var pct = Math.max(0, Math.min(100, fill.totalPct));
     ring.style.setProperty('--pct', pct + '%');
     ring.style.background = wheelGradientCss(pct);
+    var pctEl = document.getElementById('wheel-pct');
+    if(pctEl) pctEl.textContent = Math.round(pct) + '%';
 
     var habitsCounter = document.getElementById('habit-mini-counter');
     if(habitsCounter) habitsCounter.textContent = fill.habits.done + ' / ' + fill.habits.total;
@@ -5416,18 +5766,28 @@
   }
 
   function renderSpokeAcademic(){
+    /* Shows overdue + due-today + due-tomorrow (not just today's exact
+       backlog) so upcoming pressure is visible a day ahead — the
+       wheel's denominator (computeWheelFill) still only counts
+       due === today, independently of what's shown here. */
     var list = document.getElementById('spoke-academic-list');
     if(!list) return;
     var today = getAdjustedDate();
-    var items = getDeadlines().filter(function(t){ return t.due === today; })
-      .sort(function(a,b){ return (a.importance === 'Critical' ? -1 : 0) - (b.importance === 'Critical' ? -1 : 0); });
+    var tomorrow = addDaysISO(today, 1);
+    var items = getDeadlines().filter(function(t){ return t.due && t.due <= tomorrow; })
+      .sort(function(a,b){
+        if(a.due !== b.due) return a.due < b.due ? -1 : 1;
+        return (a.importance === 'Critical' ? -1 : 0) - (b.importance === 'Critical' ? -1 : 0);
+      });
     list.innerHTML = !items.length
-      ? '<div class="spoke-empty">Nothing due today</div>'
+      ? '<div class="spoke-empty">Nothing due soon</div>'
       : items.map(function(t){
           var areaVal = Array.isArray(t.areas) ? (t.areas[0] || '') : (t.areas || '');
           var areaChip = areaVal ? '<span class="area-chip" style="background:'+areaColor(areaVal).bg+'; color:'+areaColor(areaVal).fg+';">'+escapeHtml(areaVal)+'</span>' : '';
+          var status = computeStatus(t.due);
           return '<div class="spoke-row spoke-academic-row">' +
               '<span class="task-cell"><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span></span>' +
+              '<span class="'+status.cls+'">'+status.text+'</span>' +
               '<div class="chip-row">'+areaChip+'</div>' +
               '<span class="importance-badge imp-'+(t.importance || 'Low').toLowerCase()+'">'+(t.importance || 'Low')+'</span>' +
               '<input type="checkbox" class="habit-checkbox" onclick="completeAcademicDeadline(\''+t.id+'\')">' +
@@ -5529,6 +5889,42 @@
     habits:   { dx:0,    dy:-220 }
   }, loadJSON('la_spoke_offsets', {}));
 
+  /* Per-card custom width/height (px), set by dragging the native
+     resize handle — see makeSpokeResizable. Persisted separately from
+     position (SPOKE_OFFSETS) so moving a card never resets its size
+     and vice versa. Cards default to their CSS width/auto-height
+     until a user resize writes an entry here. */
+  var SPOKE_SIZES = loadJSON('la_spoke_sizes', {});
+
+  function applySpokeSize(spokeId){
+    var panelEl = document.getElementById('spoke-panel-' + spokeId);
+    var size = panelEl && SPOKE_SIZES[spokeId];
+    if(!panelEl || !size) return;
+    if(size.w) panelEl.style.width = size.w + 'px';
+    if(size.h) panelEl.style.height = size.h + 'px';
+  }
+
+  /* Native `resize:both` needs no JS to actually resize the element —
+     the browser handles the drag itself. This just watches for a
+     pointerdown that started in the resize corner, and on the matching
+     pointerup reads back whatever size the browser landed on and
+     persists it. */
+  function makeSpokeResizable(spokeId){
+    var panelEl = document.getElementById('spoke-panel-' + spokeId);
+    if(!panelEl) return;
+    var resizing = false;
+    panelEl.addEventListener('pointerdown', function(e){
+      resizing = isInResizeCorner(panelEl, e);
+    });
+    window.addEventListener('pointerup', function(){
+      if(!resizing) return;
+      resizing = false;
+      var rect = panelEl.getBoundingClientRect();
+      SPOKE_SIZES[spokeId] = { w: Math.round(rect.width), h: Math.round(rect.height) };
+      saveJSON('la_spoke_sizes', SPOKE_SIZES);
+    });
+  }
+
   function applySpokeTransform(spokeId){
     var panelEl = document.getElementById('spoke-panel-' + spokeId);
     if(!panelEl) return;
@@ -5536,44 +5932,20 @@
     panelEl.style.transform = 'translate(calc(-50% + ' + off.dx + 'px), calc(-50% + ' + off.dy + 'px))';
   }
 
-  /* Recomputes one spoke's leader line from the panel's actual
-     rendered center (post-transform), so the line always reaches the
-     card it's connected to — whether that's its default nudge or
-     wherever the user has since dragged it. */
-  function updateSpokeLine(spokeId){
-    var stage = document.getElementById('wheel-stage');
-    var svg = document.getElementById('spoke-lines');
-    var panelEl = document.getElementById('spoke-panel-' + spokeId);
-    var line = svg && svg.querySelector('[data-spoke="' + spokeId + '"]');
-    if(!stage || !panelEl || !line) return;
-    var stageRect = stage.getBoundingClientRect();
-    if(!stageRect.width) return;
-    var r = panelEl.getBoundingClientRect();
-    var cx = ((r.left + r.width / 2) - stageRect.left) / stageRect.width * 100;
-    var cy = ((r.top + r.height / 2) - stageRect.top) / stageRect.height * 100;
-    line.setAttribute('x2', cx);
-    line.setAttribute('y2', cy);
-  }
-
+  /* Free-form cards — no leader lines tethering them to the ring
+     anymore. SPOKE_LAYOUT's angle/panelR is still used purely as each
+     card's initial scattered starting position (so first-run layout
+     still looks organic rather than stacked), but nothing draws a
+     connection to it once placed. */
   function layoutSpokes(){
-    var svg = document.getElementById('spoke-lines');
-    var stage = document.getElementById('wheel-stage');
-    if(!svg || !stage) return;
-    var linesHtml = '';
     SPOKE_LAYOUT.forEach(function(spoke){
       var panelEl = document.getElementById('spoke-panel-' + spoke.id);
-      var inner = spokePoint(spoke.angle, 38);
       var outer = spokePoint(spoke.angle, spoke.panelR);
       if(panelEl){
         panelEl.style.left = outer.x + '%';
         panelEl.style.top = outer.y + '%';
       }
       applySpokeTransform(spoke.id);
-      linesHtml += '<line x1="'+inner.x+'" y1="'+inner.y+'" x2="'+outer.x+'" y2="'+outer.y+'" class="spoke-line" data-spoke="'+spoke.id+'" />';
-    });
-    svg.innerHTML = linesHtml;
-    requestAnimationFrame(function(){
-      SPOKE_LAYOUT.forEach(function(spoke){ updateSpokeLine(spoke.id); });
     });
   }
 
@@ -5587,6 +5959,16 @@
      without touching any other click on the card (e.g. a checkbox
      toggle, or a header click that opens a modal, both still work
      normally when there was no drag). */
+  /* The native CSS `resize:both` handle lives in this bottom-right
+     corner (browser-drawn, not a real DOM element) — both the drag
+     system and the resize-persistence listener need to agree on where
+     it is so a resize gesture doesn't also register as a card move. */
+  var RESIZE_CORNER_PX = 16;
+  function isInResizeCorner(panelEl, e){
+    var rect = panelEl.getBoundingClientRect();
+    return (rect.right - e.clientX) <= RESIZE_CORNER_PX && (rect.bottom - e.clientY) <= RESIZE_CORNER_PX;
+  }
+
   function makeSpokeDraggable(spokeId){
     var panelEl = document.getElementById('spoke-panel-' + spokeId);
     if(!panelEl) return;
@@ -5597,6 +5979,7 @@
 
     panelEl.addEventListener('pointerdown', function(e){
       if(e.target.closest('button, input, select, textarea, a')) return;
+      if(isInResizeCorner(panelEl, e)) return;
       dragging = true;
       moved = false;
       startX = e.clientX;
@@ -5620,7 +6003,6 @@
       panelEl.classList.add('spoke-dragging');
       SPOKE_OFFSETS[spokeId] = { dx: startOff.dx + dx, dy: startOff.dy + dy };
       applySpokeTransform(spokeId);
-      updateSpokeLine(spokeId);
     });
 
     function endDrag(e){
@@ -5967,6 +6349,447 @@
   }
 
   /* ============================================================
+     Weather mini card — la_weather_location / la_weather_cache
+     3-day forecast via Open-Meteo (free, no API key: both the
+     geocoding and forecast endpoints are keyless, so there's no
+     credential to mismanage or leak). Cache is keyed to the exact
+     lat/lon so switching location always refetches, but reloading the
+     same location within FRESH_MS reuses the cached forecast instead
+     of re-hitting the network on every page load.
+  ============================================================ */
+  var WEATHER_FRESH_MS = 20 * 60 * 1000;
+  // [icon, label, accent color, icon-chip background, description clause]
+  var WEATHER_ICONS = {
+    0:['sunny','Clear','#fbbf24','rgba(251,191,36,0.16)','clear skies'],
+    1:['sunny','Mainly Clear','#fbbf24','rgba(251,191,36,0.16)','mostly clear skies'],
+    2:['partly_cloudy_day','Partly Cloudy','#7dd3fc','rgba(125,211,252,0.16)','a mix of sun and clouds'],
+    3:['cloud','Overcast','#94a3b8','rgba(148,163,184,0.16)','overcast skies'],
+    45:['foggy','Fog','#cbd5e1','rgba(203,213,225,0.14)','foggy conditions'],
+    48:['foggy','Fog','#cbd5e1','rgba(203,213,225,0.14)','freezing fog'],
+    51:['rainy','Drizzle','#38bdf8','rgba(56,189,248,0.16)','light drizzle'],
+    53:['rainy','Drizzle','#38bdf8','rgba(56,189,248,0.16)','drizzle'],
+    55:['rainy','Drizzle','#38bdf8','rgba(56,189,248,0.16)','steady drizzle'],
+    56:['rainy','Freezing Drizzle','#38bdf8','rgba(56,189,248,0.16)','freezing drizzle'],
+    57:['rainy','Freezing Drizzle','#38bdf8','rgba(56,189,248,0.16)','freezing drizzle'],
+    61:['rainy','Rain','#38bdf8','rgba(56,189,248,0.16)','light rain'],
+    63:['rainy','Rain','#38bdf8','rgba(56,189,248,0.16)','rain'],
+    65:['rainy','Heavy Rain','#0ea5e9','rgba(14,165,233,0.18)','heavy rain'],
+    66:['rainy','Freezing Rain','#38bdf8','rgba(56,189,248,0.16)','freezing rain'],
+    67:['rainy','Freezing Rain','#38bdf8','rgba(56,189,248,0.16)','freezing rain'],
+    80:['rainy','Showers','#38bdf8','rgba(56,189,248,0.16)','scattered showers'],
+    81:['rainy','Showers','#38bdf8','rgba(56,189,248,0.16)','showers'],
+    82:['rainy','Heavy Showers','#0ea5e9','rgba(14,165,233,0.18)','heavy showers'],
+    71:['weather_snowy','Snow','#a5f3fc','rgba(165,243,252,0.16)','light snow'],
+    73:['weather_snowy','Snow','#a5f3fc','rgba(165,243,252,0.16)','snow'],
+    75:['weather_snowy','Heavy Snow','#67e8f9','rgba(103,232,249,0.18)','heavy snow'],
+    77:['weather_snowy','Snow Grains','#a5f3fc','rgba(165,243,252,0.16)','snow grains'],
+    85:['weather_snowy','Snow Showers','#a5f3fc','rgba(165,243,252,0.16)','snow showers'],
+    86:['weather_snowy','Snow Showers','#a5f3fc','rgba(165,243,252,0.16)','heavy snow showers'],
+    95:['thunderstorm','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','thunderstorms'],
+    96:['thunderstorm','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','thunderstorms with hail'],
+    99:['thunderstorm','Thunderstorm','#c084fc','rgba(192,132,252,0.18)','severe thunderstorms']
+  };
+  function weatherIconFor(code){ return WEATHER_ICONS[code] || ['cloud','—','#94a3b8','rgba(148,163,184,0.16)','changing conditions']; }
+  function weatherDayLabel(iso, idx){
+    if(idx === 0) return 'Today';
+    if(idx === 1) return 'Tomorrow';
+    var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    return days[new Date(iso + 'T00:00:00').getDay()];
+  }
+  function weatherSentence(d, clause){
+    var s = clause.charAt(0).toUpperCase() + clause.slice(1) + ' expected, with a high of ' +
+      Math.round(d.hi) + '&deg; and a low of ' + Math.round(d.lo) + '&deg;.';
+    if(d.windMax != null && d.windMax >= 20){
+      s += ' Breezy, gusting to ' + Math.round(d.windMax) + ' mph.';
+    } else if(d.precipProb != null && d.precipProb >= 30){
+      s += ' ' + Math.round(d.precipProb) + '% chance of precipitation.';
+    }
+    return s;
+  }
+
+  function getWeatherLocation(){ return loadJSON('la_weather_location', null); }
+  function saveWeatherLocation(loc){ saveJSON('la_weather_location', loc); }
+  function getWeatherCache(){ return loadJSON('la_weather_cache', null); }
+  function saveWeatherCache(cache){ saveJSON('la_weather_cache', cache); }
+
+  function renderWeatherBody(html){
+    var body = document.getElementById('weather-mini-body');
+    if(body) body.innerHTML = html;
+  }
+
+  function renderWeatherDays(days){
+    renderWeatherBody(days.map(function(d, i){
+      var meta = weatherIconFor(d.code);
+      return '<div class="weather-mini-row">' +
+          '<div class="weather-mini-row-top">' +
+            '<span class="material-symbols-outlined weather-mini-icon" style="color:' + meta[2] + ';background:' + meta[3] + ';">' + meta[0] + '</span>' +
+            '<div class="weather-mini-daycond">' +
+              '<span class="weather-mini-day">' + weatherDayLabel(d.date, i) + '</span>' +
+              '<span class="weather-mini-cond" style="color:' + meta[2] + ';">' + meta[1] + '</span>' +
+            '</div>' +
+            '<span class="weather-mini-temps"><span class="hi">' + Math.round(d.hi) + '&deg;</span><span class="lo">' + Math.round(d.lo) + '&deg;</span></span>' +
+          '</div>' +
+          '<p class="weather-mini-sentence">' + weatherSentence(d, meta[4]) + '</p>' +
+        '</div>';
+    }).join(''));
+  }
+
+  function fetchWeather(loc){
+    renderWeatherBody('<div class="weather-mini-empty">Loading forecast…</div>');
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + encodeURIComponent(loc.lat) +
+      '&longitude=' + encodeURIComponent(loc.lon) +
+      '&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max' +
+      '&temperature_unit=fahrenheit&windspeed_unit=mph&timezone=auto&forecast_days=3';
+    fetch(url).then(function(res){
+      if(!res.ok) throw new Error('Weather request failed');
+      return res.json();
+    }).then(function(data){
+      var daily = data.daily;
+      if(!daily || !daily.time){ throw new Error('Malformed weather response'); }
+      var days = daily.time.map(function(date, i){
+        return {
+          date: date, code: daily.weathercode[i], hi: daily.temperature_2m_max[i], lo: daily.temperature_2m_min[i],
+          precipProb: daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : null,
+          windMax: daily.windspeed_10m_max ? daily.windspeed_10m_max[i] : null
+        };
+      });
+      saveWeatherCache({ lat: loc.lat, lon: loc.lon, fetchedAt: Date.now(), days: days });
+      renderWeatherDays(days);
+    }).catch(function(){
+      renderWeatherBody('<div class="weather-mini-empty">Couldn&rsquo;t load the forecast. <span class="weather-mini-retry" onclick="loadWeather()">Retry</span></div>');
+    });
+  }
+
+  function loadWeather(){
+    var loc = getWeatherLocation();
+    var labelEl = document.getElementById('weather-location-label');
+    if(!loc){
+      if(labelEl) labelEl.textContent = 'Weather';
+      renderWeatherBody('<div class="weather-mini-empty">Set a location to see the forecast.</div>');
+      return;
+    }
+    if(labelEl) labelEl.textContent = loc.name;
+    var cache = getWeatherCache();
+    if(cache && cache.lat === loc.lat && cache.lon === loc.lon && (Date.now() - cache.fetchedAt) < WEATHER_FRESH_MS){
+      renderWeatherDays(cache.days);
+      return;
+    }
+    fetchWeather(loc);
+  }
+
+  function openWeatherLocationEditor(){
+    var editor = document.getElementById('weather-location-editor');
+    var input = document.getElementById('weather-location-input');
+    if(!editor || !input) return;
+    editor.classList.add('open');
+    editor.style.display = 'flex';
+    var loc = getWeatherLocation();
+    input.value = loc ? loc.name : '';
+    input.focus();
+    input.select();
+  }
+
+  function closeWeatherLocationEditor(){
+    var editor = document.getElementById('weather-location-editor');
+    if(editor) editor.style.display = 'none';
+  }
+
+  function handleWeatherLocationKeydown(e){
+    if(e.key === 'Enter'){ e.preventDefault(); commitWeatherLocation(); }
+    else if(e.key === 'Escape'){ e.preventDefault(); closeWeatherLocationEditor(); }
+  }
+
+  function commitWeatherLocation(){
+    var input = document.getElementById('weather-location-input');
+    if(!input) return;
+    var query = input.value.trim();
+    if(!query) return;
+    renderWeatherBody('<div class="weather-mini-empty">Searching…</div>');
+    fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(query))
+      .then(function(res){
+        if(!res.ok) throw new Error('Geocoding request failed');
+        return res.json();
+      })
+      .then(function(data){
+        var match = data.results && data.results[0];
+        if(!match){
+          renderWeatherBody('<div class="weather-mini-empty">No location found for &ldquo;' + escapeHtml(query) + '&rdquo;. <span class="weather-mini-retry" onclick="openWeatherLocationEditor()">Try again</span></div>');
+          return;
+        }
+        var name = match.name + (match.admin1 ? ', ' + match.admin1 : (match.country ? ', ' + match.country : ''));
+        saveWeatherLocation({ name: name, lat: match.latitude, lon: match.longitude });
+        closeWeatherLocationEditor();
+        loadWeather();
+      })
+      .catch(function(){
+        renderWeatherBody('<div class="weather-mini-empty">Couldn&rsquo;t search right now. <span class="weather-mini-retry" onclick="openWeatherLocationEditor()">Try again</span></div>');
+      });
+  }
+
+  /* ============================================================
+     Spotify mini card — la_spotify_auth
+     Authorization Code + PKCE (client-side only, no client secret to
+     leak). Requires a Spotify Developer app: create one at
+     https://developer.spotify.com/dashboard, set SPOTIFY_CLIENT_ID
+     below, and add this exact page URL (e.g.
+     http://127.0.0.1:8934/index.html) as a Redirect URI in the app
+     settings. Playback (play/pause/skip/start) requires a Premium
+     account — Spotify's API rejects playback control for Free
+     accounts regardless of how it's called.
+  ============================================================ */
+  var SPOTIFY_CLIENT_ID = 'eef9ea49d1f74cb1b84304c3bc3be877';
+  var SPOTIFY_REDIRECT_URI = window.location.origin + window.location.pathname;
+  var SPOTIFY_SCOPES = [
+    'streaming', 'user-read-email', 'user-read-private',
+    'user-read-playback-state', 'user-modify-playback-state',
+    'playlist-read-private', 'playlist-read-collaborative'
+  ].join(' ');
+  var spotifyPlayer = null;
+  var spotifyDeviceId = null;
+  var spotifyPlaylists = [];
+  var spotifyPlayingContext = null;
+
+  function getSpotifyAuth(){ return loadJSON('la_spotify_auth', null); }
+  function saveSpotifyAuth(auth){ saveJSON('la_spotify_auth', auth); }
+  function clearSpotifyAuth(){ localStorage.removeItem('la_spotify_auth'); }
+
+  function renderSpotifyBody(html){
+    var body = document.getElementById('spotify-mini-body');
+    if(body) body.innerHTML = html;
+  }
+
+  function spotifyRandomString(len){
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var out = '';
+    var randoms = new Uint8Array(len);
+    crypto.getRandomValues(randoms);
+    for(var i = 0; i < len; i++){ out += chars[randoms[i] % chars.length]; }
+    return out;
+  }
+
+  function spotifyBase64UrlEncode(buffer){
+    var bytes = new Uint8Array(buffer);
+    var str = '';
+    for(var i = 0; i < bytes.length; i++){ str += String.fromCharCode(bytes[i]); }
+    return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function spotifyCodeChallenge(verifier){
+    var data = new TextEncoder().encode(verifier);
+    return crypto.subtle.digest('SHA-256', data).then(spotifyBase64UrlEncode);
+  }
+
+  function startSpotifyLogin(){
+    if(!SPOTIFY_CLIENT_ID){
+      renderSpotifyBody('<div class="spotify-mini-empty">Add your Spotify app&rsquo;s Client ID to <span class="mono">SPOTIFY_CLIENT_ID</span> in index.html to enable this widget.</div>');
+      return;
+    }
+    var verifier = spotifyRandomString(64);
+    sessionStorage.setItem('la_spotify_verifier', verifier);
+    spotifyCodeChallenge(verifier).then(function(challenge){
+      var params = new URLSearchParams({
+        client_id: SPOTIFY_CLIENT_ID,
+        response_type: 'code',
+        redirect_uri: SPOTIFY_REDIRECT_URI,
+        scope: SPOTIFY_SCOPES,
+        code_challenge_method: 'S256',
+        code_challenge: challenge
+      });
+      window.location.href = 'https://accounts.spotify.com/authorize?' + params.toString();
+    });
+  }
+
+  function disconnectSpotify(){
+    clearSpotifyAuth();
+    if(spotifyPlayer){ spotifyPlayer.disconnect(); spotifyPlayer = null; }
+    spotifyDeviceId = null;
+    spotifyPlaylists = [];
+    var disconnectBtn = document.getElementById('spotify-disconnect-btn');
+    if(disconnectBtn) disconnectBtn.style.display = 'none';
+    renderSpotifyConnectPrompt();
+  }
+
+  function renderSpotifyConnectPrompt(){
+    renderSpotifyBody('<button type="button" class="spotify-connect-btn" onclick="startSpotifyLogin()">' +
+      '<span class="material-symbols-outlined">graphic_eq</span>Connect Spotify</button>');
+  }
+
+  function handleSpotifyRedirect(){
+    var params = new URLSearchParams(window.location.search);
+    var code = params.get('code');
+    if(!code) return Promise.resolve(false);
+    var verifier = sessionStorage.getItem('la_spotify_verifier');
+    window.history.replaceState({}, document.title, window.location.pathname);
+    if(!verifier) return Promise.resolve(false);
+    return fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: SPOTIFY_CLIENT_ID,
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: SPOTIFY_REDIRECT_URI,
+        code_verifier: verifier
+      })
+    }).then(function(res){
+      if(!res.ok) throw new Error('Spotify token exchange failed');
+      return res.json();
+    }).then(function(data){
+      saveSpotifyAuth({
+        access_token: data.access_token,
+        refresh_token: data.refresh_token,
+        expires_at: Date.now() + (data.expires_in * 1000)
+      });
+      return true;
+    }).catch(function(){ return false; });
+  }
+
+  function refreshSpotifyToken(auth){
+    return fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: SPOTIFY_CLIENT_ID,
+        grant_type: 'refresh_token',
+        refresh_token: auth.refresh_token
+      })
+    }).then(function(res){
+      if(!res.ok) throw new Error('Spotify token refresh failed');
+      return res.json();
+    }).then(function(data){
+      var updated = {
+        access_token: data.access_token,
+        refresh_token: data.refresh_token || auth.refresh_token,
+        expires_at: Date.now() + (data.expires_in * 1000)
+      };
+      saveSpotifyAuth(updated);
+      return updated.access_token;
+    });
+  }
+
+  function getSpotifyAccessToken(){
+    var auth = getSpotifyAuth();
+    if(!auth) return Promise.reject(new Error('Not connected'));
+    if(Date.now() < auth.expires_at - 60000) return Promise.resolve(auth.access_token);
+    return refreshSpotifyToken(auth);
+  }
+
+  function spotifyApiFetch(path, options){
+    options = options || {};
+    return getSpotifyAccessToken().then(function(token){
+      options.headers = Object.assign({}, options.headers, { 'Authorization': 'Bearer ' + token });
+      return fetch('https://api.spotify.com/v1' + path, options);
+    });
+  }
+
+  function initSpotifyPlayer(){
+    var script = document.createElement('script');
+    script.src = 'https://sdk.scdn.co/spotify-player.js';
+    document.head.appendChild(script);
+  }
+
+  window.onSpotifyWebPlaybackSDKReady = function(){
+    spotifyPlayer = new Spotify.Player({
+      name: 'Liberation Arc',
+      getOAuthToken: function(cb){ getSpotifyAccessToken().then(cb); },
+      volume: 0.6
+    });
+    spotifyPlayer.addListener('ready', function(evt){ spotifyDeviceId = evt.device_id; });
+    spotifyPlayer.addListener('player_state_changed', renderSpotifyNowPlaying);
+    spotifyPlayer.connect();
+  };
+
+  function renderSpotifyNowPlaying(state){
+    var wrap = document.getElementById('spotify-now-playing-wrap');
+    if(!wrap) return;
+    if(!state || !state.track_window || !state.track_window.current_track){
+      wrap.innerHTML = '<div class="spotify-mini-empty">Nothing playing. Pick a playlist below.</div>';
+      return;
+    }
+    var track = state.track_window.current_track;
+    var art = track.album && track.album.images && track.album.images[0] ? track.album.images[0].url : '';
+    var artists = track.artists.map(function(a){ return a.name; }).join(', ');
+    wrap.innerHTML =
+      '<div class="spotify-now-playing">' +
+        '<div class="spotify-art" style="background-image:url(\'' + art + '\')"></div>' +
+        '<div class="spotify-track-meta">' +
+          '<span class="spotify-track-title">' + escapeHtml(track.name) + '</span>' +
+          '<span class="spotify-track-artist">' + escapeHtml(artists) + '</span>' +
+        '</div>' +
+        '<div class="spotify-controls">' +
+          '<button type="button" onclick="spotifyPlayer.previousTrack()" title="Previous"><span class="material-symbols-outlined">skip_previous</span></button>' +
+          '<button type="button" class="spotify-play-btn" onclick="spotifyPlayer.togglePlay()" title="Play/Pause"><span class="material-symbols-outlined">' + (state.paused ? 'play_arrow' : 'pause') + '</span></button>' +
+          '<button type="button" onclick="spotifyPlayer.nextTrack()" title="Next"><span class="material-symbols-outlined">skip_next</span></button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function loadSpotifyPlaylists(){
+    spotifyApiFetch('/me/playlists?limit=15').then(function(res){
+      if(!res.ok) throw new Error('Failed to load playlists');
+      return res.json();
+    }).then(function(data){
+      spotifyPlaylists = data.items || [];
+      renderSpotifyPlaylists();
+    }).catch(function(){
+      var list = document.getElementById('spotify-playlists-wrap');
+      if(list) list.innerHTML = '<div class="spotify-mini-empty">Couldn&rsquo;t load playlists.</div>';
+    });
+  }
+
+  function renderSpotifyPlaylists(){
+    var list = document.getElementById('spotify-playlists-wrap');
+    if(!list) return;
+    if(!spotifyPlaylists.length){
+      list.innerHTML = '<div class="spotify-mini-empty">No playlists found.</div>';
+      return;
+    }
+    list.innerHTML = spotifyPlaylists.map(function(pl){
+      var art = pl.images && pl.images[0] ? pl.images[0].url : '';
+      var isPlaying = spotifyPlayingContext === pl.uri;
+      return '<div class="spotify-playlist-row' + (isPlaying ? ' playing' : '') + '" onclick="playSpotifyPlaylist(\'' + pl.uri + '\')">' +
+          '<div class="spotify-playlist-art" style="background-image:url(\'' + art + '\')"></div>' +
+          '<span class="spotify-playlist-name">' + escapeHtml(pl.name) + '</span>' +
+          (isPlaying ? '<span class="material-symbols-outlined">volume_up</span>' : '') +
+        '</div>';
+    }).join('');
+  }
+
+  function playSpotifyPlaylist(contextUri){
+    if(!spotifyDeviceId){
+      renderSpotifyBody('<div class="spotify-mini-empty">Player still connecting&hellip; try again in a moment.</div>');
+      setTimeout(renderSpotifyWidget, 1500);
+      return;
+    }
+    spotifyPlayingContext = contextUri;
+    renderSpotifyPlaylists();
+    spotifyApiFetch('/me/player/play?device_id=' + spotifyDeviceId, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ context_uri: contextUri })
+    }).catch(function(){});
+  }
+
+  function renderSpotifyWidget(){
+    renderSpotifyBody(
+      '<div id="spotify-now-playing-wrap"><div class="spotify-mini-empty">Connecting to your player&hellip;</div></div>' +
+      '<div class="spotify-playlists" id="spotify-playlists-wrap"><div class="spotify-mini-empty">Loading playlists&hellip;</div></div>'
+    );
+    var disconnectBtn = document.getElementById('spotify-disconnect-btn');
+    if(disconnectBtn) disconnectBtn.style.display = 'flex';
+    loadSpotifyPlaylists();
+  }
+
+  function initSpotifyWidget(){
+    handleSpotifyRedirect().then(function(){
+      var auth = getSpotifyAuth();
+      if(!auth){ renderSpotifyConnectPrompt(); return; }
+      renderSpotifyWidget();
+      initSpotifyPlayer();
+    });
+  }
+
+  /* ============================================================
      Init
   ============================================================ */
   renderSidebarHabits();
@@ -5976,9 +6799,15 @@
   renderSpokeDay();
   renderSpokeNight();
   layoutSpokes();
-  SPOKE_LAYOUT.forEach(function(spoke){ makeSpokeDraggable(spoke.id); });
+  SPOKE_LAYOUT.forEach(function(spoke){
+    applySpokeSize(spoke.id);
+    makeSpokeDraggable(spoke.id);
+    makeSpokeResizable(spoke.id);
+  });
   renderWheel();
   initNotepad();
+  loadWeather();
+  initSpotifyWidget();
   updateSidebarDateTime();
   setInterval(updateSidebarDateTime, 1000);
   runClockTick();
