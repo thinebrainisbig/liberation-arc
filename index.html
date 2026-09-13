@@ -340,6 +340,7 @@
     max-height:140px;
     overflow-y:auto;
     padding-right:4px;
+    justify-content:center;
   }
   .dot{
     width:8px; height:8px;
@@ -2079,6 +2080,27 @@
     filter:blur(2px) brightness(1.3);
     pointer-events:none;
   }
+  /* Same crisp-line technique as .progress-wheel-edge, but sized down
+     by 200px (100px per side, matching the ring's own mask offset) so
+     this circle's outer boundary lands exactly on the ring's inner
+     hole edge instead of its outer edge — the same solid neon line,
+     just traced on the other side of the band. */
+  .progress-wheel-edge-inner{
+    --pct:0%;
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:calc(80% - 200px);
+    aspect-ratio:1;
+    border-radius:50%;
+    padding:3px;
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite:exclude;
+    filter:blur(2px) brightness(1.3);
+    pointer-events:none;
+  }
   .wheel-pct{
     position:absolute;
     top:50%; left:50%;
@@ -2098,7 +2120,7 @@
     font-size:0.8rem;
     font-weight:700;
     letter-spacing:0.04em;
-    color:var(--ink-faint);
+    color:var(--ink);
     pointer-events:none;
     z-index:2;
     white-space:nowrap;
@@ -3297,6 +3319,7 @@
           <div class="progress-wheel-glow" id="progress-wheel-glow"></div>
           <div class="progress-wheel" id="progress-wheel"></div>
           <div class="progress-wheel-edge" id="progress-wheel-edge"></div>
+          <div class="progress-wheel-edge-inner" id="progress-wheel-edge-inner"></div>
           <div class="wheel-pct" id="wheel-pct"></div>
           <div class="wheel-substatus mono" id="wheel-substatus"></div>
 
@@ -6021,6 +6044,11 @@
     if(edge){
       edge.style.setProperty('--pct', pct + '%');
       edge.style.background = wheelGlowGradientCss(pct);
+    }
+    var edgeInner = document.getElementById('progress-wheel-edge-inner');
+    if(edgeInner){
+      edgeInner.style.setProperty('--pct', pct + '%');
+      edgeInner.style.background = wheelGlowGradientCss(pct);
     }
     if(pct >= WHEEL_STREAK_THRESHOLD){ markWheelStreakQualified(getAdjustedDate()); }
     updateWheelSubstatus();
