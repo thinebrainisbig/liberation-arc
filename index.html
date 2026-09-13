@@ -335,6 +335,7 @@
     font-weight:600;
     color:var(--ink);
   }
+  .social-row-dim{ opacity:0.45; }
   #social-widget-rows{
     max-height:140px;
     overflow-y:auto;
@@ -1472,6 +1473,7 @@
   .status-overdue{ color:#f87171; font-weight:700; font-size:0.68rem; }
   .status-today{ color:#fb923c; font-weight:700; font-size:0.68rem; }
   .status-normal{ color:var(--ink-dim); font-weight:600; font-size:0.68rem; }
+  .status-tomorrow{ color:#fde047; font-weight:700; font-size:0.68rem; }
 
   /* Visible validation error banner for the New/Edit Task modal —
      shown when Save is pressed but a required field for the chosen
@@ -2027,6 +2029,56 @@
             mask:radial-gradient(farthest-side, transparent calc(100% - 100px), #000 calc(100% - 100px));
     box-shadow:0 0 44px rgba(74,222,128,0.14);
   }
+  /* Neon outline hugging just the filled arc: a blurred duplicate of
+     the same ring, colored only across 0%-pct (transparent past that,
+     unlike .progress-wheel's translucent-white track), so the glow's
+     hue tracks the same green->blue interpolation as the fill and
+     never bleeds onto the unfilled track. Both the inner and outer
+     edges get the same soft feather (the main ring's hard mask clips
+     blur flush at its edges, so the glow layer softens them itself). */
+  .progress-wheel-glow{
+    --pct:0%;
+    position:absolute;
+    top:50%; left:50%;
+    /* The main ring paints on top of this layer and is fully opaque
+       right up to its own edge, so an outer taper defined at the same
+       size would just fall underneath it, invisibly. Scaling this
+       layer up a touch pushes that taper's radius past the main
+       ring's true edge, into the empty space beyond it, where it can
+       actually be seen — mirroring how the inner taper is already
+       visible for free inside the ring's naturally-empty hole. */
+    transform:translate(-50%,-50%) scale(1.04);
+    width:80%;
+    aspect-ratio:1;
+    border-radius:50%;
+    -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 125px), #000 calc(100% - 100px), #000 calc(100% - 25px), transparent 100%);
+            mask:radial-gradient(farthest-side, transparent calc(100% - 125px), #000 calc(100% - 100px), #000 calc(100% - 25px), transparent 100%);
+    filter:blur(3px) saturate(1.12) brightness(1.08);
+    pointer-events:none;
+  }
+  /* Crisp neon line tracing the ring's true outer edge, built the same
+     way .sidebar::after draws its border (padding + mask-composite
+     exclude carves a thin ring out of a filled shape) rather than a
+     soft blurred band — minus that border's left-to-right fade-out,
+     since here the "fade" is already the pct cutoff itself. A light
+     blur on top of the thin line gives a contained glow instead of a
+     wide intense wash. */
+  .progress-wheel-edge{
+    --pct:0%;
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:80%;
+    aspect-ratio:1;
+    border-radius:50%;
+    padding:3px;
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite:exclude;
+    filter:blur(2px) brightness(1.3);
+    pointer-events:none;
+  }
   .wheel-pct{
     position:absolute;
     top:50%; left:50%;
@@ -2038,6 +2090,18 @@
     pointer-events:none;
     z-index:2;
     font-family:'JetBrains Mono',monospace;
+  }
+  .wheel-substatus{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%, 30px);
+    font-size:0.8rem;
+    font-weight:700;
+    letter-spacing:0.04em;
+    color:var(--ink-faint);
+    pointer-events:none;
+    z-index:2;
+    white-space:nowrap;
   }
   .spoke-panel{
     position:absolute;
@@ -2080,6 +2144,7 @@
      subpage's own .research-card/.deadlines-card. */
   #spoke-panel-academic{
     width:460px;
+    min-width:420px;
     border-color:transparent;
     background:#2e4a3d;
     box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.35);
@@ -2126,13 +2191,20 @@
   .spoke-panel-daycycle #spoke-night-mood{
     padding:8px 10px;
   }
-  .spoke-academic-row{ gap:8px; }
+  .spoke-academic-row{ gap:6px; }
   .spoke-academic-row .task-cell{ flex:1; min-width:0; }
   .spoke-academic-row .chip-row,
   .spoke-academic-row .importance-badge,
   .spoke-academic-row .status-overdue,
   .spoke-academic-row .status-today,
+  .spoke-academic-row .status-tomorrow,
   .spoke-academic-row .status-normal{ flex-shrink:0; }
+  .spoke-academic-row .name{ font-size:0.62rem; }
+  .spoke-academic-row .area-chip{ padding:2px 8px; font-size:0.58rem; }
+  .spoke-academic-row .status-overdue,
+  .spoke-academic-row .status-today,
+  .spoke-academic-row .status-tomorrow,
+  .spoke-academic-row .status-normal{ font-size:0.62rem; }
 
   /* ---------- Notepad card (index.html) ----------
      Freeform Apple-Notes-style surface. Binder-tab dividers on the
@@ -2429,6 +2501,7 @@
     min-height:0;
     max-height:112px;
     overflow-y:auto;
+    overflow-x:hidden;
     display:flex;
     flex-direction:column;
     gap:4px;
@@ -2465,6 +2538,12 @@
     justify-content:center;
   }
   .spoke-row-clickable{ cursor:pointer; }
+  .spoke-academic-row.is-critical,
+  .spoke-academic-row.is-moderate{ margin:0; padding:3px 8px; border-radius:6px; }
+  .spoke-academic-row.is-critical{ background:rgba(248,113,113,0.16); }
+  .spoke-academic-row.is-critical .name{ color:#fca5a5; }
+  .spoke-academic-row.is-moderate{ background:rgba(250,204,21,0.16); }
+  .spoke-academic-row.is-moderate .name{ color:#fde047; }
   .spoke-row-status{ font-size:16px; color:var(--ink-dim); flex-shrink:0; }
   .spoke-row-lab-task .task-text-input{ font-size:0.68rem; }
   .spoke-row-lab-task .task-date-input{ width:88px; font-size:0.58rem; }
@@ -3215,8 +3294,11 @@
 
       <div class="wheel-panel">
         <div class="wheel-stage" id="wheel-stage">
+          <div class="progress-wheel-glow" id="progress-wheel-glow"></div>
           <div class="progress-wheel" id="progress-wheel"></div>
+          <div class="progress-wheel-edge" id="progress-wheel-edge"></div>
           <div class="wheel-pct" id="wheel-pct"></div>
+          <div class="wheel-substatus mono" id="wheel-substatus"></div>
 
           <div class="spoke-panel habit-mini-card" id="spoke-panel-habits">
             <div class="spoke-panel-header" onclick="openHabitModal()">
@@ -4311,7 +4393,8 @@
     var diff = daysBetween(dueISO);
     if(diff < 0) return { text:'Overdue', cls:'status-overdue' };
     if(diff === 0) return { text:'Due Today', cls:'status-today' };
-    return { text: diff + (diff === 1 ? ' day' : ' days'), cls:'status-normal' };
+    if(diff === 1) return { text:'1 day', cls:'status-tomorrow' };
+    return { text: diff + ' days', cls:'status-normal' };
   }
 
   /* ============================================================
@@ -5057,6 +5140,11 @@
     if(isLateNightWindow()){ d.setDate(d.getDate() - 1); }
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
+  function getAdjustedDateFromTimestamp(ts){
+    var d = new Date(ts);
+    if(d.getHours() >= 0 && d.getHours() < 5){ d.setDate(d.getDate() - 1); }
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
   function addDaysISO(iso, delta){
     var d = new Date(iso + 'T00:00:00');
     d.setDate(d.getDate() + delta);
@@ -5458,7 +5546,15 @@
     var color = elapsedPct < 0.6 ? 'green' : elapsedPct < 0.9 ? 'yellow' : 'red';
     var daysRemaining = windowDays - (elapsedPct * windowDays);
     var display;
-    if(elapsedPct > 1){
+    if(person.category === 'daily'){
+      /* Daily's window is a single day, so whole-day granularity would
+         just read "1d left"/"0d left" for hours at a stretch — show
+         hours instead so the timer is actually informative. */
+      var remainingHours = (windowMs - (Date.now() - lastMs)) / 3600000;
+      display = remainingHours > 0
+        ? Math.max(1, Math.ceil(remainingHours)) + 'h left'
+        : '+' + Math.max(1, Math.floor(-remainingHours)) + 'h overdue';
+    } else if(elapsedPct > 1){
       var overdueDays = Math.max(1, Math.floor((elapsedPct * windowDays) - windowDays));
       display = '+' + overdueDays + ' overdue';
     } else {
@@ -5547,6 +5643,15 @@
     var people = getSocialPeople();
     var p = people.find(function(x){ return x.id === id; });
     if(!p) return;
+    /* Daily's window is exactly one productivity day, so a same-day
+       re-mark would just push the timer forward within the day it was
+       already handled. Semi-daily/weekly/monthly windows are longer
+       than a day, so an immediate reset there is always meaningful —
+       only daily needs the once-per-productivity-day guard. */
+    if(p.category === 'daily' && !p.plannedDate && p.lastContacted &&
+       getAdjustedDateFromTimestamp(p.lastContacted) === getAdjustedDate()){
+      return;
+    }
     p.lastContacted = Date.now();
     p.plannedDate = null;
     saveSocialPeople(people);
@@ -5562,12 +5667,22 @@
   function renderSidebarSocial(){
     var wrap = document.getElementById('social-widget-rows');
     if(!wrap) return;
-    var roster = getSocialRoster().sort(compareSocialCards);
-    wrap.innerHTML = !roster.length
-      ? '<div class="social-empty">All targets met!</div>'
-      : roster.map(function(r){
-          var statusColor = r.derived.color === 'red' ? '#ef4444' : r.derived.color === 'yellow' ? '#eab308' : '#22c55e';
-          return '<div class="social-row">' +
+    var today = getAdjustedDate();
+    /* The wheel's fraction still counts only the roster (getSocialRoster,
+       via computeSocialWheelFill in renderWheel) — this list is a
+       separate always-visible overview of everyone so a timer turning
+       red is never a surprise. Green non-daily people are greyed out
+       (still fully interactable) since daily is the only category
+       whose green state is itself time-limited. */
+    var all = getSocialPeople().filter(function(p){ return p.category; })
+      .map(function(p){ return { person:p, derived:computeSocialDerived(p, today) }; })
+      .sort(compareSocialCards);
+    wrap.innerHTML = !all.length
+      ? '<div class="social-empty">No one tracked yet</div>'
+      : all.map(function(r){
+          var statusColor = r.derived.color === 'red' ? '#ef4444' : r.derived.color === 'yellow' ? '#eab308' : r.derived.color === 'green' ? '#22c55e' : 'var(--ink-faint)';
+          var dim = r.derived.color === 'green' && r.person.category !== 'daily';
+          return '<div class="social-row'+(dim ? ' social-row-dim' : '')+'">' +
               '<div class="social-row-left">' +
                 '<span class="dot" style="background:'+r.person.color+'; color:'+r.person.color+';"></span>' +
                 '<span class="name">'+escapeHtml(r.person.name)+'</span>' +
@@ -5819,6 +5934,63 @@
     return 'conic-gradient(from 0deg, ' + stops.join(', ') + ')';
   }
 
+  /* Same hue interpolation as wheelGradientCss, but transparent past
+     pct (instead of translucent white) so the blurred glow layer only
+     ever lights up the filled arc, never the remaining track. */
+  function wheelGlowGradientCss(pct){
+    if(pct <= 0) return 'transparent';
+    var steps = Math.max(2, Math.round(pct / 4));
+    var stops = [];
+    for(var i = 0; i <= steps; i++){
+      var p = (pct * i) / steps;
+      var hue = 120 + (p / 100) * 120;
+      stops.push('hsl(' + hue.toFixed(1) + ',90%,60%) ' + p.toFixed(2) + '%');
+    }
+    stops.push('transparent ' + pct.toFixed(2) + '%');
+    stops.push('transparent 100%');
+    return 'conic-gradient(from 0deg, ' + stops.join(', ') + ')';
+  }
+
+  /* Streak: a day "qualifies" the first time its wheel percentage
+     reaches 70% (recorded once, never un-recorded if it later dips).
+     Current streak counts consecutive qualified days backward from
+     today — mirrors computeHabitStreak's "don't break the streak just
+     because today isn't done yet" rule. */
+  var WHEEL_STREAK_THRESHOLD = 70;
+  function getWheelStreakDays(){ return loadJSON('la_wheel_streak_days', []); }
+  function markWheelStreakQualified(dateISO){
+    var days = getWheelStreakDays();
+    if(days.indexOf(dateISO) === -1){
+      days.push(dateISO);
+      saveJSON('la_wheel_streak_days', days);
+    }
+  }
+  function computeWheelStreak(){
+    var days = getWheelStreakDays();
+    var cursor = getAdjustedDate();
+    if(days.indexOf(cursor) === -1){ cursor = addDaysISO(cursor, -1); }
+    var streak = 0, guard = 0;
+    while(days.indexOf(cursor) !== -1 && guard++ < 3650){
+      streak++;
+      cursor = addDaysISO(cursor, -1);
+    }
+    return streak;
+  }
+
+  function updateWheelSubstatus(){
+    var el = document.getElementById('wheel-substatus');
+    if(!el) return;
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var now = new Date();
+    var hours = now.getHours();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    var h12 = hours % 12 || 12;
+    var mins = now.getMinutes();
+    var minStr = mins < 10 ? '0' + mins : '' + mins;
+    var streak = computeWheelStreak();
+    el.textContent = days[now.getDay()] + ', ' + h12 + ':' + minStr + ' ' + ampm + '  ·  ' + streak + 'd streak';
+  }
+
   function saveWheelSnapshot(fill){
     saveJSON('la_wheel_history_' + getAdjustedDate(), {
       totalPct: fill.totalPct,
@@ -5839,6 +6011,19 @@
     ring.style.background = wheelGradientCss(pct);
     var pctEl = document.getElementById('wheel-pct');
     if(pctEl) pctEl.textContent = Math.round(pct) + '%';
+
+    var glow = document.getElementById('progress-wheel-glow');
+    if(glow){
+      glow.style.setProperty('--pct', pct + '%');
+      glow.style.background = wheelGlowGradientCss(pct);
+    }
+    var edge = document.getElementById('progress-wheel-edge');
+    if(edge){
+      edge.style.setProperty('--pct', pct + '%');
+      edge.style.background = wheelGlowGradientCss(pct);
+    }
+    if(pct >= WHEEL_STREAK_THRESHOLD){ markWheelStreakQualified(getAdjustedDate()); }
+    updateWheelSubstatus();
 
     var habitsCounter = document.getElementById('habit-mini-counter');
     if(habitsCounter) habitsCounter.textContent = fill.habits.done + ' / ' + fill.habits.total;
@@ -5880,7 +6065,8 @@
           var areaVal = Array.isArray(t.areas) ? (t.areas[0] || '') : (t.areas || '');
           var areaChip = areaVal ? '<span class="area-chip" style="background:'+areaColor(areaVal).bg+'; color:'+areaColor(areaVal).fg+';">'+escapeHtml(areaVal)+'</span>' : '';
           var status = computeStatus(t.due);
-          return '<div class="spoke-row spoke-academic-row">' +
+          var impCls = t.importance === 'Critical' ? ' is-critical' : (t.importance === 'Moderate' ? ' is-moderate' : '');
+          return '<div class="spoke-row spoke-academic-row'+impCls+'">' +
               '<span class="task-cell"><span class="name">'+escapeHtml(t.name || 'Untitled')+'</span></span>' +
               '<div class="chip-row">'+areaChip+'</div>' +
               '<span class="'+status.cls+'">'+status.text+'</span>' +
@@ -6999,6 +7185,8 @@
   initSpotifyWidget();
   updateSidebarDateTime();
   setInterval(updateSidebarDateTime, 1000);
+  updateWheelSubstatus();
+  setInterval(updateWheelSubstatus, 1000);
   runClockTick();
   setInterval(runClockTick, 60000);
 </script>
