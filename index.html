@@ -1073,7 +1073,7 @@
   }
   .habit-cancel-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
 
-  /* ---------- Social Targets Triangle ---------- */
+  /* ---------- Social Targets Kanban ---------- */
   .social-card-header{
     display:flex;
     align-items:center;
@@ -1082,14 +1082,7 @@
   }
   .social-empty{ font-size:0.66rem; color:var(--ink-faint); font-style:italic; padding:6px 2px; }
   .social-row-left{ display:flex; align-items:center; gap:8px; min-width:0; }
-  .social-freq-label{
-    font-size:0.56rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.06em;
-    color:var(--ink-faint);
-    flex-shrink:0;
-  }
+  .social-status{ font-size:0.6rem; font-weight:700; letter-spacing:0.02em; flex-shrink:0; }
 
   .modal-card.social-modal-card{
     width:85vw;
@@ -1108,82 +1101,90 @@
     min-height:0;
     gap:20px;
   }
-  .social-pyramid-area{
+
+  /* Fixed equal-width columns — never resized by headcount, only the
+     header's live count text changes. */
+  .social-kanban-board{
     flex:1;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px;
+    min-height:0;
+  }
+  .social-kanban-column{
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+    border-radius:var(--r-md);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.1);
+    overflow:hidden;
+    transition:filter .15s ease;
+  }
+  .social-kanban-column.drag-over{ filter:brightness(1.35); }
+  .social-kanban-header{
     display:flex;
     align-items:center;
-    justify-content:center;
-    min-height:0;
-    padding:10px 0;
-  }
-  .triangle-wrap{
-    position:relative;
-    height:100%;
-    max-width:100%;
-    aspect-ratio:1.15/1;
-  }
-  .tri-tier{
-    position:absolute;
-    inset:0;
-    border-radius:4px;
-    filter:brightness(1);
-    transition:filter .15s ease;
-    background-image:linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.08) 100%);
-  }
-  .tri-tier.drag-over{ filter:brightness(1.35); }
-  .tri-border-overlay{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-    filter:drop-shadow(0 0 3px rgba(255,255,255,0.65)) drop-shadow(0 0 9px rgba(255,255,255,0.4));
-  }
-  .tri-border-outer{
-    fill:none;
-    stroke:#ffffff;
-    stroke-width:2.5;
-    stroke-linejoin:round;
-    vector-effect:non-scaling-stroke;
-  }
-  .tri-border-divider{
-    stroke:#ffffff;
-    stroke-width:1.5;
-    vector-effect:non-scaling-stroke;
-  }
-  .tri-tier-label{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    pointer-events:none;
-    z-index:2;
-    font-size:0.8rem;
+    gap:4px;
+    padding:10px 14px;
+    font-size:0.7rem;
     font-weight:800;
+    letter-spacing:0.1em;
     text-transform:uppercase;
-    letter-spacing:0.08em;
     color:#fff;
-    text-shadow:0 2px 8px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.45);
-    text-decoration:underline;
-    text-underline-offset:4px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    flex-shrink:0;
+  }
+  .social-kanban-count{ color:var(--ink-faint); font-weight:700; }
+  .social-kanban-cards{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:10px;
+  }
+  .social-kanban-card{
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.18);
+    background:rgba(255,255,255,0.05);
+    padding:10px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    cursor:grab;
+  }
+  .social-kanban-card.dragging{ opacity:0.4; }
+  .social-kanban-card-top{ display:flex; align-items:center; gap:7px; }
+  .social-kanban-card-name{
+    font-size:0.78rem;
+    font-weight:700;
+    color:#fff;
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
     white-space:nowrap;
   }
-  .tri-chip-row{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    flex-wrap:wrap;
-    align-content:flex-start;
-    justify-content:center;
-    gap:5px;
-    overflow-y:auto;
-    overflow-x:hidden;
-    padding:0 2px;
+  .social-kanban-card-status{ font-size:0.68rem; font-weight:700; letter-spacing:0.02em; }
+  .social-action-wrap{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .social-action-select{
+    font-size:0.68rem;
+    padding:4px 6px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    color:#fff;
   }
-  .tri-chip-row .person-chip{
-    padding:4px 9px;
-    gap:5px;
-    font-size:0.7rem;
+  .social-action-select-mini{ font-size:0.62rem; padding:3px 5px; }
+  .social-plan-date-input{
+    font-size:0.66rem;
+    padding:3px 5px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    color:#fff;
   }
 
   .social-bottom-section{
@@ -1259,10 +1260,8 @@
     flex-shrink:0;
   }
   .person-chip.dragging{ opacity:0.4; }
-  .person-chip.person-chip-checked{ opacity:0.55; }
   .person-chip-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; box-shadow:0 0 6px currentColor; }
   .person-chip-name{ white-space:nowrap; }
-  .person-chip-check{ font-size:14px !important; color:#4ade80; flex-shrink:0; }
   .person-chip-del{ font-size:13px !important; cursor:pointer; opacity:0.6; flex-shrink:0; }
   .person-chip-del:hover{ opacity:1; }
 
@@ -3160,7 +3159,7 @@
         <span class="material-symbols-outlined">checklist</span>
         <span>Habits</span>
       </button>
-      <button type="button" class="mobile-pill-btn" onclick="openSocialModalMobile()" aria-label="Social Targets">
+      <button type="button" class="mobile-pill-btn" onclick="openSocialModal()" aria-label="Social Targets">
         <span class="material-symbols-outlined">person</span>
         <span>Social</span>
       </button>
@@ -3415,6 +3414,7 @@
       <span class="material-symbols-outlined">dark_mode</span>
       <h2>Night Check-In</h2>
     </div>
+    <p class="modal-subtitle" id="night-modal-subtitle" style="display:none"></p>
 
     <div class="field-group">
       <label class="field-label">Night Mood</label>
@@ -3617,7 +3617,7 @@
   </div>
 </div>
 
-<!-- ===================== SOCIAL TARGETS TRIANGLE MODAL ===================== -->
+<!-- ===================== SOCIAL TARGETS KANBAN MODAL ===================== -->
 <div class="modal-overlay" id="social-modal">
   <div class="modal-card glass social-modal-card">
     <div class="habit-modal-header-row">
@@ -3628,46 +3628,38 @@
     </div>
 
     <div class="social-modal-body">
-      <div class="social-pyramid-area">
-        <div class="triangle-wrap">
-          <div class="tri-tier" style="background-color:rgba(0,225,255,0.78); clip-path:polygon(50% 0%, 42.75% 14.5%, 57.25% 14.5%);"
-            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'daily')">
-            <div class="tri-chip-row" id="tri-chips-daily" style="top:5%; width:8%; max-height:9%;"></div>
-          </div>
-          <div class="tri-tier" style="background-color:rgba(60,255,20,0.72); clip-path:polygon(42.75% 14.5%, 57.25% 14.5%, 72.33% 44.66%, 27.67% 44.66%);"
-            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'semiDaily')">
-            <div class="tri-chip-row" id="tri-chips-semiDaily" style="top:25.7%; width:26.54%; max-height:17.58%;"></div>
-          </div>
-          <div class="tri-tier" style="background-color:rgba(255,240,0,0.68); clip-path:polygon(27.67% 44.66%, 72.33% 44.66%, 86.92% 73.83%, 13.08% 73.83%);"
-            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'weekly')">
-            <div class="tri-chip-row" id="tri-chips-weekly" style="top:53.99%; width:50.63%; max-height:18.68%;"></div>
-          </div>
-          <div class="tri-tier" style="background-color:rgba(255,20,95,0.75); clip-path:polygon(13.08% 73.83%, 86.92% 73.83%, 100% 100%, 0% 100%);"
-            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'monthly')">
-            <div class="tri-chip-row" id="tri-chips-monthly" style="top:82.2%; width:73.51%; max-height:16.75%;"></div>
-          </div>
-          <div class="tri-tier-label" style="top:3%;">Daily</div>
-          <div class="tri-tier-label" style="top:16.91%;">Semi-Daily</div>
-          <div class="tri-tier-label" style="top:46.99%;">Weekly</div>
-          <div class="tri-tier-label" style="top:75.93%;">Monthly</div>
-          <svg class="tri-border-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M50 0 L100 100 L0 100 Z" class="tri-border-outer"/>
-            <line x1="42.75" y1="14.5" x2="57.25" y2="14.5" class="tri-border-divider"/>
-            <line x1="27.67" y1="44.66" x2="72.33" y2="44.66" class="tri-border-divider"/>
-            <line x1="13.08" y1="73.83" x2="86.92" y2="73.83" class="tri-border-divider"/>
-          </svg>
+      <div class="social-kanban-board">
+        <div class="social-kanban-column" data-category="daily"
+          ondragover="socialColumnDragOver(event)" ondragenter="socialColumnDragEnter(event)" ondragleave="socialColumnDragLeave(event)" ondrop="dropOnSocialColumn(event,'daily')">
+          <div class="social-kanban-header"><span>Daily</span><span class="social-kanban-count mono" id="social-kanban-count-daily">· 0</span></div>
+          <div class="social-kanban-cards" id="social-kanban-cards-daily"></div>
+        </div>
+        <div class="social-kanban-column" data-category="semi-daily"
+          ondragover="socialColumnDragOver(event)" ondragenter="socialColumnDragEnter(event)" ondragleave="socialColumnDragLeave(event)" ondrop="dropOnSocialColumn(event,'semi-daily')">
+          <div class="social-kanban-header"><span>Semi-Daily</span><span class="social-kanban-count mono" id="social-kanban-count-semi-daily">· 0</span></div>
+          <div class="social-kanban-cards" id="social-kanban-cards-semi-daily"></div>
+        </div>
+        <div class="social-kanban-column" data-category="weekly"
+          ondragover="socialColumnDragOver(event)" ondragenter="socialColumnDragEnter(event)" ondragleave="socialColumnDragLeave(event)" ondrop="dropOnSocialColumn(event,'weekly')">
+          <div class="social-kanban-header"><span>Weekly</span><span class="social-kanban-count mono" id="social-kanban-count-weekly">· 0</span></div>
+          <div class="social-kanban-cards" id="social-kanban-cards-weekly"></div>
+        </div>
+        <div class="social-kanban-column" data-category="monthly"
+          ondragover="socialColumnDragOver(event)" ondragenter="socialColumnDragEnter(event)" ondragleave="socialColumnDragLeave(event)" ondrop="dropOnSocialColumn(event,'monthly')">
+          <div class="social-kanban-header"><span>Monthly</span><span class="social-kanban-count mono" id="social-kanban-count-monthly">· 0</span></div>
+          <div class="social-kanban-cards" id="social-kanban-cards-monthly"></div>
         </div>
       </div>
 
       <div class="social-bottom-section">
         <div class="social-people-panel glass">
           <div class="social-people-header-inline">
-            <p class="social-people-title mono">People</p>
+            <p class="social-people-title mono">Name Bank</p>
             <div class="habit-mini-add-btn" id="social-people-add-btn" onclick="openSocialPersonForm()" title="Add person">
               <span class="material-symbols-outlined">add</span>
             </div>
           </div>
-          <div class="social-people-chips" id="social-people-list" ondragover="triTierDragOver(event)" ondrop="dropOnPeopleList(event)"></div>
+          <div class="social-people-chips" id="social-bank-list" ondragover="socialColumnDragOver(event)" ondrop="dropOnSocialBank(event)"></div>
         </div>
         <div class="social-add-form" id="social-add-form" style="display:none;">
           <div class="field-group">
@@ -3678,6 +3670,16 @@
             <label class="field-label">Color</label>
             <div class="habit-color-row" id="social-color-row"></div>
           </div>
+          <div class="field-group">
+            <label class="field-label">Category</label>
+            <select class="field-select" id="social-person-category-input">
+              <option value="">Name Bank (unassigned)</option>
+              <option value="daily">Daily</option>
+              <option value="semi-daily">Semi-Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
           <div style="display:flex; gap:8px; margin-left:auto;">
             <button type="button" class="habit-cancel-btn" onclick="cancelSocialPersonForm()">Cancel</button>
             <button type="button" class="checkmark-btn" onclick="saveSocialPerson()" title="Save">
@@ -3687,24 +3689,6 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- ===================== SOCIAL TARGETS READ-ONLY MODAL (mobile) =====================
-     Mobile's Social Targets nav trigger opens this instead of the
-     editable pyramid modal above — same read-only rows (+ "mark as
-     talked" checkbox) as the desktop sidebar's mini widget, no
-     drag/add/tier-editing. See openSocialModalMobile() /
-     renderSidebarSocial() in the script block below. -->
-<div class="modal-overlay" id="social-modal-mobile">
-  <div class="modal-card glass habit-modal-card">
-    <div class="habit-modal-header-row">
-      <h2 style="margin:0; font-size:1.2rem; font-weight:700;">Social Targets</h2>
-      <div class="habit-modal-close" onclick="closeModal('social-modal-mobile')" title="Close">
-        <span class="material-symbols-outlined">close</span>
-      </div>
-    </div>
-    <div id="social-widget-rows-mobile"></div>
   </div>
 </div>
 
@@ -4121,15 +4105,16 @@
     setScaleActive('morning-energy', data.energyLevel);
   }
 
-  function populateNightFromStorage(){
+  function populateNightFromStorage(targetDate){
+    var dateKey = targetDate || getAdjustedDate();
     var nutritionCfg = loadJSON('la_nutrition', {target:2200, entries:{}});
-    var todayCal = nutritionCfg.entries[getAdjustedDate()];
+    var todayCal = nutritionCfg.entries[dateKey];
     var calorieInput = document.getElementById('night-calorie-input');
     calorieInput.value = todayCal != null ? todayCal : '';
     document.querySelectorAll('#night-calorie-chips button').forEach(function(b){
       b.classList.toggle('active', todayCal != null && b.textContent.trim() === String(todayCal));
     });
-    var raw = localStorage.getItem('la_checkin_night_' + getAdjustedDate());
+    var raw = localStorage.getItem('la_checkin_night_' + dateKey);
     if(!raw) return;
     var data = JSON.parse(raw);
     if(data.mood) document.getElementById('night-mood').value = data.mood;
@@ -4143,9 +4128,29 @@
     openModal('morning-modal');
   }
 
-  function openNightModal(){
-    populateNightFromStorage();
+  function openNightModal(targetDate){
+    var dateKey = targetDate || getAdjustedDate();
+    populateNightFromStorage(dateKey);
+    var modal = document.getElementById('night-modal');
+    modal.dataset.targetDate = dateKey;
+    var subtitle = document.getElementById('night-modal-subtitle');
+    if(subtitle){
+      if(targetDate){
+        subtitle.textContent = 'Missed check-in for ' + targetDate;
+        subtitle.style.display = '';
+      } else {
+        subtitle.style.display = 'none';
+      }
+    }
     openModal('night-modal');
+  }
+
+  function maybeAutoPromptNightCheckin(){
+    if(!isNightCheckinMissed()) return;
+    if(document.querySelector('.modal-overlay.open')) return;
+    var prevDate = getPreviousProductivityDate();
+    localStorage.setItem('la_night_checkin_prompted_' + prevDate, '1');
+    openNightModal(prevDate);
   }
 
   function saveMorningCheckin(){
@@ -4163,6 +4168,8 @@
   }
 
   function saveNightCheckin(){
+    var modal = document.getElementById('night-modal');
+    var dateKey = modal.dataset.targetDate || getAdjustedDate();
     var data = {
       mood: document.getElementById('night-mood').value,
       productive: document.getElementById('productivity-checkbox').checked,
@@ -4170,17 +4177,18 @@
       workoutDone: getSegmentValue('night-workout'),
       savedAt: new Date().toISOString()
     };
-    localStorage.setItem('la_checkin_night_' + getAdjustedDate(), JSON.stringify(data));
+    localStorage.setItem('la_checkin_night_' + dateKey, JSON.stringify(data));
     var calorieRaw = document.getElementById('night-calorie-input').value;
     if(calorieRaw !== ''){
       var nutritionCfg = loadJSON('la_nutrition', {target:2200, entries:{}});
-      nutritionCfg.entries[getAdjustedDate()] = Number(calorieRaw);
+      nutritionCfg.entries[dateKey] = Number(calorieRaw);
       saveJSON('la_nutrition', nutritionCfg);
       notifyStateChange('la_nutrition');
     }
     updateCheckinBadges();
-    notifyStateChange('la_checkin_night_' + getAdjustedDate());
+    notifyStateChange('la_checkin_night_' + dateKey);
     closeModal('night-modal');
+    delete modal.dataset.targetDate;
   }
 
   updateCheckinBadges();
@@ -5054,6 +5062,15 @@
     d.setDate(d.getDate() + delta);
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
+  function getPreviousProductivityDate(){
+    return addDaysISO(getAdjustedDate(), -1);
+  }
+  function isNightCheckinMissed(){
+    var prevDate = getPreviousProductivityDate();
+    if(localStorage.getItem('la_checkin_night_' + prevDate)) return false;
+    if(localStorage.getItem('la_night_checkin_prompted_' + prevDate)) return false;
+    return true;
+  }
   function isScheduledDay(habit, dateISO){
     var dow = new Date(dateISO + 'T00:00:00').getDay();
     if(habit.frequency === 'weekdays') return dow >= 1 && dow <= 5;
@@ -5332,12 +5349,9 @@
       renderSidebarHabits();
       if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
     }
-    else if(e.key === 'la_social_people' || e.key === 'la_social_state'){
+    else if(e.key === 'la_social_people'){
       renderSidebarSocial();
-      if(document.getElementById('social-modal').classList.contains('open')){
-        renderTrianglePeopleList();
-        renderTriangleTiers();
-      }
+      if(document.getElementById('social-modal').classList.contains('open')){ renderSocialKanban(); }
     }
     else if(e.key && e.key.indexOf('la_wheel_done_') === 0){ renderWheel(); }
   }
@@ -5390,6 +5404,7 @@
   function runClockTick(){
     updateLateNightMode();
     checkDailyReset();
+    maybeAutoPromptNightCheckin();
   }
 
   /* ============================================================
@@ -5411,188 +5426,212 @@
   }
 
   /* ============================================================
-     Social Targets Triangle — la_social_people / la_social_state
+     Social Targets Kanban — la_social_people
+     Person: {id, name, color, category, lastContacted, plannedDate}
+     category is one of SOCIAL_CATEGORIES, or absent/null while the
+     person sits unassigned in the bottom "Name Bank" (this is also
+     where pre-kanban records land automatically, since they predate
+     the category field and were never migrated).
   ============================================================ */
   var SOCIAL_COLORS = ['#3b82f6','#22c55e','#eab308','#ef4444','#a855f7','#ec4899','#14b8a6','#f97316'];
-  var SOCIAL_TIER_INTERVAL_DAYS = { semiDaily:1, weekly:7, monthly:30 };
+  var SOCIAL_CATEGORIES = ['daily','semi-daily','weekly','monthly'];
+  var CATEGORY_WINDOWS = { daily:1, 'semi-daily':3, weekly:7, monthly:30 };
   var selectedSocialColor = SOCIAL_COLORS[0];
   var dragPersonId = null;
 
   function getSocialPeople(){ return loadJSON('la_social_people', []); }
   function saveSocialPeople(list){ saveJSON('la_social_people', list); }
 
-  function getSocialState(){
-    var s = loadJSON('la_social_state', null) || {};
-    s.tiers = s.tiers || {};
-    ['daily','semiDaily','weekly','monthly'].forEach(function(k){ if(!s.tiers[k]) s.tiers[k] = []; });
-    s.rotation = s.rotation || {};
-    ['semiDaily','weekly','monthly'].forEach(function(k){
-      if(!s.rotation[k]) s.rotation[k] = { currentIndex:0, clearedUntil:null };
-    });
-    s.daily = s.daily || { talkedDay:null, talkedIds:[] };
-    return s;
-  }
-  function saveSocialState(s){ saveJSON('la_social_state', s); }
-
-  function ensureDailyReset(state){
-    var today = getAdjustedDate();
-    if(state.daily.talkedDay !== today){
-      state.daily.talkedDay = today;
-      state.daily.talkedIds = [];
-    }
-  }
-
-  function resolveTierPerson(state, tierKey){
-    var people = state.tiers[tierKey];
-    var rot = state.rotation[tierKey];
-    if(!people.length) return null;
-    var today = getAdjustedDate();
-    if(rot.clearedUntil && diffDaysISO(today, rot.clearedUntil) <= 0){
-      rot.currentIndex = (rot.currentIndex + 1) % people.length;
-      rot.clearedUntil = null;
-    }
-    if(rot.clearedUntil) return null;
-    var idx = ((rot.currentIndex % people.length) + people.length) % people.length;
-    return people[idx];
-  }
-
-  function markSocialTalked(tierKey, personId){
-    var state = getSocialState();
-    if(tierKey === 'daily'){
-      ensureDailyReset(state);
-      if(state.daily.talkedIds.indexOf(personId) === -1){
-        state.daily.talkedIds.push(personId);
-        incrWheelDone('social');
+  /* Derived per-person state — recomputed live on every render, never
+     persisted and never ticked by a setInterval countdown. */
+  function computeSocialDerived(person, todayISO){
+    if(person.plannedDate){
+      if(person.plannedDate >= todayISO){
+        return { state:'FROZEN', display:'Planned: ' + person.plannedDate, color:null, daysRemaining:Infinity, elapsedPct:0 };
       }
-    } else if(!state.rotation[tierKey].clearedUntil){
-      var today = getAdjustedDate();
-      state.rotation[tierKey].clearedUntil = addDaysISO(today, SOCIAL_TIER_INTERVAL_DAYS[tierKey]);
-      incrWheelDone('social');
+      return { state:'OVERDUE_PLANNED', display:'!!!', color:'red', daysRemaining:-Infinity, elapsedPct:Infinity };
     }
-    saveSocialState(state);
-    renderSidebarSocial();
+    var windowDays = CATEGORY_WINDOWS[person.category] || 1;
+    var windowMs = windowDays * 86400000;
+    var lastMs = person.lastContacted || Date.now();
+    var elapsedPct = (Date.now() - lastMs) / windowMs;
+    var color = elapsedPct < 0.6 ? 'green' : elapsedPct < 0.9 ? 'yellow' : 'red';
+    var daysRemaining = windowDays - (elapsedPct * windowDays);
+    var display;
+    if(elapsedPct > 1){
+      var overdueDays = Math.max(1, Math.floor((elapsedPct * windowDays) - windowDays));
+      display = '+' + overdueDays + ' overdue';
+    } else {
+      display = Math.max(0, Math.ceil(daysRemaining)) + 'd left';
+    }
+    return { state:'NORMAL', display:display, color:color, daysRemaining:daysRemaining, elapsedPct:elapsedPct };
   }
 
-  function unmarkSocialTalked(tierKey, personId){
-    var state = getSocialState();
-    if(tierKey === 'daily'){
-      ensureDailyReset(state);
-      var idx = state.daily.talkedIds.indexOf(personId);
-      if(idx !== -1){ state.daily.talkedIds.splice(idx, 1); decrWheelDone('social'); }
-    } else if(state.rotation[tierKey] && state.rotation[tierKey].clearedUntil){
-      state.rotation[tierKey].clearedUntil = null;
-      decrWheelDone('social');
+  /* Sort order within a column: OVERDUE_PLANNED (top) > NORMAL by
+     elapsedPct descending > FROZEN (bottom). */
+  function socialSortTier(derived){
+    if(derived.state === 'OVERDUE_PLANNED') return 0;
+    if(derived.state === 'FROZEN') return 2;
+    return 1;
+  }
+  function compareSocialCards(a, b){
+    var ta = socialSortTier(a.derived), tb = socialSortTier(b.derived);
+    if(ta !== tb) return ta - tb;
+    if(ta === 1) return b.derived.elapsedPct - a.derived.elapsedPct;
+    return (a.person.plannedDate || '').localeCompare(b.person.plannedDate || '');
+  }
+
+  /* Wheel/card membership: daily people always qualify (their window
+     IS 1 day); semi-daily/weekly/monthly people only join once they're
+     down to their last day or overdue. FROZEN people never qualify. */
+  function isSocialRosterMember(derived){
+    return derived.state !== 'FROZEN' && derived.daysRemaining <= 1;
+  }
+
+  function getSocialRoster(){
+    var today = getAdjustedDate();
+    var roster = [];
+    getSocialPeople().forEach(function(p){
+      if(!p.category) return;
+      var derived = computeSocialDerived(p, today);
+      if(isSocialRosterMember(derived)) roster.push({ person:p, derived:derived });
+    });
+    return roster;
+  }
+
+  function computeSocialWheelFill(){
+    var roster = getSocialRoster();
+    var total = roster.length;
+    var done = roster.filter(function(r){ return r.derived.color === 'green'; }).length;
+    return { frac:computeCategoryFraction(done, total), done:done, total:total, open: total - done };
+  }
+
+  function renderSocialActionControlHtml(id, mini){
+    return '<span class="social-action-wrap">' +
+        '<select class="social-action-select'+(mini?' social-action-select-mini':'')+'" onchange="handleSocialCardAction(this,\''+id+'\')">' +
+          '<option value="" selected disabled>Action…</option>' +
+          '<option value="talked">Talked</option>' +
+          '<option value="skip">Skip</option>' +
+          '<option value="plan">Plan hangout</option>' +
+        '</select>' +
+        '<input type="date" class="social-plan-date-input" style="display:none" onchange="applySocialPlanDate(this,\''+id+'\')">' +
+      '</span>';
+  }
+
+  function handleSocialCardAction(selectEl, id){
+    var val = selectEl.value;
+    selectEl.value = '';
+    if(val === 'talked' || val === 'skip'){
+      markSocialTalked(id);
+    } else if(val === 'plan'){
+      var dateInput = selectEl.parentElement.querySelector('.social-plan-date-input');
+      var p = getSocialPeople().find(function(x){ return x.id === id; });
+      dateInput.value = (p && p.plannedDate) || '';
+      dateInput.style.display = 'inline-block';
+      dateInput.focus();
+      if(dateInput.showPicker){ try{ dateInput.showPicker(); }catch(e){} }
     }
-    saveSocialState(state);
-    renderTriangleTiers();
+  }
+
+  function applySocialPlanDate(inputEl, id){
+    if(!inputEl.value){ inputEl.style.display = 'none'; return; }
+    var people = getSocialPeople();
+    var p = people.find(function(x){ return x.id === id; });
+    if(p){ p.plannedDate = inputEl.value; saveSocialPeople(people); }
+    inputEl.style.display = 'none';
+    notifyStateChange('la_social_people');
+    renderAllSocialViews();
+  }
+
+  function markSocialTalked(id){
+    var people = getSocialPeople();
+    var p = people.find(function(x){ return x.id === id; });
+    if(!p) return;
+    p.lastContacted = Date.now();
+    p.plannedDate = null;
+    saveSocialPeople(people);
+    notifyStateChange('la_social_people');
+    renderAllSocialViews();
+  }
+
+  function renderAllSocialViews(){
     renderSidebarSocial();
+    if(document.getElementById('social-modal').classList.contains('open')){ renderSocialKanban(); }
   }
 
   function renderSidebarSocial(){
     var wrap = document.getElementById('social-widget-rows');
-    var wrapMobile = document.getElementById('social-widget-rows-mobile');
-    if(!wrap && !wrapMobile) return;
-    var people = getSocialPeople();
-    var state = getSocialState();
-    ensureDailyReset(state);
-
-    var rows = [];
-    state.tiers.daily.forEach(function(pid){
-      if(state.daily.talkedIds.indexOf(pid) !== -1) return;
-      var p = people.find(function(x){ return x.id === pid; });
-      if(p) rows.push({ person:p, tier:'daily', freqLabel:'Daily' });
-    });
-    [['semiDaily','Semi'], ['weekly','Weekly'], ['monthly','Monthly']].forEach(function(pair){
-      var pid = resolveTierPerson(state, pair[0]);
-      if(!pid) return;
-      var p = people.find(function(x){ return x.id === pid; });
-      if(p) rows.push({ person:p, tier:pair[0], freqLabel:pair[1] });
-    });
-
-    saveSocialState(state);
-
-    var html = !rows.length
+    if(!wrap) return;
+    var roster = getSocialRoster().sort(compareSocialCards);
+    wrap.innerHTML = !roster.length
       ? '<div class="social-empty">All targets met!</div>'
-      : rows.map(function(r){
+      : roster.map(function(r){
+          var statusColor = r.derived.color === 'red' ? '#ef4444' : r.derived.color === 'yellow' ? '#eab308' : '#22c55e';
           return '<div class="social-row">' +
               '<div class="social-row-left">' +
                 '<span class="dot" style="background:'+r.person.color+'; color:'+r.person.color+';"></span>' +
                 '<span class="name">'+escapeHtml(r.person.name)+'</span>' +
-                '<span class="social-freq-label mono">'+r.freqLabel+'</span>' +
+                '<span class="social-status mono" style="color:'+statusColor+';">'+escapeHtml(r.derived.display)+'</span>' +
               '</div>' +
-              '<input type="checkbox" class="habit-checkbox" onclick="markSocialTalked(\''+r.tier+'\',\''+r.person.id+'\')">' +
+              renderSocialActionControlHtml(r.person.id, true) +
             '</div>';
         }).join('');
-
-    if(wrap) wrap.innerHTML = html;
-    if(wrapMobile) wrapMobile.innerHTML = html;
     renderWheel();
   }
 
-  function renderPersonChipHtml(p, checkedOff, tierKey){
-    var checkedClass = checkedOff ? ' person-chip-checked' : '';
-    var checkBadge = checkedOff ? '<span class="person-chip-check material-symbols-outlined" title="Click to uncheck" onclick="event.stopPropagation(); unmarkSocialTalked(\''+tierKey+'\',\''+p.id+'\')">check_circle</span>' : '';
-    return '<div class="person-chip'+checkedClass+'" draggable="true" style="border-color:'+habitColorRgba(p.color,0.5)+'; background:'+habitColorRgba(p.color,0.6)+';" data-person-id="'+p.id+'" ondragstart="personDragStart(event,\''+p.id+'\')" ondragend="personDragEnd(event)">' +
+  function renderPersonChipHtml(p){
+    return '<div class="person-chip" draggable="true" style="border-color:'+habitColorRgba(p.color,0.5)+'; background:'+habitColorRgba(p.color,0.6)+';" data-person-id="'+p.id+'" ondragstart="personDragStart(event,\''+p.id+'\')" ondragend="personDragEnd(event)">' +
         '<span class="person-chip-dot" style="background:'+p.color+'; color:'+p.color+';"></span>' +
         '<span class="person-chip-name">'+escapeHtml(p.name)+'</span>' +
-        checkBadge +
         '<span class="person-chip-del material-symbols-outlined" onclick="event.stopPropagation(); deleteSocialPerson(\''+p.id+'\')" title="Remove">close</span>' +
       '</div>';
   }
 
-  function renderTrianglePeopleList(){
-    var people = getSocialPeople();
-    var state = getSocialState();
-    var assigned = {};
-    ['daily','semiDaily','weekly','monthly'].forEach(function(k){
-      state.tiers[k].forEach(function(id){ assigned[id] = true; });
-    });
-    var unassigned = people.filter(function(p){ return !assigned[p.id]; });
-    var list = document.getElementById('social-people-list');
-    list.innerHTML = unassigned.length
-      ? unassigned.map(function(p){ return renderPersonChipHtml(p); }).join('')
+  function renderSocialKanbanCardHtml(p, derived){
+    var statusColor = derived.color === 'red' ? '#ef4444' : derived.color === 'yellow' ? '#eab308' : derived.color === 'green' ? '#22c55e' : 'var(--ink-faint)';
+    return '<div class="social-kanban-card" draggable="true" style="border-color:'+habitColorRgba(p.color,0.5)+';" data-person-id="'+p.id+'" ondragstart="personDragStart(event,\''+p.id+'\')" ondragend="personDragEnd(event)">' +
+        '<div class="social-kanban-card-top">' +
+          '<span class="dot" style="background:'+p.color+'; color:'+p.color+';"></span>' +
+          '<span class="social-kanban-card-name">'+escapeHtml(p.name)+'</span>' +
+          '<span class="person-chip-del material-symbols-outlined" onclick="event.stopPropagation(); deleteSocialPerson(\''+p.id+'\')" title="Remove">close</span>' +
+        '</div>' +
+        '<div class="social-kanban-card-status" style="color:'+statusColor+';">'+escapeHtml(derived.display)+'</div>' +
+        renderSocialActionControlHtml(p.id, false) +
+      '</div>';
+  }
+
+  function renderSocialBank(){
+    var list = document.getElementById('social-bank-list');
+    if(!list) return;
+    var bank = getSocialPeople().filter(function(p){ return !p.category; });
+    list.innerHTML = bank.length
+      ? bank.map(function(p){ return renderPersonChipHtml(p); }).join('')
       : '<div class="social-people-empty">No unassigned people — add or drag someone here</div>';
   }
 
-  function renderTriangleTiers(){
+  function renderSocialKanban(){
+    var today = getAdjustedDate();
     var people = getSocialPeople();
-    var state = getSocialState();
-    ensureDailyReset(state);
-    saveSocialState(state);
-    ['daily','semiDaily','weekly','monthly'].forEach(function(key){
-      var wrap = document.getElementById('tri-chips-' + key);
-      if(!wrap) return;
-      var ids = state.tiers[key];
-      var checkedOffId = null;
-      if(key !== 'daily'){
-        var rot = state.rotation[key];
-        if(rot.clearedUntil && ids.length){
-          var idx = ((rot.currentIndex % ids.length) + ids.length) % ids.length;
-          checkedOffId = ids[idx];
-        }
+    SOCIAL_CATEGORIES.forEach(function(cat){
+      var rows = people.filter(function(p){ return p.category === cat; })
+        .map(function(p){ return { person:p, derived:computeSocialDerived(p, today) }; })
+        .sort(compareSocialCards);
+      var countEl = document.getElementById('social-kanban-count-' + cat);
+      if(countEl) countEl.textContent = '· ' + rows.length;
+      var listEl = document.getElementById('social-kanban-cards-' + cat);
+      if(listEl){
+        listEl.innerHTML = rows.length
+          ? rows.map(function(r){ return renderSocialKanbanCardHtml(r.person, r.derived); }).join('')
+          : '<div class="social-people-empty">No one here yet</div>';
       }
-      wrap.innerHTML = ids.map(function(id){
-        var p = people.find(function(x){ return x.id === id; });
-        if(!p) return '';
-        var checkedOff = key === 'daily' ? (state.daily.talkedIds.indexOf(id) !== -1) : (id === checkedOffId);
-        return renderPersonChipHtml(p, checkedOff, key);
-      }).join('');
     });
+    renderSocialBank();
   }
 
   function openSocialModal(){
     cancelSocialPersonForm();
-    renderTrianglePeopleList();
-    renderTriangleTiers();
+    renderSocialKanban();
     openModal('social-modal');
-  }
-
-  /* Mobile's bottom-nav Social Targets trigger — opens the read-only
-     card (same rows/data as the desktop sidebar's mini widget) instead
-     of the editable pyramid modal above. */
-  function openSocialModalMobile(){
-    renderSidebarSocial();
-    openModal('social-modal-mobile');
   }
 
   function personDragStart(e, id){
@@ -5604,48 +5643,47 @@
     e.currentTarget.classList.remove('dragging');
     dragPersonId = null;
   }
-  function triTierDragOver(e){
+  function socialColumnDragOver(e){
     e.preventDefault();
     if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
   }
-  function triTierDragEnter(e){ e.currentTarget.classList.add('drag-over'); }
-  function triTierDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+  function socialColumnDragEnter(e){ e.currentTarget.classList.add('drag-over'); }
+  function socialColumnDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
 
-  function unassignPersonFromAllTiers(state, id){
-    ['daily','semiDaily','weekly','monthly'].forEach(function(k){
-      var idx = state.tiers[k].indexOf(id);
-      if(idx !== -1) state.tiers[k].splice(idx,1);
-    });
-  }
-
-  function dropOnTier(e, tierKey){
+  function dropOnSocialColumn(e, category){
     e.preventDefault();
     e.stopPropagation();
     e.currentTarget.classList.remove('drag-over');
     if(!dragPersonId) return;
-    var state = getSocialState();
-    unassignPersonFromAllTiers(state, dragPersonId);
-    state.tiers[tierKey].push(dragPersonId);
-    saveSocialState(state);
-    renderTriangleTiers();
-    renderTrianglePeopleList();
-    renderSidebarSocial();
+    var people = getSocialPeople();
+    var p = people.find(function(x){ return x.id === dragPersonId; });
+    if(p && p.category !== category){
+      p.category = category;
+      p.lastContacted = Date.now();
+      p.plannedDate = null;
+      saveSocialPeople(people);
+      notifyStateChange('la_social_people');
+      renderAllSocialViews();
+    }
   }
-  function dropOnPeopleList(e){
+  function dropOnSocialBank(e){
     e.preventDefault();
     if(!dragPersonId) return;
-    var state = getSocialState();
-    unassignPersonFromAllTiers(state, dragPersonId);
-    saveSocialState(state);
-    renderTriangleTiers();
-    renderTrianglePeopleList();
-    renderSidebarSocial();
+    var people = getSocialPeople();
+    var p = people.find(function(x){ return x.id === dragPersonId; });
+    if(p && p.category){
+      p.category = null;
+      saveSocialPeople(people);
+      notifyStateChange('la_social_people');
+      renderAllSocialViews();
+    }
   }
 
   function openSocialPersonForm(){
     document.getElementById('social-add-form').style.display = 'flex';
     document.getElementById('social-people-add-btn').style.display = 'none';
     document.getElementById('social-person-name-input').value = '';
+    document.getElementById('social-person-category-input').value = '';
     selectedSocialColor = SOCIAL_COLORS[0];
     renderSocialColorSwatches();
     document.getElementById('social-person-name-input').focus();
@@ -5672,21 +5710,18 @@
     var input = document.getElementById('social-person-name-input');
     var name = input.value.trim();
     if(!name){ input.focus(); return; }
+    var category = document.getElementById('social-person-category-input').value || null;
     var people = getSocialPeople();
-    people.push({ id: uid(), name: name, color: selectedSocialColor });
+    people.push({ id: uid(), name: name, color: selectedSocialColor, category: category, lastContacted: Date.now(), plannedDate: null });
     saveSocialPeople(people);
     cancelSocialPersonForm();
-    renderTrianglePeopleList();
-    renderSidebarSocial();
+    notifyStateChange('la_social_people');
+    renderAllSocialViews();
   }
   function deleteSocialPerson(id){
     saveSocialPeople(getSocialPeople().filter(function(p){ return p.id !== id; }));
-    var state = getSocialState();
-    unassignPersonFromAllTiers(state, id);
-    saveSocialState(state);
-    renderTriangleTiers();
-    renderTrianglePeopleList();
-    renderSidebarSocial();
+    notifyStateChange('la_social_people');
+    renderAllSocialViews();
   }
 
   /* ============================================================
@@ -5723,22 +5758,6 @@
     return Math.max(0, Math.min(1, done / total));
   }
 
-  function countSocialDueToday(){
-    var state = getSocialState();
-    ensureDailyReset(state);
-    var people = getSocialPeople();
-    var count = 0;
-    state.tiers.daily.forEach(function(pid){
-      if(state.daily.talkedIds.indexOf(pid) !== -1) return;
-      if(people.some(function(p){ return p.id === pid; })) count++;
-    });
-    ['semiDaily','weekly','monthly'].forEach(function(tier){
-      if(resolveTierPerson(state, tier)) count++;
-    });
-    saveSocialState(state);
-    return count;
-  }
-
   function computeWheelFill(){
     var today = getAdjustedDate();
 
@@ -5755,9 +5774,8 @@
     var researchDone = getWheelDoneCount('research');
     var researchFrac = computeCategoryFraction(researchDone, researchOpen + researchDone);
 
-    var socialOpenToday = countSocialDueToday();
-    var socialDone = getWheelDoneCount('social');
-    var socialFrac = computeCategoryFraction(socialDone, socialOpenToday + socialDone);
+    var socialFill = computeSocialWheelFill();
+    var socialFrac = socialFill.frac;
 
     var morningDone = !!localStorage.getItem('la_checkin_morning_' + today);
     var nightDone = !!localStorage.getItem('la_checkin_night_' + today);
@@ -5776,7 +5794,7 @@
       habits: { frac:habitsFrac, done:habitsDone, total:habitsToday.length },
       academic: { frac:academicFrac, done:academicDone, total:academicOpenToday + academicDone, open:academicOpenToday },
       research: { frac:researchFrac, done:researchDone, total:researchOpen + researchDone, open:researchOpen },
-      social: { frac:socialFrac, done:socialDone, total:socialOpenToday + socialDone, open:socialOpenToday },
+      social: { frac:socialFrac, done:socialFill.done, total:socialFill.total, open:socialFill.open },
       checkins: { frac:checkinsFrac, done:checkinsDone, total:2, morningDone:morningDone, nightDone:nightDone }
     };
   }

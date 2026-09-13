@@ -505,3 +505,11 @@
   #habit-grid .habit-card-check-row{ font-size:0.594rem; padding-top:9px; gap:7.2px; }
   #habit-grid .habit-card-unscheduled{ font-size:0.558rem; padding-top:9px; }
 }
+
+/* Auto-triggered Night Check-In: subtitle shown when the modal opens
+   itself for a missed prior-cycle entry instead of the current day. */
+.modal-subtitle{
+  margin:-8px 0 12px;
+  font-size:0.78rem;
+  color:rgba(255,255,255,0.55);
+}

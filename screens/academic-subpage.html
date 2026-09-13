@@ -691,52 +691,8 @@
   body.late-night .daycycle-btn.night{
     background:rgba(251,191,36,0.08);
   }
-  body.late-night .social-card{
-    border-color:rgba(251,191,36,0.4);
-  }
   body.late-night .habit-mini-card{
     border-color:rgba(251,191,36,0.4);
-  }
-
-  /* Social targets */
-  .social-card{
-    padding:14px;
-    border-radius:var(--r-md);
-    background:#292f4a;
-    border:1px solid rgba(167,139,250,0.55);
-    transition:border-color .3s ease;
-  }
-  .social-card .heading{
-    font-size:0.651rem;
-    font-weight:700;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--ink);
-    margin:0;
-  }
-  .social-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:6px 2px;
-  }
-  .social-row + .social-row{
-    border-top:1px solid rgba(255,255,255,0.06);
-  }
-  .social-row .name{
-    font-size:0.72rem;
-    font-weight:600;
-    color:var(--ink);
-  }
-  #social-widget-rows{
-    max-height:140px;
-    overflow-y:auto;
-    padding-right:4px;
-  }
-  .dot{
-    width:8px; height:8px;
-    border-radius:50%;
-    box-shadow:0 0 8px currentColor;
   }
 
   /* Sidebar mood mini card (condensed morning/night check-in summary,
@@ -1096,199 +1052,6 @@
     font-family:inherit;
   }
   .habit-cancel-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
-
-  /* ---------- Social Targets Triangle ---------- */
-  .social-card-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:10px;
-  }
-  .social-empty{ font-size:0.66rem; color:var(--ink-faint); font-style:italic; padding:6px 2px; }
-  .social-row-left{ display:flex; align-items:center; gap:8px; min-width:0; }
-  .social-freq-label{
-    font-size:0.56rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.06em;
-    color:var(--ink-faint);
-    flex-shrink:0;
-  }
-
-  .modal-card.social-modal-card{
-    width:85vw;
-    height:85vh;
-    max-width:85vw;
-    max-height:85vh;
-    padding:36px;
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-  }
-  .social-modal-body{
-    display:flex;
-    flex-direction:column;
-    flex:1;
-    min-height:0;
-    gap:20px;
-  }
-  .social-pyramid-area{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-height:0;
-    padding:10px 0;
-  }
-  .triangle-wrap{
-    position:relative;
-    height:100%;
-    max-width:100%;
-    aspect-ratio:1.15/1;
-  }
-  .tri-tier{
-    position:absolute;
-    inset:0;
-    border-radius:4px;
-    filter:brightness(1);
-    transition:filter .15s ease;
-    background-image:linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.08) 100%);
-  }
-  .tri-tier.drag-over{ filter:brightness(1.35); }
-  .tri-border-overlay{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-    filter:drop-shadow(0 0 3px rgba(255,255,255,0.65)) drop-shadow(0 0 9px rgba(255,255,255,0.4));
-  }
-  .tri-border-outer{
-    fill:none;
-    stroke:#ffffff;
-    stroke-width:2.5;
-    stroke-linejoin:round;
-    vector-effect:non-scaling-stroke;
-  }
-  .tri-border-divider{
-    stroke:#ffffff;
-    stroke-width:1.5;
-    vector-effect:non-scaling-stroke;
-  }
-  .tri-tier-label{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    pointer-events:none;
-    z-index:2;
-    font-size:0.8rem;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:0.08em;
-    color:#fff;
-    text-shadow:0 2px 8px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.45);
-    text-decoration:underline;
-    text-underline-offset:4px;
-    white-space:nowrap;
-  }
-  .tri-chip-row{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    flex-wrap:wrap;
-    align-content:flex-start;
-    justify-content:center;
-    gap:5px;
-    overflow-y:auto;
-    overflow-x:hidden;
-    padding:0 2px;
-  }
-  .tri-chip-row .person-chip{
-    padding:4px 9px;
-    gap:5px;
-    font-size:0.7rem;
-  }
-
-  .social-bottom-section{
-    flex-shrink:0;
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-  }
-  .social-people-panel{
-    height:120px;
-    flex-shrink:0;
-    display:flex;
-    align-items:flex-start;
-    gap:18px;
-    padding:16px 20px;
-    border-radius:var(--r-md);
-  }
-  .social-people-header-inline{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-shrink:0;
-    padding-top:2px;
-  }
-  .social-people-title{
-    font-size:0.68rem;
-    font-weight:700;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--ink-faint);
-    margin:0;
-  }
-  .social-people-chips{
-    flex:1;
-    min-width:0;
-    height:100%;
-    overflow-y:auto;
-    display:flex;
-    flex-wrap:wrap;
-    align-content:flex-start;
-    gap:8px;
-    padding-left:18px;
-    border-left:1px solid rgba(255,255,255,0.1);
-  }
-  .social-people-empty{ font-size:0.7rem; color:var(--ink-faint); font-style:italic; padding:4px; }
-
-  .social-add-form{
-    display:flex;
-    align-items:flex-end;
-    flex-wrap:wrap;
-    gap:18px;
-    padding:16px 20px;
-    border-radius:var(--r-md);
-    background:rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.08);
-  }
-  .social-add-form .field-group{ margin-bottom:0; }
-  .social-add-form .field-group:first-child{ flex:1; min-width:200px; }
-
-  .person-chip{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    padding:7px 12px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,0.18);
-    background:rgba(255,255,255,0.06);
-    font-size:0.74rem;
-    font-weight:600;
-    color:#fff;
-    cursor:grab;
-    user-select:none;
-    flex-shrink:0;
-  }
-  .person-chip.dragging{ opacity:0.4; }
-  .person-chip.person-chip-checked{ opacity:0.55; }
-  .person-chip-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; box-shadow:0 0 6px currentColor; }
-  .person-chip-name{ white-space:nowrap; }
-  .person-chip-check{ font-size:14px !important; color:#4ade80; flex-shrink:0; }
-  .person-chip-del{ font-size:13px !important; cursor:pointer; opacity:0.6; flex-shrink:0; }
-  .person-chip-del:hover{ opacity:1; }
 
   .sidebar-spacer{ flex:1 1 auto; }
 
@@ -2565,10 +2328,6 @@
         <span class="material-symbols-outlined">checklist</span>
         <span>Habits</span>
       </button>
-      <button type="button" class="mobile-pill-btn" onclick="openSocialModal()" aria-label="Social Targets">
-        <span class="material-symbols-outlined">person</span>
-        <span>Social</span>
-      </button>
       <button type="button" class="mobile-quick-btn" onclick="syncData(this)" aria-label="Export data">
         <span class="material-symbols-outlined">sync</span>
       </button>
@@ -2919,79 +2678,6 @@
           <button type="button" class="checkmark-btn" onclick="saveHabitForm()" title="Save">
             <span class="material-symbols-outlined">check</span>
           </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===================== SOCIAL TARGETS TRIANGLE MODAL ===================== -->
-<div class="modal-overlay" id="social-modal">
-  <div class="modal-card glass social-modal-card">
-    <div class="habit-modal-header-row">
-      <h2 style="margin:0; font-size:1.2rem; font-weight:700;">Social Targets</h2>
-      <div class="habit-modal-close" onclick="closeModal('social-modal')" title="Close">
-        <span class="material-symbols-outlined">close</span>
-      </div>
-    </div>
-
-    <div class="social-modal-body">
-      <div class="social-pyramid-area">
-        <div class="triangle-wrap">
-          <div class="tri-tier" style="background-color:rgba(0,225,255,0.78); clip-path:polygon(50% 0%, 35.5% 29%, 64.5% 29%);"
-            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'daily')">
-            <div class="tri-chip-row" id="tri-chips-daily" style="top:10%; width:16%; max-height:18%;"></div>
-          </div>
-          <div class="tri-tier" style="background-color:rgba(60,255,20,0.72); clip-path:polygon(35.5% 29%, 64.5% 29%, 77.02% 54.04%, 22.98% 54.04%);"
-            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'semiDaily')">
-            <div class="tri-chip-row" id="tri-chips-semiDaily" style="top:38.3%; width:39%; max-height:14.6%;"></div>
-          </div>
-          <div class="tri-tier" style="background-color:rgba(255,240,0,0.68); clip-path:polygon(22.98% 54.04%, 77.02% 54.04%, 89.13% 78.27%, 10.87% 78.27%);"
-            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'weekly')">
-            <div class="tri-chip-row" id="tri-chips-weekly" style="top:61.79%; width:59%; max-height:15.51%;"></div>
-          </div>
-          <div class="tri-tier" style="background-color:rgba(255,20,95,0.75); clip-path:polygon(10.87% 78.27%, 89.13% 78.27%, 100% 100%, 0% 100%);"
-            ondragover="triTierDragOver(event)" ondragenter="triTierDragEnter(event)" ondragleave="triTierDragLeave(event)" ondrop="dropOnTier(event,'monthly')">
-            <div class="tri-chip-row" id="tri-chips-monthly" style="top:85.22%; width:78%; max-height:13.91%;"></div>
-          </div>
-          <div class="tri-tier-label" style="top:6%;">Daily</div>
-          <div class="tri-tier-label" style="top:31%;">Semi-Daily</div>
-          <div class="tri-tier-label" style="top:55.98%;">Weekly</div>
-          <div class="tri-tier-label" style="top:80.01%;">Monthly</div>
-          <svg class="tri-border-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M50 0 L100 100 L0 100 Z" class="tri-border-outer"/>
-            <line x1="35.5" y1="29" x2="64.5" y2="29" class="tri-border-divider"/>
-            <line x1="22.98" y1="54.04" x2="77.02" y2="54.04" class="tri-border-divider"/>
-            <line x1="10.87" y1="78.27" x2="89.13" y2="78.27" class="tri-border-divider"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="social-bottom-section">
-        <div class="social-people-panel glass">
-          <div class="social-people-header-inline">
-            <p class="social-people-title mono">People</p>
-            <div class="habit-mini-add-btn" id="social-people-add-btn" onclick="openSocialPersonForm()" title="Add person">
-              <span class="material-symbols-outlined">add</span>
-            </div>
-          </div>
-          <div class="social-people-chips" id="social-people-list" ondragover="triTierDragOver(event)" ondrop="dropOnPeopleList(event)"></div>
-        </div>
-        <div class="social-add-form" id="social-add-form" style="display:none;">
-          <div class="field-group">
-            <label class="field-label">Name</label>
-            <input class="field-text" id="social-person-name-input" type="text" placeholder="e.g. Alex">
-          </div>
-          <div class="field-group">
-            <label class="field-label">Color</label>
-            <div class="habit-color-row" id="social-color-row"></div>
-          </div>
-          <div style="display:flex; gap:8px; margin-left:auto;">
-            <button type="button" class="habit-cancel-btn" onclick="cancelSocialPersonForm()">Cancel</button>
-            <button type="button" class="checkmark-btn" onclick="saveSocialPerson()" title="Save">
-              <span class="material-symbols-outlined">check</span>
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -3422,7 +3108,7 @@
   function todayISO(){
     /* Deliberately NOT aliased to getAdjustedDate() here — on this
        page, Deadlines' "Due Today"/"Overdue" status should flip at
-       real midnight, unlike Habits/Lab Tasks/Social Targets (and
+       real midnight, unlike Habits/Lab Tasks (and
        unlike index.html's Academic card, which still uses the
        5AM-adjusted date). This is an intentional divergence from
        index.html, not an oversight. */
@@ -4076,11 +3762,6 @@
      academic-subpage.html (see the Phase 2 rebuild) — those cards no
      longer render here, and index.html has its own separate wheel-
      based system now. */
-  function diffDaysISO(aISO, bISO){
-    var a = new Date(aISO + 'T00:00:00');
-    var b = new Date(bISO + 'T00:00:00');
-    return Math.round((b - a) / 86400000);
-  }
 
   /* ============================================================
      Habit Tracker — la_habits
@@ -4136,6 +3817,18 @@
     var d = new Date(iso + 'T00:00:00');
     d.setDate(d.getDate() + delta);
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function getPreviousProductivityDate(){
+    return addDaysISO(getAdjustedDate(), -1);
+  }
+  function isNightCheckinMissed(){
+    var prevDate = getPreviousProductivityDate();
+    if(localStorage.getItem('la_checkin_night_' + prevDate)) return false;
+    if(localStorage.getItem('la_night_checkin_prompted_' + prevDate)) return false;
+    return true;
+  }
+  function maybeRedirectForNightCheckin(){
+    if(isNightCheckinMissed()){ window.location.href = '../index.html'; }
   }
   function isScheduledDay(habit, dateISO){
     var dow = new Date(dateISO + 'T00:00:00').getDay();
@@ -4415,13 +4108,6 @@
       renderSidebarHabits();
       if(document.getElementById('habit-modal').classList.contains('open')){ renderHabitGrid(); }
     }
-    else if(e.key === 'la_social_people' || e.key === 'la_social_state'){
-      renderSidebarSocial();
-      if(document.getElementById('social-modal').classList.contains('open')){
-        renderTrianglePeopleList();
-        renderTriangleTiers();
-      }
-    }
   }
   window.addEventListener('storage', handleStorageSync);
   window.addEventListener('state-change', function(e){ handleStorageSync({ key: e.detail.key }); });
@@ -4518,12 +4204,13 @@
   function runClockTick(){
     updateLateNightMode();
     checkDailyReset();
+    maybeRedirectForNightCheckin();
   }
 
   /* ============================================================
-     Daily reset at 5AM — refresh check-in badges, social daily
-     state, and nutrition entry for the new day. Only fires once
-     per adjusted day (la_last_reset_date, 5AM-adjusted YYYY-MM-DD).
+     Daily reset at 5AM — refresh check-in badges and nutrition
+     entry for the new day. Only fires once per adjusted day
+     (la_last_reset_date, 5AM-adjusted YYYY-MM-DD).
   ============================================================ */
   function clearTodayNutritionEntry(){
     var cfg = loadJSON('la_nutrition', null);
@@ -4534,7 +4221,6 @@
   }
 
   function performDailyReset(){
-    renderSidebarSocial();
     clearTodayNutritionEntry();
     if(typeof renderMoodCard === 'function'){ renderMoodCard(); }
     if(typeof renderSplitPlanner === 'function'){ renderSplitPlanner(); }
@@ -4568,269 +4254,6 @@
     var minStr = mins < 10 ? '0' + mins : '' + mins;
     el.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() +
       '  ·  ' + h12 + ':' + minStr + ' ' + ampm;
-  }
-
-  /* ============================================================
-     Social Targets Triangle — la_social_people / la_social_state
-  ============================================================ */
-  var SOCIAL_COLORS = ['#3b82f6','#22c55e','#eab308','#ef4444','#a855f7','#ec4899','#14b8a6','#f97316'];
-  var SOCIAL_TIER_INTERVAL_DAYS = { semiDaily:1, weekly:7, monthly:30 };
-  var selectedSocialColor = SOCIAL_COLORS[0];
-  var dragPersonId = null;
-
-  function getSocialPeople(){ return loadJSON('la_social_people', []); }
-  function saveSocialPeople(list){ saveJSON('la_social_people', list); }
-
-  function getSocialState(){
-    var s = loadJSON('la_social_state', null) || {};
-    s.tiers = s.tiers || {};
-    ['daily','semiDaily','weekly','monthly'].forEach(function(k){ if(!s.tiers[k]) s.tiers[k] = []; });
-    s.rotation = s.rotation || {};
-    ['semiDaily','weekly','monthly'].forEach(function(k){
-      if(!s.rotation[k]) s.rotation[k] = { currentIndex:0, clearedUntil:null };
-    });
-    s.daily = s.daily || { talkedDay:null, talkedIds:[] };
-    return s;
-  }
-  function saveSocialState(s){ saveJSON('la_social_state', s); }
-
-  function ensureDailyReset(state){
-    var today = getAdjustedDate();
-    if(state.daily.talkedDay !== today){
-      state.daily.talkedDay = today;
-      state.daily.talkedIds = [];
-    }
-  }
-
-  function resolveTierPerson(state, tierKey){
-    var people = state.tiers[tierKey];
-    var rot = state.rotation[tierKey];
-    if(!people.length) return null;
-    var today = getAdjustedDate();
-    if(rot.clearedUntil && diffDaysISO(today, rot.clearedUntil) <= 0){
-      rot.currentIndex = (rot.currentIndex + 1) % people.length;
-      rot.clearedUntil = null;
-    }
-    if(rot.clearedUntil) return null;
-    var idx = ((rot.currentIndex % people.length) + people.length) % people.length;
-    return people[idx];
-  }
-
-  function markSocialTalked(tierKey, personId){
-    var state = getSocialState();
-    if(tierKey === 'daily'){
-      ensureDailyReset(state);
-      if(state.daily.talkedIds.indexOf(personId) === -1){ state.daily.talkedIds.push(personId); }
-    } else {
-      var today = getAdjustedDate();
-      state.rotation[tierKey].clearedUntil = addDaysISO(today, SOCIAL_TIER_INTERVAL_DAYS[tierKey]);
-    }
-    saveSocialState(state);
-    renderSidebarSocial();
-  }
-
-  function unmarkSocialTalked(tierKey, personId){
-    var state = getSocialState();
-    if(tierKey === 'daily'){
-      ensureDailyReset(state);
-      var idx = state.daily.talkedIds.indexOf(personId);
-      if(idx !== -1) state.daily.talkedIds.splice(idx, 1);
-    } else if(state.rotation[tierKey]){
-      state.rotation[tierKey].clearedUntil = null;
-    }
-    saveSocialState(state);
-    renderTriangleTiers();
-    renderSidebarSocial();
-  }
-
-  function renderSidebarSocial(){
-    var wrap = document.getElementById('social-widget-rows');
-    if(!wrap) return;
-    var people = getSocialPeople();
-    var state = getSocialState();
-    ensureDailyReset(state);
-
-    var rows = [];
-    state.tiers.daily.forEach(function(pid){
-      if(state.daily.talkedIds.indexOf(pid) !== -1) return;
-      var p = people.find(function(x){ return x.id === pid; });
-      if(p) rows.push({ person:p, tier:'daily', freqLabel:'Daily' });
-    });
-    [['semiDaily','Semi'], ['weekly','Weekly'], ['monthly','Monthly']].forEach(function(pair){
-      var pid = resolveTierPerson(state, pair[0]);
-      if(!pid) return;
-      var p = people.find(function(x){ return x.id === pid; });
-      if(p) rows.push({ person:p, tier:pair[0], freqLabel:pair[1] });
-    });
-
-    saveSocialState(state);
-
-    if(!rows.length){
-      wrap.innerHTML = '<div class="social-empty">All targets met!</div>';
-      return;
-    }
-    wrap.innerHTML = rows.map(function(r){
-      return '<div class="social-row">' +
-          '<div class="social-row-left">' +
-            '<span class="dot" style="background:'+r.person.color+'; color:'+r.person.color+';"></span>' +
-            '<span class="name">'+escapeHtml(r.person.name)+'</span>' +
-            '<span class="social-freq-label mono">'+r.freqLabel+'</span>' +
-          '</div>' +
-          '<input type="checkbox" class="habit-checkbox" onclick="markSocialTalked(\''+r.tier+'\',\''+r.person.id+'\')">' +
-        '</div>';
-    }).join('');
-  }
-
-  function renderPersonChipHtml(p, checkedOff, tierKey){
-    var checkedClass = checkedOff ? ' person-chip-checked' : '';
-    var checkBadge = checkedOff ? '<span class="person-chip-check material-symbols-outlined" title="Click to uncheck" onclick="event.stopPropagation(); unmarkSocialTalked(\''+tierKey+'\',\''+p.id+'\')">check_circle</span>' : '';
-    return '<div class="person-chip'+checkedClass+'" draggable="true" style="border-color:'+habitColorRgba(p.color,0.5)+'; background:'+habitColorRgba(p.color,0.6)+';" data-person-id="'+p.id+'" ondragstart="personDragStart(event,\''+p.id+'\')" ondragend="personDragEnd(event)">' +
-        '<span class="person-chip-dot" style="background:'+p.color+'; color:'+p.color+';"></span>' +
-        '<span class="person-chip-name">'+escapeHtml(p.name)+'</span>' +
-        checkBadge +
-        '<span class="person-chip-del material-symbols-outlined" onclick="event.stopPropagation(); deleteSocialPerson(\''+p.id+'\')" title="Remove">close</span>' +
-      '</div>';
-  }
-
-  function renderTrianglePeopleList(){
-    var people = getSocialPeople();
-    var state = getSocialState();
-    var assigned = {};
-    ['daily','semiDaily','weekly','monthly'].forEach(function(k){
-      state.tiers[k].forEach(function(id){ assigned[id] = true; });
-    });
-    var unassigned = people.filter(function(p){ return !assigned[p.id]; });
-    var list = document.getElementById('social-people-list');
-    list.innerHTML = unassigned.length
-      ? unassigned.map(function(p){ return renderPersonChipHtml(p); }).join('')
-      : '<div class="social-people-empty">No unassigned people — add or drag someone here</div>';
-  }
-
-  function renderTriangleTiers(){
-    var people = getSocialPeople();
-    var state = getSocialState();
-    ensureDailyReset(state);
-    saveSocialState(state);
-    ['daily','semiDaily','weekly','monthly'].forEach(function(key){
-      var wrap = document.getElementById('tri-chips-' + key);
-      if(!wrap) return;
-      var ids = state.tiers[key];
-      var checkedOffId = null;
-      if(key !== 'daily'){
-        var rot = state.rotation[key];
-        if(rot.clearedUntil && ids.length){
-          var idx = ((rot.currentIndex % ids.length) + ids.length) % ids.length;
-          checkedOffId = ids[idx];
-        }
-      }
-      wrap.innerHTML = ids.map(function(id){
-        var p = people.find(function(x){ return x.id === id; });
-        if(!p) return '';
-        var checkedOff = key === 'daily' ? (state.daily.talkedIds.indexOf(id) !== -1) : (id === checkedOffId);
-        return renderPersonChipHtml(p, checkedOff, key);
-      }).join('');
-    });
-  }
-
-  function openSocialModal(){
-    cancelSocialPersonForm();
-    renderTrianglePeopleList();
-    renderTriangleTiers();
-    openModal('social-modal');
-  }
-
-  function personDragStart(e, id){
-    dragPersonId = id;
-    if(e.dataTransfer){ e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', id); }
-    e.currentTarget.classList.add('dragging');
-  }
-  function personDragEnd(e){
-    e.currentTarget.classList.remove('dragging');
-    dragPersonId = null;
-  }
-  function triTierDragOver(e){
-    e.preventDefault();
-    if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
-  }
-  function triTierDragEnter(e){ e.currentTarget.classList.add('drag-over'); }
-  function triTierDragLeave(e){ e.currentTarget.classList.remove('drag-over'); }
-
-  function unassignPersonFromAllTiers(state, id){
-    ['daily','semiDaily','weekly','monthly'].forEach(function(k){
-      var idx = state.tiers[k].indexOf(id);
-      if(idx !== -1) state.tiers[k].splice(idx,1);
-    });
-  }
-
-  function dropOnTier(e, tierKey){
-    e.preventDefault();
-    e.stopPropagation();
-    e.currentTarget.classList.remove('drag-over');
-    if(!dragPersonId) return;
-    var state = getSocialState();
-    unassignPersonFromAllTiers(state, dragPersonId);
-    state.tiers[tierKey].push(dragPersonId);
-    saveSocialState(state);
-    renderTriangleTiers();
-    renderTrianglePeopleList();
-    renderSidebarSocial();
-  }
-  function dropOnPeopleList(e){
-    e.preventDefault();
-    if(!dragPersonId) return;
-    var state = getSocialState();
-    unassignPersonFromAllTiers(state, dragPersonId);
-    saveSocialState(state);
-    renderTriangleTiers();
-    renderTrianglePeopleList();
-    renderSidebarSocial();
-  }
-
-  function openSocialPersonForm(){
-    document.getElementById('social-add-form').style.display = 'flex';
-    document.getElementById('social-people-add-btn').style.display = 'none';
-    document.getElementById('social-person-name-input').value = '';
-    selectedSocialColor = SOCIAL_COLORS[0];
-    renderSocialColorSwatches();
-    document.getElementById('social-person-name-input').focus();
-  }
-  function cancelSocialPersonForm(){
-    var form = document.getElementById('social-add-form');
-    var btn = document.getElementById('social-people-add-btn');
-    if(form) form.style.display = 'none';
-    if(btn) btn.style.display = 'flex';
-  }
-  function renderSocialColorSwatches(){
-    var row = document.getElementById('social-color-row');
-    if(!row) return;
-    row.innerHTML = SOCIAL_COLORS.map(function(c){
-      var sel = c === selectedSocialColor ? ' selected' : '';
-      return '<div class="habit-color-swatch'+sel+'" style="background:'+c+';" onclick="selectSocialColor(\''+c+'\')"></div>';
-    }).join('');
-  }
-  function selectSocialColor(c){
-    selectedSocialColor = c;
-    renderSocialColorSwatches();
-  }
-  function saveSocialPerson(){
-    var input = document.getElementById('social-person-name-input');
-    var name = input.value.trim();
-    if(!name){ input.focus(); return; }
-    var people = getSocialPeople();
-    people.push({ id: uid(), name: name, color: selectedSocialColor });
-    saveSocialPeople(people);
-    cancelSocialPersonForm();
-    renderTrianglePeopleList();
-    renderSidebarSocial();
-  }
-  function deleteSocialPerson(id){
-    saveSocialPeople(getSocialPeople().filter(function(p){ return p.id !== id; }));
-    var state = getSocialState();
-    unassignPersonFromAllTiers(state, id);
-    saveSocialState(state);
-    renderTriangleTiers();
-    renderTrianglePeopleList();
-    renderSidebarSocial();
   }
 
   /* ============================================================
@@ -5382,7 +4805,6 @@
   renderSidebarMood();
   renderSidebarCurrently();
   renderSidebarHabits();
-  renderSidebarSocial();
   loadWeather();
   initSpotifyWidget();
   updateSidebarDateTime();
