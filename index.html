@@ -7738,7 +7738,7 @@
     }
     youtubePlayer = new YT.Player('youtube-player-anchor', {
       height: '2', width: '2',
-      playerVars: { autoplay: 0, controls: 0, disablekb: 1 },
+      playerVars: { autoplay: 0, controls: 0, disablekb: 1, origin: window.location.origin },
       events: {
         onReady: function(){
           youtubePlayerReady = true;
@@ -7764,6 +7764,7 @@
     renderYoutubePlaylists();
     ensureYoutubePlayer(function(){
       youtubePlayer.loadPlaylist({ list: playlistId, listType: 'playlist' });
+      youtubePlayer.playVideo();
       youtubeShuffleOn = false;
       if(youtubePlayer.setShuffle) youtubePlayer.setShuffle(false);
       renderYoutubeNowPlaying();
