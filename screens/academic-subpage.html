@@ -5346,6 +5346,7 @@
     if(youtubeAccessToken && youtubeTokenExpiresAt > Date.now()){
       renderYoutubeWidget();
     } else {
+      renderYoutubeConnectPrompt();
       requestYoutubeToken(false);
     }
   }
