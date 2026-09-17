@@ -7748,7 +7748,8 @@
             cb();
           }
         },
-        onStateChange: onYoutubePlayerStateChange
+        onStateChange: onYoutubePlayerStateChange,
+        onError: onYoutubePlayerError
       }
     });
   }
@@ -7757,6 +7758,32 @@
     renderYoutubeNowPlaying();
     if(evt.data === YT.PlayerState.PLAYING){ startYoutubeProgressTimer(); }
     else { stopYoutubeProgressTimer(); }
+  }
+
+  // YT error codes: 2 invalid param, 5 HTML5 player error, 100 video
+  // not found/private, 101/150 embedding disabled by the uploader
+  // (the last one is the usual culprit when a playlist "loads" but
+  // never actually plays — it's a per-video toggle, unrelated to the
+  // playlist's own public/private/unlisted setting).
+  var YOUTUBE_ERROR_MESSAGES = {
+    2: 'Invalid video/playlist parameter.',
+    5: 'This video can&rsquo;t be played in the HTML5 player.',
+    100: 'Video not found or private.',
+    101: 'The uploader disabled embedding for this video.',
+    150: 'The uploader disabled embedding for this video.'
+  };
+
+  function onYoutubePlayerError(evt){
+    var msg = YOUTUBE_ERROR_MESSAGES[evt.data] || ('YouTube player error (code ' + evt.data + ').');
+    console.warn('[youtube widget]', msg, evt);
+    var wrap = document.getElementById('youtube-now-playing-wrap');
+    if(wrap){
+      wrap.innerHTML = '<div class="youtube-mini-empty">' + msg + ' Skipping&hellip;</div>';
+    }
+    stopYoutubeProgressTimer();
+    if(youtubePlayer && youtubePlayer.nextVideo){
+      setTimeout(function(){ youtubePlayer.nextVideo(); }, 1200);
+    }
   }
 
   function playYoutubePlaylist(playlistId){
