@@ -644,6 +644,21 @@
   }
   .spotify-mini-disconnect:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
   .spotify-mini-disconnect .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .spotify-mini-back{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .spotify-mini-back:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .spotify-mini-back .material-symbols-outlined{ font-size:14px; color:inherit; }
   .spotify-mini-empty{
     font-size:0.7rem;
     color:var(--ink-faint);
@@ -758,35 +773,7 @@
   .spotify-controls button .material-symbols-outlined{ font-size:18px; }
   .spotify-controls .spotify-play-btn{ width:38px; height:38px; background:rgba(30,215,96,0.2); border-color:rgba(30,215,96,0.55); }
   .spotify-controls .spotify-play-btn .material-symbols-outlined{ font-size:22px; color:#1ed760; }
-
-  .spotify-shuffle-row{
-    display:flex;
-    align-items:center;
-    gap:4px;
-    background:rgba(255,255,255,0.05);
-    border-radius:8px;
-    padding:3px;
-  }
-  .spotify-shuffle-btn{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    padding:6px 4px;
-    border-radius:6px;
-    border:none;
-    background:transparent;
-    color:var(--ink-dim);
-    font-family:inherit;
-    font-size:0.6rem;
-    font-weight:700;
-    letter-spacing:0.02em;
-    cursor:pointer;
-  }
-  .spotify-shuffle-btn .material-symbols-outlined{ font-size:14px; }
-  .spotify-shuffle-btn:hover{ color:var(--ink); }
-  .spotify-shuffle-btn.active{ background:rgba(30,215,96,0.22); color:#1ed760; }
+  .spotify-controls .spotify-shuffle-toggle.active{ background:rgba(30,215,96,0.22); border-color:rgba(30,215,96,0.55); color:#1ed760; }
 
   .spotify-playlists{
     display:flex;
@@ -841,7 +828,20 @@
     align-items:center;
     gap:6px;
   }
-  .youtube-mini-header .material-symbols-outlined{ font-size:22px; color:#ff0000; }
+  .youtube-logo-badge{
+    width:24px; height:17px;
+    flex-shrink:0;
+    border-radius:5px;
+    background:#ff0000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .youtube-logo-badge .material-symbols-outlined{
+    font-size:11px;
+    color:#fff;
+    font-variation-settings:'FILL' 1;
+  }
   .youtube-mini-title{
     margin:0;
     font-size:0.68rem;
@@ -866,6 +866,21 @@
   }
   .youtube-mini-disconnect:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
   .youtube-mini-disconnect .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .youtube-mini-back{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-mini-back:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .youtube-mini-back .material-symbols-outlined{ font-size:14px; color:inherit; }
   .youtube-mini-empty{
     font-size:0.7rem;
     color:var(--ink-faint);
@@ -977,35 +992,7 @@
   .youtube-controls button .material-symbols-outlined{ font-size:18px; }
   .youtube-controls .youtube-play-btn{ width:38px; height:38px; background:rgba(255,0,0,0.2); border-color:rgba(255,0,0,0.55); }
   .youtube-controls .youtube-play-btn .material-symbols-outlined{ font-size:22px; color:#ff0000; }
-
-  .youtube-shuffle-row{
-    display:flex;
-    align-items:center;
-    gap:4px;
-    background:rgba(255,255,255,0.05);
-    border-radius:8px;
-    padding:3px;
-  }
-  .youtube-shuffle-btn{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    padding:6px 4px;
-    border-radius:6px;
-    border:none;
-    background:transparent;
-    color:var(--ink-dim);
-    font-family:inherit;
-    font-size:0.6rem;
-    font-weight:700;
-    letter-spacing:0.02em;
-    cursor:pointer;
-  }
-  .youtube-shuffle-btn .material-symbols-outlined{ font-size:14px; }
-  .youtube-shuffle-btn:hover{ color:var(--ink); }
-  .youtube-shuffle-btn.active{ background:rgba(255,0,0,0.22); color:#ff0000; }
+  .youtube-controls .youtube-shuffle-toggle.active{ background:rgba(255,0,0,0.22); border-color:rgba(255,0,0,0.55); color:#ff0000; }
 
   .youtube-playlists{
     display:flex;
@@ -3505,6 +3492,9 @@
     <div class="spotify-mini-card glass">
       <div class="spotify-mini-header">
         <span class="material-symbols-outlined">graphic_eq</span>
+        <button type="button" class="spotify-mini-back" id="spotify-back-btn" onclick="backToSpotifyPlaylists()" title="Back to playlists" style="display:none;">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
         <p class="spotify-mini-title mono"></p>
         <button type="button" class="spotify-mini-disconnect" id="spotify-disconnect-btn" onclick="disconnectSpotify()" title="Disconnect" style="display:none;">
           <span class="material-symbols-outlined">logout</span>
@@ -3515,7 +3505,10 @@
 
     <div class="youtube-mini-card glass">
       <div class="youtube-mini-header">
-        <span class="material-symbols-outlined">smart_display</span>
+        <span class="youtube-logo-badge"><span class="material-symbols-outlined">play_arrow</span></span>
+        <button type="button" class="youtube-mini-back" id="youtube-back-btn" onclick="backToYoutubePlaylists()" title="Back to playlists" style="display:none;">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
         <p class="youtube-mini-title mono"></p>
         <button type="button" class="youtube-mini-disconnect" id="youtube-disconnect-btn" onclick="disconnectYoutube()" title="Disconnect" style="display:none;">
           <span class="material-symbols-outlined">logout</span>
@@ -7229,6 +7222,7 @@
   var spotifyPlayingContext = null;
   var spotifyProgressState = null; // { position, duration, paused, updatedAt }
   var spotifyProgressTimer = null;
+  var spotifyViewMode = 'list'; // 'list' | 'player'
 
   function getSpotifyAuth(){ return loadJSON('la_spotify_auth', null); }
   function saveSpotifyAuth(auth){ saveJSON('la_spotify_auth', auth); }
@@ -7288,14 +7282,35 @@
     spotifyPlayingContext = null;
     stopSpotifyProgressTimer();
     spotifyProgressState = null;
+    spotifyViewMode = 'list';
     var disconnectBtn = document.getElementById('spotify-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'none';
+    var backBtn = document.getElementById('spotify-back-btn');
+    if(backBtn) backBtn.style.display = 'none';
     renderSpotifyConnectPrompt();
   }
 
   function renderSpotifyConnectPrompt(){
     renderSpotifyBody('<button type="button" class="spotify-connect-btn" onclick="startSpotifyLogin()">' +
       '<span class="material-symbols-outlined">graphic_eq</span>Connect Spotify</button>');
+  }
+
+  function setSpotifyViewMode(mode){
+    spotifyViewMode = mode;
+    var nowWrap = document.getElementById('spotify-now-playing-wrap');
+    var listWrap = document.getElementById('spotify-list-wrap');
+    var backBtn = document.getElementById('spotify-back-btn');
+    if(nowWrap) nowWrap.style.display = mode === 'player' ? '' : 'none';
+    if(listWrap) listWrap.style.display = mode === 'list' ? '' : 'none';
+    if(backBtn) backBtn.style.display = mode === 'player' ? 'flex' : 'none';
+  }
+
+  function backToSpotifyPlaylists(){
+    if(spotifyPlayer) spotifyPlayer.pause();
+    stopSpotifyProgressTimer();
+    spotifyPlayingContext = null;
+    setSpotifyViewMode('list');
+    renderSpotifyPlaylists();
   }
 
   function getSpotifyShuffleMode(){ return localStorage.getItem('la_spotify_shuffle_mode') || 'off'; }
@@ -7427,15 +7442,10 @@
           '<span class="spotify-progress-time" id="spotify-progress-duration">' + spotifyFormatTime(state.duration) + '</span>' +
         '</div>' +
         '<div class="spotify-controls">' +
+          '<button type="button" class="spotify-shuffle-toggle' + (shuffleMode !== 'off' ? ' active' : '') + '" onclick="setSpotifyShuffleMode(\'' + (shuffleMode === 'off' ? 'shuffle' : 'off') + '\')" title="Shuffle"><span class="material-symbols-outlined">shuffle</span></button>' +
           '<button type="button" onclick="spotifyPlayer.previousTrack()" title="Previous"><span class="material-symbols-outlined">skip_previous</span></button>' +
           '<button type="button" class="spotify-play-btn" onclick="spotifyPlayer.togglePlay()" title="Play/Pause"><span class="material-symbols-outlined">' + (state.paused ? 'play_arrow' : 'pause') + '</span></button>' +
           '<button type="button" onclick="spotifyPlayer.nextTrack()" title="Next"><span class="material-symbols-outlined">skip_next</span></button>' +
-        '</div>' +
-        '<div class="spotify-shuffle-row">' +
-          '<button type="button" class="spotify-shuffle-btn' + (shuffleMode === 'off' ? ' active' : '') + '" onclick="setSpotifyShuffleMode(\'off\')" title="No shuffle">' +
-            '<span class="material-symbols-outlined">trending_flat</span>No Shuffle</button>' +
-          '<button type="button" class="spotify-shuffle-btn' + (shuffleMode === 'shuffle' ? ' active' : '') + '" onclick="setSpotifyShuffleMode(\'shuffle\')" title="Shuffle">' +
-            '<span class="material-symbols-outlined">shuffle</span>Shuffle</button>' +
         '</div>' +
       '</div>';
     startSpotifyProgressTimer();
@@ -7526,6 +7536,7 @@
     }
     spotifyPlayingContext = contextUri;
     renderSpotifyPlaylists();
+    setSpotifyViewMode('player');
     spotifyApiFetch('/me/player/play?device_id=' + spotifyDeviceId, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -7535,9 +7546,10 @@
 
   function renderSpotifyWidget(){
     renderSpotifyBody(
-      '<div id="spotify-now-playing-wrap"><div class="spotify-mini-empty">Connecting to your player&hellip;</div></div>' +
+      '<div id="spotify-now-playing-wrap"></div>' +
       '<div id="spotify-list-wrap"><div class="spotify-mini-empty">Loading playlists&hellip;</div></div>'
     );
+    setSpotifyViewMode('list');
     var disconnectBtn = document.getElementById('spotify-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'flex';
     loadSpotifyPlaylists();
@@ -7582,6 +7594,7 @@
   var youtubePlayingId = null;
   var youtubeShuffleOn = false;
   var youtubeProgressTimer = null;
+  var youtubeViewMode = 'list'; // 'list' | 'player'
 
   function getYoutubeTokenData(){ return loadJSON(YOUTUBE_TOKEN_KEY, null); }
   function saveYoutubeTokenData(token, expiresInSec){
@@ -7613,6 +7626,24 @@
   function renderYoutubeConnectPrompt(){
     renderYoutubeBody('<button type="button" class="youtube-connect-btn" onclick="connectYoutube()">' +
       '<span class="material-symbols-outlined">smart_display</span>Connect YouTube</button>');
+  }
+
+  function setYoutubeViewMode(mode){
+    youtubeViewMode = mode;
+    var nowWrap = document.getElementById('youtube-now-playing-wrap');
+    var listWrap = document.getElementById('youtube-list-wrap');
+    var backBtn = document.getElementById('youtube-back-btn');
+    if(nowWrap) nowWrap.style.display = mode === 'player' ? '' : 'none';
+    if(listWrap) listWrap.style.display = mode === 'list' ? '' : 'none';
+    if(backBtn) backBtn.style.display = mode === 'player' ? 'flex' : 'none';
+  }
+
+  function backToYoutubePlaylists(){
+    if(youtubePlayer && youtubePlayer.stopVideo){ try { youtubePlayer.stopVideo(); } catch(e){} }
+    stopYoutubeProgressTimer();
+    youtubePlayingId = null;
+    setYoutubeViewMode('list');
+    renderYoutubePlaylists();
   }
 
   function handleYoutubeTokenResponse(resp){
@@ -7648,8 +7679,11 @@
     stopYoutubeProgressTimer();
     if(youtubePlayer && youtubePlayer.stopVideo){ try { youtubePlayer.stopVideo(); } catch(e){} }
     localStorage.removeItem(YOUTUBE_PLAYLISTS_CACHE_KEY);
+    youtubeViewMode = 'list';
     var disconnectBtn = document.getElementById('youtube-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'none';
+    var backBtn = document.getElementById('youtube-back-btn');
+    if(backBtn) backBtn.style.display = 'none';
     renderYoutubeConnectPrompt();
   }
 
@@ -7789,6 +7823,7 @@
   function playYoutubePlaylist(playlistId){
     youtubePlayingId = playlistId;
     renderYoutubePlaylists();
+    setYoutubeViewMode('player');
     ensureYoutubePlayer(function(){
       youtubePlayer.loadPlaylist({ list: playlistId, listType: 'playlist' });
       youtubePlayer.playVideo();
@@ -7812,7 +7847,7 @@
     var data = youtubePlayer && youtubePlayer.getVideoData ? youtubePlayer.getVideoData() : null;
     if(!data || !data.video_id){
       stopYoutubeProgressTimer();
-      wrap.innerHTML = '<div class="youtube-mini-empty">Nothing playing. Pick a playlist below.</div>';
+      wrap.innerHTML = '';
       return;
     }
     var state = youtubePlayer.getPlayerState();
@@ -7838,15 +7873,10 @@
           '<span class="youtube-progress-time" id="youtube-progress-duration">' + youtubeFormatTime(duration) + '</span>' +
         '</div>' +
         '<div class="youtube-controls">' +
+          '<button type="button" class="youtube-shuffle-toggle' + (youtubeShuffleOn ? ' active' : '') + '" onclick="setYoutubeShuffle(' + (!youtubeShuffleOn) + ')" title="Shuffle"><span class="material-symbols-outlined">shuffle</span></button>' +
           '<button type="button" onclick="youtubePlayer.previousVideo()" title="Previous"><span class="material-symbols-outlined">skip_previous</span></button>' +
           '<button type="button" class="youtube-play-btn" onclick="toggleYoutubePlayback()" title="Play/Pause"><span class="material-symbols-outlined">' + (isPaused ? 'play_arrow' : 'pause') + '</span></button>' +
           '<button type="button" onclick="youtubePlayer.nextVideo()" title="Next"><span class="material-symbols-outlined">skip_next</span></button>' +
-        '</div>' +
-        '<div class="youtube-shuffle-row">' +
-          '<button type="button" class="youtube-shuffle-btn' + (!youtubeShuffleOn ? ' active' : '') + '" onclick="setYoutubeShuffle(false)" title="No shuffle">' +
-            '<span class="material-symbols-outlined">trending_flat</span>No Shuffle</button>' +
-          '<button type="button" class="youtube-shuffle-btn' + (youtubeShuffleOn ? ' active' : '') + '" onclick="setYoutubeShuffle(true)" title="Shuffle">' +
-            '<span class="material-symbols-outlined">shuffle</span>Shuffle</button>' +
         '</div>' +
       '</div>';
     if(!isPaused) startYoutubeProgressTimer(); else stopYoutubeProgressTimer();
@@ -7900,9 +7930,10 @@
 
   function renderYoutubeWidget(){
     renderYoutubeBody(
-      '<div id="youtube-now-playing-wrap"><div class="youtube-mini-empty">Nothing playing. Pick a playlist below.</div></div>' +
+      '<div id="youtube-now-playing-wrap"></div>' +
       '<div id="youtube-list-wrap"><div class="youtube-mini-empty">Loading playlists&hellip;</div></div>'
     );
+    setYoutubeViewMode('list');
     var disconnectBtn = document.getElementById('youtube-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'flex';
     loadYoutubePlaylists(false);
