@@ -136,6 +136,9 @@
     -webkit-backdrop-filter:blur(20px) saturate(160%);
     border:1px solid transparent;
     gap:8px;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:hidden;
   }
   .sidebar::after{
     content:'';
@@ -288,11 +291,34 @@
   }
   .weather-mini-edit-btn:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
   .weather-mini-edit-btn .material-symbols-outlined{ font-size:14px; }
+  .weather-view-toggle{
+    display:flex;
+    gap:2px;
+    flex-shrink:0;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:6px;
+    padding:2px;
+  }
+  .weather-view-btn{
+    font-family:inherit;
+    font-size:0.58rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    padding:3px 7px;
+    border-radius:4px;
+    border:none;
+    background:transparent;
+    color:var(--ink-faint);
+    cursor:pointer;
+  }
+  .weather-view-btn.active{ background:rgba(56,189,248,0.26); color:#bfdbfe; }
   .weather-mini-body{
     display:flex;
     flex-direction:column;
     gap:10px;
   }
+  .weather-mini-card.is-compact .weather-mini-row{ padding:4px 0; border-bottom:none; }
   .weather-mini-empty{
     font-size:0.7rem;
     color:var(--ink-faint);
@@ -400,6 +426,7 @@
     cursor:pointer;
   }
   .weather-location-editor button:hover{ background:rgba(56,189,248,0.28); }
+
   /* ---------- Spotify mini card ---------- */
   .spotify-mini-card{
     padding:16px;
@@ -441,6 +468,21 @@
   }
   .spotify-mini-disconnect:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
   .spotify-mini-disconnect .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .spotify-mini-back{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .spotify-mini-back:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .spotify-mini-back .material-symbols-outlined{ font-size:14px; color:inherit; }
   .spotify-mini-empty{
     font-size:0.7rem;
     color:var(--ink-faint);
@@ -555,35 +597,7 @@
   .spotify-controls button .material-symbols-outlined{ font-size:18px; }
   .spotify-controls .spotify-play-btn{ width:38px; height:38px; background:rgba(30,215,96,0.2); border-color:rgba(30,215,96,0.55); }
   .spotify-controls .spotify-play-btn .material-symbols-outlined{ font-size:22px; color:#1ed760; }
-
-  .spotify-shuffle-row{
-    display:flex;
-    align-items:center;
-    gap:4px;
-    background:rgba(255,255,255,0.05);
-    border-radius:8px;
-    padding:3px;
-  }
-  .spotify-shuffle-btn{
-    flex:1;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    padding:6px 4px;
-    border-radius:6px;
-    border:none;
-    background:transparent;
-    color:var(--ink-dim);
-    font-family:inherit;
-    font-size:0.6rem;
-    font-weight:700;
-    letter-spacing:0.02em;
-    cursor:pointer;
-  }
-  .spotify-shuffle-btn .material-symbols-outlined{ font-size:14px; }
-  .spotify-shuffle-btn:hover{ color:var(--ink); }
-  .spotify-shuffle-btn.active{ background:rgba(30,215,96,0.22); color:#1ed760; }
+  .spotify-controls .spotify-shuffle-toggle.active{ background:rgba(30,215,96,0.22); border-color:rgba(30,215,96,0.55); color:#1ed760; }
 
   .spotify-playlists{
     display:flex;
@@ -620,164 +634,233 @@
   .spotify-playlist-row.playing .spotify-playlist-name{ color:#1ed760; font-weight:700; }
   .spotify-playlist-row .material-symbols-outlined{ font-size:14px; color:#1ed760; flex-shrink:0; }
 
-
-  /* Morning / Night buttons */
-  .daycycle-buttons{
+  /* ---------- YouTube mini card (red tint) ----------
+     Same layout/behavior pattern as the Spotify card above, swapped to
+     YouTube's Data API v3 (playlists) + IFrame Player API (playback). */
+  .youtube-mini-card{
+    padding:16px;
+    border-radius:var(--r-md);
     display:flex;
-    border-radius:var(--r-sm);
-    overflow:hidden;
+    flex-direction:column;
+    gap:10px;
+    background:#210d0d;
+    border:1px solid rgba(255,0,0,0.5);
+    flex-shrink:0;
   }
-  .daycycle-btn{
+  .youtube-mini-header{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .youtube-logo-badge{
+    width:24px; height:17px;
+    flex-shrink:0;
+    border-radius:5px;
+    background:#ff0000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .youtube-logo-badge .material-symbols-outlined{
+    font-size:11px;
+    color:#fff;
+    font-variation-settings:'FILL' 1;
+  }
+  .youtube-mini-title{
+    margin:0;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink);
     flex:1;
+    min-width:0;
+  }
+  .youtube-mini-disconnect{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-mini-disconnect:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .youtube-mini-disconnect .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .youtube-mini-back{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-mini-back:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .youtube-mini-back .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .youtube-mini-empty{
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    line-height:1.5;
+  }
+  .youtube-connect-btn{
     display:flex;
     align-items:center;
     justify-content:center;
     gap:6px;
-    padding:9px 8px;
-    background:transparent;
-    border:none;
-    appearance:none;
-    -webkit-appearance:none;
-    box-shadow:none;
-    color:var(--ink-dim);
-    font-size:0.72rem;
-    font-weight:700;
+    padding:8px 10px;
+    border-radius:8px;
+    border:1px solid rgba(255,0,0,0.55);
+    background:rgba(255,0,0,0.14);
+    color:var(--ink);
     font-family:inherit;
-    text-transform:uppercase;
-    letter-spacing:0.14em;
+    font-size:0.7rem;
+    font-weight:700;
     cursor:pointer;
-    transition:background .2s ease, color .2s ease;
   }
-  .daycycle-btn{ position:relative; }
-  .daycycle-btn .material-symbols-outlined{ font-size:16px; }
-  .daycycle-btn.morning{ color:#bcd4fb; background:#223b57; }
-  .daycycle-btn.morning .material-symbols-outlined{ color:#60a5fa; }
-  .daycycle-btn.morning:hover{ background:rgba(48,83,125,0.8); color:#eaf2ff; }
-  .daycycle-btn.morning.completed{ background:#1e3a5f; }
-  .daycycle-btn.night{ color:#f5e3a8; background:#4c4518; border-left:1px solid rgba(255,255,255,0.85); }
-  .daycycle-btn.night .material-symbols-outlined{ color:#facc15; }
-  .daycycle-btn.night:hover{ background:rgba(125,102,11,0.8); color:#fff8dc; }
-  .daycycle-btn.night.completed{ background:#d4af37; }
-  .daycycle-btn-check{ display:none; }
-  .daycycle-btn .daycycle-btn-check{ font-size:22px; }
-  .daycycle-btn.completed .daycycle-btn-icon,
-  .daycycle-btn.completed .daycycle-btn-label{ display:none; }
-  .daycycle-btn.completed .daycycle-btn-check{ display:inline-flex; color:#ffffff; }
+  .youtube-connect-btn:hover{ background:rgba(255,0,0,0.24); }
+  .youtube-connect-btn .material-symbols-outlined{ font-size:16px; color:#ff0000; }
 
-  /* Desktop-only: sidebar Morning/Night toggle refinements (no divider, subtle shadow) */
-  @media (min-width: 769px){
-    .sidebar .daycycle-buttons{
-      gap:8px;
-      background:transparent !important;
-      border:none !important;
-      box-shadow:none !important;
-    }
-    .sidebar .daycycle-buttons::before,
-    .sidebar .daycycle-buttons::after{
-      display:none !important;
-      content:none !important;
-    }
-    .sidebar .daycycle-btn{
-      border-radius:var(--r-sm);
-      box-shadow:0 2px 5px -1px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-    .sidebar .daycycle-btn.night{
-      border-left:none;
-    }
-  }
-
-  /* Late night mode (12AM-5AM): amber tint = still "yesterday" */
-  body.late-night .daycycle-btn.morning,
-  body.late-night .daycycle-btn.night{
-    background:rgba(251,191,36,0.08);
-  }
-  body.late-night .habit-mini-card{
-    border-color:rgba(251,191,36,0.4);
-  }
-
-  /* Sidebar mood mini card (condensed morning/night check-in summary,
-     replaces the old Study Streak mini card in this sidebar slot) */
-  .mood-mini-card{
-    padding:12px 14px;
-    border-radius:var(--r-md);
+  .youtube-now-playing{
     display:flex;
     flex-direction:column;
-    gap:8px;
-    background:#1a3c36;
-    border:1px solid rgba(74,222,128,0.55);
+    gap:10px;
+    padding-bottom:10px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
   }
-  .mood-mini-title{
-    margin:0;
-    font-size:0.6rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:0.1em;
-    color:var(--ink-faint);
-    text-align:center;
-  }
-  .mood-mini-row{
+  .youtube-now-playing-top{
     display:flex;
-    gap:8px;
+    align-items:center;
+    gap:10px;
   }
-  .mood-mini-block{
+  .youtube-art{
+    width:56px; height:56px;
+    flex-shrink:0;
+    border-radius:8px;
+    background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .youtube-track-meta{
     flex:1;
     min-width:0;
     display:flex;
     flex-direction:column;
-    align-items:center;
     gap:2px;
-    padding:6px 4px;
-    border-radius:var(--r-sm);
-    border:1px solid rgba(255,255,255,0.08);
-    background:rgba(255,255,255,0.03);
   }
-  .mood-mini-label{
-    font-size:0.52rem;
+  .youtube-track-title{
+    font-size:0.78rem;
     font-weight:700;
-    letter-spacing:0.06em;
-    color:var(--ink-faint);
+    color:var(--ink);
+    line-height:1.3;
+    overflow-wrap:break-word;
   }
-  .mood-mini-emoji{ font-size:1.15rem; line-height:1; }
-  .mood-mini-empty-mark{ font-size:0.85rem; color:var(--ink-faint); }
+  .youtube-track-artist{
+    font-size:0.68rem;
+    color:var(--ink-dim);
+    line-height:1.3;
+    overflow-wrap:break-word;
+  }
+  .youtube-progress-row{
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .youtube-progress-time{
+    flex-shrink:0;
+    width:30px;
+    font-size:0.6rem;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+  .youtube-progress-track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.14);
+    position:relative;
+    cursor:pointer;
+  }
+  .youtube-progress-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:0%;
+    border-radius:2px;
+    background:#ff0000;
+  }
+  .youtube-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+  }
+  .youtube-controls button{
+    width:32px; height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-controls button:hover{ background:rgba(255,0,0,0.24); border-color:rgba(255,0,0,0.55); }
+  .youtube-controls button .material-symbols-outlined{ font-size:18px; }
+  .youtube-controls .youtube-play-btn{ width:38px; height:38px; background:rgba(255,0,0,0.2); border-color:rgba(255,0,0,0.55); }
+  .youtube-controls .youtube-play-btn .material-symbols-outlined{ font-size:22px; color:#ff0000; }
+  .youtube-controls .youtube-shuffle-toggle.active{ background:rgba(255,0,0,0.22); border-color:rgba(255,0,0,0.55); color:#ff0000; }
 
-  /* Currently mini card (read-only summary of this page's Books/Movies/Shows cards) */
-  .currently-mini-card{
-    padding:14px;
-    border-radius:var(--r-md);
+  .youtube-playlists{
     display:flex;
     flex-direction:column;
-    gap:8px;
-    background:#36302b;
-    border:1px solid rgba(251,146,60,0.55);
+    gap:2px;
+    max-height:420px;
+    overflow-y:auto;
   }
-  .currently-mini-title{
-    font-size:0.651rem;
-    font-weight:700;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--ink);
-    margin:0 0 2px;
-  }
-  .currently-mini-row{
+  .youtube-playlist-row{
     display:flex;
     align-items:center;
     gap:8px;
-    font-size:0.72rem;
+    padding:6px 4px;
+    border-radius:6px;
+    cursor:pointer;
   }
-  .currently-mini-row .currently-mini-icon{ font-size:14px; flex-shrink:0; }
-  .currently-mini-text{
-    color:var(--ink);
-    font-weight:600;
-    white-space:nowrap;
+  .youtube-playlist-row:hover{ background:rgba(255,0,0,0.12); }
+  .youtube-playlist-row.playing{ background:rgba(255,0,0,0.18); }
+  .youtube-playlist-art{
+    width:32px; height:32px;
+    flex-shrink:0;
+    border-radius:5px;
+    background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .youtube-playlist-meta{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .youtube-playlist-name{
+    font-size:0.7rem;
+    color:var(--ink-dim);
     overflow:hidden;
     text-overflow:ellipsis;
-    min-width:0;
+    white-space:nowrap;
   }
-  .currently-mini-row.empty .currently-mini-text{
+  .youtube-playlist-count{
+    font-size:0.6rem;
     color:var(--ink-faint);
-    font-weight:500;
-    font-style:italic;
   }
+  .youtube-playlist-row.playing .youtube-playlist-name{ color:#ff0000; font-weight:700; }
+  .youtube-playlist-row .material-symbols-outlined{ font-size:14px; color:#ff0000; flex-shrink:0; }
 
   /* ---------- Habit Tracker mini card (green tint) ---------- */
   .habit-mini-card{
@@ -1867,6 +1950,9 @@
     <div class="spotify-mini-card glass">
       <div class="spotify-mini-header">
         <span class="material-symbols-outlined">graphic_eq</span>
+        <button type="button" class="spotify-mini-back" id="spotify-back-btn" onclick="backToSpotifyPlaylists()" title="Back to playlists" style="display:none;">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
         <p class="spotify-mini-title mono"></p>
         <button type="button" class="spotify-mini-disconnect" id="spotify-disconnect-btn" onclick="disconnectSpotify()" title="Disconnect" style="display:none;">
           <span class="material-symbols-outlined">logout</span>
@@ -1875,9 +1961,30 @@
       <div class="spotify-mini-body" id="spotify-mini-body"></div>
     </div>
 
+    <div class="youtube-mini-card glass">
+      <div class="youtube-mini-header">
+        <span class="youtube-logo-badge"><span class="material-symbols-outlined">play_arrow</span></span>
+        <button type="button" class="youtube-mini-back" id="youtube-back-btn" onclick="backToYoutubePlaylists()" title="Back to playlists" style="display:none;">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <p class="youtube-mini-title mono"></p>
+        <button type="button" class="youtube-mini-disconnect" id="youtube-disconnect-btn" onclick="disconnectYoutube()" title="Disconnect" style="display:none;">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+      <div class="youtube-mini-body" id="youtube-mini-body"></div>
+    </div>
+    <div id="youtube-player-hide" style="position:absolute; width:2px; height:2px; overflow:hidden; opacity:0; pointer-events:none;">
+      <div id="youtube-player-anchor"></div>
+    </div>
+
     <div class="weather-mini-card glass">
       <div class="weather-mini-header">
         <p class="weather-mini-title mono" id="weather-location-label">Weather</p>
+        <div class="weather-view-toggle" id="weather-view-toggle">
+          <button type="button" class="weather-view-btn" data-view="1d" onclick="setWeatherViewMode('1d')">1D</button>
+          <button type="button" class="weather-view-btn" data-view="3d" onclick="setWeatherViewMode('3d')">3D</button>
+        </div>
         <button type="button" class="weather-mini-edit-btn" onclick="openWeatherLocationEditor()" title="Set location">
           <span class="material-symbols-outlined">edit_location_alt</span>
         </button>
@@ -1902,7 +2009,7 @@
           <span class="sync-btn-tooltip">Import</span>
         </button>
       </div>
-      <p class="sidebar-version mono">v 2.6</p>
+      <p class="sidebar-version mono">v 3.0</p>
     </div>
     <input type="file" id="sync-import-input" accept=".json,application/json" style="display:none;" onchange="handleImportFileSelected(event)">
   </aside>
@@ -3802,10 +3909,52 @@
     return s;
   }
 
+  var US_STATE_ABBR = {
+    'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA',
+    'Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA',
+    'Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS',
+    'Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA',
+    'Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT',
+    'Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM',
+    'New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK',
+    'Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC',
+    'South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT',
+    'Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY',
+    'District of Columbia':'DC'
+  };
+  function abbreviateWeatherRegion(match){
+    if(match.country_code === 'US' && match.admin1 && US_STATE_ABBR[match.admin1]){
+      return US_STATE_ABBR[match.admin1];
+    }
+    if(match.admin1) return match.admin1;
+    if(match.country_code) return match.country_code;
+    return match.country || '';
+  }
   function getWeatherLocation(){ return loadJSON('la_weather_location', null); }
   function saveWeatherLocation(loc){ saveJSON('la_weather_location', loc); }
   function getWeatherCache(){ return loadJSON('la_weather_cache', null); }
   function saveWeatherCache(cache){ saveJSON('la_weather_cache', cache); }
+  function getWeatherViewMode(){ return loadJSON('la_weather_view_mode', '3d'); }
+  function saveWeatherViewMode(mode){ saveJSON('la_weather_view_mode', mode); }
+
+  function updateWeatherViewToggleUI(){
+    var mode = getWeatherViewMode();
+    var toggle = document.getElementById('weather-view-toggle');
+    if(!toggle) return;
+    var btns = toggle.querySelectorAll('.weather-view-btn');
+    for(var i = 0; i < btns.length; i++){
+      btns[i].classList.toggle('active', btns[i].getAttribute('data-view') === mode);
+    }
+    var card = document.querySelector('.weather-mini-card');
+    if(card) card.classList.toggle('is-compact', mode === '1d');
+  }
+
+  function setWeatherViewMode(mode){
+    saveWeatherViewMode(mode);
+    updateWeatherViewToggleUI();
+    var cache = getWeatherCache();
+    if(cache && cache.days) renderWeatherDays(cache.days);
+  }
 
   function renderWeatherBody(html){
     var body = document.getElementById('weather-mini-body');
@@ -3813,7 +3962,10 @@
   }
 
   function renderWeatherDays(days){
-    renderWeatherBody(days.map(function(d, i){
+    updateWeatherViewToggleUI();
+    var mode = getWeatherViewMode();
+    var shown = mode === '1d' ? days.slice(0, 1) : days;
+    renderWeatherBody(shown.map(function(d, i){
       var meta = weatherIconFor(d.code);
       return '<div class="weather-mini-row">' +
           '<div class="weather-mini-row-top">' +
@@ -3864,6 +4016,7 @@
   }
 
   function loadWeather(){
+    updateWeatherViewToggleUI();
     var loc = getWeatherLocation();
     var labelEl = document.getElementById('weather-location-label');
     if(!loc){
@@ -3919,7 +4072,8 @@
           renderWeatherBody('<div class="weather-mini-empty">No location found for &ldquo;' + escapeHtml(query) + '&rdquo;. <span class="weather-mini-retry" onclick="openWeatherLocationEditor()">Try again</span></div>');
           return;
         }
-        var name = match.name + (match.admin1 ? ', ' + match.admin1 : (match.country ? ', ' + match.country : ''));
+        var region = abbreviateWeatherRegion(match);
+        var name = match.name + (region ? ', ' + region : '');
         saveWeatherLocation({ name: name, lat: match.latitude, lon: match.longitude });
         closeWeatherLocationEditor();
         loadWeather();
@@ -3953,6 +4107,7 @@
   var spotifyPlayingContext = null;
   var spotifyProgressState = null; // { position, duration, paused, updatedAt }
   var spotifyProgressTimer = null;
+  var spotifyViewMode = 'list'; // 'list' | 'player'
 
   function getSpotifyAuth(){ return loadJSON('la_spotify_auth', null); }
   function saveSpotifyAuth(auth){ saveJSON('la_spotify_auth', auth); }
@@ -4012,14 +4167,35 @@
     spotifyPlayingContext = null;
     stopSpotifyProgressTimer();
     spotifyProgressState = null;
+    spotifyViewMode = 'list';
     var disconnectBtn = document.getElementById('spotify-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'none';
+    var backBtn = document.getElementById('spotify-back-btn');
+    if(backBtn) backBtn.style.display = 'none';
     renderSpotifyConnectPrompt();
   }
 
   function renderSpotifyConnectPrompt(){
     renderSpotifyBody('<button type="button" class="spotify-connect-btn" onclick="startSpotifyLogin()">' +
       '<span class="material-symbols-outlined">graphic_eq</span>Connect Spotify</button>');
+  }
+
+  function setSpotifyViewMode(mode){
+    spotifyViewMode = mode;
+    var nowWrap = document.getElementById('spotify-now-playing-wrap');
+    var listWrap = document.getElementById('spotify-list-wrap');
+    var backBtn = document.getElementById('spotify-back-btn');
+    if(nowWrap) nowWrap.style.display = mode === 'player' ? '' : 'none';
+    if(listWrap) listWrap.style.display = mode === 'list' ? '' : 'none';
+    if(backBtn) backBtn.style.display = mode === 'player' ? 'flex' : 'none';
+  }
+
+  function backToSpotifyPlaylists(){
+    if(spotifyPlayer) spotifyPlayer.pause();
+    stopSpotifyProgressTimer();
+    spotifyPlayingContext = null;
+    setSpotifyViewMode('list');
+    renderSpotifyPlaylists();
   }
 
   function getSpotifyShuffleMode(){ return localStorage.getItem('la_spotify_shuffle_mode') || 'off'; }
@@ -4151,15 +4327,10 @@
           '<span class="spotify-progress-time" id="spotify-progress-duration">' + spotifyFormatTime(state.duration) + '</span>' +
         '</div>' +
         '<div class="spotify-controls">' +
+          '<button type="button" class="spotify-shuffle-toggle' + (shuffleMode !== 'off' ? ' active' : '') + '" onclick="setSpotifyShuffleMode(\'' + (shuffleMode === 'off' ? 'shuffle' : 'off') + '\')" title="Shuffle"><span class="material-symbols-outlined">shuffle</span></button>' +
           '<button type="button" onclick="spotifyPlayer.previousTrack()" title="Previous"><span class="material-symbols-outlined">skip_previous</span></button>' +
           '<button type="button" class="spotify-play-btn" onclick="spotifyPlayer.togglePlay()" title="Play/Pause"><span class="material-symbols-outlined">' + (state.paused ? 'play_arrow' : 'pause') + '</span></button>' +
           '<button type="button" onclick="spotifyPlayer.nextTrack()" title="Next"><span class="material-symbols-outlined">skip_next</span></button>' +
-        '</div>' +
-        '<div class="spotify-shuffle-row">' +
-          '<button type="button" class="spotify-shuffle-btn' + (shuffleMode === 'off' ? ' active' : '') + '" onclick="setSpotifyShuffleMode(\'off\')" title="No shuffle">' +
-            '<span class="material-symbols-outlined">trending_flat</span>No Shuffle</button>' +
-          '<button type="button" class="spotify-shuffle-btn' + (shuffleMode === 'shuffle' ? ' active' : '') + '" onclick="setSpotifyShuffleMode(\'shuffle\')" title="Shuffle">' +
-            '<span class="material-symbols-outlined">shuffle</span>Shuffle</button>' +
         '</div>' +
       '</div>';
     startSpotifyProgressTimer();
@@ -4250,6 +4421,7 @@
     }
     spotifyPlayingContext = contextUri;
     renderSpotifyPlaylists();
+    setSpotifyViewMode('player');
     spotifyApiFetch('/me/player/play?device_id=' + spotifyDeviceId, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -4259,9 +4431,10 @@
 
   function renderSpotifyWidget(){
     renderSpotifyBody(
-      '<div id="spotify-now-playing-wrap"><div class="spotify-mini-empty">Connecting to your player&hellip;</div></div>' +
+      '<div id="spotify-now-playing-wrap"></div>' +
       '<div id="spotify-list-wrap"><div class="spotify-mini-empty">Loading playlists&hellip;</div></div>'
     );
+    setSpotifyViewMode('list');
     var disconnectBtn = document.getElementById('spotify-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'flex';
     loadSpotifyPlaylists();
@@ -4277,6 +4450,414 @@
   }
 
   /* ============================================================
+     YouTube mini card — la_youtube_token / la_youtube_playlists
+     Same Google Identity Services (GIS) token-client mechanism the
+     Calendar card uses (js/calendar.js), instantiated separately here
+     with its own scope (youtube.readonly) and its own token storage
+     so this widget's auth is independent of Calendar's — connecting
+     one never silently grants or revokes the other. Playback goes
+     through the YouTube IFrame Player API, rendered into a visually
+     hidden 2x2 anchor (#youtube-player-anchor) since this widget draws
+     its own now-playing UI rather than showing YouTube's chrome.
+  ============================================================ */
+  var YOUTUBE_CLIENT_ID = '498727289640-7aos1sr84bcc3ifrms2ao6bqqlbv4qva.apps.googleusercontent.com';
+  var YOUTUBE_SCOPE = 'https://www.googleapis.com/auth/youtube.readonly';
+  var YOUTUBE_PLAYLISTS_URL = 'https://www.googleapis.com/youtube/v3/playlists';
+  var YOUTUBE_TOKEN_KEY = 'la_youtube_token';
+  var YOUTUBE_PLAYLISTS_CACHE_KEY = 'la_youtube_playlists';
+  var YOUTUBE_PLAYLISTS_FRESH_MS = 60 * 60 * 1000; // 1 hour
+  var YOUTUBE_GIS_WAIT_INTERVAL_MS = 200;
+  var YOUTUBE_GIS_WAIT_MAX_ATTEMPTS = 100; // ~20s before giving up
+
+  var youtubeTokenClient = null;
+  var youtubeAccessToken = null;
+  var youtubeTokenExpiresAt = 0;
+  var youtubePlayer = null;
+  var youtubePlayerReady = false;
+  var youtubePlayerPendingCallback = null;
+  var youtubePlaylists = [];
+  var youtubePlayingId = null;
+  var youtubeShuffleOn = false;
+  var youtubeProgressTimer = null;
+  var youtubeViewMode = 'list'; // 'list' | 'player'
+
+  function getYoutubeTokenData(){ return loadJSON(YOUTUBE_TOKEN_KEY, null); }
+  function saveYoutubeTokenData(token, expiresInSec){
+    youtubeAccessToken = token;
+    youtubeTokenExpiresAt = Date.now() + (expiresInSec || 3600) * 1000;
+    saveJSON(YOUTUBE_TOKEN_KEY, { accessToken: youtubeAccessToken, expiresAt: youtubeTokenExpiresAt });
+  }
+  function clearYoutubeTokenData(){
+    youtubeAccessToken = null;
+    youtubeTokenExpiresAt = 0;
+    localStorage.removeItem(YOUTUBE_TOKEN_KEY);
+  }
+  function loadStoredYoutubeToken(){
+    var data = getYoutubeTokenData();
+    if(data && data.accessToken && data.expiresAt > Date.now()){
+      youtubeAccessToken = data.accessToken;
+      youtubeTokenExpiresAt = data.expiresAt;
+    }
+  }
+
+  function getYoutubePlaylistsCache(){ return loadJSON(YOUTUBE_PLAYLISTS_CACHE_KEY, null); }
+  function saveYoutubePlaylistsCache(items){ saveJSON(YOUTUBE_PLAYLISTS_CACHE_KEY, { fetchedAt: Date.now(), items: items }); }
+
+  function renderYoutubeBody(html){
+    var body = document.getElementById('youtube-mini-body');
+    if(body) body.innerHTML = html;
+  }
+
+  function renderYoutubeConnectPrompt(){
+    renderYoutubeBody('<button type="button" class="youtube-connect-btn" onclick="connectYoutube()">' +
+      '<span class="material-symbols-outlined">smart_display</span>Connect YouTube</button>');
+  }
+
+  function setYoutubeViewMode(mode){
+    youtubeViewMode = mode;
+    var nowWrap = document.getElementById('youtube-now-playing-wrap');
+    var listWrap = document.getElementById('youtube-list-wrap');
+    var backBtn = document.getElementById('youtube-back-btn');
+    if(nowWrap) nowWrap.style.display = mode === 'player' ? '' : 'none';
+    if(listWrap) listWrap.style.display = mode === 'list' ? '' : 'none';
+    if(backBtn) backBtn.style.display = mode === 'player' ? 'flex' : 'none';
+  }
+
+  function backToYoutubePlaylists(){
+    if(youtubePlayer && youtubePlayer.stopVideo){ try { youtubePlayer.stopVideo(); } catch(e){} }
+    stopYoutubeProgressTimer();
+    youtubePlayingId = null;
+    setYoutubeViewMode('list');
+    renderYoutubePlaylists();
+  }
+
+  function handleYoutubeTokenResponse(resp){
+    if(resp && resp.access_token){
+      saveYoutubeTokenData(resp.access_token, resp.expires_in);
+      renderYoutubeWidget();
+    } else {
+      renderYoutubeConnectPrompt();
+    }
+  }
+
+  function initYoutubeTokenClient(){
+    if(!window.google || !google.accounts || !google.accounts.oauth2) return null;
+    return google.accounts.oauth2.initTokenClient({
+      client_id: YOUTUBE_CLIENT_ID,
+      scope: YOUTUBE_SCOPE,
+      callback: handleYoutubeTokenResponse,
+      error_callback: function(){ renderYoutubeConnectPrompt(); }
+    });
+  }
+
+  function requestYoutubeToken(interactive){
+    if(!youtubeTokenClient) return;
+    youtubeTokenClient.requestAccessToken({ prompt: interactive ? 'consent' : '' });
+  }
+
+  function connectYoutube(){ requestYoutubeToken(true); }
+
+  function disconnectYoutube(){
+    clearYoutubeTokenData();
+    youtubePlaylists = [];
+    youtubePlayingId = null;
+    stopYoutubeProgressTimer();
+    if(youtubePlayer && youtubePlayer.stopVideo){ try { youtubePlayer.stopVideo(); } catch(e){} }
+    localStorage.removeItem(YOUTUBE_PLAYLISTS_CACHE_KEY);
+    youtubeViewMode = 'list';
+    var disconnectBtn = document.getElementById('youtube-disconnect-btn');
+    if(disconnectBtn) disconnectBtn.style.display = 'none';
+    var backBtn = document.getElementById('youtube-back-btn');
+    if(backBtn) backBtn.style.display = 'none';
+    renderYoutubeConnectPrompt();
+  }
+
+  function youtubeApiFetch(url){
+    return fetch(url, { headers: { Authorization: 'Bearer ' + youtubeAccessToken } }).then(function(res){
+      if(res.status === 401){
+        clearYoutubeTokenData();
+        requestYoutubeToken(false);
+        throw new Error('YouTube token expired');
+      }
+      if(!res.ok) throw new Error('YouTube API request failed: ' + res.status);
+      return res.json();
+    });
+  }
+
+  function loadYoutubePlaylists(force){
+    var cache = getYoutubePlaylistsCache();
+    if(!force && cache && (Date.now() - cache.fetchedAt) < YOUTUBE_PLAYLISTS_FRESH_MS){
+      youtubePlaylists = cache.items;
+      renderYoutubePlaylists();
+      return;
+    }
+    var wrap = document.getElementById('youtube-list-wrap');
+    if(wrap) wrap.innerHTML = '<div class="youtube-mini-empty">Loading playlists&hellip;</div>';
+    var url = YOUTUBE_PLAYLISTS_URL + '?part=snippet,contentDetails&mine=true&maxResults=50';
+    youtubeApiFetch(url).then(function(data){
+      youtubePlaylists = data.items || [];
+      saveYoutubePlaylistsCache(youtubePlaylists);
+      renderYoutubePlaylists();
+    }).catch(function(){
+      var w = document.getElementById('youtube-list-wrap');
+      if(w) w.innerHTML = '<div class="youtube-mini-empty">Couldn&rsquo;t load playlists.</div>';
+    });
+  }
+
+  function renderYoutubePlaylists(){
+    var wrap = document.getElementById('youtube-list-wrap');
+    if(!wrap) return;
+    if(!youtubePlaylists.length){
+      wrap.innerHTML = '<div class="youtube-mini-empty">No playlists found.</div>';
+      return;
+    }
+    wrap.innerHTML = '<div class="youtube-playlists">' +
+        youtubePlaylists.map(function(pl){
+          var thumbs = pl.snippet && pl.snippet.thumbnails ? pl.snippet.thumbnails : {};
+          var thumb = (thumbs.medium || thumbs.default || {}).url || '';
+          var count = pl.contentDetails ? pl.contentDetails.itemCount : null;
+          var isPlaying = youtubePlayingId === pl.id;
+          return '<div class="youtube-playlist-row' + (isPlaying ? ' playing' : '') + '" onclick="playYoutubePlaylist(\'' + pl.id + '\')">' +
+              '<div class="youtube-playlist-art" style="background-image:url(\'' + thumb + '\')"></div>' +
+              '<div class="youtube-playlist-meta">' +
+                '<span class="youtube-playlist-name">' + escapeHtml(pl.snippet.title) + '</span>' +
+                (count != null ? '<span class="youtube-playlist-count">' + count + ' videos</span>' : '') +
+              '</div>' +
+              (isPlaying ? '<span class="material-symbols-outlined">volume_up</span>' : '') +
+            '</div>';
+        }).join('') +
+      '</div>';
+  }
+
+  function ensureYoutubePlayer(callback){
+    if(youtubePlayerReady && youtubePlayer){ callback(); return; }
+    youtubePlayerPendingCallback = callback;
+    if(window.YT && window.YT.Player){
+      createYoutubePlayer();
+      return;
+    }
+    if(!document.getElementById('youtube-iframe-api-script')){
+      var tag = document.createElement('script');
+      tag.id = 'youtube-iframe-api-script';
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    }
+  }
+
+  window.onYouTubeIframeAPIReady = function(){ createYoutubePlayer(); };
+
+  function createYoutubePlayer(){
+    if(youtubePlayer){
+      if(youtubePlayerReady && youtubePlayerPendingCallback){
+        var cb = youtubePlayerPendingCallback;
+        youtubePlayerPendingCallback = null;
+        cb();
+      }
+      return;
+    }
+    youtubePlayer = new YT.Player('youtube-player-anchor', {
+      height: '2', width: '2',
+      playerVars: { autoplay: 0, controls: 0, disablekb: 1, origin: window.location.origin },
+      events: {
+        onReady: function(){
+          youtubePlayerReady = true;
+          if(youtubePlayerPendingCallback){
+            var cb = youtubePlayerPendingCallback;
+            youtubePlayerPendingCallback = null;
+            cb();
+          }
+        },
+        onStateChange: onYoutubePlayerStateChange,
+        onError: onYoutubePlayerError
+      }
+    });
+  }
+
+  function onYoutubePlayerStateChange(evt){
+    renderYoutubeNowPlaying();
+    if(evt.data === YT.PlayerState.PLAYING){ startYoutubeProgressTimer(); }
+    else { stopYoutubeProgressTimer(); }
+  }
+
+  // YT error codes: 2 invalid param, 5 HTML5 player error, 100 video
+  // not found/private, 101/150 embedding disabled by the uploader
+  // (the last one is the usual culprit when a playlist "loads" but
+  // never actually plays — it's a per-video toggle, unrelated to the
+  // playlist's own public/private/unlisted setting).
+  var YOUTUBE_ERROR_MESSAGES = {
+    2: 'Invalid video/playlist parameter.',
+    5: 'This video can&rsquo;t be played in the HTML5 player.',
+    100: 'Video not found or private.',
+    101: 'The uploader disabled embedding for this video.',
+    150: 'The uploader disabled embedding for this video.'
+  };
+
+  function onYoutubePlayerError(evt){
+    var msg = YOUTUBE_ERROR_MESSAGES[evt.data] || ('YouTube player error (code ' + evt.data + ').');
+    console.warn('[youtube widget]', msg, evt);
+    var wrap = document.getElementById('youtube-now-playing-wrap');
+    if(wrap){
+      wrap.innerHTML = '<div class="youtube-mini-empty">' + msg + ' Skipping&hellip;</div>';
+    }
+    stopYoutubeProgressTimer();
+    if(youtubePlayer && youtubePlayer.nextVideo){
+      setTimeout(function(){ youtubePlayer.nextVideo(); }, 1200);
+    }
+  }
+
+  function playYoutubePlaylist(playlistId){
+    youtubePlayingId = playlistId;
+    renderYoutubePlaylists();
+    setYoutubeViewMode('player');
+    ensureYoutubePlayer(function(){
+      youtubePlayer.loadPlaylist({ list: playlistId, listType: 'playlist' });
+      youtubePlayer.playVideo();
+      youtubeShuffleOn = false;
+      if(youtubePlayer.setShuffle) youtubePlayer.setShuffle(false);
+      renderYoutubeNowPlaying();
+    });
+  }
+
+  function youtubeFormatTime(sec){
+    if(sec == null || isNaN(sec)) return '0:00';
+    sec = Math.floor(sec);
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function renderYoutubeNowPlaying(){
+    var wrap = document.getElementById('youtube-now-playing-wrap');
+    if(!wrap) return;
+    var data = youtubePlayer && youtubePlayer.getVideoData ? youtubePlayer.getVideoData() : null;
+    if(!data || !data.video_id){
+      stopYoutubeProgressTimer();
+      wrap.innerHTML = '';
+      return;
+    }
+    var state = youtubePlayer.getPlayerState();
+    var isPaused = state !== YT.PlayerState.PLAYING;
+    var duration = youtubePlayer.getDuration() || 0;
+    var position = youtubePlayer.getCurrentTime() || 0;
+    var pct = duration ? Math.min(100, (position / duration) * 100) : 0;
+    var thumb = 'https://i.ytimg.com/vi/' + data.video_id + '/mqdefault.jpg';
+    wrap.innerHTML =
+      '<div class="youtube-now-playing">' +
+        '<div class="youtube-now-playing-top">' +
+          '<div class="youtube-art" style="background-image:url(\'' + thumb + '\')"></div>' +
+          '<div class="youtube-track-meta">' +
+            '<span class="youtube-track-title">' + escapeHtml(data.title || '') + '</span>' +
+            '<span class="youtube-track-artist">' + escapeHtml(data.author || '') + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="youtube-progress-row">' +
+          '<span class="youtube-progress-time" id="youtube-progress-elapsed">' + youtubeFormatTime(position) + '</span>' +
+          '<div class="youtube-progress-track" id="youtube-progress-track" onclick="seekYoutubeProgress(event)">' +
+            '<div class="youtube-progress-fill" id="youtube-progress-fill" style="width:' + pct + '%"></div>' +
+          '</div>' +
+          '<span class="youtube-progress-time" id="youtube-progress-duration">' + youtubeFormatTime(duration) + '</span>' +
+        '</div>' +
+        '<div class="youtube-controls">' +
+          '<button type="button" class="youtube-shuffle-toggle' + (youtubeShuffleOn ? ' active' : '') + '" onclick="setYoutubeShuffle(' + (!youtubeShuffleOn) + ')" title="Shuffle"><span class="material-symbols-outlined">shuffle</span></button>' +
+          '<button type="button" onclick="youtubePlayer.previousVideo()" title="Previous"><span class="material-symbols-outlined">skip_previous</span></button>' +
+          '<button type="button" class="youtube-play-btn" onclick="toggleYoutubePlayback()" title="Play/Pause"><span class="material-symbols-outlined">' + (isPaused ? 'play_arrow' : 'pause') + '</span></button>' +
+          '<button type="button" onclick="youtubePlayer.nextVideo()" title="Next"><span class="material-symbols-outlined">skip_next</span></button>' +
+        '</div>' +
+      '</div>';
+    if(!isPaused) startYoutubeProgressTimer(); else stopYoutubeProgressTimer();
+  }
+
+  function toggleYoutubePlayback(){
+    if(!youtubePlayer) return;
+    var state = youtubePlayer.getPlayerState();
+    if(state === YT.PlayerState.PLAYING) youtubePlayer.pauseVideo();
+    else youtubePlayer.playVideo();
+  }
+
+  function setYoutubeShuffle(on){
+    youtubeShuffleOn = on;
+    if(youtubePlayer && youtubePlayer.setShuffle) youtubePlayer.setShuffle(on);
+    renderYoutubeNowPlaying();
+  }
+
+  function startYoutubeProgressTimer(){
+    if(youtubeProgressTimer) return;
+    youtubeProgressTimer = setInterval(tickYoutubeProgress, 500);
+  }
+
+  function stopYoutubeProgressTimer(){
+    if(youtubeProgressTimer){ clearInterval(youtubeProgressTimer); youtubeProgressTimer = null; }
+  }
+
+  function tickYoutubeProgress(){
+    if(!youtubePlayer || !youtubePlayer.getCurrentTime){ stopYoutubeProgressTimer(); return; }
+    var fill = document.getElementById('youtube-progress-fill');
+    var elapsedEl = document.getElementById('youtube-progress-elapsed');
+    if(!fill || !elapsedEl) return;
+    var duration = youtubePlayer.getDuration() || 0;
+    var position = youtubePlayer.getCurrentTime() || 0;
+    var pct = duration ? Math.min(100, (position / duration) * 100) : 0;
+    fill.style.width = pct + '%';
+    elapsedEl.textContent = youtubeFormatTime(position);
+  }
+
+  function seekYoutubeProgress(e){
+    if(!youtubePlayer || !youtubePlayer.seekTo) return;
+    var duration = youtubePlayer.getDuration();
+    if(!duration) return;
+    var track = document.getElementById('youtube-progress-track');
+    if(!track) return;
+    var rect = track.getBoundingClientRect();
+    var ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    youtubePlayer.seekTo(ratio * duration, true);
+    tickYoutubeProgress();
+  }
+
+  function renderYoutubeWidget(){
+    renderYoutubeBody(
+      '<div id="youtube-now-playing-wrap"></div>' +
+      '<div id="youtube-list-wrap"><div class="youtube-mini-empty">Loading playlists&hellip;</div></div>'
+    );
+    setYoutubeViewMode('list');
+    var disconnectBtn = document.getElementById('youtube-disconnect-btn');
+    if(disconnectBtn) disconnectBtn.style.display = 'flex';
+    loadYoutubePlaylists(false);
+  }
+
+  function bootYoutubeWidget(){
+    youtubeTokenClient = initYoutubeTokenClient();
+    if(!youtubeTokenClient){ renderYoutubeConnectPrompt(); return; }
+    if(youtubeAccessToken && youtubeTokenExpiresAt > Date.now()){
+      renderYoutubeWidget();
+    } else {
+      renderYoutubeConnectPrompt();
+    }
+  }
+
+  function waitForGisYoutube(){
+    var attempts = 0;
+    var waitTimer = setInterval(function(){
+      attempts++;
+      if(window.google && google.accounts && google.accounts.oauth2){
+        clearInterval(waitTimer);
+        bootYoutubeWidget();
+      } else if(attempts >= YOUTUBE_GIS_WAIT_MAX_ATTEMPTS){
+        clearInterval(waitTimer);
+        renderYoutubeConnectPrompt();
+      }
+    }, YOUTUBE_GIS_WAIT_INTERVAL_MS);
+  }
+
+  function initYoutubeWidget(){
+    loadStoredYoutubeToken();
+    if(window.google && google.accounts && google.accounts.oauth2){
+      bootYoutubeWidget();
+    } else {
+      waitForGisYoutube();
+    }
+  }
+
+  /* ============================================================
      Init
   ============================================================ */
   ['books','movies','shows'].forEach(function(type){ renderHobbyCard(type); });
@@ -4286,6 +4867,7 @@
   renderSidebarHabits();
   loadWeather();
   initSpotifyWidget();
+  initYoutubeWidget();
   updateSidebarDateTime();
   setInterval(updateSidebarDateTime, 1000);
   runClockTick();
