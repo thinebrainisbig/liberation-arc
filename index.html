@@ -692,7 +692,6 @@
     flex-direction:column;
     gap:10px;
     padding-bottom:10px;
-    border-bottom:1px solid rgba(255,255,255,0.08);
   }
   .spotify-now-playing-top{
     display:flex;
@@ -775,6 +774,37 @@
   .spotify-controls .spotify-play-btn{ width:38px; height:38px; background:rgba(30,215,96,0.2); border-color:rgba(30,215,96,0.55); }
   .spotify-controls .spotify-play-btn .material-symbols-outlined{ font-size:22px; color:#1ed760; }
   .spotify-controls .spotify-shuffle-toggle.active{ background:rgba(30,215,96,0.22); border-color:rgba(30,215,96,0.55); color:#1ed760; }
+
+  .spotify-volume-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding-top:2px;
+  }
+  .spotify-volume-row .material-symbols-outlined{ font-size:16px; color:var(--ink-dim); flex-shrink:0; cursor:pointer; }
+  .spotify-volume-track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.14);
+    position:relative;
+    cursor:pointer;
+  }
+  .spotify-volume-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    border-radius:2px;
+    background:#1ed760;
+  }
+  .spotify-volume-thumb{
+    position:absolute;
+    top:50%;
+    width:10px; height:10px;
+    border-radius:50%;
+    background:#1ed760;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 2px rgba(0,0,0,0.3);
+  }
 
   .spotify-playlists{
     display:flex;
@@ -911,7 +941,6 @@
     flex-direction:column;
     gap:10px;
     padding-bottom:10px;
-    border-bottom:1px solid rgba(255,255,255,0.08);
   }
   .youtube-now-playing-top{
     display:flex;
@@ -994,6 +1023,71 @@
   .youtube-controls .youtube-play-btn{ width:38px; height:38px; background:rgba(255,0,0,0.2); border-color:rgba(255,0,0,0.55); }
   .youtube-controls .youtube-play-btn .material-symbols-outlined{ font-size:22px; color:#ff0000; }
   .youtube-controls .youtube-shuffle-toggle.active{ background:rgba(255,0,0,0.22); border-color:rgba(255,0,0,0.55); color:#ff0000; }
+
+  .youtube-custom-id-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:0 0 10px;
+  }
+  .youtube-custom-id-row input{
+    flex:1;
+    min-width:0;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:8px;
+    color:var(--ink);
+    font-size:0.72rem;
+    padding:7px 9px;
+  }
+  .youtube-custom-id-row input::placeholder{ color:var(--ink-faint); }
+  .youtube-custom-id-row input:focus{ outline:none; border-color:rgba(255,0,0,0.55); }
+  .youtube-custom-id-row button{
+    width:30px; height:30px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background:rgba(255,0,0,0.16);
+    border:1px solid rgba(255,0,0,0.4);
+    color:#ff0000;
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-custom-id-row button:hover{ background:rgba(255,0,0,0.28); }
+  .youtube-custom-id-row button .material-symbols-outlined{ font-size:16px; }
+
+  .youtube-volume-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding-top:2px;
+  }
+  .youtube-volume-row .material-symbols-outlined{ font-size:16px; color:var(--ink-dim); flex-shrink:0; cursor:pointer; }
+  .youtube-volume-track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.14);
+    position:relative;
+    cursor:pointer;
+  }
+  .youtube-volume-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    border-radius:2px;
+    background:#ff0000;
+  }
+  .youtube-volume-thumb{
+    position:absolute;
+    top:50%;
+    width:10px; height:10px;
+    border-radius:50%;
+    background:#ff0000;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 2px rgba(0,0,0,0.3);
+  }
 
   .youtube-playlists{
     display:flex;
@@ -7224,6 +7318,9 @@
   var spotifyProgressState = null; // { position, duration, paused, updatedAt }
   var spotifyProgressTimer = null;
   var spotifyViewMode = 'list'; // 'list' | 'player'
+  var spotifyVolume = (function(){ try{ var v = localStorage.getItem('la_spotify_volume'); return v !== null ? parseFloat(v) : 0.6; }catch(e){ return 0.6; } })();
+  var spotifyMutedVolume = null;
+  var spotifyVolumeDragging = false;
 
   function getSpotifyAuth(){ return loadJSON('la_spotify_auth', null); }
   function saveSpotifyAuth(auth){ saveJSON('la_spotify_auth', auth); }
@@ -7403,9 +7500,9 @@
     spotifyPlayer = new Spotify.Player({
       name: 'Liberation Arc',
       getOAuthToken: function(cb){ getSpotifyAccessToken().then(cb); },
-      volume: 0.6
+      volume: spotifyVolume
     });
-    spotifyPlayer.addListener('ready', function(evt){ spotifyDeviceId = evt.device_id; });
+    spotifyPlayer.addListener('ready', function(evt){ spotifyDeviceId = evt.device_id; spotifyPlayer.setVolume(spotifyVolume); });
     spotifyPlayer.addListener('player_state_changed', renderSpotifyNowPlaying);
     spotifyPlayer.connect();
   };
@@ -7448,10 +7545,61 @@
           '<button type="button" class="spotify-play-btn" onclick="spotifyPlayer.togglePlay()" title="Play/Pause"><span class="material-symbols-outlined">' + (state.paused ? 'play_arrow' : 'pause') + '</span></button>' +
           '<button type="button" onclick="spotifyPlayer.nextTrack()" title="Next"><span class="material-symbols-outlined">skip_next</span></button>' +
         '</div>' +
+        '<div class="spotify-volume-row">' +
+          '<span class="material-symbols-outlined" id="spotify-volume-icon" onclick="toggleSpotifyMute()">' + spotifyVolumeIcon() + '</span>' +
+          '<div class="spotify-volume-track" id="spotify-volume-track" onmousedown="startSpotifyVolumeDrag(event)">' +
+            '<div class="spotify-volume-fill" id="spotify-volume-fill" style="width:' + (spotifyVolume * 100) + '%"></div>' +
+            '<div class="spotify-volume-thumb" id="spotify-volume-thumb" style="left:' + (spotifyVolume * 100) + '%"></div>' +
+          '</div>' +
+        '</div>' +
       '</div>';
     startSpotifyProgressTimer();
     renderSpotifyPlaylists();
   }
+
+  function spotifyVolumeIcon(){
+    if(spotifyVolume <= 0) return 'volume_off';
+    if(spotifyVolume < 0.5) return 'volume_down';
+    return 'volume_up';
+  }
+
+  function applySpotifyVolume(vol){
+    spotifyVolume = Math.max(0, Math.min(1, vol));
+    try{ localStorage.setItem('la_spotify_volume', spotifyVolume); }catch(e){}
+    if(spotifyPlayer && spotifyPlayer.setVolume) spotifyPlayer.setVolume(spotifyVolume);
+    var fill = document.getElementById('spotify-volume-fill');
+    var thumb = document.getElementById('spotify-volume-thumb');
+    var icon = document.getElementById('spotify-volume-icon');
+    if(fill) fill.style.width = (spotifyVolume * 100) + '%';
+    if(thumb) thumb.style.left = (spotifyVolume * 100) + '%';
+    if(icon) icon.textContent = spotifyVolumeIcon();
+  }
+
+  function setSpotifyVolumeFromEvent(e){
+    var track = document.getElementById('spotify-volume-track');
+    if(!track) return;
+    var rect = track.getBoundingClientRect();
+    var ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    applySpotifyVolume(ratio);
+  }
+
+  function startSpotifyVolumeDrag(e){
+    spotifyVolumeDragging = true;
+    setSpotifyVolumeFromEvent(e);
+    e.preventDefault();
+  }
+
+  function toggleSpotifyMute(){
+    if(spotifyVolume > 0){
+      spotifyMutedVolume = spotifyVolume;
+      applySpotifyVolume(0);
+    } else {
+      applySpotifyVolume(spotifyMutedVolume != null ? spotifyMutedVolume : 0.6);
+    }
+  }
+
+  document.addEventListener('mousemove', function(e){ if(spotifyVolumeDragging) setSpotifyVolumeFromEvent(e); });
+  document.addEventListener('mouseup', function(){ spotifyVolumeDragging = false; });
 
   function spotifyFormatTime(ms){
     if(ms == null || isNaN(ms)) return '0:00';
@@ -7596,6 +7744,9 @@
   var youtubeShuffleOn = false;
   var youtubeProgressTimer = null;
   var youtubeViewMode = 'list'; // 'list' | 'player'
+  var youtubeVolume = (function(){ try{ var v = localStorage.getItem('la_youtube_volume'); return v !== null ? parseFloat(v) : 0.6; }catch(e){ return 0.6; } })();
+  var youtubeMutedVolume = null;
+  var youtubeVolumeDragging = false;
 
   function getYoutubeTokenData(){ return loadJSON(YOUTUBE_TOKEN_KEY, null); }
   function saveYoutubeTokenData(token, expiresInSec){
@@ -7633,9 +7784,11 @@
     youtubeViewMode = mode;
     var nowWrap = document.getElementById('youtube-now-playing-wrap');
     var listWrap = document.getElementById('youtube-list-wrap');
+    var customIdRow = document.getElementById('youtube-custom-id-row');
     var backBtn = document.getElementById('youtube-back-btn');
     if(nowWrap) nowWrap.style.display = mode === 'player' ? '' : 'none';
     if(listWrap) listWrap.style.display = mode === 'list' ? '' : 'none';
+    if(customIdRow) customIdRow.style.display = mode === 'list' ? 'flex' : 'none';
     if(backBtn) backBtn.style.display = mode === 'player' ? 'flex' : 'none';
   }
 
@@ -7777,6 +7930,7 @@
       events: {
         onReady: function(){
           youtubePlayerReady = true;
+          if(youtubePlayer.setVolume) youtubePlayer.setVolume(youtubeVolume * 100);
           if(youtubePlayerPendingCallback){
             var cb = youtubePlayerPendingCallback;
             youtubePlayerPendingCallback = null;
@@ -7879,9 +8033,60 @@
           '<button type="button" class="youtube-play-btn" onclick="toggleYoutubePlayback()" title="Play/Pause"><span class="material-symbols-outlined">' + (isPaused ? 'play_arrow' : 'pause') + '</span></button>' +
           '<button type="button" onclick="youtubePlayer.nextVideo()" title="Next"><span class="material-symbols-outlined">skip_next</span></button>' +
         '</div>' +
+        '<div class="youtube-volume-row">' +
+          '<span class="material-symbols-outlined" id="youtube-volume-icon" onclick="toggleYoutubeMute()">' + youtubeVolumeIcon() + '</span>' +
+          '<div class="youtube-volume-track" id="youtube-volume-track" onmousedown="startYoutubeVolumeDrag(event)">' +
+            '<div class="youtube-volume-fill" id="youtube-volume-fill" style="width:' + (youtubeVolume * 100) + '%"></div>' +
+            '<div class="youtube-volume-thumb" id="youtube-volume-thumb" style="left:' + (youtubeVolume * 100) + '%"></div>' +
+          '</div>' +
+        '</div>' +
       '</div>';
     if(!isPaused) startYoutubeProgressTimer(); else stopYoutubeProgressTimer();
   }
+
+  function youtubeVolumeIcon(){
+    if(youtubeVolume <= 0) return 'volume_off';
+    if(youtubeVolume < 0.5) return 'volume_down';
+    return 'volume_up';
+  }
+
+  function applyYoutubeVolume(vol){
+    youtubeVolume = Math.max(0, Math.min(1, vol));
+    try{ localStorage.setItem('la_youtube_volume', youtubeVolume); }catch(e){}
+    if(youtubePlayer && youtubePlayer.setVolume) youtubePlayer.setVolume(youtubeVolume * 100);
+    var fill = document.getElementById('youtube-volume-fill');
+    var thumbEl = document.getElementById('youtube-volume-thumb');
+    var icon = document.getElementById('youtube-volume-icon');
+    if(fill) fill.style.width = (youtubeVolume * 100) + '%';
+    if(thumbEl) thumbEl.style.left = (youtubeVolume * 100) + '%';
+    if(icon) icon.textContent = youtubeVolumeIcon();
+  }
+
+  function setYoutubeVolumeFromEvent(e){
+    var track = document.getElementById('youtube-volume-track');
+    if(!track) return;
+    var rect = track.getBoundingClientRect();
+    var ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    applyYoutubeVolume(ratio);
+  }
+
+  function startYoutubeVolumeDrag(e){
+    youtubeVolumeDragging = true;
+    setYoutubeVolumeFromEvent(e);
+    e.preventDefault();
+  }
+
+  function toggleYoutubeMute(){
+    if(youtubeVolume > 0){
+      youtubeMutedVolume = youtubeVolume;
+      applyYoutubeVolume(0);
+    } else {
+      applyYoutubeVolume(youtubeMutedVolume != null ? youtubeMutedVolume : 0.6);
+    }
+  }
+
+  document.addEventListener('mousemove', function(e){ if(youtubeVolumeDragging) setYoutubeVolumeFromEvent(e); });
+  document.addEventListener('mouseup', function(){ youtubeVolumeDragging = false; });
 
   function toggleYoutubePlayback(){
     if(!youtubePlayer) return;
@@ -7932,12 +8137,44 @@
   function renderYoutubeWidget(){
     renderYoutubeBody(
       '<div id="youtube-now-playing-wrap"></div>' +
+      '<div class="youtube-custom-id-row" id="youtube-custom-id-row">' +
+        '<input type="text" id="youtube-custom-id-input" placeholder="Paste playlist ID or URL" value="' + escapeHtml(getYoutubeCustomPlaylistId()) + '" onkeydown="if(event.key===\'Enter\'){playCustomYoutubePlaylist();}">' +
+        '<button type="button" onclick="playCustomYoutubePlaylist()" title="Play playlist"><span class="material-symbols-outlined">play_arrow</span></button>' +
+      '</div>' +
       '<div id="youtube-list-wrap"><div class="youtube-mini-empty">Loading playlists&hellip;</div></div>'
     );
     setYoutubeViewMode('list');
     var disconnectBtn = document.getElementById('youtube-disconnect-btn');
     if(disconnectBtn) disconnectBtn.style.display = 'flex';
     loadYoutubePlaylists(false);
+  }
+
+  var YOUTUBE_CUSTOM_PLAYLIST_KEY = 'la_youtube_custom_playlist_id';
+
+  function getYoutubeCustomPlaylistId(){
+    try{ return localStorage.getItem(YOUTUBE_CUSTOM_PLAYLIST_KEY) || ''; }catch(e){ return ''; }
+  }
+
+  function saveYoutubeCustomPlaylistId(id){
+    try{ localStorage.setItem(YOUTUBE_CUSTOM_PLAYLIST_KEY, id); }catch(e){}
+  }
+
+  function extractYoutubePlaylistId(raw){
+    if(!raw) return '';
+    raw = raw.trim();
+    var match = raw.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+    if(match) return match[1];
+    return raw;
+  }
+
+  function playCustomYoutubePlaylist(){
+    var input = document.getElementById('youtube-custom-id-input');
+    if(!input) return;
+    var id = extractYoutubePlaylistId(input.value);
+    if(!id) return;
+    input.value = id;
+    saveYoutubeCustomPlaylistId(id);
+    playYoutubePlaylist(id);
   }
 
   function bootYoutubeWidget(){
