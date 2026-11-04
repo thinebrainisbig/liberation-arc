@@ -1115,12 +1115,6 @@
   function getPreviousProductivityDate(){
     return addDaysISO(getAdjustedDate(), -1);
   }
-  function isNightCheckinMissed(){
-    var prevDate = getPreviousProductivityDate();
-    if(localStorage.getItem('la_checkin_night_' + prevDate)) return false;
-    if(localStorage.getItem('la_night_checkin_prompted_' + prevDate)) return false;
-    return true;
-  }
   function isScheduledDay(habit, dateISO){
     var dow = new Date(dateISO + 'T00:00:00').getDay();
     if(habit.frequency === 'weekdays') return dow >= 1 && dow <= 5;
@@ -1412,65 +1406,20 @@
      Daily reset at 5AM — refresh check-in badges, social daily
      state, and nutrition entry for the new day. Only fires once
      per adjusted day (la_last_reset_date, 5AM-adjusted YYYY-MM-DD).
+     checkDailyReset/performDailyReset/runClockTick/
+     updateLateNightMode/updateSidebarDateTime/clearTodayNutritionEntry
+     now live in js/core/daily-reset.js; this page just registers its
+     extra reset/tick steps as hooks.
   ============================================================ */
-  function clearTodayNutritionEntry(){
-    var cfg = loadJSON('la_nutrition', null);
-    if(cfg && cfg.entries && cfg.entries[getAdjustedDate()] !== undefined){
-      delete cfg.entries[getAdjustedDate()];
-      saveJSON('la_nutrition', cfg);
-    }
-  }
-
-  function performDailyReset(){
+  registerDailyResetHook(function(){
     updateCheckinBadges();
     renderSidebarSocial();
     clearTodayNutritionEntry();
     if(typeof renderNutritionCard === 'function'){ renderNutritionCard(); }
     if(typeof renderSpokeDay === 'function'){ renderSpokeDay(); }
     if(typeof renderSpokeNight === 'function'){ renderSpokeNight(); }
-  }
-
-  function checkDailyReset(){
-    var adjusted = getAdjustedDate();
-    var last = localStorage.getItem('la_last_reset_date');
-    if(last !== adjusted){
-      performDailyReset();
-      localStorage.setItem('la_last_reset_date', adjusted);
-    }
-  }
-
-  /* ============================================================
-     Late night mode — 12AM-5AM amber tint on "yesterday" elements.
-     Shares isLateNightWindow() with getAdjustedDate() so the tint
-     and the 5AM data reset always agree on the boundary.
-  ============================================================ */
-  function updateLateNightMode(){
-    document.body.classList.toggle('late-night', isLateNightWindow());
-  }
-
-  function runClockTick(){
-    updateLateNightMode();
-    checkDailyReset();
-    maybeAutoPromptNightCheckin();
-  }
-
-  /* ============================================================
-     Sidebar live date/time
-  ============================================================ */
-  function updateSidebarDateTime(){
-    var el = document.getElementById('sidebar-datetime');
-    if(!el) return;
-    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var now = new Date();
-    var hours = now.getHours();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    var h12 = hours % 12 || 12;
-    var mins = now.getMinutes();
-    var minStr = mins < 10 ? '0' + mins : '' + mins;
-    el.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() +
-      '  ·  ' + h12 + ':' + minStr + ' ' + ampm;
-  }
+  });
+  registerClockTickHook(maybeAutoPromptNightCheckin);
 
   /* ============================================================
      Social Targets — la_social_people

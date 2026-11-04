@@ -896,15 +896,8 @@
   function getPreviousProductivityDate(){
     return addDaysISO(getAdjustedDate(), -1);
   }
-  function isNightCheckinMissed(){
-    var prevDate = getPreviousProductivityDate();
-    if(localStorage.getItem('la_checkin_night_' + prevDate)) return false;
-    if(localStorage.getItem('la_night_checkin_prompted_' + prevDate)) return false;
-    return true;
-  }
-  function maybeRedirectForNightCheckin(){
-    if(isNightCheckinMissed()){ window.location.href = '../index.html'; }
-  }
+  /* isNightCheckinMissed/maybeRedirectForNightCheckin now live in
+     js/core/daily-reset.js. */
 
   /* ============================================================
      Cross-page live sync. handleStorageSync is the single source of
@@ -928,65 +921,21 @@
   window.addEventListener('state-change', function(e){ handleStorageSync({ key: e.detail.key }); });
 
   /* ============================================================
-     Late night mode — 12AM-5AM amber tint on "yesterday" elements
-  ============================================================ */
-  function updateLateNightMode(){
-    document.body.classList.toggle('late-night', isLateNightWindow());
-  }
-
-  function runClockTick(){
-    updateLateNightMode();
-    checkDailyReset();
-    maybeRedirectForNightCheckin();
-  }
-
-  /* ============================================================
      Daily reset at 5AM — refresh check-in badges and nutrition
      entry for the new day. Only fires once
      per adjusted day (la_last_reset_date, 5AM-adjusted YYYY-MM-DD).
+     checkDailyReset/performDailyReset/runClockTick/
+     updateLateNightMode/updateSidebarDateTime/clearTodayNutritionEntry
+     now live in js/core/daily-reset.js; this page just registers its
+     extra reset steps as a hook.
   ============================================================ */
-  function clearTodayNutritionEntry(){
-    var cfg = loadJSON('la_nutrition', null);
-    if(cfg && cfg.entries && cfg.entries[getAdjustedDate()] !== undefined){
-      delete cfg.entries[getAdjustedDate()];
-      saveJSON('la_nutrition', cfg);
-    }
-  }
-
-  function performDailyReset(){
+  registerDailyResetHook(function(){
     clearTodayNutritionEntry();
     if(typeof renderMoodCard === 'function'){ renderMoodCard(); }
     if(typeof renderSplitPlanner === 'function'){ renderSplitPlanner(); }
     if(typeof renderSplitCalendar === 'function'){ renderSplitCalendar(); }
     if(typeof renderNutritionCard === 'function'){ renderNutritionCard(); }
-  }
-
-  function checkDailyReset(){
-    var adjusted = getAdjustedDate();
-    var last = localStorage.getItem('la_last_reset_date');
-    if(last !== adjusted){
-      performDailyReset();
-      localStorage.setItem('la_last_reset_date', adjusted);
-    }
-  }
-
-  /* ============================================================
-     Sidebar live date/time
-  ============================================================ */
-  function updateSidebarDateTime(){
-    var el = document.getElementById('sidebar-datetime');
-    if(!el) return;
-    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var now = new Date();
-    var hours = now.getHours();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    var h12 = hours % 12 || 12;
-    var mins = now.getMinutes();
-    var minStr = mins < 10 ? '0' + mins : '' + mins;
-    el.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() +
-      '  ·  ' + h12 + ':' + minStr + ' ' + ampm;
-  }
+  });
 
   /* ============================================================
      Weather mini card — now lives in js/weather-widget.js
