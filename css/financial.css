@@ -1,0 +1,1753 @@
+/* ============================================================
+   Financial subpage — extracted from financial-subpage.html's
+   inline <style> block (Phase B reorg). Shared/cross-page styles
+   stay in css/layout.css; this file is financial-page-specific.
+============================================================ */
+  :root{
+    --bg-photo: url('../assets/financial.jpeg');
+
+    --ink: #f2f2f5;
+    --ink-dim: rgba(242,242,245,0.62);
+    --ink-faint: rgba(242,242,245,0.36);
+
+    --glass: rgba(255,255,255,0.06);
+    --glass-strong: rgba(255,255,255,0.09);
+    --glass-border: rgba(255,255,255,0.14);
+    --glass-sheen: rgba(255,255,255,0.10);
+
+    --sidebar-bg: color-mix(in srgb, var(--financial) 14%, rgba(21,29,40,0.55));
+
+    --physical: #4ade80;
+    --physical-nav: #a78bfa; /* violet, matches physical-subpage.html card highlight */
+    --academic: #60a5fa;
+    --hobbies: #fb923c;
+    --financial: #f87171;
+    --secondbrain: #22d3ee;
+
+    --r-lg: 22px;
+    --r-md: 16px;
+    --r-sm: 10px;
+  }
+
+  *{box-sizing:border-box;}
+  /* Explicit solid fallback (not just the fixed .bg-layer/.bg-scrim
+     pseudo-layers below): iOS 26's status-bar translucency has a
+     documented bug where it falls back to opaque white instead of
+     sampling through to page content, even with black-translucent
+     set correctly. A real background-color here is what iOS actually
+     composites under the status bar, so the fallback is this dark
+     tone instead of white. Set on html only, not body: body is an
+     in-flow, unpositioned descendant, so it paints *after* (on top
+     of) .bg-layer/.bg-scrim's negative z-index despite them being
+     "behind" everything logically — html's background alone still
+     covers the canvas/status-bar area without hiding the photo. */
+  html{height:100%;margin:0;padding:0;background-color:#06060a;}
+  body{height:100%;margin:0;padding:0;}
+  body{
+    font-family:'Geist','Segoe UI',system-ui,sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+  }
+  .mono{ font-family:'JetBrains Mono',monospace; }
+  .material-symbols-outlined{
+    font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+    line-height:1;
+  }
+
+  .bg-layer{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background-image:var(--bg-photo);
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    filter:none;
+    transition:filter .3s ease;
+  }
+  .bg-scrim{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(60,50,90,0.35), transparent 55%),
+      radial-gradient(circle at 90% 85%, rgba(20,60,70,0.35), transparent 55%),
+      linear-gradient(180deg, rgba(6,6,10,0.78) 0%, rgba(6,6,10,0.88) 100%);
+  }
+
+  ::-webkit-scrollbar{ width:4px; height:4px; }
+  ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.14); border-radius:10px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+
+  /* ---------- Shell ---------- */
+  .app-shell{
+    display:flex;
+    height:100vh;
+    width:100vw;
+  }
+
+  /* ---------- Liquid glass base ---------- */
+  .glass{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    box-shadow:0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    position:relative;
+    isolation:isolate;
+  }
+  .glass::before{
+    content:'';
+    position:absolute; inset:0;
+    border-radius:inherit;
+    background:linear-gradient(135deg, var(--glass-sheen) 0%, rgba(255,255,255,0) 45%);
+    pointer-events:none;
+    z-index:1;
+  }
+  .glass > *{ position:relative; z-index:2; }
+
+  .accent-blob{
+    position:absolute; top:0; right:0;
+    width:56px; height:56px;
+    border-radius:0 0 0 100%;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:268px;
+    flex-shrink:0;
+    margin:16px 0 16px 16px;
+    border-radius:14px;
+    display:flex;
+    flex-direction:column;
+    padding:16px 18px;
+    background:var(--sidebar-bg);
+    backdrop-filter:blur(20px) saturate(160%);
+    -webkit-backdrop-filter:blur(20px) saturate(160%);
+    border:1px solid transparent;
+    gap:8px;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+  .sidebar::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    padding:1px;
+    background:linear-gradient(to right, rgba(255,255,255,0.8), rgba(255,255,255,0));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite:exclude;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  .brand{
+    text-align:center;
+    padding:4px 0 6px;
+  }
+  .brand h1{
+    margin:0;
+    font-size:1.5rem;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    background:linear-gradient(135deg,#ffffff 0%, #b9c2ff 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .brand-datetime{
+    margin:3px 0 0;
+    font-size:0.64rem;
+    font-weight:600;
+    letter-spacing:0.03em;
+    color:#fff;
+  }
+
+  .nav{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .nav-link{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:7px 12px;
+    border-radius:var(--r-sm);
+    text-decoration:none;
+    color:var(--ink-dim);
+    font-size:0.8rem;
+    font-weight:500;
+    transition:background 0.2s ease, color 0.2s ease;
+    border:1px solid transparent;
+  }
+  .nav-link .material-symbols-outlined{ font-size:19px; }
+  .nav-link:hover{
+    background:rgba(255,255,255,0.06);
+    color:var(--ink);
+  }
+  .nav-link.active{
+    background:rgba(255,255,255,0.09);
+    border-color:rgba(255,255,255,0.14);
+    color:var(--ink);
+    font-weight:600;
+  }
+  .nav-link.active::after{
+    content:'';
+    position:absolute;
+    top:6px;
+    bottom:6px;
+    right:0;
+    width:3px;
+    border-radius:2px;
+    background:var(--nav-color);
+    box-shadow:0 0 6px var(--nav-color), 0 0 10px var(--nav-color);
+  }
+  .nav-link.active .material-symbols-outlined{ color:var(--nav-color); }
+  /* Active nav pill doubles as a "back to dashboard" link (its href
+     now points at index.html): a small muted arrow precedes the
+     section's own icon rather than replacing it, so the pill still
+     reads as "you are here" while signaling it now navigates away. */
+  .nav-link.active .back-arrow{
+    font-size:15px !important;
+    color:var(--ink-faint) !important;
+  }
+  .nav-link[data-section="physical"]{ --nav-color:var(--physical-nav); }
+  .nav-link[data-section="academic"]{ --nav-color:#4ade80; }
+  .nav-link[data-section="hobbies"]{ --nav-color:var(--hobbies); }
+  .nav-link[data-section="financial"]{ --nav-color:var(--financial); }
+  .nav-link:not(.active) .material-symbols-outlined{ color: var(--nav-color); opacity:0.75; }
+
+
+  /* ---------- Weather mini card (sidebar, under nav) ----------
+     3-day forecast for a user-set location (Open-Meteo — free,
+     keyless geocoding + forecast APIs, so there's no API key to
+     mismanage). Sized to read as one deliberate block under the nav
+     rather than a single thin row. */
+  .weather-mini-card{
+    padding:16px;
+    border-radius:var(--r-md);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    background:#10233a;
+    border:1px solid rgba(147,197,253,0.55);
+  }
+  .weather-mini-header{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .weather-mini-title{
+    margin:0;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:#bfdbfe;
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .weather-mini-edit-btn{
+    width:22px; height:22px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .weather-mini-edit-btn:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .weather-mini-edit-btn .material-symbols-outlined{ font-size:14px; }
+  .weather-view-toggle{
+    display:flex;
+    gap:2px;
+    flex-shrink:0;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:6px;
+    padding:2px;
+  }
+  .weather-view-btn{
+    font-family:inherit;
+    font-size:0.58rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    padding:3px 7px;
+    border-radius:4px;
+    border:none;
+    background:transparent;
+    color:var(--ink-faint);
+    cursor:pointer;
+  }
+  .weather-view-btn.active{ background:rgba(56,189,248,0.26); color:#bfdbfe; }
+  .weather-mini-body{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .weather-mini-card.is-compact .weather-mini-row{ padding:4px 0; border-bottom:none; }
+  .weather-mini-empty{
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    line-height:1.5;
+  }
+  .weather-mini-retry{
+    color:#38bdf8;
+    font-style:normal;
+    cursor:pointer;
+    text-decoration:underline;
+  }
+  .weather-mini-row{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .weather-mini-row:last-child{ border-bottom:none; padding-bottom:0; }
+  .weather-mini-row-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .weather-mini-icon{
+    font-size:26px;
+    line-height:1;
+    width:42px;
+    height:42px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .weather-mini-daycond{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    flex:1;
+    min-width:0;
+  }
+  .weather-mini-day{
+    font-size:0.76rem;
+    font-weight:700;
+    color:#bfdbfe;
+    display:flex;
+    align-items:baseline;
+    gap:5px;
+  }
+  .weather-mini-day-date{
+    font-size:0.6rem;
+    font-weight:600;
+    color:var(--ink-faint);
+  }
+  .weather-mini-cond{
+    font-size:0.68rem;
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .weather-mini-temps{
+    font-size:0.74rem;
+    flex-shrink:0;
+    display:flex;
+    gap:6px;
+  }
+  .weather-mini-temps .hi{ color:var(--ink); font-weight:700; }
+  .weather-mini-temps .lo{ color:var(--ink-faint); }
+  .weather-mini-sentence{
+    margin:0;
+    padding-left:48px;
+    font-size:0.68rem;
+    line-height:1.5;
+    color:var(--ink-dim);
+  }
+  .weather-location-editor{
+    display:none;
+    gap:6px;
+  }
+  .weather-location-editor input{
+    flex:1;
+    min-width:0;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(56,189,248,0.45);
+    border-radius:6px;
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.7rem;
+    padding:6px 8px;
+    outline:none;
+  }
+  .weather-location-editor button{
+    flex-shrink:0;
+    padding:6px 10px;
+    border-radius:6px;
+    border:1px solid rgba(56,189,248,0.5);
+    background:rgba(56,189,248,0.16);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.68rem;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .weather-location-editor button:hover{ background:rgba(56,189,248,0.28); }
+
+  /* ---------- Spotify mini card ---------- */
+  .spotify-mini-card{
+    padding:16px;
+    border-radius:var(--r-md);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    background:#0f1f14;
+    border:1px solid rgba(30,215,96,0.5);
+    flex-shrink:0;
+  }
+  .spotify-mini-header{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .spotify-mini-header .material-symbols-outlined{ font-size:22px; color:#1ed760; }
+  .spotify-mini-title{
+    margin:0;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink);
+    flex:1;
+    min-width:0;
+  }
+  .spotify-mini-disconnect{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .spotify-mini-disconnect:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .spotify-mini-disconnect .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .spotify-mini-back{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .spotify-mini-back:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .spotify-mini-back .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .spotify-mini-empty{
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    line-height:1.5;
+  }
+  .spotify-connect-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:8px 10px;
+    border-radius:8px;
+    border:1px solid rgba(30,215,96,0.55);
+    background:rgba(30,215,96,0.14);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.7rem;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .spotify-connect-btn:hover{ background:rgba(30,215,96,0.24); }
+  .spotify-connect-btn .material-symbols-outlined{ font-size:16px; color:#1ed760; }
+
+  /* Now-playing: art+meta on top, transport controls and shuffle modes
+     stacked BELOW so the track name gets the card's full width instead
+     of being squeezed next to a row of buttons. */
+  .spotify-now-playing{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding-bottom:10px;
+  }
+  .spotify-now-playing-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .spotify-art{
+    width:56px; height:56px;
+    flex-shrink:0;
+    border-radius:8px;
+    background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .spotify-track-meta{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .spotify-track-title{
+    font-size:0.78rem;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.3;
+    overflow-wrap:break-word;
+  }
+  .spotify-track-artist{
+    font-size:0.68rem;
+    color:var(--ink-dim);
+    line-height:1.3;
+    overflow-wrap:break-word;
+  }
+  .spotify-progress-row{
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .spotify-progress-time{
+    flex-shrink:0;
+    width:30px;
+    font-size:0.6rem;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+  .spotify-progress-track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.14);
+    position:relative;
+    cursor:pointer;
+  }
+  .spotify-progress-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:0%;
+    border-radius:2px;
+    background:#1ed760;
+  }
+  .spotify-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+  }
+  .spotify-controls button{
+    width:32px; height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    cursor:pointer;
+    padding:0;
+  }
+  .spotify-controls button:hover{ background:rgba(30,215,96,0.24); border-color:rgba(30,215,96,0.55); }
+  .spotify-controls button .material-symbols-outlined{ font-size:18px; }
+  .spotify-controls .spotify-play-btn{ width:38px; height:38px; background:rgba(30,215,96,0.2); border-color:rgba(30,215,96,0.55); }
+  .spotify-controls .spotify-play-btn .material-symbols-outlined{ font-size:22px; color:#1ed760; }
+  .spotify-controls .spotify-shuffle-toggle.active{ background:rgba(30,215,96,0.22); border-color:rgba(30,215,96,0.55); color:#1ed760; }
+
+  .spotify-volume-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding-top:2px;
+  }
+  .spotify-volume-row .material-symbols-outlined{ font-size:16px; color:var(--ink-dim); flex-shrink:0; cursor:pointer; }
+  .spotify-volume-track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.14);
+    position:relative;
+    cursor:pointer;
+  }
+  .spotify-volume-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    border-radius:2px;
+    background:#1ed760;
+  }
+  .spotify-volume-thumb{
+    position:absolute;
+    top:50%;
+    width:10px; height:10px;
+    border-radius:50%;
+    background:#1ed760;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 2px rgba(0,0,0,0.3);
+  }
+
+  .spotify-playlists{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    max-height:420px;
+    overflow-y:auto;
+  }
+  .spotify-playlist-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 4px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .spotify-playlist-row:hover{ background:rgba(30,215,96,0.12); }
+  .spotify-playlist-row.playing{ background:rgba(30,215,96,0.18); }
+  .spotify-playlist-art{
+    width:32px; height:32px;
+    flex-shrink:0;
+    border-radius:5px;
+    background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .spotify-playlist-name{
+    flex:1;
+    min-width:0;
+    font-size:0.7rem;
+    color:var(--ink-dim);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .spotify-playlist-row.playing .spotify-playlist-name{ color:#1ed760; font-weight:700; }
+  .spotify-playlist-row .material-symbols-outlined{ font-size:14px; color:#1ed760; flex-shrink:0; }
+
+  /* ---------- YouTube mini card (red tint) ----------
+     Same layout/behavior pattern as the Spotify card above, swapped to
+     YouTube's Data API v3 (playlists) + IFrame Player API (playback). */
+  .youtube-mini-card{
+    padding:16px;
+    border-radius:var(--r-md);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    background:#210d0d;
+    border:1px solid rgba(255,0,0,0.5);
+    flex-shrink:0;
+  }
+  .youtube-mini-header{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .youtube-logo-badge{
+    width:24px; height:17px;
+    flex-shrink:0;
+    border-radius:5px;
+    background:#ff0000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .youtube-logo-badge .material-symbols-outlined{
+    font-size:11px;
+    color:#fff;
+    font-variation-settings:'FILL' 1;
+  }
+  .youtube-mini-title{
+    margin:0;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink);
+    flex:1;
+    min-width:0;
+  }
+  .youtube-mini-disconnect{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-mini-disconnect:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .youtube-mini-disconnect .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .youtube-mini-back{
+    flex-shrink:0;
+    width:22px; height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:6px;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-mini-back:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .youtube-mini-back .material-symbols-outlined{ font-size:14px; color:inherit; }
+  .youtube-mini-empty{
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    font-style:italic;
+    line-height:1.5;
+  }
+  .youtube-connect-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:8px 10px;
+    border-radius:8px;
+    border:1px solid rgba(255,0,0,0.55);
+    background:rgba(255,0,0,0.14);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.7rem;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .youtube-connect-btn:hover{ background:rgba(255,0,0,0.24); }
+  .youtube-connect-btn .material-symbols-outlined{ font-size:16px; color:#ff0000; }
+
+  .youtube-now-playing{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding-bottom:10px;
+  }
+  .youtube-now-playing-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .youtube-art{
+    width:56px; height:56px;
+    flex-shrink:0;
+    border-radius:8px;
+    background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .youtube-track-meta{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .youtube-track-title{
+    font-size:0.78rem;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.3;
+    overflow-wrap:break-word;
+  }
+  .youtube-track-artist{
+    font-size:0.68rem;
+    color:var(--ink-dim);
+    line-height:1.3;
+    overflow-wrap:break-word;
+  }
+  .youtube-progress-row{
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .youtube-progress-time{
+    flex-shrink:0;
+    width:30px;
+    font-size:0.6rem;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+  .youtube-progress-track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.14);
+    position:relative;
+    cursor:pointer;
+  }
+  .youtube-progress-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:0%;
+    border-radius:2px;
+    background:#ff0000;
+  }
+  .youtube-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+  }
+  .youtube-controls button{
+    width:32px; height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-controls button:hover{ background:rgba(255,0,0,0.24); border-color:rgba(255,0,0,0.55); }
+  .youtube-controls button .material-symbols-outlined{ font-size:18px; }
+  .youtube-controls .youtube-play-btn{ width:38px; height:38px; background:rgba(255,0,0,0.2); border-color:rgba(255,0,0,0.55); }
+  .youtube-controls .youtube-play-btn .material-symbols-outlined{ font-size:22px; color:#ff0000; }
+  .youtube-controls .youtube-shuffle-toggle.active{ background:rgba(255,0,0,0.22); border-color:rgba(255,0,0,0.55); color:#ff0000; }
+
+  .youtube-custom-id-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:0 0 10px;
+  }
+  .youtube-custom-id-row input{
+    flex:1;
+    min-width:0;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:8px;
+    color:var(--ink);
+    font-size:0.72rem;
+    padding:7px 9px;
+  }
+  .youtube-custom-id-row input::placeholder{ color:var(--ink-faint); }
+  .youtube-custom-id-row input:focus{ outline:none; border-color:rgba(255,0,0,0.55); }
+  .youtube-custom-id-row button{
+    width:30px; height:30px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background:rgba(255,0,0,0.16);
+    border:1px solid rgba(255,0,0,0.4);
+    color:#ff0000;
+    cursor:pointer;
+    padding:0;
+  }
+  .youtube-custom-id-row button:hover{ background:rgba(255,0,0,0.28); }
+  .youtube-custom-id-row button .material-symbols-outlined{ font-size:16px; }
+
+  .youtube-volume-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding-top:2px;
+  }
+  .youtube-volume-row .material-symbols-outlined{ font-size:16px; color:var(--ink-dim); flex-shrink:0; cursor:pointer; }
+  .youtube-volume-track{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    background:rgba(255,255,255,0.14);
+    position:relative;
+    cursor:pointer;
+  }
+  .youtube-volume-fill{
+    position:absolute;
+    left:0; top:0; bottom:0;
+    border-radius:2px;
+    background:#ff0000;
+  }
+  .youtube-volume-thumb{
+    position:absolute;
+    top:50%;
+    width:10px; height:10px;
+    border-radius:50%;
+    background:#ff0000;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 2px rgba(0,0,0,0.3);
+  }
+
+  .youtube-playlists{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    max-height:420px;
+    overflow-y:auto;
+  }
+  .youtube-playlist-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 4px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .youtube-playlist-row:hover{ background:rgba(255,0,0,0.12); }
+  .youtube-playlist-row.playing{ background:rgba(255,0,0,0.18); }
+  .youtube-playlist-art{
+    width:32px; height:32px;
+    flex-shrink:0;
+    border-radius:5px;
+    background:rgba(255,255,255,0.08) center/cover no-repeat;
+  }
+  .youtube-playlist-meta{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .youtube-playlist-name{
+    font-size:0.7rem;
+    color:var(--ink-dim);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .youtube-playlist-count{
+    font-size:0.6rem;
+    color:var(--ink-faint);
+  }
+  .youtube-playlist-row.playing .youtube-playlist-name{ color:#ff0000; font-weight:700; }
+  .youtube-playlist-row .material-symbols-outlined{ font-size:14px; color:#ff0000; flex-shrink:0; }
+
+
+  .sidebar-spacer{ flex:1 1 auto; }
+
+  .sidebar-bottom{
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .sidebar-bottom-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .sidebar-version{
+    text-align:right;
+    font-size:0.6rem;
+    letter-spacing:0.12em;
+    color:var(--ink-faint);
+    margin:0;
+    position:relative;
+    top:8px;
+  }
+  .sync-btn{
+    position:relative;
+    flex-shrink:0;
+    width:26px; height:26px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.05);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .sync-btn .material-symbols-outlined{ font-size:15px; }
+  .sync-btn:hover{
+    background:rgba(74,222,128,0.16);
+    border-color:rgba(74,222,128,0.4);
+    color:#86efac;
+  }
+  .sync-btn.synced{
+    background:rgba(74,222,128,0.22);
+    border-color:rgba(74,222,128,0.5);
+    color:#4ade80;
+  }
+  .sync-btn-tooltip{
+    position:absolute;
+    bottom:calc(100% + 7px);
+    left:0;
+    white-space:nowrap;
+    background:rgba(10,10,14,0.94);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink);
+    font-size:0.64rem;
+    font-weight:600;
+    padding:5px 9px;
+    border-radius:6px;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(4px);
+    transition:opacity .15s ease, transform .15s ease;
+    z-index:60;
+  }
+  .sync-btn:hover .sync-btn-tooltip,
+  .sync-btn.synced .sync-btn-tooltip{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ---------- Main content ---------- */
+  .main{
+    flex:1;
+    height:100%;
+    padding:28px 32px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+    overflow-y:auto;
+  }
+
+  .card{
+    border-radius:var(--r-lg);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .fin-card-outline{
+    border:1px solid rgba(248,113,113,0.55);
+    box-shadow:0 0 18px 0 rgba(248,113,113,0.125), inset 0 1px 0 rgba(254,202,202,0.5);
+  }
+  .financial-grid > .fin-spending-card{ height:100%; min-height:0; }
+
+  .panel-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:14px 18px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .panel-header .head-left{ display:flex; align-items:center; gap:8px; }
+  .panel-header .material-symbols-outlined{ font-size:18px; color:var(--financial); }
+  .panel-header h3{
+    margin:0;
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    color:var(--financial);
+  }
+  .panel-body{ flex:1; min-height:0; padding:16px 18px; overflow-y:auto; }
+
+  /* ---------- Icon button (add / etc.) ---------- */
+  .icon-btn{
+    width:26px; height:26px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .icon-btn:hover{ background:rgba(255,255,255,0.12); color:var(--ink); }
+  .icon-btn .material-symbols-outlined{ font-size:16px; }
+
+  /* ---------- Financial page: 3-column grid ---------- */
+  .financial-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.3fr 1.1fr;
+    gap:22px;
+    flex:1;
+    min-height:0;
+  }
+  .fin-spending-card{ min-height:0; }
+  .fin-middle-col, .fin-right-col{
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+    min-height:0;
+  }
+  /* Each column stacks 2 cards with a 22px gap between them; the gap sits
+     on top of the percentage basis rather than being carved out of it, so
+     it's split evenly and subtracted from both cards' basis here — otherwise
+     the pair overflows the column by one gap's worth and the bottom card
+     eats into .main's bottom padding, leaving no breathing room below it. */
+  .fin-budget-card{ flex:0 0 calc(55% - 11px); min-height:0; }
+  .fin-recurring-card{ flex:0 0 calc(45% - 11px); min-height:0; }
+  .fin-projected-card{ flex:0 0 calc(50% - 11px); min-height:0; }
+  .fin-investing-card{ flex:0 0 calc(50% - 11px); min-height:0; }
+
+  .fin-subhead{
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    color:var(--ink-faint);
+    margin:0;
+  }
+  .fin-empty{ font-size:0.78rem; color:var(--ink-faint); font-style:italic; text-align:center; padding:14px 0; }
+  .fin-divider{ height:1px; background:rgba(255,255,255,0.08); margin:14px 0; flex-shrink:0; }
+
+  /* Spending Log */
+  .fin-spending-list{ display:flex; flex-direction:column; gap:2px; }
+  .fin-spending-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 4px;
+    border-radius:var(--r-sm);
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .fin-spending-row:hover{ background:rgba(255,255,255,0.05); }
+  .fin-spending-row-left{ display:flex; align-items:center; gap:10px; min-width:0; }
+  .fin-spending-icon{ font-size:17px; color:var(--financial); opacity:0.8; flex-shrink:0; }
+  .fin-spending-row-text{ min-width:0; }
+  .fin-spending-note{
+    font-size:0.84rem;
+    font-weight:600;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .fin-spending-date{ font-size:0.7rem; color:var(--ink-faint); margin-top:1px; }
+  .fin-spending-amount{ font-size:0.86rem; font-weight:700; flex-shrink:0; }
+  .fin-spending-amount.expense{ color:#f87171; }
+  .fin-spending-amount.income{ color:#4ade80; }
+  .fin-spending-total-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 18px;
+    border-top:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.02);
+    flex-shrink:0;
+  }
+  .fin-spending-total-label{ font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-faint); }
+  .fin-spending-total-value{ font-size:1.0rem; font-weight:800; }
+  .fin-spending-total-value.positive{ color:#4ade80; }
+  .fin-spending-total-value.negative{ color:#f87171; }
+
+  /* Monthly Budget */
+  .fin-budget-body{ display:flex; flex-direction:column; }
+  .fin-paycheck-row{ display:flex; gap:14px; }
+  .fin-monthly-income-row{ font-size:0.8rem; color:var(--ink-dim); margin-top:10px; }
+  .fin-recurring-header-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .fin-recurring-list-mini{ display:flex; flex-direction:column; gap:5px; flex:1; min-height:60px; overflow-y:auto; }
+  .fin-recurring-mini-row{ display:flex; align-items:center; justify-content:space-between; font-size:0.8rem; padding:3px 0; }
+  .fin-recurring-mini-name{ color:var(--ink-dim); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fin-recurring-mini-amount{ color:#f87171; font-weight:700; flex-shrink:0; margin-left:8px; }
+  .fin-recurring-total-row{ font-size:0.76rem; color:var(--ink-faint); margin-top:8px; text-align:right; }
+  .fin-breakdown-row{ display:grid; grid-template-columns:repeat(4, 1fr); align-items:flex-start; gap:10px; margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); }
+  .fin-breakdown-col{ min-width:0; width:100%; display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center; }
+  .fin-breakdown-formula{ font-size:0.78rem; color:var(--ink-faint); }
+  .fin-free-money{ font-size:1.4rem; font-weight:800; }
+  /* Bottom row of the Monthly Budget card has four equal-width columns,
+     so text there is shrunk, locked to one line, and ellipsized if a
+     fallback message (e.g. "Set hourly rates") is still too wide. */
+  .fin-breakdown-row .fin-breakdown-formula,
+  .fin-breakdown-row .fin-free-money,
+  .fin-breakdown-row .fin-subhead{ max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fin-breakdown-row .fin-breakdown-formula{ font-size:0.58rem; }
+  .fin-breakdown-row .fin-free-money{ font-size:0.92rem; }
+  .fin-breakdown-row .fin-subhead{ font-size:0.56rem; }
+  .fin-free-money.positive{ color:#4ade80; }
+  .fin-free-money.negative{ color:#f87171; }
+  .fin-free-money.amber{ color:#fbbf24; }
+  .fin-shortfall-label{ font-size:1.6rem; font-weight:700; color:#f87171; margin-left:6px; white-space:nowrap; line-height:1; vertical-align:middle; }
+
+  .fin-update-balance-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    width:100%;
+    padding:9px 12px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(248,113,113,0.3);
+    background:rgba(248,113,113,0.08);
+    color:var(--ink-dim);
+    font-family:inherit;
+    font-size:0.72rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .fin-update-balance-btn:hover{ background:rgba(248,113,113,0.16); border-color:rgba(248,113,113,0.5); color:var(--ink); }
+  .fin-update-balance-btn .material-symbols-outlined{ font-size:15px; color:var(--financial); }
+
+  .fin-modal-save-btn{
+    width:100%;
+    padding:11px 14px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(248,113,113,0.4);
+    background:rgba(248,113,113,0.16);
+    color:#fecaca;
+    font-family:inherit;
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .fin-modal-save-btn:hover{ background:rgba(248,113,113,0.26); border-color:rgba(248,113,113,0.6); }
+
+  /* Recurring card (bottom) */
+  .fin-recurring-list{ display:flex; flex-direction:column; gap:6px; }
+  .fin-recurring-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:8px 10px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .fin-recurring-row:hover{ background:rgba(255,255,255,0.06); }
+  .fin-recurring-row.due-soon{ background:rgba(251,191,36,0.1); border-color:rgba(251,191,36,0.35); }
+  /* Amber warning tint: next unlogged occurrence falls before the next
+     paycheck date (see nextUnloggedBillingDate / getNextPaycheckDate
+     in renderRecurringCard) — a stronger glow than due-soon's plain
+     7-day window, since "before payday" can be a wider span. */
+  .fin-recurring-row.upcoming-paycheck-item{ background:rgba(251,191,36,0.14); border-color:rgba(251,191,36,0.5); box-shadow:0 0 0 1px rgba(251,191,36,0.15) inset; }
+  .fin-recurring-name{ font-size:0.84rem; font-weight:600; color:var(--ink); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fin-recurring-day{ font-size:0.7rem; color:var(--ink-faint); flex-shrink:0; }
+  .fin-recurring-amount{ font-size:0.84rem; font-weight:700; color:#f87171; flex-shrink:0; }
+
+  /* Jobs & Payday settings modal (config only — name, rate, after-tax) */
+  .fin-jobs-section{ display:flex; flex-direction:column; gap:8px; }
+  .fin-job-row{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    padding:10px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.07);
+  }
+  .fin-job-name-input{ font-weight:700; }
+  .fin-job-rate-row{ display:flex; align-items:center; gap:8px; }
+  .fin-job-rate-row .field-number{ flex:0 0 120px; }
+  .fin-job-aftertax{ font-size:0.66rem; color:var(--ink-faint); flex:1; min-width:0; }
+
+  /* Projected card (replaces Savings Targets) */
+  .fin-projected-body{ display:flex; flex-direction:column; gap:14px; }
+  .fin-projected-section{ display:flex; flex-direction:column; gap:6px; }
+  .fin-projected-earned-row{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .fin-projected-earned-value{ font-size:1.1rem; font-weight:800; color:var(--ink); }
+  .fin-projected-earned-estimate{ font-size:0.64rem; color:var(--ink-faint); }
+  .fin-projected-hours-section{ display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+  .fin-projected-hours-row{ display:flex; align-items:center; gap:8px; }
+  .fin-projected-hours-name{ flex:1; min-width:0; font-size:0.76rem; font-weight:600; color:var(--ink-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fin-projected-hours-btn{
+    width:22px; height:22px;
+    flex-shrink:0;
+    border-radius:6px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-weight:700;
+    font-size:0.8rem;
+    font-family:inherit;
+  }
+  .fin-projected-hours-btn:hover{ background:rgba(255,255,255,0.14); color:var(--ink); }
+  .fin-projected-hours-value{ min-width:44px; text-align:center; font-weight:700; color:var(--ink); font-size:0.78rem; flex-shrink:0; cursor:pointer; }
+  .fin-projected-hours-input{
+    width:44px;
+    flex-shrink:0;
+    font-weight:700;
+    color:var(--ink);
+    font-size:0.78rem;
+    font-family:inherit;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:4px;
+    padding:1px 4px;
+    text-align:center;
+  }
+  .fin-projected-track{ height:6px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .fin-projected-fill{ height:100%; border-radius:999px; background:var(--financial); width:0%; transition:width .3s ease; }
+  .fin-projected-net-section{ display:flex; flex-direction:column; gap:4px; margin-top:auto; }
+  .fin-projected-net-value{ font-size:1.6rem; font-weight:800; margin-top:2px; }
+  .fin-projected-net-value.positive{ color:#4ade80; }
+  .fin-projected-net-value.negative{ color:#f87171; }
+  .fin-next-payday-note{ font-size:0.88rem; color:var(--ink-dim); margin-top:4px; }
+
+  /* Spending Log — top half: actual logged entries (past/present only);
+     bottom half: Planned Expenses, split into Recurring + Planned subsections */
+  .fin-spending-panel-body{ display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+  .fin-spending-log-half{ flex:1 1 50%; min-height:0; overflow-y:auto; }
+  .fin-planned-expenses-half{ flex:1 1 50%; min-height:0; display:flex; flex-direction:column; padding-top:12px; }
+
+  .fin-planned-expenses-subsection{ flex:1; min-height:0; display:flex; flex-direction:column; }
+  .fin-planned-expenses-subsection + .fin-planned-expenses-subsection{ margin-top:8px; }
+  .fin-planned-expenses-subheader{ font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-faint); margin:0 0 3px; flex-shrink:0; }
+  .fin-planned-expenses-list{ flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:4px; }
+  .fin-planned-expenses-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:0.82rem; padding:4px 0; }
+  .fin-planned-expenses-row-clickable{ cursor:pointer; border-radius:var(--r-sm); padding:4px 6px; margin:0 -6px; transition:background .15s ease; }
+  .fin-planned-expenses-row-clickable:hover{ background:rgba(255,255,255,0.05); }
+  .fin-planned-expenses-name{ color:var(--ink-dim); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  .fin-planned-expenses-name-date{ display:flex; flex-direction:column; min-width:0; }
+  .fin-planned-expenses-date{ font-size:0.66rem; color:var(--ink-faint); margin-top:1px; }
+  .fin-planned-expenses-amount{ color:#f87171; font-weight:700; flex-shrink:0; }
+  .fin-planned-expenses-total-row{ display:flex; align-items:center; justify-content:space-between; font-size:0.78rem; color:var(--ink-faint); padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
+  .fin-planned-expenses-total-row .fin-planned-expenses-total-value{ color:#f87171; font-weight:700; }
+
+  /* Savings and Investments */
+  .fin-investing-body{ display:flex; flex-direction:column; min-height:0; overflow:hidden; }
+  .fin-savings-section{ flex-shrink:0; display:flex; flex-direction:column; gap:8px; }
+  .fin-savings-fields-row{ display:flex; gap:10px; }
+  .fin-savings-field{ flex:1; min-width:0; margin-bottom:0; }
+  .fin-savings-total-group{ margin-bottom:0; }
+  .fin-savings-total-hint{ text-transform:none; letter-spacing:normal; font-weight:500; color:var(--ink-faint); font-size:0.6rem; }
+  .fin-savings-total-input{ font-weight:800; font-size:1.05rem; color:var(--ink); text-align:left; }
+  .fin-savings-total-static{
+    margin:0;
+    padding:9px 11px;
+    border-radius:var(--r-sm);
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--ink);
+    font-weight:800;
+    font-size:1.05rem;
+    cursor:pointer;
+    display:none;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .fin-savings-total-static:hover{ background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.14); }
+  .fin-investments-section{ flex:1; min-height:0; display:flex; flex-direction:column; margin-top:10px; }
+  .fin-investments-list{ flex:1; min-height:0; overflow-y:auto; margin-top:8px; }
+  .fin-investment-platform-sub{ color:var(--ink-faint); font-weight:500; }
+
+  .modal-actions-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:20px;
+  }
+  /* Investment modal has no delete button when adding a new entry, which
+     left the checkmark stranded at the left edge under space-between (a
+     lone flex item isn't centered by that value); pin it dead-center of
+     the row regardless of whether Delete is present. */
+  #investment-modal .modal-actions-row{ position:relative; justify-content:flex-start; }
+  #investment-modal .modal-actions-row .checkmark-btn{ position:absolute; left:50%; top:50%; transform:translate(-50%, -50%); }
+  .danger-btn{
+    background:rgba(248,113,113,0.12);
+    border:1px solid rgba(248,113,113,0.32);
+    color:#f87171;
+    font-size:0.64rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    padding:9px 14px;
+    border-radius:var(--r-sm);
+    cursor:pointer;
+  }
+  .danger-btn:hover{ background:rgba(248,113,113,0.2); }
+
+  /* ---------- Modals ---------- */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:rgba(6,6,10,0.55);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  .modal-overlay.open{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .modal-card{
+    width:360px;
+    max-width:92vw;
+    max-height:86vh;
+    overflow-y:auto;
+    border-radius:var(--r-lg);
+    padding:24px;
+    transform:translateY(12px) scale(0.98);
+    transition:transform .2s ease;
+  }
+  .modal-overlay.open .modal-card{ transform:translateY(0) scale(1); }
+
+  .modal-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .modal-header .material-symbols-outlined{ font-size:22px; }
+  .modal-header h2{ margin:0; font-size:1.05rem; font-weight:700; }
+
+  .field-group{ margin-bottom:16px; }
+  .field-label{
+    display:block;
+    font-size:0.64rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--ink-faint);
+    margin-bottom:6px;
+  }
+  .field-select, .field-number, .field-text{
+    width:100%;
+    padding:9px 11px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--ink);
+    font-family:'Geist','Segoe UI',sans-serif;
+    font-size:0.8rem;
+    outline:none;
+  }
+  .field-select:focus, .field-number:focus, .field-text:focus{
+    border-color:rgba(255,255,255,0.32);
+    background:rgba(255,255,255,0.08);
+  }
+  .field-select option{ background:#16171c; color:var(--ink); }
+
+  .hidden-field{
+    display:none;
+    margin-top:10px;
+  }
+  .hidden-field.show{ display:block; }
+
+  .modal-close-row{
+    display:flex;
+    justify-content:center;
+    margin-top:20px;
+  }
+  .checkmark-btn{
+    width:48px; height:48px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.2);
+    background:linear-gradient(145deg, rgba(74,222,128,0.35), rgba(74,222,128,0.12));
+    color:#f0fff4;
+    font-size:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:transform .15s ease;
+  }
+  .checkmark-btn:hover{ transform:scale(1.06); }
+
+  /* ---------- Import Health Data ---------- */
+  .nav-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .nav-row .nav-link{ flex:1; min-width:0; }
+  .import-btn{
+    position:relative;
+    flex-shrink:0;
+    width:26px; height:26px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.05);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .import-btn .material-symbols-outlined{ font-size:15px; }
+  .import-btn:hover{
+    background:rgba(74,222,128,0.16);
+    border-color:rgba(74,222,128,0.4);
+    color:#86efac;
+  }
+  .import-btn-tooltip{
+    position:absolute;
+    bottom:calc(100% + 7px);
+    left:50%;
+    transform:translateX(-50%) translateY(4px);
+    white-space:nowrap;
+    background:rgba(10,10,14,0.94);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--ink);
+    font-size:0.64rem;
+    font-weight:600;
+    padding:5px 9px;
+    border-radius:6px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .15s ease, transform .15s ease;
+    z-index:60;
+  }
+  .import-btn:hover .import-btn-tooltip{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+
+  .import-modal-card{ width:440px; }
+  .import-dropzone{
+    border:1.5px dashed rgba(255,255,255,0.2);
+    border-radius:var(--r-md);
+    padding:32px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:10px;
+    transition:border-color .15s ease, background .15s ease;
+    cursor:pointer;
+  }
+  .import-dropzone .material-symbols-outlined{
+    font-size:34px;
+    color:var(--physical);
+    opacity:0.85;
+  }
+  .import-dropzone p{
+    margin:0;
+    font-size:0.8rem;
+    color:var(--ink-dim);
+  }
+  .import-dropzone.dragover{
+    border-color:var(--physical);
+    background:rgba(74,222,128,0.08);
+  }
+  .import-picker-btn{
+    margin-top:4px;
+    padding:8px 16px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.06);
+    color:var(--ink);
+    font-family:inherit;
+    font-size:0.74rem;
+    font-weight:600;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .import-picker-btn:hover{ background:rgba(255,255,255,0.12); }
+
+  .import-progress-section{ padding:8px 2px 2px; }
+  .import-filename{
+    font-size:0.68rem;
+    color:var(--ink-dim);
+    text-align:center;
+    margin:0 0 12px;
+  }
+  .import-progress-track{
+    height:8px;
+    border-radius:4px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+  }
+  .import-progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--physical), #86efac);
+    transition:width .15s ease;
+  }
+  .import-status-text{
+    margin:10px 0 0;
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+
+  .import-summary-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .import-summary-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 12px;
+    border-radius:var(--r-sm);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .import-summary-row .name{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.76rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .import-summary-row .name .material-symbols-outlined{
+    font-size:16px;
+    color:#4ade80;
+  }
+  .import-summary-row .count{
+    font-size:0.72rem;
+    font-weight:700;
+    color:var(--ink-dim);
+  }
+
+  /* ---------- PIN Gate ---------- */
+  body:not(.pin-unlocked) .app-shell{ display:none; }
+
+  .pin-gate-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(6,6,10,0.55);
+    backdrop-filter:blur(14px) saturate(160%);
+    -webkit-backdrop-filter:blur(14px) saturate(160%);
+  }
+  .pin-gate-card{
+    display:none;
+    flex-direction:column;
+    width:360px;
+    max-width:92vw;
+    padding:32px 28px;
+    border-radius:var(--r-lg);
+    border-color:rgba(248,113,113,0.28);
+    box-shadow:0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .pin-gate-card.active{ display:flex; }
+  .pin-gate-card.shake{ animation:pinGateShake .4s ease; }
+  @keyframes pinGateShake{
+    10%,90%{ transform:translateX(-1px); }
+    20%,80%{ transform:translateX(2px); }
+    30%,50%,70%{ transform:translateX(-6px); }
+    40%,60%{ transform:translateX(6px); }
+  }
+  .pin-gate-brand{ text-align:center; margin-bottom:20px; }
+  .pin-gate-brand h1{
+    margin:0;
+    font-size:1.4rem;
+    font-weight:700;
+    letter-spacing:-0.02em;
+    background:linear-gradient(135deg,#ffffff 0%, #fca5a5 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .pin-gate-subtitle{
+    margin:4px 0 0;
+    font-size:0.66rem;
+    font-weight:700;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--financial);
+  }
+  .pin-gate-heading{
+    font-size:0.86rem;
+    font-weight:700;
+    color:var(--ink);
+    margin:0 0 16px;
+    text-align:center;
+  }
+  .pin-gate-card .field-group{ text-align:left; }
+  .pin-input{ text-align:center; letter-spacing:0.3em; font-size:1.1rem; font-weight:700; }
+  .pin-gate-error{
+    font-size:0.7rem;
+    font-weight:600;
+    color:#f87171;
+    min-height:14px;
+    margin:0 0 12px;
+    text-align:center;
+  }
+  .pin-gate-btn{
+    padding:11px 14px;
+    border-radius:var(--r-sm);
+    border:1px solid rgba(248,113,113,0.4);
+    background:rgba(248,113,113,0.16);
+    color:#fecaca;
+    font-family:inherit;
+    font-size:0.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .pin-gate-btn:hover{ background:rgba(248,113,113,0.26); border-color:rgba(248,113,113,0.6); }
+  .pin-gate-forgot-link, .pin-gate-back-link{
+    display:block;
+    margin-top:14px;
+    font-size:0.68rem;
+    color:var(--ink-faint);
+    text-decoration:none;
+    text-align:center;
+  }
+  .pin-gate-forgot-link:hover, .pin-gate-back-link:hover{ color:var(--ink-dim); text-decoration:underline; }
+  .pin-gate-question-display{
+    font-size:0.78rem;
+    color:var(--ink-dim);
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:var(--r-sm);
+    padding:10px 12px;
+    margin-bottom:14px;
+  }
+
+  /* ---------- Financial exit button — PIN gate only ----------
+     Lives inside #pin-gate-overlay now (was previously a body-level
+     sibling rendered before it), so it unmounts along with the rest of
+     the overlay the instant unlockFinancialPage() hides it — it no
+     longer persists/leaks on top of the authenticated dashboard.
+     The body.pin-unlocked rule below is a defensive backstop in case
+     anything ever shows the overlay without also being caught by the
+     display:none above. */
+  body.pin-unlocked .financial-exit-btn{ display:none !important; }
+  .financial-exit-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    z-index:1100;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.18);
+    color:var(--ink-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .financial-exit-btn:hover{ background:rgba(248,113,113,0.18); border-color:rgba(248,113,113,0.45); color:#fecaca; }
+  .financial-exit-btn .material-symbols-outlined{ font-size:20px; }
