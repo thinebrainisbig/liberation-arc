@@ -2,14 +2,9 @@
    Academic subpage — extracted from academic-subpage.html's
    inline <script> block (Phase B reorg). Page-specific logic
    only; depends on js/core.js, js/weather-widget.js,
-   js/spotify-widget.js, js/youtube-widget.js (load those first).
+   js/spotify-widget.js, js/youtube-widget.js, js/core/daily-reset.js
+   (load those first).
 ============================================================ */
-  function openModal(id){
-    document.getElementById(id).classList.add('open');
-  }
-  function closeModal(id){
-    document.getElementById(id).classList.remove('open');
-  }
   document.querySelectorAll('.modal-overlay').forEach(function(overlay){
     overlay.addEventListener('click', function(e){
       if(e.target === overlay){
@@ -315,9 +310,9 @@
        real midnight, unlike Habits/Lab Tasks (and
        unlike index.html's Academic card, which still uses the
        5AM-adjusted date). This is an intentional divergence from
-       index.html, not an oversight. */
-    var d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+       index.html, not an oversight. (todayISOMidnight() lives in
+       js/core/daily-reset.js.) */
+    return todayISOMidnight();
   }
   function daysBetween(dueISO){
     var due = new Date(dueISO + 'T00:00:00');
@@ -328,12 +323,6 @@
     var due = new Date(dueISO + 'T00:00:00');
     var today = new Date(getAdjustedDate() + 'T00:00:00');
     return Math.round((due - today) / 86400000);
-  }
-  function formatDateHuman(iso){
-    if(!iso) return '—';
-    var d = new Date(iso + 'T00:00:00');
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[d.getMonth()] + ' ' + d.getDate();
   }
   function computeStatus(dueISO){
     if(!dueISO) return { text:'No date', cls:'status-normal' };
@@ -975,16 +964,8 @@
      longer render here, and index.html has its own separate wheel-
      based system now. */
 
-  function addDaysISO(iso, delta){
-    var d = new Date(iso + 'T00:00:00');
-    d.setDate(d.getDate() + delta);
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
-  function getPreviousProductivityDate(){
-    return addDaysISO(getAdjustedDate(), -1);
-  }
-  /* isNightCheckinMissed/maybeRedirectForNightCheckin now live in
-     js/core/daily-reset.js. */
+  /* addDaysISO/getPreviousProductivityDate/isNightCheckinMissed/
+     maybeRedirectForNightCheckin now live in js/core/daily-reset.js. */
   /* ============================================================
      Cross-page live sync. handleStorageSync is the single source of
      truth for "what to re-render when key X changes" — it's wired to

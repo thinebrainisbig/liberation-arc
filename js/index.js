@@ -3,15 +3,9 @@
    <script> block (Phase B reorg). Page-specific logic only
    (progress wheel, notepad, deadlines, lab tasks, areas, social
    targets). Depends on js/core.js, js/weather-widget.js,
-   js/spotify-widget.js, js/youtube-widget.js, js/calendar.js
-   (load those first).
+   js/spotify-widget.js, js/youtube-widget.js, js/calendar.js,
+   js/core/daily-reset.js (load those first).
 ============================================================ */
-  function openModal(id){
-    document.getElementById(id).classList.add('open');
-  }
-  function closeModal(id){
-    document.getElementById(id).classList.remove('open');
-  }
   document.querySelectorAll('.modal-overlay').forEach(function(overlay){
     overlay.addEventListener('click', function(e){
       if(e.target === overlay){
@@ -476,11 +470,11 @@
   ============================================================ */
 
   function todayISO(){
-    /* Aliases the 5AM-adjusted "today" (getAdjustedDate(), defined
-       further below but hoisted) so Deadlines' "Due Today" status
+    /* Aliases the 5AM-adjusted "today" (todayISOAdjusted(), in
+       js/core/daily-reset.js) so Deadlines' "Due Today" status
        agrees with Habits/Lab Tasks/Social Targets instead of flipping
        at real midnight while everything else flips at 5AM. */
-    return getAdjustedDate();
+    return todayISOAdjusted();
   }
   function daysBetween(dueISO){
     var due = new Date(dueISO + 'T00:00:00');
@@ -491,12 +485,6 @@
     var due = new Date(dueISO + 'T00:00:00');
     var today = new Date(getAdjustedDate() + 'T00:00:00');
     return Math.round((due - today) / 86400000);
-  }
-  function formatDateHuman(iso){
-    if(!iso) return '—';
-    var d = new Date(iso + 'T00:00:00');
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[d.getMonth()] + ' ' + d.getDate();
   }
   function computeStatus(dueISO){
     if(!dueISO) return { text:'No date', cls:'status-normal' };
@@ -1106,14 +1094,6 @@
     var d = new Date(ts);
     if(d.getHours() >= 0 && d.getHours() < 5){ d.setDate(d.getDate() - 1); }
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
-  function addDaysISO(iso, delta){
-    var d = new Date(iso + 'T00:00:00');
-    d.setDate(d.getDate() + delta);
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
-  function getPreviousProductivityDate(){
-    return addDaysISO(getAdjustedDate(), -1);
   }
   function isScheduledDay(habit, dateISO){
     var dow = new Date(dateISO + 'T00:00:00').getDay();

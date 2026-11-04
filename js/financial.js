@@ -5,14 +5,9 @@
    Page-specific logic only (the PIN gate is intentionally
    financial-only, never shared — see its own header below).
    Depends on js/core.js, js/weather-widget.js,
-   js/spotify-widget.js, js/youtube-widget.js (load those first).
+   js/spotify-widget.js, js/youtube-widget.js, js/core/daily-reset.js
+   (load those first).
 ============================================================ */
-  function openModal(id){
-    document.getElementById(id).classList.add('open');
-  }
-  function closeModal(id){
-    document.getElementById(id).classList.remove('open');
-  }
   document.querySelectorAll('.modal-overlay').forEach(function(overlay){
     overlay.addEventListener('click', function(e){
       if(e.target === overlay){
@@ -320,8 +315,7 @@
   ============================================================ */
 
   function todayISO(){
-    var d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    return todayISOMidnight();
   }
   function diffDaysISO(aISO, bISO){
     var a = new Date(aISO + 'T00:00:00');
@@ -1307,22 +1301,8 @@
     }).join('');
   }
 
-  function formatDateHuman(iso){
-    if(!iso) return '—';
-    var d = new Date(iso + 'T00:00:00');
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[d.getMonth()] + ' ' + d.getDate();
-  }
-
-  function addDaysISO(iso, delta){
-    var d = new Date(iso + 'T00:00:00');
-    d.setDate(d.getDate() + delta);
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
-  function getPreviousProductivityDate(){
-    return addDaysISO(getAdjustedDate(), -1);
-  }
-  /* isNightCheckinMissed/maybeRedirectForNightCheckin now live in
+  /* formatDateHuman/addDaysISO/getPreviousProductivityDate/
+     isNightCheckinMissed/maybeRedirectForNightCheckin now live in
      js/core/daily-reset.js. */
   /* ============================================================
      Cross-page live sync. handleStorageSync is the single source of

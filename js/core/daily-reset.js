@@ -11,6 +11,38 @@
 (function(){
   'use strict';
 
+  function openModal(id){
+    document.getElementById(id).classList.add('open');
+  }
+  function closeModal(id){
+    document.getElementById(id).classList.remove('open');
+  }
+
+  function addDaysISO(iso, delta){
+    var d = new Date(iso + 'T00:00:00');
+    d.setDate(d.getDate() + delta);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function getPreviousProductivityDate(){
+    return addDaysISO(getAdjustedDate(), -1);
+  }
+  function formatDateHuman(iso){
+    if(!iso) return '—';
+    var d = new Date(iso + 'T00:00:00');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[d.getMonth()] + ' ' + d.getDate();
+  }
+
+  /* todayISO differs on purpose per page (index = 5AM-adjusted date,
+     every other page = real midnight; see the comment in academic.js),
+     so it stays two distinctly named functions here rather than one
+     merged todayISO. */
+  function todayISOAdjusted(){ return getAdjustedDate(); }
+  function todayISOMidnight(){
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
   function updateLateNightMode(){
     document.body.classList.toggle('late-night', isLateNightWindow());
   }
@@ -75,6 +107,13 @@
       '  ·  ' + h12 + ':' + minStr + ' ' + ampm;
   }
 
+  window.openModal = openModal;
+  window.closeModal = closeModal;
+  window.addDaysISO = addDaysISO;
+  window.getPreviousProductivityDate = getPreviousProductivityDate;
+  window.formatDateHuman = formatDateHuman;
+  window.todayISOAdjusted = todayISOAdjusted;
+  window.todayISOMidnight = todayISOMidnight;
   window.updateLateNightMode = updateLateNightMode;
   window.clearTodayNutritionEntry = clearTodayNutritionEntry;
   window.isNightCheckinMissed = isNightCheckinMissed;
