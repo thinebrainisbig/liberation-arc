@@ -40,11 +40,6 @@
   function todayISO(){
     return todayISOMidnight();
   }
-  function diffDaysISO(aISO, bISO){
-    var a = new Date(aISO + 'T00:00:00');
-    var b = new Date(bISO + 'T00:00:00');
-    return Math.round((b - a) / 86400000);
-  }
 
   /* ============================================================
      Financial helpers — formatting
