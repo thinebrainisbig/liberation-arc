@@ -13,9 +13,11 @@
    Session 1 built the foundation: the on/off switch, a device
    ID, the never-sync list, write capture into a queue, the
    status dot and the Sync panel's Connect/Disconnect flow.
-   Session 2 adds push, pull, the first-sync rule and tombstones.
-   Live updates (realtime subscribe), the redraw/refresh-pill
-   wiring and the daily-job gate are Session 3 work.
+   Session 2 added push, pull, the first-sync rule and tombstones.
+   Session 3 adds the realtime subscription, the redraw/refresh-
+   pill wiring, the pull triggers (visibility/pageshow/online/
+   60s) and the daily-job gate (js/core/daily-reset.js checks
+   window.isSyncGateOpen(), defined below).
 ============================================================ */
 (function(){
   'use strict';
@@ -141,6 +143,54 @@
     lastSyncError = 'Sync error: ' + describeError(err);
     updateStatusUI();
     renderPanelState();
+  }
+
+  /* ---------- Daily-job gate ----------
+     js/core/daily-reset.js's checkDailyReset calls
+     window.isSyncGateOpen() and returns early while it's false, so
+     the 5AM reset/accrual/paycheck jobs wait for this device's
+     first pull instead of acting on stale pre-sync data. With sync
+     off the gate starts (and stays) open, so nothing changes. */
+  var dailyGateOpen = !isSyncOn();
+  function openDailyGate(){
+    if(dailyGateOpen) return;
+    dailyGateOpen = true;
+    if(typeof window.runClockTick === 'function') window.runClockTick();
+  }
+  window.isSyncGateOpen = function(){ return dailyGateOpen; };
+  if(!dailyGateOpen) setTimeout(openDailyGate, 3000);
+
+  /* ---------- Redraw / refresh pill ---------- */
+  var pillEl = null;
+  function showRefreshPill(){
+    if(!pillEl){
+      pillEl = document.createElement('div');
+      pillEl.id = 'sync-refresh-pill';
+      pillEl.setAttribute('role', 'button');
+      pillEl.style.cssText = 'position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:200;' +
+        ' display:flex; align-items:center; gap:8px; padding:9px 16px; border-radius:999px;' +
+        ' background:rgba(10,10,14,0.92); border:1px solid rgba(255,255,255,0.14); color:#e5e7eb;' +
+        ' font-size:0.78rem; font-weight:600; cursor:pointer; backdrop-filter:blur(6px);' +
+        ' -webkit-backdrop-filter:blur(6px); box-shadow:0 8px 24px rgba(0,0,0,0.35);';
+      pillEl.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">refresh</span>' +
+        '<span>New data — tap to refresh</span>';
+      pillEl.addEventListener('click', function(){ location.reload(); });
+      document.body.appendChild(pillEl);
+    }
+    pillEl.style.display = 'flex';
+  }
+
+  /* Redraw after applying a key from either pull or a live event.
+     window.handleStorageSync exists on every page today, so the
+     pill is really just a fallback for a page that somehow doesn't
+     define one — handleStorageSync itself already only reacts to
+     the keys it cares about and ignores the rest. */
+  function notifyPageOfChange(key){
+    if(typeof window.handleStorageSync === 'function'){
+      window.handleStorageSync({ key: key });
+    } else {
+      showRefreshPill();
+    }
   }
 
   /* kv.value is always this device's localStorage string, wrapped
@@ -277,9 +327,9 @@
   }
 
   function pull(){
-    if(!isSyncOn()) return Promise.resolve();
+    if(!isSyncOn()){ openDailyGate(); return Promise.resolve(); }
     var client = getPB();
-    if(!client || !client.authStore.isValid) return Promise.resolve();
+    if(!client || !client.authStore.isValid){ openDailyGate(); return Promise.resolve(); }
 
     var cursor = localStorage.getItem('lasync_cursor');
     var filterStr = cursor ? client.filter('updated >= {:cursor}', { cursor: cursor }) : '';
@@ -291,6 +341,7 @@
           var localT = (meta[record.key] && meta[record.key].t) || 0;
           if(record.clientUpdatedAt > localT){
             applyServerValue(record.key, record);
+            notifyPageOfChange(record.key);
           }
           if(record.updated > newestUpdated) newestUpdated = record.updated;
         });
@@ -299,18 +350,71 @@
       })
       .catch(function(err){
         markSyncError(err);
+      })
+      .then(function(){
+        openDailyGate();
       });
+  }
+
+  /* Live updates while this device's tab/app is open: the same
+     apply logic as pull, fed by the server's realtime feed instead
+     of a fetch. Echoes of this device's own pushes (same deviceId)
+     are ignored — they're already reflected locally. */
+  function handleRealtimeEvent(e){
+    var record = e && e.record;
+    if(!record || !record.key) return;
+    if(record.deviceId === getDeviceId()) return;
+    var meta = loadMeta();
+    var localT = (meta[record.key] && meta[record.key].t) || 0;
+    if(record.clientUpdatedAt > localT){
+      applyServerValue(record.key, record);
+      notifyPageOfChange(record.key);
+    }
+  }
+
+  var realtimeStarted = false;
+  function startRealtime(client){
+    if(realtimeStarted || !client || !client.authStore.isValid) return;
+    realtimeStarted = true;
+    client.collection('kv').subscribe('*', handleRealtimeEvent).catch(function(){ realtimeStarted = false; });
+    /* PB_CONNECT fires on every (re)connect of the realtime SSE
+       stream, including after a dropped connection comes back —
+       run the load sequence then to catch anything missed while
+       disconnected (the SDK reconnects on its own; this just
+       catches us up once it does). */
+    client.realtime.subscribe('PB_CONNECT', runLoadSequence).catch(function(){});
+  }
+  function stopRealtime(client){
+    realtimeStarted = false;
+    try{ if(client) client.realtime.unsubscribe(); }catch(e){}
   }
 
   /* "On load: pull, then push" (Part E). Also run right after a
      successful Connect, so a fresh sign-in starts syncing
-     immediately instead of waiting for the next write. */
+     immediately instead of waiting for the next write. Safe to
+     call unconditionally (e.g. from the pull triggers below) —
+     it's a no-op whenever sync is off. */
   function runLoadSequence(){
+    if(!isSyncOn()) return;
     pull().then(function(){
       seedQueueWithUnsyncedKeys();
       flushQueue();
     });
   }
+
+  /* Pull triggers (Part E): on return to the foreground and every
+     60s while visible, so edits made elsewhere (or made here while
+     offline) show up without a reload. iOS freezes the Home Screen
+     app in the background, so these foreground-triggered pulls
+     matter most on the phone. */
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible') runLoadSequence();
+  });
+  window.addEventListener('pageshow', runLoadSequence);
+  window.addEventListener('online', runLoadSequence);
+  setInterval(function(){
+    if(document.visibilityState === 'visible') runLoadSequence();
+  }, 60000);
 
   var nativeSetItem = Storage.prototype.setItem;
   var nativeRemoveItem = Storage.prototype.removeItem;
@@ -421,6 +525,7 @@
       lastSyncError = null;
       updateStatusUI();
       renderPanelState();
+      startRealtime(client);
       runLoadSequence();
     }).catch(function(err){
       lastSyncError = 'Could not connect: ' + describeError(err);
@@ -430,8 +535,9 @@
   }
 
   function handleDisconnectClick(){
+    var client = getPB();
+    stopRealtime(client);
     try{
-      var client = getPB();
       if(client) client.authStore.clear();
     }catch(e){}
     pb = null;
@@ -495,7 +601,11 @@
     buildStatusDot('.mobile-quick-actions', 'mobile-quick-btn', false);
     getDeviceId();
     updateStatusUI();
-    if(isSyncOn()) runLoadSequence();
+    if(isSyncOn()){
+      var client = getPB();
+      if(client && client.authStore.isValid) startRealtime(client);
+      runLoadSequence();
+    }
   }
 
   if(document.readyState === 'loading'){

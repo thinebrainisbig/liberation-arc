@@ -73,6 +73,12 @@
   }
 
   function checkDailyReset(){
+    /* js/core/sync.js (loaded before this file) exposes
+       window.isSyncGateOpen() so the 5AM reset waits for this
+       device's first pull instead of acting on stale pre-sync
+       data. With sync off (or sync.js absent), the gate is always
+       open and nothing here changes. */
+    if(typeof window.isSyncGateOpen === 'function' && !window.isSyncGateOpen()) return;
     var adjusted = getAdjustedDate();
     var last = localStorage.getItem('la_last_reset_date');
     if(last !== adjusted){
