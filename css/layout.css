@@ -101,6 +101,14 @@
   .sidebar > .currently-mini-card,
   .sidebar > .social-card,
   .sidebar > .habit-mini-card,
+  /* Spotify/YouTube mini-cards: full desktop-sized widgets with no
+     mobile layout of their own. As visible siblings of
+     .mobile-quick-actions in .sidebar's mobile flex-direction:row,
+     they ate into its width and pushed the sync status dot (the
+     last button added to that row) off-screen. Hidden here, same as
+     the other desktop-only widgets above. */
+  .sidebar > .spotify-mini-card,
+  .sidebar > .youtube-mini-card,
   .sidebar > .sidebar-spacer,
   .sidebar > .sidebar-bottom{
     display:none !important;
