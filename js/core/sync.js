@@ -144,13 +144,20 @@
   }
 
   /* kv.value is always this device's localStorage string, wrapped
-     in JSON.stringify — not an attempt to interpret the app's own
-     JSON. This round-trips byte-for-byte regardless of whether the
-     original localStorage text was itself JSON (saveJSON's output)
-     or a bare string (e.g. la_last_reset_date's plain date text). */
+     in JSON.stringify so an arbitrary string round-trips as one
+     opaque JSON string value — not an attempt to interpret the
+     app's own JSON. PocketBase (and the SDK) decode that JSON value
+     exactly once on the way in and back out, so what comes back as
+     record.value is already the original raw string itself; parsing
+     it again here would turn a JSON-array/object string into an
+     actual array/object (and then localStorage.setItem would
+     stringify THAT as "[object Object]" instead of the original
+     text). Only fall back to re-stringifying for an unexpected
+     non-string value (e.g. a hand-edited row). */
   function toServerValue(rawString){ return JSON.stringify(rawString); }
   function fromServerValue(value){
-    try{ return JSON.parse(value); }catch(e){ return null; }
+    if(typeof value === 'string') return value;
+    return value === null || value === undefined ? null : JSON.stringify(value);
   }
 
   /* Writes a server row into localStorage with the native,
@@ -175,13 +182,20 @@
     var meta = loadMeta();
     var entry = meta[key] || {};
     var localT = entry.t || 0;
+    /* clientUpdatedAt is a required number field, and PocketBase
+       treats 0 as that field's empty value and rejects it. A key
+       with no lasync_meta entry yet (localT === 0, the first-sync
+       sentinel) still needs a real timestamp to send, so fall back
+       to now — localT itself stays 0 for the "is the server newer
+       than what we've seen" comparison below. */
+    var sendT = localT || Date.now();
     var raw = localStorage.getItem(key);
     var deleted = raw === null;
     var body = {
       owner: ownerId,
       key: key,
       value: deleted ? null : toServerValue(raw),
-      clientUpdatedAt: localT,
+      clientUpdatedAt: sendT,
       deviceId: getDeviceId(),
       deleted: deleted
     };
