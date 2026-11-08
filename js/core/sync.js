@@ -123,7 +123,7 @@
     if(typeof PocketBase === 'undefined') return null;
     var url = localStorage.getItem('lasync_server');
     if(!url) return null;
-    pb = new PocketBase(url);
+    pb = new PocketBase(url).autoCancellation(false);
     return pb;
   }
 
@@ -158,7 +158,12 @@
     if(typeof window.runClockTick === 'function') window.runClockTick();
   }
   window.isSyncGateOpen = function(){ return dailyGateOpen; };
-  if(!dailyGateOpen) setTimeout(openDailyGate, 3000);
+  /* 10s, not 3s: autoCancellation is off (see getPB/handleConnectClick)
+     so a slow pull from the phone can't be cancelled out from under
+     itself and open the gate early — this is purely a last-resort
+     backstop for e.g. an offline device, which still resets after
+     10s rather than waiting forever. */
+  if(!dailyGateOpen) setTimeout(openDailyGate, 10000);
 
   /* ---------- Redraw / refresh pill ---------- */
   var pillEl = null;
@@ -347,12 +352,17 @@
         });
         if(newestUpdated) localStorage.setItem('lasync_cursor', newestUpdated);
         markSynced();
+        /* Only opened here, on an actual successful pull — not in
+           .catch below. A cancelled request (two overlapping pulls;
+           see runLoadSequence's non-reentrancy guard) rejects just
+           like a real failure, and opening the gate on that would
+           let a stale-data daily reset win a race against the real
+           pull's result. An offline/failing device instead falls
+           back to the 10s timer above. */
+        openDailyGate();
       })
       .catch(function(err){
         markSyncError(err);
-      })
-      .then(function(){
-        openDailyGate();
       });
   }
 
@@ -393,12 +403,35 @@
      successful Connect, so a fresh sign-in starts syncing
      immediately instead of waiting for the next write. Safe to
      call unconditionally (e.g. from the pull triggers below) —
-     it's a no-op whenever sync is off. */
+     it's a no-op whenever sync is off.
+
+     Non-reentrant: initUI and the pageshow trigger (among others)
+     can both fire at load, which used to start two overlapping
+     pulls — the PocketBase SDK cancels the first as a duplicate
+     GET, and that cancellation was being treated as "the pull
+     finished" by the daily-job gate. A call that arrives while one
+     is already running just marks a pending flag instead of
+     starting a second one in parallel; once the in-flight call
+     finishes, it runs again exactly once to pick up anything that
+     prompted the second call. */
+  var loadSequenceRunning = false;
+  var loadSequencePending = false;
   function runLoadSequence(){
     if(!isSyncOn()) return;
+    if(loadSequenceRunning){
+      loadSequencePending = true;
+      return;
+    }
+    loadSequenceRunning = true;
     pull().then(function(){
       seedQueueWithUnsyncedKeys();
       flushQueue();
+    }).then(function(){
+      loadSequenceRunning = false;
+      if(loadSequencePending){
+        loadSequencePending = false;
+        runLoadSequence();
+      }
     });
   }
 
@@ -516,7 +549,7 @@
     }
 
     setPanelMessage('Connecting…', 'var(--ink-dim)');
-    var client = new PocketBase(url);
+    var client = new PocketBase(url).autoCancellation(false);
     client.collection('users').authWithPassword(email, password).then(function(){
       pb = client;
       localStorage.setItem('lasync_server', url);
