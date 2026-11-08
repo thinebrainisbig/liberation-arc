@@ -1,5 +1,5 @@
 /* ============================================================
-   js/core/sync.js — Step 3, Session 1 (Foundation)
+   js/core/sync.js — Step 3, Sessions 1-2 (Foundation; Push/Pull)
 
    Loaded FIRST on every page, before js/core.js and everything
    else, so the Storage.prototype wrap below is in place before
@@ -10,11 +10,12 @@
    it unset, every localStorage write behaves exactly as it did
    before this file existed.
 
-   This session only builds the foundation: the on/off switch,
-   a device ID, the never-sync list, write capture into a queue,
-   the status dot and the Sync panel's Connect/Disconnect flow.
-   Push, pull, live updates and the daily-job gate are Session 2
-   and Session 3 work — nothing here sends la_ data anywhere yet.
+   Session 1 built the foundation: the on/off switch, a device
+   ID, the never-sync list, write capture into a queue, the
+   status dot and the Sync panel's Connect/Disconnect flow.
+   Session 2 adds push, pull, the first-sync rule and tombstones.
+   Live updates (realtime subscribe), the redraw/refresh-pill
+   wiring and the daily-job gate are Session 3 work.
 ============================================================ */
 (function(){
   'use strict';
@@ -24,11 +25,10 @@
      lasync_server   — server URL; sync is off when absent
      lasync_device   — random ID for this browser/app instance
      lasync_email    — last-used email, prefilled in the panel
-     lasync_meta     — { [key]: { t: lastLocalChangeMs } }
+     lasync_meta     — { [key]: { t: lastLocalChangeMs, id: kvRecordId } }
      lasync_queue    — array of la_ keys waiting to be pushed
-     lasync_cursor   — server time of the last pull (Session 2)
+     lasync_cursor   — server `updated` string of the last pull
      lasync_last_sync — ms timestamp of the last successful sync
-                        (Session 2+; read-only here)
      pocketbase_auth — the PocketBase SDK's own auth token store
   */
 
@@ -77,12 +77,13 @@
   function loadQueue(){ return loadJson('lasync_queue', []); }
   function saveQueue(queue){ localStorage.setItem('lasync_queue', JSON.stringify(queue)); }
 
-  /* ---------- Catching writes ----------
-     Push/pull land in Session 2; for now a queued key just sits
-     in lasync_queue and the dot shows "queued" until that
-     session's flush implementation replaces this stub. */
-  function flushQueue(){
-    /* Implemented in Session 2 (Push and pull). */
+  function removeFromQueue(key){
+    var queue = loadQueue();
+    var idx = queue.indexOf(key);
+    if(idx !== -1){
+      queue.splice(idx, 1);
+      saveQueue(queue);
+    }
   }
 
   var flushTimer = null;
@@ -91,7 +92,6 @@
     flushTimer = setTimeout(function(){
       flushTimer = null;
       flushQueue();
-      updateStatusUI();
     }, 1000);
   }
 
@@ -112,6 +112,190 @@
     meta[key] = entry;
     saveMeta(meta);
     queueKey(key);
+  }
+
+  /* ---------- PocketBase client ---------- */
+  var pb = null;
+  function getPB(){
+    if(pb) return pb;
+    if(typeof PocketBase === 'undefined') return null;
+    var url = localStorage.getItem('lasync_server');
+    if(!url) return null;
+    pb = new PocketBase(url);
+    return pb;
+  }
+
+  function describeError(err){
+    if(!err) return 'unknown error';
+    return err.message || String(err);
+  }
+
+  function markSynced(){
+    localStorage.setItem('lasync_last_sync', String(Date.now()));
+    lastSyncError = null;
+    updateStatusUI();
+    renderPanelState();
+  }
+
+  function markSyncError(err){
+    lastSyncError = 'Sync error: ' + describeError(err);
+    updateStatusUI();
+    renderPanelState();
+  }
+
+  /* kv.value is always this device's localStorage string, wrapped
+     in JSON.stringify — not an attempt to interpret the app's own
+     JSON. This round-trips byte-for-byte regardless of whether the
+     original localStorage text was itself JSON (saveJSON's output)
+     or a bare string (e.g. la_last_reset_date's plain date text). */
+  function toServerValue(rawString){ return JSON.stringify(rawString); }
+  function fromServerValue(value){
+    try{ return JSON.parse(value); }catch(e){ return null; }
+  }
+
+  /* Writes a server row into localStorage with the native,
+     unwrapped Storage methods (so it's never re-queued), then
+     records it in lasync_meta so this device agrees with the
+     server for that key. Used by both pull and a push that loses
+     a conflict. */
+  function applyServerValue(key, record){
+    if(record.deleted){
+      nativeRemoveItem.call(localStorage, key);
+    } else {
+      nativeSetItem.call(localStorage, key, fromServerValue(record.value));
+    }
+    var meta = loadMeta();
+    meta[key] = { t: record.clientUpdatedAt, id: record.id };
+    saveMeta(meta);
+  }
+
+  /* Finds (or creates) this key's kv row and reconciles it with
+     the local change. Leaves the key queued on any failure. */
+  function pushKey(client, ownerId, key){
+    var meta = loadMeta();
+    var entry = meta[key] || {};
+    var localT = entry.t || 0;
+    var raw = localStorage.getItem(key);
+    var deleted = raw === null;
+    var body = {
+      owner: ownerId,
+      key: key,
+      value: deleted ? null : toServerValue(raw),
+      clientUpdatedAt: localT,
+      deviceId: getDeviceId(),
+      deleted: deleted
+    };
+
+    return client.collection('kv').getFirstListItem(client.filter('key = {:key}', { key: key }))
+      .catch(function(err){
+        if(err && err.status === 404) return null;
+        throw err;
+      })
+      .then(function(existing){
+        if(existing && existing.clientUpdatedAt > localT){
+          applyServerValue(key, existing);
+          return null;
+        }
+        if(existing){
+          return client.collection('kv').update(existing.id, body);
+        }
+        return client.collection('kv').create(body);
+      })
+      .then(function(record){
+        if(record){
+          var meta2 = loadMeta();
+          var e = meta2[key] || {};
+          e.id = record.id;
+          e.t = record.clientUpdatedAt;
+          meta2[key] = e;
+          saveMeta(meta2);
+        }
+        removeFromQueue(key);
+      });
+  }
+
+  var pushing = false;
+  function flushQueue(){
+    if(pushing || !isSyncOn()) return;
+    var client = getPB();
+    if(!client || !client.authStore.isValid) return;
+    var queue = loadQueue();
+    if(!queue.length) return;
+    var ownerId = client.authStore.record ? client.authStore.record.id : null;
+    if(!ownerId) return;
+
+    pushing = true;
+    updateStatusUI();
+    var chain = Promise.resolve();
+    queue.forEach(function(key){
+      chain = chain.then(function(){
+        return pushKey(client, ownerId, key).catch(function(err){
+          markSyncError(err);
+        });
+      });
+    });
+    chain.then(function(){
+      pushing = false;
+      if(!loadQueue().length) markSynced();
+      updateStatusUI();
+    });
+  }
+
+  /* Every syncable key already in localStorage before sync was
+     ever turned on has no lasync_meta entry, so it counts as
+     changed at time 0 (Part E, "First sync on a device"): pull
+     lets the server's copy win for keys it already has, and
+     queuing the rest here gets them pushed (created) below. Safe
+     to call on every load — keys that already have meta are
+     skipped, so it's a no-op once a device has fully synced once. */
+  function seedQueueWithUnsyncedKeys(){
+    var meta = loadMeta();
+    var queue = loadQueue();
+    var changed = false;
+    for(var i = 0; i < localStorage.length; i++){
+      var key = localStorage.key(i);
+      if(isSyncableKey(key) && !meta[key] && queue.indexOf(key) === -1){
+        queue.push(key);
+        changed = true;
+      }
+    }
+    if(changed) saveQueue(queue);
+  }
+
+  function pull(){
+    if(!isSyncOn()) return Promise.resolve();
+    var client = getPB();
+    if(!client || !client.authStore.isValid) return Promise.resolve();
+
+    var cursor = localStorage.getItem('lasync_cursor');
+    var filterStr = cursor ? client.filter('updated >= {:cursor}', { cursor: cursor }) : '';
+    return client.collection('kv').getFullList({ filter: filterStr, sort: 'updated', batch: 500 })
+      .then(function(records){
+        var newestUpdated = cursor || '';
+        records.forEach(function(record){
+          var meta = loadMeta();
+          var localT = (meta[record.key] && meta[record.key].t) || 0;
+          if(record.clientUpdatedAt > localT){
+            applyServerValue(record.key, record);
+          }
+          if(record.updated > newestUpdated) newestUpdated = record.updated;
+        });
+        if(newestUpdated) localStorage.setItem('lasync_cursor', newestUpdated);
+        markSynced();
+      })
+      .catch(function(err){
+        markSyncError(err);
+      });
+  }
+
+  /* "On load: pull, then push" (Part E). Also run right after a
+     successful Connect, so a fresh sign-in starts syncing
+     immediately instead of waiting for the next write. */
+  function runLoadSequence(){
+    pull().then(function(){
+      seedQueueWithUnsyncedKeys();
+      flushQueue();
+    });
   }
 
   var nativeSetItem = Storage.prototype.setItem;
@@ -138,11 +322,11 @@
   var STATUS_LABEL = {
     off:'Sync: off', queued:'Sync: queued', synced:'Sync: synced', error:'Sync: error'
   };
-  var lastConnectError = null;
+  var lastSyncError = null;
 
   function computeStatus(){
     if(!isSyncOn()) return 'off';
-    if(lastConnectError) return 'error';
+    if(lastSyncError) return 'error';
     if(loadQueue().length > 0) return 'queued';
     return 'synced';
   }
@@ -178,8 +362,8 @@
   function renderPanelState(){
     var lastSyncLabel = document.getElementById('sync-last-sync-label');
     if(lastSyncLabel) lastSyncLabel.textContent = 'Last sync: ' + formatLastSync();
-    if(lastConnectError){
-      setPanelMessage(lastConnectError, '#fca5a5');
+    if(lastSyncError){
+      setPanelMessage(lastSyncError, '#fca5a5');
     } else if(isSyncOn()){
       setPanelMessage('Connected to ' + localStorage.getItem('lasync_server'), '#86efac');
     } else {
@@ -214,30 +398,31 @@
     }
 
     setPanelMessage('Connecting…', 'var(--ink-dim)');
-    var pb = new PocketBase(url);
-    pb.collection('users').authWithPassword(email, password).then(function(){
+    var client = new PocketBase(url);
+    client.collection('users').authWithPassword(email, password).then(function(){
+      pb = client;
       localStorage.setItem('lasync_server', url);
       localStorage.setItem('lasync_email', email);
       passwordInput.value = '';
-      lastConnectError = null;
+      lastSyncError = null;
       updateStatusUI();
       renderPanelState();
+      runLoadSequence();
     }).catch(function(err){
-      lastConnectError = 'Could not connect: ' + (err && err.message ? err.message : 'unknown error');
+      lastSyncError = 'Could not connect: ' + describeError(err);
       updateStatusUI();
       renderPanelState();
     });
   }
 
   function handleDisconnectClick(){
-    var url = localStorage.getItem('lasync_server');
     try{
-      if(url && typeof PocketBase !== 'undefined'){
-        new PocketBase(url).authStore.clear();
-      }
+      var client = getPB();
+      if(client) client.authStore.clear();
     }catch(e){}
+    pb = null;
     localStorage.removeItem('lasync_server');
-    lastConnectError = null;
+    lastSyncError = null;
     updateStatusUI();
     renderPanelState();
   }
@@ -296,6 +481,7 @@
     buildStatusDot('.mobile-quick-actions', 'mobile-quick-btn', false);
     getDeviceId();
     updateStatusUI();
+    if(isSyncOn()) runLoadSequence();
   }
 
   if(document.readyState === 'loading'){
