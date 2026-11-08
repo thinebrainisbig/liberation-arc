@@ -553,9 +553,14 @@
     wrap.innerHTML =
       '<div class="modal-overlay" id="sync-modal">' +
         '<div class="modal-card glass" style="width:340px;">' +
-          '<div class="modal-header">' +
-            '<span class="material-symbols-outlined">sync</span>' +
-            '<h2>Sync</h2>' +
+          '<div class="modal-header" style="justify-content:space-between;">' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<span class="material-symbols-outlined">sync</span>' +
+              '<h2>Sync</h2>' +
+            '</div>' +
+            '<button type="button" id="sync-modal-close-btn" aria-label="Close" title="Close" style="display:flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.05); color:var(--ink-dim); cursor:pointer; flex-shrink:0;">' +
+              '<span class="material-symbols-outlined" style="font-size:18px;">close</span>' +
+            '</button>' +
           '</div>' +
           '<div class="field-group">' +
             '<label class="field-label">Server URL</label>' +
@@ -580,6 +585,9 @@
     document.body.appendChild(wrap.firstElementChild);
     document.getElementById('sync-connect-btn').addEventListener('click', handleConnectClick);
     document.getElementById('sync-disconnect-btn').addEventListener('click', handleDisconnectClick);
+    document.getElementById('sync-modal-close-btn').addEventListener('click', function(){
+      if(typeof window.closeModal === 'function') window.closeModal('sync-modal');
+    });
   }
 
   function buildStatusDot(containerSelector, btnClass, withTooltip){
