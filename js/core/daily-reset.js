@@ -48,6 +48,13 @@
   }
 
   function clearTodayNutritionEntry(){
+    /* Nutrition entries sync like any other la_ key, so clearing
+       today's entry locally has nothing to do once sync is on —
+       the night check-in's own write (or its absence) is the
+       single source of truth everywhere. Guarded here, once, rather
+       than at each of the 5 pages' registerDailyResetHook call
+       sites. */
+    if(typeof window.isSyncOn === 'function' && window.isSyncOn()) return;
     var cfg = loadJSON('la_nutrition', null);
     if(cfg && cfg.entries && cfg.entries[getAdjustedDate()] !== undefined){
       delete cfg.entries[getAdjustedDate()];
@@ -80,10 +87,23 @@
        open and nothing here changes. */
     if(typeof window.isSyncGateOpen === 'function' && !window.isSyncGateOpen()) return;
     var adjusted = getAdjustedDate();
-    var last = localStorage.getItem('la_last_reset_date');
+    /* Only the one device marked as running daily jobs (Sync panel
+       checkbox; window.isDailyJobDevice()) writes the synced
+       la_last_reset_date — a non-job device writing it too would
+       make the job device see "already reset today" and skip its
+       own jobs. A non-job device instead tracks its own once-per-
+       day marker outside la_ (lasync_local_reset_date, never
+       synced) so performDailyReset() still runs there once a day
+       for the render-only refreshes; the data-writing jobs
+       (js/financial.js's accrueSavings/checkPaycheckCycleReset/
+       processRecurringDeductions) each check isDailyJobDevice()
+       themselves and no-op on every other device regardless. */
+    var isJobDevice = typeof window.isDailyJobDevice !== 'function' || window.isDailyJobDevice();
+    var resetKey = isJobDevice ? 'la_last_reset_date' : 'lasync_local_reset_date';
+    var last = localStorage.getItem(resetKey);
     if(last !== adjusted){
       performDailyReset();
-      localStorage.setItem('la_last_reset_date', adjusted);
+      localStorage.setItem(resetKey, adjusted);
     }
   }
 

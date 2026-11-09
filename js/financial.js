@@ -405,6 +405,12 @@
   }
 
   function checkPaycheckCycleReset(){
+    /* Data-writing daily job: only the one device marked in the
+       Sync panel ("This device runs daily jobs") does this. Every
+       other device just waits for the job device's write to sync
+       down and re-renders (js/core/daily-reset.js's checkDailyReset
+       still calls performDailyReset() there for that). */
+    if(typeof window.isDailyJobDevice === 'function' && !window.isDailyJobDevice()) return;
     var cycleStart = getCurrentCycleStartDate();
     var lastProcessed = localStorage.getItem('la_last_processed_cycle_start') || '';
     if(lastProcessed >= cycleStart) return;
@@ -476,6 +482,9 @@
      the deduction. Cash on Hand only ever changes via manual edits
      (Cash Balance modal) and Paycheck Cycle Reset's re-anchor. ---- */
   function processRecurringDeductions(){
+    /* Data-writing daily job: only the designated job device runs
+       this (see checkPaycheckCycleReset above). */
+    if(typeof window.isDailyJobDevice === 'function' && !window.isDailyJobDevice()) return;
     var list = getRecurring();
     var today = new Date(getAdjustedDate() + 'T00:00:00');
     var log = getSpendingLog();
@@ -912,6 +921,9 @@
   }
 
   function accrueSavings(){
+    /* Data-writing daily job: only the designated job device runs
+       this (see checkPaycheckCycleReset above). */
+    if(typeof window.isDailyJobDevice === 'function' && !window.isDailyJobDevice()) return;
     var lastAccrual = localStorage.getItem('la_savings_last_accrual');
     var today = getAdjustedDate();
     if(!lastAccrual){
@@ -1086,8 +1098,22 @@
   renderRecurringCard();
   renderJobsCard();
   renderProjectedCard();
-  accrueSavings();
-  renderSavingsSection();
+  /* accrueSavings() writes synced data (la_savings_total/
+     la_savings_last_accrual) and runs here at page load, before
+     sync's first pull — the same race the daily reset itself used
+     to have. whenSyncReady() (js/core/sync.js) defers it until the
+     gate opens (or runs it immediately with sync off); it's still
+     also guarded by isDailyJobDevice() internally for a non-job
+     device. */
+  if(typeof window.whenSyncReady === 'function'){
+    window.whenSyncReady(function(){
+      accrueSavings();
+      renderSavingsSection();
+    });
+  } else {
+    accrueSavings();
+    renderSavingsSection();
+  }
   renderInvestmentsList();
   loadWeather();
   initSpotifyWidget();

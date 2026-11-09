@@ -1,5 +1,5 @@
 /* ============================================================
-   js/core/sync.js — Step 3, Sessions 1-2 (Foundation; Push/Pull)
+   js/core/sync.js — Step 3, Sessions 1-4
 
    Loaded FIRST on every page, before js/core.js and everything
    else, so the Storage.prototype wrap below is in place before
@@ -14,10 +14,18 @@
    ID, the never-sync list, write capture into a queue, the
    status dot and the Sync panel's Connect/Disconnect flow.
    Session 2 added push, pull, the first-sync rule and tombstones.
-   Session 3 adds the realtime subscription, the redraw/refresh-
+   Session 3 added the realtime subscription, the redraw/refresh-
    pill wiring, the pull triggers (visibility/pageshow/online/
    60s) and the daily-job gate (js/core/daily-reset.js checks
    window.isSyncGateOpen(), defined below).
+   Session 4 adds: window.isDailyJobDevice()/the "runs daily jobs"
+   checkbox, so only one device's js/financial.js writes the
+   5AM-reset/paycheck/savings jobs; window.whenSyncReady() for
+   page-load work that would otherwise race the first pull the
+   same way the daily reset itself used to; conflict-hardening in
+   pushKey (server/pb_migrations now rejects a stale update, and
+   pushKey recovers from that plus a create-time unique-index
+   race instead of erroring); and authRefresh() on every launch.
 ============================================================ */
 (function(){
   'use strict';
@@ -27,10 +35,15 @@
      lasync_server   — server URL; sync is off when absent
      lasync_device   — random ID for this browser/app instance
      lasync_email    — last-used email, prefilled in the panel
+     lasync_jobs_device — '1' when this device runs the daily jobs
      lasync_meta     — { [key]: { t: lastLocalChangeMs, id: kvRecordId } }
      lasync_queue    — array of la_ keys waiting to be pushed
      lasync_cursor   — server `updated` string of the last pull
      lasync_last_sync — ms timestamp of the last successful sync
+     lasync_local_reset_date — non-job device's own once-per-day
+       marker for render-only refreshes (js/core/daily-reset.js);
+       never written to la_last_reset_date, so a non-job device
+       can't make the job device skip its own daily jobs
      pocketbase_auth — the PocketBase SDK's own auth token store
   */
 
@@ -145,6 +158,18 @@
     renderPanelState();
   }
 
+  /* ---------- Daily jobs run on one device only (Step 3 Session 4) ----------
+     'lasync_jobs_device' = '1' marks THIS device as the one that runs
+     the data-writing daily jobs (5AM reset, paycheck cycle, recurring
+     deductions, savings accrual) — set via the Sync panel checkbox.
+     With sync off, every device is its own single-device world, same
+     as before sync existed, so this always reads true then. */
+  function isDailyJobDevice(){
+    return !isSyncOn() || localStorage.getItem('lasync_jobs_device') === '1';
+  }
+  window.isDailyJobDevice = isDailyJobDevice;
+  window.isSyncOn = isSyncOn;
+
   /* ---------- Daily-job gate ----------
      js/core/daily-reset.js's checkDailyReset calls
      window.isSyncGateOpen() and returns early while it's false, so
@@ -152,12 +177,34 @@
      first pull instead of acting on stale pre-sync data. With sync
      off the gate starts (and stays) open, so nothing changes. */
   var dailyGateOpen = !isSyncOn();
+  var syncReadyCallbacks = [];
   function openDailyGate(){
     if(dailyGateOpen) return;
     dailyGateOpen = true;
-    if(typeof window.runClockTick === 'function') window.runClockTick();
+    /* whenSyncReady callbacks first, each isolated in its own
+       try/catch, so neither a page's callback nor runClockTick
+       throwing can stop the rest of this from running — this
+       function is called from inside pull()'s own promise chain,
+       where an uncaught throw here would otherwise surface as a
+       confusing sync error instead of whatever actually failed. */
+    var callbacks = syncReadyCallbacks;
+    syncReadyCallbacks = [];
+    callbacks.forEach(function(fn){
+      try{ fn(); }catch(e){}
+    });
+    if(typeof window.runClockTick === 'function'){
+      try{ window.runClockTick(); }catch(e){}
+    }
   }
   window.isSyncGateOpen = function(){ return dailyGateOpen; };
+  /* Runs fn now if the gate is already open, otherwise queues it to
+     run once it opens. For page-load work (e.g. financial.js's
+     accrueSavings()) that would otherwise race the first pull the
+     same way the daily reset itself used to. */
+  window.whenSyncReady = function(fn){
+    if(dailyGateOpen) fn();
+    else syncReadyCallbacks.push(fn);
+  };
   /* 10s, not 3s: autoCancellation is off (see getPB/handleConnectClick)
      so a slow pull from the phone can't be cancelled out from under
      itself and open the gate early — this is purely a last-resort
@@ -231,6 +278,32 @@
     saveMeta(meta);
   }
 
+  /* Given a row that already exists for this key, either adopt it
+     (it's newer than our local change) or update it with our body.
+     The kv updateRule (server/pb_migrations) rejects an update whose
+     clientUpdatedAt isn't strictly newer than the stored row's, which
+     surfaces as a 404 (same as the row not matching the access rule
+     at all) — that means another device won a race since we looked
+     this row up, so re-fetch it and adopt its copy instead of
+     erroring. */
+  function reconcileWithExisting(client, key, body, localT, existing){
+    if(existing.clientUpdatedAt > localT){
+      applyServerValue(key, existing);
+      return Promise.resolve(null);
+    }
+    return client.collection('kv').update(existing.id, body)
+      .catch(function(err){
+        if(err && err.status === 404){
+          return client.collection('kv').getFirstListItem(client.filter('key = {:key}', { key: key }))
+            .then(function(latest){
+              if(latest) applyServerValue(key, latest);
+              return null;
+            });
+        }
+        throw err;
+      });
+  }
+
   /* Finds (or creates) this key's kv row and reconciles it with
      the local change. Leaves the key queued on any failure. */
   function pushKey(client, ownerId, key){
@@ -261,14 +334,23 @@
         throw err;
       })
       .then(function(existing){
-        if(existing && existing.clientUpdatedAt > localT){
-          applyServerValue(key, existing);
-          return null;
-        }
-        if(existing){
-          return client.collection('kv').update(existing.id, body);
-        }
-        return client.collection('kv').create(body);
+        if(existing) return reconcileWithExisting(client, key, body, localT, existing);
+        return client.collection('kv').create(body)
+          .catch(function(err){
+            /* Two devices creating the same new key at once: the
+               unique (owner, key) index rejects the second create.
+               Re-run the lookup and fall into the normal
+               update-or-apply path instead of waiting for the next
+               60s trigger to sort it out. */
+            if(err && err.status === 400){
+              return client.collection('kv').getFirstListItem(client.filter('key = {:key}', { key: key }))
+                .then(function(existing2){
+                  if(existing2) return reconcileWithExisting(client, key, body, localT, existing2);
+                  throw err;
+                });
+            }
+            throw err;
+          });
       })
       .then(function(record){
         if(record){
@@ -525,10 +607,20 @@
   function openSyncPanel(){
     var serverInput = document.getElementById('sync-server-input');
     var emailInput = document.getElementById('sync-email-input');
+    var jobsCheckbox = document.getElementById('sync-jobs-device-checkbox');
     if(serverInput) serverInput.value = localStorage.getItem('lasync_server') || '';
     if(emailInput) emailInput.value = localStorage.getItem('lasync_email') || '';
+    if(jobsCheckbox) jobsCheckbox.checked = localStorage.getItem('lasync_jobs_device') === '1';
     renderPanelState();
     if(typeof window.openModal === 'function') window.openModal('sync-modal');
+  }
+
+  function handleJobsDeviceChange(e){
+    if(e.target.checked){
+      localStorage.setItem('lasync_jobs_device', '1');
+    } else {
+      localStorage.removeItem('lasync_jobs_device');
+    }
   }
 
   function handleConnectClick(){
@@ -607,6 +699,10 @@
             '<label class="field-label">Password</label>' +
             '<input class="field-text" type="password" id="sync-password-input" autocomplete="current-password">' +
           '</div>' +
+          '<label style="display:flex; align-items:flex-start; gap:8px; margin:0 0 14px; font-size:0.7rem; color:var(--ink-dim); cursor:pointer;">' +
+            '<input type="checkbox" id="sync-jobs-device-checkbox" style="margin-top:2px; flex-shrink:0;">' +
+            '<span>This device runs daily jobs (5 AM reset, paycheck, recurring deductions, savings interest)</span>' +
+          '</label>' +
           '<p id="sync-panel-message" style="min-height:16px; font-size:0.72rem; margin:0 0 14px;"></p>' +
           '<div class="modal-close-row" style="justify-content:space-between; gap:8px;">' +
             '<button type="button" id="sync-connect-btn" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid rgba(74,222,128,0.4); background:rgba(74,222,128,0.14); color:#86efac; font-weight:700; cursor:pointer;">Connect</button>' +
@@ -618,6 +714,7 @@
     document.body.appendChild(wrap.firstElementChild);
     document.getElementById('sync-connect-btn').addEventListener('click', handleConnectClick);
     document.getElementById('sync-disconnect-btn').addEventListener('click', handleDisconnectClick);
+    document.getElementById('sync-jobs-device-checkbox').addEventListener('change', handleJobsDeviceChange);
     document.getElementById('sync-modal-close-btn').addEventListener('click', function(){
       if(typeof window.closeModal === 'function') window.closeModal('sync-modal');
     });
@@ -644,8 +741,23 @@
     updateStatusUI();
     if(isSyncOn()){
       var client = getPB();
-      if(client && client.authStore.isValid) startRealtime(client);
-      runLoadSequence();
+      if(client){
+        /* authRefresh() on every launch: confirms the stored token
+           is still accepted and renews its 30-day expiry. On
+           failure (expired, revoked, or never actually signed in),
+           mark the error (dot turns red) and reopen the Sync panel
+           so the password can be re-entered, instead of silently
+           sitting on a dead session until the first pull/push also
+           fails later. */
+        client.collection('users').authRefresh().then(function(){
+          startRealtime(client);
+          runLoadSequence();
+        }).catch(function(err){
+          lastSyncError = 'Sign-in expired: ' + describeError(err);
+          updateStatusUI();
+          openSyncPanel();
+        });
+      }
     }
   }
 
