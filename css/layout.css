@@ -22,10 +22,12 @@
   display:none;
 }
 
-/* index.html-only in-flow Morning/Night pill pair (see the mobile
-   media query below) — hidden on desktop, where the original pair
-   inside .sidebar is used instead. */
-.daycycle-buttons-mobile{
+/* index.html-only mobile redesign elements (progress pill, Deadlines
+   card) — hidden on desktop, where the wheel/spoke dial and its own
+   Academic spoke panel are used instead (see the mobile media query
+   below for their mobile-only presentation). */
+.progress-pill-wrap,
+.deadlines-card-mobile{
   display:none;
 }
 
@@ -147,9 +149,11 @@
     align-items:center;
     justify-content:center;
     gap:6px;
-    border-radius:999px;
-    background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.14);
+    border-radius:var(--r-lg);
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
     color:var(--ink);
     font-family:inherit;
     font-size:0.68rem;
@@ -179,42 +183,165 @@
   .mobile-quick-btn .material-symbols-outlined{ font-size:22px; }
   .mobile-quick-btn:active{ background:rgba(255,255,255,0.14); }
 
-  /* Morning/Night: the original sidebar pair is superseded on mobile
-     by .daycycle-buttons-mobile (in-flow pills at the top of
-     index.html's <main> — see below), so hide it everywhere. */
-  .sidebar > .daycycle-buttons{ display:none !important; }
+  /* ---------- index.html only: mobile redesign ----------
+     Single column, in source order: Progress pill, Deadlines card,
+     Calendar card, Notepad card. Scoped to :not(.is-subpage) so none
+     of this touches the subpages' own mobile layouts below; nothing
+     here changes data/storage keys, only presentation. */
 
-  /* In-flow Morning/Night pills — index.html only (dashboard-only
-     control; subpages never render this element at all). Sits in
-     normal document flow, not fixed/sticky, right above the cards. */
-  .daycycle-buttons-mobile{
-    display:flex;
+  /* Progress pill: a full-width rounded bar standing in for the wheel
+     + Morning/Night pills. js/index.js's renderWheel() paints its
+     fill/pct (pillGradientCss/pillGlowGradientCss — the same green-
+     >blue ramp as the wheel, swept left->right instead of around a
+     ring) and updateWheelSubstatus() shares the exact same
+     .wheel-substatus text node the desktop wheel uses, so the two
+     can never disagree. */
+  .progress-pill-wrap{
+    display:block;
     width:100%;
-    justify-content:center;
-    gap:6px;
     margin-top:16px;
-    border-radius:0;
-    overflow:visible;
-    background:none;
-    border:none;
   }
-  /* 150% bigger (font-size/icons — the main visual size cue — scaled
-     the full 1.5x from base .daycycle-btn values of 0.72rem/16px;
-     padding/gaps scaled far more conservatively so MORNING+NIGHT
-     together still fit inside the ~265px available on a 375px phone
-     (.main's own corner-safe inset already reserves 55px on each side
-     for this element, being .main's first child) — full 1.5x on every
-     dimension pushed the pair well past the viewport edge. */
-  .daycycle-buttons-mobile .daycycle-btn{
-    flex:0 0 auto;
+  /* .main > :first-child (see below) adds extra corner-safe left/right
+     padding on top of .main's own 32px side padding, for whatever
+     renders first on the page — which would otherwise make the pill
+     narrower than every other card in the mobile stack. Cancelled
+     here so the pill matches their width exactly. */
+  body:not(.is-subpage) .main > .progress-pill-wrap{
+    padding-left:0;
+    padding-right:0;
+  }
+  .progress-pill{
+    position:relative;
+    width:100%;
+    height:52px;
+    padding:0 18px;
+    display:flex;
+    align-items:center;
     border-radius:9999px;
-    padding:10px 8px;
-    gap:4px;
-    font-size:1.08rem;
+    border:1px solid var(--glass-border);
+    overflow:hidden;
+    font-family:inherit;
+  }
+  .progress-pill-glow{
+    position:absolute;
+    inset:-6px;
+    filter:blur(10px);
+    opacity:0.65;
+    z-index:0;
+  }
+  .progress-pill-track{
+    position:absolute;
+    inset:0;
+    z-index:1;
+  }
+  .progress-pill-text{
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    color:#fff;
+    text-shadow:0 1px 3px rgba(0,0,0,0.65);
+  }
+  .progress-pill-pct{ font-size:1.2rem; font-weight:800; }
+  .progress-pill-substatus{ font-size:0.62rem; color:rgba(255,255,255,0.85); }
+  /* Always shown (not a tap-to-expand panel). */
+  .progress-pill-panel{
+    display:block;
+    width:100%;
+    margin-top:8px;
+    padding:14px;
+    border-radius:var(--r-lg);
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+  }
+  .progress-pill-checkins{
+    display:flex;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .progress-pill-checkins .daycycle-btn{
+    flex:1 1 0;
+    justify-content:center;
+    border-radius:var(--r-md);
     border-left:none !important;
   }
-  .daycycle-buttons-mobile .daycycle-btn .material-symbols-outlined{ font-size:24px; }
-  .daycycle-buttons-mobile .daycycle-btn .daycycle-btn-check{ font-size:27px; }
+  .progress-pill-counts{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .progress-pill-count-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:0.72rem;
+    color:var(--ink-dim);
+  }
+  .progress-pill-count-value{ color:var(--ink); font-weight:700; }
+
+  /* Deadlines card: the academic spoke's own list/count/add-button
+     classes, reused verbatim (see renderSpokeAcademic()/renderWheel()
+     in js/index.js — both this card and the desktop spoke panel get
+     updated together). */
+  .deadlines-card-mobile{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    margin-top:16px;
+    padding:14px;
+    /* Same background + accent border as the desktop Academic spoke
+       panel (.spoke-panel's background:var(--glass); border:3px solid
+       #38bdf8;) instead of the plain .glass border every other card
+       here starts from. */
+    background:var(--glass);
+    border:3px solid #38bdf8;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+  }
+  .deadlines-card-mobile .spoke-panel-list{
+    max-height:none;
+    overflow-y:auto;
+  }
+  /* ~6 rows before scrolling (each .spoke-academic-row is ~34px). */
+  .deadlines-card-mobile .spoke-academic-list{ max-height:204px; }
+
+  /* Single column: hide the wheel/spokes entirely, and unwrap
+     .right-column so the calendar + notepad cards become direct flex
+     items of .dashboard-grid (letting simple source order — Deadlines
+     card, then this grid's unwrapped children — place them without
+     any side-by-side grid columns left over from the desktop
+     layout). */
+  body:not(.is-subpage) .dashboard-grid{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  body:not(.is-subpage) .wheel-panel{ display:none; }
+  body:not(.is-subpage) .right-column{ display:contents; }
+
+  /* Calendar card: taller and denser so more hours fit with little
+     scrolling — ~75% of the viewport height, ~28px/hour (14px per
+     30-min slot; FullCalendar's default slot duration). */
+  body:not(.is-subpage) .day-calendar-card{
+    flex:0 0 auto;
+    height:75vh;
+    min-height:75vh;
+  }
+  body:not(.is-subpage) #calendar-body .fc-timegrid-slot{ height:14px; }
+
+  /* flex:3 1 0 (the desktop rule) only has a height to share once its
+     flex-column parent (.right-column) has one of its own — true on
+     desktop (.main is a fixed 100vh shell) but not here (.main is
+     height:auto, scrolling the page itself), so a fixed height keeps
+     .notepad-shell's own flex:1/min-height:0 children sized sanely
+     instead of collapsing to their content's natural height. */
+  body:not(.is-subpage) .notepad-card{
+    flex:0 0 auto;
+    height:50vh;
+    min-height:50vh;
+  }
 
   /* ---------- Page containers: room for the fixed bottom bar ---------- */
   /* .app-shell is a row flex container (sidebar + main); with the
@@ -231,11 +358,10 @@
     height:auto !important;
     min-height:100vh;
     /* .main is a flex:1 item of .app-shell; without this, its default
-       min-width:auto lets unshrinkable content (e.g. the daycycle
-       pills below, flex-shrink:0) push .main — and with it the whole
-       page — wider than the 100vw shell, defeating html's
-       overflow-x:hidden clip instead of just overflowing .main's own
-       box as intended. */
+       min-width:auto lets unshrinkable content push .main — and with
+       it the whole page — wider than the 100vw shell, defeating
+       html's overflow-x:hidden clip instead of just overflowing
+       .main's own box as intended. */
     min-width:0;
     align-self:flex-start;
     overflow:visible !important;
@@ -322,43 +448,6 @@
      margin-top:auto in the desktop rule, pinning it to the bottom of
      .card-pad's flex column — carries over here now that the taller
      card leaves visible room below the task list for it to drop into. */
-
-  /* ---------- index.html only: consolidated mobile card stream ----------
-     Subpages are unreliable to navigate to from an iOS standalone web
-     app, so mobile never links to them at all (see the bottom-nav
-     restructure below) — instead, every card mobile needs lives in
-     this page's own DOM and is shown/reordered here. Desired stream:
-     Morning/Night pills (no order needed — .daycycle-buttons-mobile
-     is already .main's first DOM child, and everything below has an
-     explicit order, so it sorts first by default), Tasklist,
-     Pomodoro, Deadlines, Kranker Lab, Ballard Lab, Calendar (the
-     Physical Health / mood card that used to follow Ballard Lab here
-     was removed from index.html entirely — its mood readout now
-     lives in the sidebar mood mini card instead).
-     .top-section/.bottom-section/.research-stack normally
-     each keep their own cards grouped together (see above); making
-     them `display:contents` unwraps their children into direct flex
-     items of .main (which is already flex-direction:column) so
-     `order` can freely interleave cards that used to live in three
-     separate containers — including splitting Kranker/Ballard out of
-     .research-stack into their own independent positions. Scoped to
-     `:not(.is-subpage)` so this never touches academic-subpage.html's
-     own .top-section (still used there, unchanged, for desktop). */
-  body:not(.is-subpage) .top-section,
-  body:not(.is-subpage) .bottom-section,
-  body:not(.is-subpage) .research-stack{
-    display:contents;
-  }
-  body:not(.is-subpage) .tasklist-card{ order:1; }
-  body:not(.is-subpage) .pomo-card{ display:flex; order:2; }
-  body:not(.is-subpage) .deadlines-card{ order:3; }
-  body:not(.is-subpage) .research-stack > .research-card:nth-child(1){ order:4; }
-  body:not(.is-subpage) .research-stack > .research-card:nth-child(2){ order:5; }
-  body:not(.is-subpage) #calendar-card{ order:6; }
-  /* Not part of the consolidated mobile stream (only the cards
-     above are) — stays in the DOM (its localStorage-backed data is
-     unaffected) but doesn't render on mobile. */
-  body:not(.is-subpage) .hobbies-card{ display:none; }
 
   /* ---------- Deadlines table: scroll + column reduction ---------- */
   .table-scroll{

@@ -1613,6 +1613,41 @@
     return 'conic-gradient(from 0deg, ' + stops.join(', ') + ')';
   }
 
+  /* Mobile progress pill: the exact same green->blue stop generation
+     as wheelGradientCss/wheelGlowGradientCss, just swept left->right
+     (linear-gradient) instead of around a ring (conic-gradient), so
+     the pill's fill color at a given position never disagrees with
+     the wheel's. */
+  function pillGradientCss(pct){
+    if(pct <= 0){
+      return 'linear-gradient(to right, rgba(255,255,255,0.10), rgba(255,255,255,0.10))';
+    }
+    var steps = Math.max(2, Math.round(pct / 4));
+    var stops = [];
+    for(var i = 0; i <= steps; i++){
+      var p = (pct * i) / steps;
+      var hue = 120 + (p / 100) * 120;
+      stops.push('hsl(' + hue.toFixed(1) + ',42%,42%) ' + p.toFixed(2) + '%');
+    }
+    stops.push('rgba(255,255,255,0.10) ' + pct.toFixed(2) + '%');
+    stops.push('rgba(255,255,255,0.10) 100%');
+    return 'linear-gradient(to right, ' + stops.join(', ') + ')';
+  }
+
+  function pillGlowGradientCss(pct){
+    if(pct <= 0) return 'transparent';
+    var steps = Math.max(2, Math.round(pct / 4));
+    var stops = [];
+    for(var i = 0; i <= steps; i++){
+      var p = (pct * i) / steps;
+      var hue = 120 + (p / 100) * 120;
+      stops.push('hsl(' + hue.toFixed(1) + ',90%,60%) ' + p.toFixed(2) + '%');
+    }
+    stops.push('transparent ' + pct.toFixed(2) + '%');
+    stops.push('transparent 100%');
+    return 'linear-gradient(to right, ' + stops.join(', ') + ')';
+  }
+
   /* Streak: a day "qualifies" the first time its wheel percentage
      reaches 70% (recorded once, never un-recorded if it later dips).
      Current streak counts consecutive qualified days backward from
@@ -1640,8 +1675,8 @@
   }
 
   function updateWheelSubstatus(){
-    var el = document.getElementById('wheel-substatus');
-    if(!el) return;
+    var els = document.querySelectorAll('.wheel-substatus');
+    if(!els.length) return;
     var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     var now = new Date();
     var hours = now.getHours();
@@ -1650,7 +1685,8 @@
     var mins = now.getMinutes();
     var minStr = mins < 10 ? '0' + mins : '' + mins;
     var streak = computeWheelStreak();
-    el.textContent = days[now.getDay()] + ', ' + h12 + ':' + minStr + ' ' + ampm + '  ·  ' + streak + 'd streak';
+    var text = days[now.getDay()] + ', ' + h12 + ':' + minStr + ' ' + ampm + '  ·  ' + streak + 'd streak';
+    els.forEach(function(el){ el.textContent = text; });
   }
 
   function saveWheelSnapshot(fill){
@@ -1673,6 +1709,12 @@
     ring.style.background = wheelGradientCss(pct);
     var pctEl = document.getElementById('wheel-pct');
     if(pctEl) pctEl.textContent = Math.round(pct) + '%';
+    var pillPctEl = document.getElementById('progress-pill-pct');
+    if(pillPctEl) pillPctEl.textContent = Math.round(pct) + '%';
+    var pillTrack = document.getElementById('progress-pill-track');
+    if(pillTrack) pillTrack.style.background = pillGradientCss(pct);
+    var pillGlow = document.getElementById('progress-pill-glow');
+    if(pillGlow) pillGlow.style.background = pillGlowGradientCss(pct);
 
     var glow = document.getElementById('progress-wheel-glow');
     if(glow){
@@ -1704,14 +1746,21 @@
     if(pct >= WHEEL_STREAK_THRESHOLD){ markWheelStreakQualified(getAdjustedDate()); }
     updateWheelSubstatus();
 
-    var habitsCounter = document.getElementById('habit-mini-counter');
-    if(habitsCounter) habitsCounter.textContent = fill.habits.done + ' / ' + fill.habits.total;
-    var academicCounter = document.getElementById('spoke-academic-count');
-    if(academicCounter) academicCounter.textContent = fill.academic.done + ' / ' + fill.academic.total;
-    var researchCounter = document.getElementById('spoke-research-count');
-    if(researchCounter) researchCounter.textContent = fill.research.done + ' / ' + fill.research.total;
-    var socialCounter = document.getElementById('spoke-social-count');
-    if(socialCounter) socialCounter.textContent = fill.social.done + ' / ' + fill.social.total;
+    document.querySelectorAll('.habit-mini-counter').forEach(function(el){
+      el.textContent = fill.habits.done + ' / ' + fill.habits.total;
+    });
+    document.querySelectorAll('.spoke-academic-count').forEach(function(el){
+      el.textContent = fill.academic.done + ' / ' + fill.academic.total;
+    });
+    document.querySelectorAll('.spoke-research-count').forEach(function(el){
+      el.textContent = fill.research.done + ' / ' + fill.research.total;
+    });
+    document.querySelectorAll('.spoke-social-count').forEach(function(el){
+      el.textContent = fill.social.done + ' / ' + fill.social.total;
+    });
+    document.querySelectorAll('.progress-pill-checkins-count').forEach(function(el){
+      el.textContent = fill.checkins.done + ' / ' + fill.checkins.total;
+    });
 
     saveWheelSnapshot(fill);
   }
@@ -1731,14 +1780,14 @@
        The list itself scrolls (.spoke-panel-list) once it outgrows the
        card, so a full backlog stays reachable without inflating the
        card's footprint. */
-    var list = document.getElementById('spoke-academic-list');
-    if(!list) return;
+    var lists = document.querySelectorAll('.spoke-academic-list');
+    if(!lists.length) return;
     var items = getDeadlines().slice()
       .sort(function(a,b){
         if(a.due !== b.due) return (a.due || '') < (b.due || '') ? -1 : 1;
         return (a.importance === 'Critical' ? -1 : 0) - (b.importance === 'Critical' ? -1 : 0);
       });
-    list.innerHTML = !items.length
+    var html = !items.length
       ? '<div class="spoke-empty">Nothing due soon</div>'
       : items.map(function(t){
           var areaVal = Array.isArray(t.areas) ? (t.areas[0] || '') : (t.areas || '');
@@ -1752,6 +1801,7 @@
               '<input type="checkbox" class="habit-checkbox" onclick="completeAcademicDeadline(\''+t.id+'\')">' +
             '</div>';
         }).join('');
+    lists.forEach(function(list){ list.innerHTML = html; });
     renderWheel();
   }
 

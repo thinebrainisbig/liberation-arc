@@ -124,19 +124,56 @@
   <!-- ===================== MAIN ===================== -->
   <main class="main">
 
-    <!-- Mobile-only: Morning/Night pills in normal page flow (desktop
-         keeps the original pair in the sidebar; see css/layout.css). -->
-    <div class="daycycle-buttons daycycle-buttons-mobile">
-      <button type="button" class="daycycle-btn morning" id="morning-btn-mobile" onclick="openMorningModal()">
-        <span class="daycycle-btn-icon material-symbols-outlined">light_mode</span>
-        <span class="daycycle-btn-label">Morning</span>
-        <span class="daycycle-btn-check material-symbols-outlined">check</span>
-      </button>
-      <button type="button" class="daycycle-btn night" id="night-btn-mobile" onclick="openNightModal()">
-        <span class="daycycle-btn-icon material-symbols-outlined">dark_mode</span>
-        <span class="daycycle-btn-label">Night</span>
-        <span class="daycycle-btn-check material-symbols-outlined">check</span>
-      </button>
+    <!-- Mobile-only: Progress pill (replaces the Morning/Night pills
+         above and the wheel/spokes below; renderWheel() in js/index.js
+         keeps its fill/pct/substatus in sync with the desktop wheel —
+         see css/layout.css for all the mobile-only rules below). The
+         panel below it (Morning/Night + category counts) is always
+         shown, not a tap-to-expand toggle. -->
+    <div class="progress-pill-wrap" id="progress-pill-wrap">
+      <div class="progress-pill" id="progress-pill" aria-label="Progress">
+        <div class="progress-pill-glow" id="progress-pill-glow"></div>
+        <div class="progress-pill-track" id="progress-pill-track"></div>
+        <div class="progress-pill-text">
+          <span class="progress-pill-pct mono" id="progress-pill-pct"></span>
+          <span class="progress-pill-substatus wheel-substatus mono"></span>
+        </div>
+      </div>
+      <div class="progress-pill-panel" id="progress-pill-panel">
+        <div class="progress-pill-checkins">
+          <button type="button" class="daycycle-btn morning" onclick="openMorningModal()">
+            <span class="daycycle-btn-icon material-symbols-outlined">light_mode</span>
+            <span class="daycycle-btn-label">Morning</span>
+            <span class="daycycle-btn-check material-symbols-outlined">check</span>
+          </button>
+          <button type="button" class="daycycle-btn night" onclick="openNightModal()">
+            <span class="daycycle-btn-icon material-symbols-outlined">dark_mode</span>
+            <span class="daycycle-btn-label">Night</span>
+            <span class="daycycle-btn-check material-symbols-outlined">check</span>
+          </button>
+        </div>
+        <div class="progress-pill-counts">
+          <div class="progress-pill-count-row"><span class="progress-pill-count-label">Habits</span><span class="progress-pill-count-value habit-mini-counter mono"></span></div>
+          <div class="progress-pill-count-row"><span class="progress-pill-count-label">Academic</span><span class="progress-pill-count-value spoke-academic-count mono"></span></div>
+          <div class="progress-pill-count-row"><span class="progress-pill-count-label">Research</span><span class="progress-pill-count-value spoke-research-count mono"></span></div>
+          <div class="progress-pill-count-row"><span class="progress-pill-count-label">Social</span><span class="progress-pill-count-value spoke-social-count mono"></span></div>
+          <div class="progress-pill-count-row"><span class="progress-pill-count-label">Check-ins</span><span class="progress-pill-count-value progress-pill-checkins-count mono"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile-only: Deadlines card (reuses the academic spoke's list/
+         count/add button — renderSpokeAcademic() and renderWheel() in
+         js/index.js update every element sharing these classes). -->
+    <div class="card glass deadlines-card-mobile" id="deadlines-card-mobile">
+      <div class="spoke-panel-header">
+        <span class="spoke-panel-title">Deadlines</span>
+        <span class="spoke-panel-count mono spoke-academic-count"></span>
+        <button type="button" class="spoke-add-btn" onclick="openDeadlineModal()" title="Add deadline">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
+      <div class="spoke-panel-list spoke-academic-list"></div>
     </div>
 
     <!-- Left two-thirds: weighted progress wheel + spoke panels. Right
@@ -159,7 +196,7 @@
           <div class="spoke-panel habit-mini-card" id="spoke-panel-habits">
             <div class="spoke-panel-header" onclick="openHabitModal()">
               <span class="spoke-panel-title">Habits</span>
-              <span class="spoke-panel-count mono" id="habit-mini-counter"></span>
+              <span class="spoke-panel-count mono habit-mini-counter" id="habit-mini-counter"></span>
               <button type="button" class="spoke-add-btn" onclick="event.stopPropagation(); openHabitModal();" title="Habit Tracker">
                 <span class="material-symbols-outlined">add</span>
               </button>
@@ -170,18 +207,18 @@
           <div class="spoke-panel" id="spoke-panel-academic">
             <div class="spoke-panel-header">
               <span class="spoke-panel-title">Academic</span>
-              <span class="spoke-panel-count mono" id="spoke-academic-count"></span>
+              <span class="spoke-panel-count mono spoke-academic-count" id="spoke-academic-count"></span>
               <button type="button" class="spoke-add-btn" onclick="openDeadlineModal()" title="Add deadline">
                 <span class="material-symbols-outlined">add</span>
               </button>
             </div>
-            <div class="spoke-panel-list" id="spoke-academic-list"></div>
+            <div class="spoke-panel-list spoke-academic-list" id="spoke-academic-list"></div>
           </div>
 
           <div class="spoke-panel spoke-panel-wide" id="spoke-panel-research">
             <div class="spoke-panel-header">
               <span class="spoke-panel-title">Research</span>
-              <span class="spoke-panel-count mono" id="spoke-research-count"></span>
+              <span class="spoke-panel-count mono spoke-research-count" id="spoke-research-count"></span>
               <button type="button" class="spoke-add-btn" onclick="addLabTask('kranker')" title="Add Kranker Lab task">K+</button>
               <button type="button" class="spoke-add-btn" onclick="addLabTask('ballard')" title="Add Ballard Lab task">B+</button>
             </div>
@@ -191,7 +228,7 @@
           <div class="spoke-panel" id="spoke-panel-social">
             <div class="spoke-panel-header" onclick="openSocialModal()">
               <span class="spoke-panel-title">Social</span>
-              <span class="spoke-panel-count mono" id="spoke-social-count"></span>
+              <span class="spoke-panel-count mono spoke-social-count" id="spoke-social-count"></span>
             </div>
             <div class="spoke-panel-list" id="social-widget-rows"></div>
           </div>
