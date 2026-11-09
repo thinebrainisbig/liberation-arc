@@ -187,8 +187,7 @@
 
   /* ============================================================
      Storage / date helpers
-     (loadJSON/saveJSON/uid/escapeHtml/escapeAttr/syncData/
-     triggerImportData/handleImportFileSelected/isLateNightWindow/
+     (loadJSON/saveJSON/uid/escapeHtml/escapeAttr/isLateNightWindow/
      getAdjustedDate/notifyStateChange now live in js/core.js)
   ============================================================ */
 

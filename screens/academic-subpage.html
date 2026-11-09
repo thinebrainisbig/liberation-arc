@@ -54,12 +54,6 @@
     </nav>
 
     <div class="mobile-quick-actions">
-      <button type="button" class="mobile-quick-btn" onclick="syncData(this)" aria-label="Export data">
-        <span class="material-symbols-outlined">sync</span>
-      </button>
-      <button type="button" class="mobile-quick-btn" onclick="triggerImportData()" aria-label="Import data">
-        <span class="material-symbols-outlined">upload</span>
-      </button>
     </div>
 
     <div class="spotify-mini-card glass">
@@ -115,18 +109,9 @@
 
     <div class="sidebar-bottom">
       <div class="sidebar-bottom-actions">
-        <button type="button" class="sync-btn" id="sync-btn" onclick="syncData(this)" aria-label="Export data">
-          <span class="material-symbols-outlined">sync</span>
-          <span class="sync-btn-tooltip">Sync</span>
-        </button>
-        <button type="button" class="sync-btn" onclick="triggerImportData()" aria-label="Import data">
-          <span class="material-symbols-outlined">upload</span>
-          <span class="sync-btn-tooltip">Import</span>
-        </button>
       </div>
       <p class="sidebar-version mono">v 3.0</p>
     </div>
-    <input type="file" id="sync-import-input" accept=".json,application/json" style="display:none;" onchange="handleImportFileSelected(event)">
   </aside>
 
   <!-- ===================== MAIN ===================== -->

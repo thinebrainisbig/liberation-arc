@@ -1,5 +1,5 @@
 /* ============================================================
-   js/core/sync.js — Step 3, Sessions 1-4
+   js/core/sync.js — Step 3, Sessions 1-5
 
    Loaded FIRST on every page, before js/core.js and everything
    else, so the Storage.prototype wrap below is in place before
@@ -26,6 +26,13 @@
    pushKey (server/pb_migrations now rejects a stale update, and
    pushKey recovers from that plus a create-time unique-index
    race instead of erroring); and authRefresh() on every launch.
+   Session 5 (go live): the old per-page Sync/Import buttons are
+   gone (the status dot is now the only sidebar/mobile-bar sync
+   control); the Sync panel gains Backup (downloads the syncable
+   la_ keys only — never-sync keys and lasync_* excluded) and
+   Restore from backup (the old full-overwrite import, now gated
+   behind the panel; writes through the wrapped setItem so a
+   restore also pushes to the server like any other change).
 ============================================================ */
 (function(){
   'use strict';
@@ -62,6 +69,7 @@
   function isSyncableKey(key){
     return !!key && key.indexOf('la_') === 0 && NEVER_SYNC_KEYS.indexOf(key) === -1;
   }
+  window.isSyncableKey = isSyncableKey;
 
   function isSyncOn(){
     return !!localStorage.getItem('lasync_server');
@@ -672,6 +680,67 @@
     renderPanelState();
   }
 
+  /* ---------- Backup / restore ----------
+     A manual safety net alongside the automatic sync: downloads
+     only the keys that actually sync (same rule as pushKey —
+     isSyncableKey), so a restore never reintroduces a never-sync
+     key (device-local logins/caches/settings) or a lasync_*
+     bookkeeping key onto another device. */
+  function backupData(){
+    var data = {};
+    for(var i=0;i<localStorage.length;i++){
+      var key = localStorage.key(i);
+      if(isSyncableKey(key)){
+        data[key] = loadJson(key, localStorage.getItem(key));
+      }
+    }
+    var blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'liberation-arc-backup.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function triggerRestoreClick(){
+    var input = document.getElementById('sync-restore-input');
+    if(input) input.click();
+  }
+
+  function handleRestoreFileSelected(e){
+    var file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var parsed;
+      try{
+        parsed = JSON.parse(reader.result);
+      }catch(err){
+        alert('Restore failed: the selected file is not valid JSON.');
+        return;
+      }
+      var keys = Object.keys(parsed);
+      var confirmed = confirm('Restore ' + keys.length + ' key' + (keys.length === 1 ? '' : 's') + ' from this backup? This will overwrite your current local data for any matching keys.');
+      if(!confirmed) return;
+      /* Writes through the wrapped Storage.prototype.setItem, so
+         each restored key is captured into the push queue same as
+         any other change and syncs to the server normally. */
+      keys.forEach(function(key){
+        var value = parsed[key];
+        localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+      });
+      location.reload();
+    };
+    reader.onerror = function(){
+      alert('Restore failed: could not read the selected file.');
+    };
+    reader.readAsText(file);
+  }
+
   function buildSyncPanel(){
     if(document.getElementById('sync-modal')) return;
     var wrap = document.createElement('div');
@@ -709,12 +778,20 @@
             '<button type="button" id="sync-disconnect-btn" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid rgba(248,113,113,0.4); background:rgba(248,113,113,0.1); color:#fca5a5; font-weight:700; cursor:pointer;">Disconnect</button>' +
           '</div>' +
           '<p id="sync-last-sync-label" style="margin:12px 0 0; font-size:0.64rem; color:var(--ink-faint); text-align:center;">Last sync: Never</p>' +
+          '<div class="modal-close-row" style="justify-content:space-between; gap:8px; margin-top:12px;">' +
+            '<button type="button" id="sync-backup-btn" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.05); color:var(--ink-dim); font-weight:700; cursor:pointer;">Backup</button>' +
+            '<button type="button" id="sync-restore-btn" style="flex:1; padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.05); color:var(--ink-dim); font-weight:700; cursor:pointer;">Restore from backup</button>' +
+          '</div>' +
+          '<input type="file" id="sync-restore-input" accept=".json,application/json" style="display:none;">' +
         '</div>' +
       '</div>';
     document.body.appendChild(wrap.firstElementChild);
     document.getElementById('sync-connect-btn').addEventListener('click', handleConnectClick);
     document.getElementById('sync-disconnect-btn').addEventListener('click', handleDisconnectClick);
     document.getElementById('sync-jobs-device-checkbox').addEventListener('change', handleJobsDeviceChange);
+    document.getElementById('sync-backup-btn').addEventListener('click', backupData);
+    document.getElementById('sync-restore-btn').addEventListener('click', triggerRestoreClick);
+    document.getElementById('sync-restore-input').addEventListener('change', handleRestoreFileSelected);
     document.getElementById('sync-modal-close-btn').addEventListener('click', function(){
       if(typeof window.closeModal === 'function') window.closeModal('sync-modal');
     });
