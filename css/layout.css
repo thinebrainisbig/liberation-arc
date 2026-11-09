@@ -292,15 +292,18 @@
     width:100%;
     margin-top:16px;
     padding:14px;
-    /* Same background + accent border as the desktop Academic spoke
-       panel (.spoke-panel's background:var(--glass); border:3px solid
-       #38bdf8;) instead of the plain .glass border every other card
-       here starts from. */
-    background:var(--glass);
-    border:3px solid #38bdf8;
-    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+    /* Same tinted-glass green fill as the desktop Academic spoke panel
+       (#spoke-panel-academic: background:#2e4a3d, borderless, blurred,
+       the same rgba(74,222,128,...) glow) — not the plain .glass
+       border/sheen every other card here starts from, so this card
+       skips the .glass class entirely (see index.html). */
+    background:#2e4a3d;
+    backdrop-filter:blur(22px) saturate(180%);
+    -webkit-backdrop-filter:blur(22px) saturate(180%);
+    box-shadow:0 0 18px 0 rgba(74,222,128,0.125), inset 0 1px 0 rgba(187,247,208,0.35);
   }
   .deadlines-card-mobile .spoke-panel-list{
+    flex:0 1 auto;
     max-height:none;
     overflow-y:auto;
   }
