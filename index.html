@@ -102,11 +102,11 @@
     </div>
 
     <div class="mobile-quick-actions">
-      <button type="button" class="mobile-pill-btn" onclick="openHabitModal()" aria-label="Habits">
+      <button type="button" class="mobile-pill-btn mobile-pill-habits" onclick="openHabitModal()" aria-label="Habits">
         <span class="material-symbols-outlined">checklist</span>
         <span>Habits</span>
       </button>
-      <button type="button" class="mobile-pill-btn" onclick="openSocialModal()" aria-label="Social Targets">
+      <button type="button" class="mobile-pill-btn mobile-pill-social" onclick="openSocialModal()" aria-label="Social Targets">
         <span class="material-symbols-outlined">person</span>
         <span>Social</span>
       </button>
@@ -161,6 +161,10 @@
         </div>
       </div>
     </div>
+
+    <!-- Mobile-only: full-width divider between the progress pill
+         panel and the Deadlines card. -->
+    <div class="mobile-section-divider"></div>
 
     <!-- Mobile-only: Deadlines card (reuses the academic spoke's list/
          count/add button — renderSpokeAcademic() and renderWheel() in

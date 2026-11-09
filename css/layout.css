@@ -27,7 +27,8 @@
    Academic spoke panel are used instead (see the mobile media query
    below for their mobile-only presentation). */
 .progress-pill-wrap,
-.deadlines-card-mobile{
+.deadlines-card-mobile,
+.mobile-section-divider{
   display:none;
 }
 
@@ -127,10 +128,9 @@
   }
 
   /* Quick actions now fill the bar's entire width (previously ~1/3,
-     sharing it with the 5-icon .nav above) — two big pill buttons
-     (Habits / Social, unchanged trigger functions, same modals the
-     desktop mini-cards already use) plus the existing Import/Export
-     icon buttons, evenly spaced. */
+     sharing it with the 5-icon .nav above) — three equal-width
+     buttons (Habits, Social, sync status dot), evenly filling the bar
+     edge to edge. */
   .mobile-quick-actions{
     display:flex;
     flex:1 1 auto;
@@ -150,11 +150,6 @@
     justify-content:center;
     gap:6px;
     border-radius:var(--r-lg);
-    background:var(--glass);
-    border:1px solid var(--glass-border);
-    backdrop-filter:blur(28px) saturate(180%);
-    -webkit-backdrop-filter:blur(28px) saturate(180%);
-    color:var(--ink);
     font-family:inherit;
     font-size:0.68rem;
     font-weight:700;
@@ -163,20 +158,34 @@
     cursor:pointer;
   }
   .mobile-pill-btn .material-symbols-outlined{ font-size:19px; flex-shrink:0; }
-  .mobile-pill-btn:active{ background:rgba(255,255,255,0.14); }
-  /* Import/Export: unchanged size (still the original 40x40 icon
-     buttons) — only their surroundings changed (full-width bar,
-     bigger pill siblings) via .mobile-quick-actions above. */
+  /* Same tinted-glass fill colors as the desktop Habits/Social spoke
+     cards (#spoke-panel-habits, #spoke-panel-social). */
+  .mobile-pill-habits{
+    background:#560c19;
+    box-shadow:0 0 18px 0 rgba(248,113,113,0.125), inset 0 1px 0 rgba(254,202,202,0.35);
+    color:#fecaca;
+  }
+  .mobile-pill-habits:active{ background:#6b1020; }
+  .mobile-pill-social{
+    background:#292f4a;
+    box-shadow:0 0 18px 0 rgba(168,85,247,0.125), inset 0 1px 0 rgba(216,180,254,0.35);
+    color:#e9d5ff;
+  }
+  .mobile-pill-social:active{ background:#343b5c; }
+  /* Sync status dot: same equal-share width as the two pill buttons
+     (previously fixed at 40x40) so all three fill the bar evenly. */
   .mobile-quick-btn{
-    width:40px;
-    height:40px;
-    flex-shrink:0;
+    flex:1 1 0;
+    min-width:0;
+    height:44px;
     display:flex;
     align-items:center;
     justify-content:center;
-    border-radius:12px;
-    background:rgba(255,255,255,0.07);
-    border:1px solid rgba(255,255,255,0.14);
+    border-radius:var(--r-lg);
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(28px) saturate(180%);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
     color:var(--ink-dim);
     cursor:pointer;
   }
@@ -281,6 +290,15 @@
     color:var(--ink-dim);
   }
   .progress-pill-count-value{ color:var(--ink); font-weight:700; }
+
+  .mobile-section-divider{
+    display:block;
+    width:100%;
+    height:1px;
+    margin-top:16px;
+    background:var(--glass-border);
+    border:none;
+  }
 
   /* Deadlines card: the academic spoke's own list/count/add-button
      classes, reused verbatim (see renderSpokeAcademic()/renderWheel()
