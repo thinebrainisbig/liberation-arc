@@ -32,6 +32,16 @@
     --r-md: 16px;
     --r-sm: 10px;
   }
+  /* Desktop-only background photo (mobile keeps index.jpg) */
+  @media (min-width: 769px){
+    :root{
+      --bg-photo: url('../assets/index-desktop.jpg');
+      /* Forest-green undertone to match the desktop photo */
+      --sidebar-bg: color-mix(in srgb, #1f5a3a 22%, rgba(14,30,22,0.55));
+    }
+    /* Show the desktop photo unfiltered — no dark/tinted scrim */
+    .bg-scrim{ display:none; }
+  }
 
   *{box-sizing:border-box;}
   /* Explicit solid fallback (not just the fixed .bg-layer/.bg-scrim
